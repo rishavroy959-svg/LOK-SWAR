@@ -912,6 +912,65 @@
               </p>
             </div>
 
+            {/* DIRECT 1-TAP INSTANT PORTALS LAUNCH BAR */}
+            <div className="w-full max-w-xl grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <a
+                href="citizen.html"
+                onClick={() => playChime('success')}
+                className="p-4 rounded-2xl border-2 border-emerald-500 bg-gradient-to-br from-emerald-500/15 via-emerald-500/5 to-transparent dark:from-emerald-950/40 dark:to-slate-900 border-emerald-500/40 hover:border-emerald-500 text-left transition-all active:scale-95 shadow-md flex items-center gap-3.5 group cursor-pointer"
+              >
+                <div className="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-2xl shadow-md group-hover:scale-105 transition-transform flex-shrink-0">
+                  🏛️
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <h3 className="font-black text-sm text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors truncate">
+                      Citizen Portal
+                    </h3>
+                    <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
+                      1-Tap
+                    </span>
+                  </div>
+                  <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 truncate">
+                    Voice Grievance & GIS Triage
+                  </p>
+                </div>
+                <span className="text-emerald-600 dark:text-emerald-400 font-bold text-sm">→</span>
+              </a>
+
+              <a
+                href="admin.html"
+                onClick={() => {
+                  playChime('success');
+                  localStorage.setItem('lok_swar_admin_session', JSON.stringify({
+                    name: "Dr. K. C. Tripathy (IAS)",
+                    designation: "District Magistrate & Collector",
+                    badge: "District Head",
+                    aadhaar: "8899 1122 3344"
+                  }));
+                }}
+                className="p-4 rounded-2xl border-2 border-blue-500 bg-gradient-to-br from-blue-500/15 via-blue-500/5 to-transparent dark:from-blue-950/40 dark:to-slate-900 border-blue-500/40 hover:border-blue-500 text-left transition-all active:scale-95 shadow-md flex items-center gap-3.5 group cursor-pointer"
+              >
+                <div className="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center text-2xl shadow-md group-hover:scale-105 transition-transform flex-shrink-0">
+                  🛡️
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <h3 className="font-black text-sm text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
+                      Admin Command
+                    </h3>
+                    <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300">
+                      Official
+                    </span>
+                  </div>
+                  <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 truncate">
+                    District Triage & Schemes
+                  </p>
+                </div>
+                <span className="text-blue-600 dark:text-blue-400 font-bold text-sm">→</span>
+              </a>
+            </div>
+
             {/* UNIFIED DUAL PORTAL CARD */}
             <div className="w-full max-w-xl rounded-3xl p-6 sm:p-8 border shadow-xl bg-white dark:bg-slate-900/95 border-slate-200 dark:border-slate-800 backdrop-blur-2xl text-left space-y-6 transition-all">
               
@@ -1231,25 +1290,33 @@
                   {/* Fast Pick Official Personas */}
                   <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
                     <div className="text-[11px] font-bold uppercase text-slate-500 dark:text-slate-400">
-                      Fast-Pick Official Personas:
+                      ⚡ 1-Tap Instant Official Login:
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       {[
-                        { title: "District Collector", name: "Dr. Subrat Tripathy, IAS" },
-                        { title: "Block Dev Officer (BDO)", name: "Smt. Archana Majhi, OAS" },
-                        { title: "Junior Engineer (RWSS)", name: "Er. Dilip Pradhan" },
-                        { title: "Gram Rozgar Sevak", name: "Sunil Kumar Oram" },
+                        { title: "District Collector", name: "Dr. K. C. Tripathy (IAS)", aadhaar: "8899 1122 3344" },
+                        { title: "Planning Officer", name: "Er. Rishav Yadav (DPC)", aadhaar: "5566 7788 9900" },
+                        { title: "Executive Engineer", name: "Er. Sunita Soren (R&B)", aadhaar: "1234 5678 9012" },
+                        { title: "Drone Commander", name: "Sq. Ldr. S. Patnaik", aadhaar: "9988 7766 5544" },
                       ].map((p, idx) => (
                         <button
                           key={idx}
                           type="button"
                           onClick={() => {
-                            playChime('tap');
-                            showToast(`Selected Persona: ${p.name}`);
+                            playChime('success');
+                            setAdminAadhaar(p.aadhaar);
+                            localStorage.setItem('lok_swar_admin_session', JSON.stringify({
+                              name: p.name,
+                              designation: p.title,
+                              badge: "District Official",
+                              aadhaar: p.aadhaar
+                            }));
+                            showToast(`Logged in as ${p.name}`);
+                            setTimeout(() => { window.location.href = 'admin.html'; }, 300);
                           }}
-                          className="p-2 rounded-xl text-left border bg-slate-50 hover:bg-slate-100 dark:bg-slate-950 dark:hover:bg-slate-800 border-slate-200 dark:border-slate-700 text-[11px] cursor-pointer transition-all active:scale-95"
+                          className="p-2.5 rounded-xl text-left border bg-slate-50 hover:bg-emerald-50/50 dark:bg-slate-950 dark:hover:bg-slate-800 border-slate-200 dark:border-slate-700 text-[11px] cursor-pointer transition-all active:scale-95 group"
                         >
-                          <div className="font-bold text-slate-800 dark:text-slate-200 truncate">{p.title}</div>
+                          <div className="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 truncate">{p.title}</div>
                           <div className="text-[10px] text-slate-500 truncate">{p.name}</div>
                         </button>
                       ))}
