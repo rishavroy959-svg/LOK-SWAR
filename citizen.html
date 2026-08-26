@@ -148,6 +148,13 @@ const {
   useRef
 } = React;
 
+const SIMULATED_REGIONS = [
+  { label: "Sundargarh (Odisha)", lang: "or", lat: 22.1245, lng: 84.0321, name: "Sundargarh, Odisha" },
+  { label: "Varanasi (Bhojpuri / UP)", lang: "bho", lat: 25.3176, lng: 82.9739, name: "Varanasi, UP" },
+  { label: "Kolkata (West Bengal)", lang: "bn", lat: 22.5726, lng: 88.3639, name: "Kolkata, West Bengal" },
+  { label: "New Delhi (National Grid)", lang: "hi", lat: 28.6139, lng: 77.2090, name: "New Delhi (National Grid)" }
+];
+
 // Clean Official Civic SVG Icons
 const Icons = {
   GovCrest: ({
@@ -2487,6 +2494,19 @@ function CitizenPortalApp() {
     } catch (e) {}
     setIsProfileModalOpen(false);
     playChime('success');
+  };
+
+  // Simulate Location Region Handler
+  const simulateLocationRegion = region => {
+    playChime('tap');
+    setSelectedLang(region.lang);
+    setCurrentLocationName(region.name);
+    setUserLocation({ lat: region.lat, lng: region.lng });
+    setIsLocationPermissionModalOpen(false);
+    try {
+      localStorage.setItem('lok_swar_location_permission_decided', 'true');
+    } catch (e) {}
+    showToast(`Switched region to ${region.name}`);
   };
 
   // Live GPS Telemetry Fetcher for Grievance Submission

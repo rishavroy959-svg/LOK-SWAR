@@ -2526,7 +2526,8 @@ function AdminSoftwareSuite() {
     className: "flex-1 py-3 rounded-2xl bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-900 font-bold text-xs cursor-pointer active:scale-95 transition-all shadow-md"
   }, "Dispatch Broadcast"))))));
 }
-ReactDOM.render(/*#__PURE__*/React.createElement(AdminSoftwareSuite, null), document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(/*#__PURE__*/React.createElement(AdminSoftwareSuite, null));
 </script>
 </body>
 </html>
