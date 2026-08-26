@@ -264,7 +264,41 @@ class LokSwarBackendHandler(http.server.SimpleHTTPRequestHandler):
                     self.wfile.write(f.read())
                 return
 
-        # Static File Serving Fallback (index.html, citizen.html, admin.html, assets)
+        # 8. Explicit Robust Static File Serving (HTML, JS, CSS, Assets)
+        clean_path = path.lstrip('/')
+        if not clean_path:
+            clean_path = "index.html"
+            
+        file_candidate = os.path.join(BASE_DIR, clean_path)
+        if os.path.isfile(file_candidate):
+            mime, _ = mimetypes.guess_type(file_candidate)
+            if clean_path.endswith(".html"):
+                mime = "text/html; charset=utf-8"
+            elif clean_path.endswith(".js") or clean_path.endswith(".jsx"):
+                mime = "application/javascript"
+            elif clean_path.endswith(".css"):
+                mime = "text/css"
+            elif clean_path.endswith(".json"):
+                mime = "application/json"
+            elif clean_path.endswith(".svg"):
+                mime = "image/svg+xml"
+            elif clean_path.endswith(".ico"):
+                mime = "image/x-icon"
+                
+            try:
+                with open(file_candidate, "rb") as f:
+                    content = f.read()
+                self.send_response(200)
+                self.send_header("Content-Type", mime or "application/octet-stream")
+                self.send_header("Content-Length", str(len(content)))
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(content)
+                return
+            except Exception as e:
+                print(f"[File Serve Error]: {e}")
+
+        # Fallback to super().do_GET()
         return super().do_GET()
 
     # -------------------------------------------------------------
