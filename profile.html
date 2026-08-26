@@ -62,7 +62,6 @@
   <div id="root"></div>
 
   <script>
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 const {
   useState,
   useEffect,
@@ -122,126 +121,118 @@ function playChime(type = 'tap') {
 const Icons = {
   Menu: ({
     className = "w-5 h-5"
-  }) => /*#__PURE__*/_jsx("svg", {
+  }) => /*#__PURE__*/React.createElement("svg", {
     className: className,
     fill: "none",
     viewBox: "0 0 24 24",
-    stroke: "currentColor",
-    children: /*#__PURE__*/_jsx("path", {
-      strokeLinecap: "round",
-      strokeLinejoin: "round",
-      strokeWidth: "2.5",
-      d: "M4 6h16M4 12h16M4 18h16"
-    })
-  }),
+    stroke: "currentColor"
+  }, /*#__PURE__*/React.createElement("path", {
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: "2.5",
+    d: "M4 6h16M4 12h16M4 18h16"
+  })),
   Speaker: ({
     className = "w-5 h-5"
-  }) => /*#__PURE__*/_jsx("svg", {
+  }) => /*#__PURE__*/React.createElement("svg", {
     className: className,
     fill: "none",
     viewBox: "0 0 24 24",
-    stroke: "currentColor",
-    children: /*#__PURE__*/_jsx("path", {
-      strokeLinecap: "round",
-      strokeLinejoin: "round",
-      strokeWidth: "2",
-      d: "M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
-    })
-  }),
+    stroke: "currentColor"
+  }, /*#__PURE__*/React.createElement("path", {
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: "2",
+    d: "M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+  })),
   Bell: ({
     className = "w-5 h-5"
-  }) => /*#__PURE__*/_jsx("svg", {
+  }) => /*#__PURE__*/React.createElement("svg", {
     className: className,
     fill: "none",
     viewBox: "0 0 24 24",
-    stroke: "currentColor",
-    children: /*#__PURE__*/_jsx("path", {
-      strokeLinecap: "round",
-      strokeLinejoin: "round",
-      strokeWidth: "2",
-      d: "M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-    })
-  }),
+    stroke: "currentColor"
+  }, /*#__PURE__*/React.createElement("path", {
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: "2",
+    d: "M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+  })),
   ShieldCheck: ({
     className = "w-4 h-4 inline-block text-emerald-500"
-  }) => /*#__PURE__*/_jsx("svg", {
+  }) => /*#__PURE__*/React.createElement("svg", {
     className: className,
     fill: "none",
     viewBox: "0 0 24 24",
-    stroke: "currentColor",
-    children: /*#__PURE__*/_jsx("path", {
-      strokeLinecap: "round",
-      strokeLinejoin: "round",
-      strokeWidth: "2.5",
-      d: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-    })
-  }),
+    stroke: "currentColor"
+  }, /*#__PURE__*/React.createElement("path", {
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: "2.5",
+    d: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+  })),
   Check: ({
     className = "w-4 h-4"
-  }) => /*#__PURE__*/_jsx("svg", {
+  }) => /*#__PURE__*/React.createElement("svg", {
     className: className,
     fill: "none",
     viewBox: "0 0 24 24",
-    stroke: "currentColor",
-    children: /*#__PURE__*/_jsx("path", {
-      strokeLinecap: "round",
-      strokeLinejoin: "round",
-      strokeWidth: "3",
-      d: "M5 13l4 4L19 7"
-    })
-  }),
+    stroke: "currentColor"
+  }, /*#__PURE__*/React.createElement("path", {
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: "3",
+    d: "M5 13l4 4L19 7"
+  })),
   Camera: ({
     className = "w-5 h-5"
-  }) => /*#__PURE__*/_jsxs("svg", {
+  }) => /*#__PURE__*/React.createElement("svg", {
     className: className,
     fill: "none",
     viewBox: "0 0 24 24",
-    stroke: "currentColor",
-    children: [/*#__PURE__*/_jsx("path", {
-      strokeLinecap: "round",
-      strokeLinejoin: "round",
-      strokeWidth: "2",
-      d: "M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-    }), /*#__PURE__*/_jsx("path", {
-      strokeLinecap: "round",
-      strokeLinejoin: "round",
-      strokeWidth: "2",
-      d: "M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-    })]
-  }),
+    stroke: "currentColor"
+  }, /*#__PURE__*/React.createElement("path", {
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: "2",
+    d: "M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+  }), /*#__PURE__*/React.createElement("path", {
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: "2",
+    d: "M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+  })),
   MapPin: ({
     className = "w-4 h-4"
-  }) => /*#__PURE__*/_jsxs("svg", {
+  }) => /*#__PURE__*/React.createElement("svg", {
     className: className,
     fill: "none",
     viewBox: "0 0 24 24",
-    stroke: "currentColor",
-    children: [/*#__PURE__*/_jsx("path", {
-      strokeLinecap: "round",
-      strokeLinejoin: "round",
-      strokeWidth: "2",
-      d: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-    }), /*#__PURE__*/_jsx("path", {
-      strokeLinecap: "round",
-      strokeLinejoin: "round",
-      strokeWidth: "2",
-      d: "M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-    })]
-  }),
+    stroke: "currentColor"
+  }, /*#__PURE__*/React.createElement("path", {
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: "2",
+    d: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+  }), /*#__PURE__*/React.createElement("path", {
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: "2",
+    d: "M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+  })),
   Refresh: ({
     className = "w-4 h-4"
-  }) => /*#__PURE__*/_jsx("svg", {
+  }) => /*#__PURE__*/React.createElement("svg", {
     className: className,
     fill: "none",
     viewBox: "0 0 24 24",
-    stroke: "currentColor",
-    children: /*#__PURE__*/_jsx("path", {
-      strokeLinecap: "round",
-      strokeLinejoin: "round",
-      strokeWidth: "2.5",
-      d: "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-    })
-  })
+    stroke: "currentColor"
+  }, /*#__PURE__*/React.createElement("path", {
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: "2.5",
+    d: "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+  }))
 };
 
 // --- 3. MULTILINGUAL DICTIONARY ---
@@ -687,1380 +678,7 @@ function ProfileApp() {
       allVariants.forEach(variant => {
         if (!variant) return;
         const isAscii = /^[\x00-\x7F]+$/.test(variant);
-        const escaped = variant.replace(/[.*+?^${}()|[\]\\]/g, '\\<script type="text/babel">
-    const { useState, useEffect, useRef, useMemo } = React;
-
-    // --- 1. WEB AUDIO SYNTHESIZER FOR TACTILE CHIMES ---
-    let audioCtx = null;
-    function getAudioContext() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-      return audioCtx;
-    }
-
-    function playChime(type = 'tap') {
-      try {
-        const ctx = getAudioContext();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        const now = ctx.currentTime;
-        if (type === 'tap') {
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(880, now);
-          osc.frequency.exponentialRampToValueAtTime(440, now + 0.06);
-          gain.gain.setValueAtTime(0.12, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
-          osc.start(now);
-          osc.stop(now + 0.06);
-        } else if (type === 'success') {
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(523.25, now);
-          osc.frequency.setValueAtTime(659.25, now + 0.08);
-          osc.frequency.setValueAtTime(783.99, now + 0.16);
-          gain.gain.setValueAtTime(0.15, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-          osc.start(now);
-          osc.stop(now + 0.35);
-        } else if (type === 'error') {
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(220, now);
-          osc.frequency.exponentialRampToValueAtTime(110, now + 0.18);
-          gain.gain.setValueAtTime(0.15, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
-          osc.start(now);
-          osc.stop(now + 0.18);
-        }
-      } catch(e) {}
-    }
-
-    // --- 2. EMBEDDED SVG ICONS ---
-    const Icons = {
-      Menu: ({ className = "w-5 h-5" }) => (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      ),
-      Speaker: ({ className = "w-5 h-5" }) => (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-        </svg>
-      ),
-      Bell: ({ className = "w-5 h-5" }) => (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-        </svg>
-      ),
-      ShieldCheck: ({ className = "w-4 h-4 inline-block text-emerald-500" }) => (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-        </svg>
-      ),
-      Check: ({ className = "w-4 h-4" }) => (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-        </svg>
-      ),
-      Camera: ({ className = "w-5 h-5" }) => (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-      ),
-      MapPin: ({ className = "w-4 h-4" }) => (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-      ),
-      Refresh: ({ className = "w-4 h-4" }) => (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-        </svg>
-      ),
-    };
-
-    // --- 3. MULTILINGUAL DICTIONARY ---
-    const TRANSLATIONS = {
-      hi: {
-        brandTitle: "लोक स्वर",
-        brandSub: "नागरिक प्रोफ़ाइल एवं पहचान लेजर • सुंदरगढ़",
-        nationalTitle: "भारत सरकार • Government of India",
-        odishaSub: "Government of Odisha • DigiLocker e-KYC Portal",
-        tabIdentity: "👤 ई-केवाईसी पहचान लेजर",
-        tabGrievances: "📋 मेरी दर्ज शिकायतें",
-        tabSecurity: "🛡️ सुरक्षा व नागरिक प्रमाण",
-        syncDigiLocker: "🔄 डिजिलॉकर से पुनः सत्यापित करें",
-        saveProfile: "✓ प्रोफ़ाइल सहेजें",
-        verifiedBadge: "सत्यापित नागरिक",
-        trustScore: "UIDAI नागरिक विश्वास",
-        backToDashboard: "नागरिक मुख्य पृष्ठ",
-        adminSuite: "प्रशासनिक सूट",
-        voiceGuide: "आवाज गाइड",
-        voiceMute: "मौन करें",
-        notifications: "नागरिक सूचनाएं",
-        sovereigntyFooter: "256-बिट एंड-टू-एंड एनक्रिप्शन • डिजिटल इंडिया सोवरेनिटी",
-        closeMenu: "✓ मेनू बंद करें",
-        drawerTitle: "नागरिक सेवाएं",
-        constituencyTag: "सुंदरगढ़ (AC-134)",
-        navSectionTitle: "मुख्य सेवाएं (7 पृष्ठ)",
-      },
-      or: {
-        brandTitle: "ଲୋକ ସ୍ୱର",
-        brandSub: "ନାଗରିକ ପ୍ରୋଫାଇଲ୍ ଏବଂ ପରିଚୟ ଲେଜର • ସୁନ୍ଦରଗଡ଼",
-        nationalTitle: "ଭାରତ ସରକାର • Government of India",
-        odishaSub: "ଓଡ଼ିଶା ସରକାର • ଡିଜିଲକର୍ ଇ-କେୱାଇସି ପୋର୍ଟାଲ୍",
-        tabIdentity: "👤 ଇ-କେୱାଇସି ପରିଚୟ ଲେଜର",
-        tabGrievances: "📋 ମୋର ଦାଖଲ ଅଭିଯୋଗ",
-        tabSecurity: "🛡️ ସୁରକ୍ଷା ଓ ପ୍ରମାଣପତ୍ର",
-        syncDigiLocker: "🔄 ଡିଜିଲକର୍ ରୁ ପୁନଃ ସମନ୍ୱୟ କରନ୍ତୁ",
-        saveProfile: "✓ ପ୍ରୋଫାଇଲ୍ ସଂରକ୍ଷଣ କରନ୍ତୁ",
-        verifiedBadge: "ପ୍ରମାଣିତ ନାଗରିକ",
-        trustScore: "UIDAI ବିଶ୍ୱାସ ସ୍କୋର",
-        backToDashboard: "ମୁଖ୍ୟ ପୃଷ୍ଠାକୁ ଫେରନ୍ତୁ",
-        adminSuite: "ପ୍ରଶାସନିକ ସୁଟ୍",
-        voiceGuide: "ଭଏସ୍ ଗାଇଡ୍",
-        voiceMute: "ବନ୍ଦ କରନ୍ତୁ",
-        notifications: "ନାଗରିକ ସୂଚନା",
-        sovereigntyFooter: "୨୫୬-ବିଟ୍ ଏନକ୍ରିପସନ୍ • ଡିଜିଟାଲ୍ ଇଣ୍ଡିଆ ସୁରକ୍ଷା",
-        closeMenu: "✓ ମେନୁ ବନ୍ଦ କରନ୍ତୁ",
-        drawerTitle: "ନାଗରିକ ସେବା",
-        constituencyTag: "ସୁନ୍ଦରଗଡ଼ (AC-134)",
-        navSectionTitle: "ମୁଖ୍ୟ ସେବା (୭ ପୃଷ୍ଠା)",
-      },
-      bho: {
-        brandTitle: "लोक स्वर",
-        brandSub: "नागरिक प्रोफ़ाइल आ पहचान लेजर • सुंदरगढ़",
-        nationalTitle: "भारत सरकार • Government of India",
-        odishaSub: "ओडिशा सरकार • डिजिलॉकर ई-केवाईसी पोर्टल",
-        tabIdentity: "👤 ई-केवाईसी पहचान लेजर",
-        tabGrievances: "📋 हमार दर्ज शिकायत",
-        tabSecurity: "🛡️ सुरक्षा आ नागरिक प्रमाण",
-        syncDigiLocker: "🔄 डिजिलॉकर से दोबारा जाँचीं",
-        saveProfile: "✓ प्रोफ़ाइल सेव करीं",
-        verifiedBadge: "सत्यापित नागरिक",
-        trustScore: "UIDAI नागरिक बिस्वास",
-        backToDashboard: "मुख्य पेज पर जाईं",
-        adminSuite: "प्रशासनिक सूट",
-        voiceGuide: "आवाज गाइड",
-        voiceMute: "मौन करीं",
-        notifications: "नागरिक सूचना",
-        sovereigntyFooter: "256-बिट एन्क्रिप्शन • डिजिटल इंडिया सुरक्षा",
-        closeMenu: "✓ मेनू बंद करीं",
-        drawerTitle: "नागरिक सेवा",
-        constituencyTag: "सुंदरगढ़ (AC-134)",
-        navSectionTitle: "मुख्य सेवा (7 पृष्ठ)",
-      },
-      bn: {
-        brandTitle: "লোক স্বর",
-        brandSub: "নাগরিক প্রোফাইল ও পরিচয় লেজার • সুন্দরগড়",
-        nationalTitle: "ভারত সরকার • Government of India",
-        odishaSub: "ওড়িশা সরকার • ডিজিলকার ই-কেওয়াইসি পোর্টাল",
-        tabIdentity: "👤 ই-কেওয়াইসি পরিচয় লেজার",
-        tabGrievances: "📋 আমার জমা অভিযোগ",
-        tabSecurity: "🛡️ সুরক্ষা ও নাগরিক প্রমাণ",
-        syncDigiLocker: "🔄 ডিজিলকার থেকে পুনরায় যাচাই",
-        saveProfile: "✓ প্রোফাইল সংরক্ষণ করুন",
-        verifiedBadge: "যাচাইকৃত নাগরিক",
-        trustScore: "UIDAI নাগরিক আস্থা",
-        backToDashboard: "মূল পাতায় ফিরুন",
-        adminSuite: "প্রশাসনিক স্যুট",
-        voiceGuide: "ভয়েস গাইড",
-        voiceMute: "নিঃশব্দ করুন",
-        notifications: "নাগরিক বিজ্ঞপ্তি",
-        sovereigntyFooter: "২৫৬-বিট এনক্রিপশন • ডিজিটাল ইন্ডিয়া সার্বভৌমত্ব",
-        closeMenu: "✓ মেনু বন্ধ করুন",
-        drawerTitle: "নাগরিক পরিষেবা",
-        constituencyTag: "সুন্দরগড় (AC-134)",
-        navSectionTitle: "প্রধান পরিষেবা (৭টি পৃষ্ঠা)",
-      },
-      en: {
-        brandTitle: "LOK SWAR",
-        brandSub: "Citizen Profile & e-KYC Identity Ledger • Sundargarh",
-        nationalTitle: "Government of India • भारत सरकार",
-        odishaSub: "Government of Odisha • DigiLocker e-KYC Portal",
-        tabIdentity: "👤 e-KYC Identity Ledger",
-        tabGrievances: "📋 My Lodged Grievances",
-        tabSecurity: "🛡️ Security & Credentials",
-        syncDigiLocker: "🔄 Re-Sync with DigiLocker",
-        saveProfile: "✓ Save Profile Changes",
-        verifiedBadge: "Verified Citizen",
-        trustScore: "UIDAI Civic Trust",
-        backToDashboard: "Citizen Dashboard",
-        adminSuite: "Admin Suite",
-        voiceGuide: "Voice Guide",
-        voiceMute: "Mute",
-        notifications: "Citizen Alerts",
-        sovereigntyFooter: "256-Bit Sovereign Encryption • MeitY Digital Governance",
-        closeMenu: "✓ Close Menu",
-        drawerTitle: "Citizen Services",
-        constituencyTag: "Sundargarh (AC-134)",
-        navSectionTitle: "Core Services (7 Pages)",
-      }
-    };
-
-    function ProfileApp() {
-      // 1. Theme State
-      const [isDarkMode, setIsDarkMode] = useState(() => {
-        try {
-          return localStorage.getItem('lok_swar_theme_mode') === 'dark';
-        } catch(e) {
-          return false;
-        }
-      });
-
-      useEffect(() => {
-        if (isDarkMode) {
-          document.documentElement.classList.add('dark');
-          document.body.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-          document.body.classList.remove('dark');
-        }
-      }, [isDarkMode]);
-
-      const toggleDarkMode = () => {
-        playChime('tap');
-        setIsDarkMode(prev => {
-          const next = !prev;
-          try {
-            localStorage.setItem('lok_swar_theme_mode', next ? 'dark' : 'light');
-          } catch(e) {}
-          return next;
-        });
-      };
-
-      // 2. Language State
-      const [selectedLang, setSelectedLang] = useState(() => {
-        try {
-          return localStorage.getItem('lok_swar_selected_language') || 'en';
-        } catch(e) {
-          return 'en';
-        }
-      });
-
-      const handleLanguageChange = (newLang) => {
-        setSelectedLang(newLang);
-        try {
-          localStorage.setItem('lok_swar_selected_language', newLang);
-          window.dispatchEvent(new Event('storage'));
-        } catch(e) {}
-        playChime('tap');
-      };
-
-      useEffect(() => {
-        const onStorage = (e) => {
-          const val = (e && e.key === 'lok_swar_selected_language' && e.newValue) 
-            || localStorage.getItem('lok_swar_selected_language') 
-            || 'en';
-          setSelectedLang(val);
-        };
-        window.addEventListener('storage', onStorage);
-        return () => window.removeEventListener('storage', onStorage);
-      }, []);
-      // Comprehensive Bidirectional Multi-Dialect Regional Address & Location Translator (ODIA, HINDI, BHOJPURI, BENGALI, ENGLISH)
-      const LOCATION_TRANSLATION_ENTITIES = [
-        { en: "Janla", or: "ଜାନଳା", hi: "जानला", bn: "জানলা", bho: "जानला" },
-        { en: "Khordha", or: "ଖୋର୍ଦ୍ଧା", hi: "खोरधा", bn: "খোরধা", bho: "खोरधा" },
-        { en: "Khurda", or: "ଖୋର୍ଦ୍ଧା", hi: "खोरधा", bn: "খোরধা", bho: "खोरधा" },
-        { en: "Bhubaneswar", or: "ଭୁବନେଶ୍ୱର", hi: "भुवनेश्वर", bn: "ভুবনেশ্বর", bho: "भुवनेश्वर" },
-        { en: "Cuttack", or: "କଟକ", hi: "कटक", bn: "কটক", bho: "कटक" },
-        { en: "Sundargarh", or: "ସୁନ୍ଦରଗଡ଼", hi: "सुंदरगढ़", bn: "সুন্দরগড়", bho: "सुंदरगढ़" },
-        { en: "Sambalpur", or: "ସମ୍ବଲପୁର", hi: "संबलपुर", bn: "সম্বলপুর", bho: "संबलपुर" },
-        { en: "Rourkela", or: "ରାଉରକେଲା", hi: "राउरकेला", bn: "রাউরকেল্লা", bho: "राउरकेला" },
-        { en: "Puri", or: "ପୁରୀ", hi: "पुरी", bn: "পুরী", bho: "पुरी" },
-        { en: "Balasore", or: "ବାଲେଶ୍ୱର", hi: "बालेश्वर", bn: "বালেশ্বর", bho: "बालेश्वर" },
-        { en: "Baleswar", or: "ବାଲେଶ୍ୱର", hi: "बालेश्वर", bn: "বালেশ্বর", bho: "बालेश्वर" },
-        { en: "Berhampur", or: "ବ୍ରହ୍ମପୁର", hi: "ब्रह्मपुर", bn: "ব্রহ্মপুর", bho: "ब्रह्मपुर" },
-        { en: "Brahmapur", or: "ବ୍ରହ୍ମପୁର", hi: "ब्रह्मपुर", bn: "ব্রহ্মপুর", bho: "ब्रह्मपुर" },
-        { en: "Kalyanpur", or: "କଲ୍ୟାଣପୁର", hi: "कल्याणपुर", bn: "কল্যাণপুর", bho: "कल्याणपुर" },
-        { en: "Lathikata", or: "ଲାଠିକଟା", hi: "लाठीकाटा", bn: "লাঠিকাটা", bho: "लाठीकाटा" },
-        { en: "Bhojpur", or: "ଭୋଜପୁର", hi: "भोजपुर", bn: "ভোজপুর", bho: "भोजपुर" },
-        { en: "Patna", or: "ପାଟନା", hi: "पटना", bn: "পাটনা", bho: "पटना" },
-        { en: "Gaya", or: "ଗୟା", hi: "गया", bn: "গয়া", bho: "गया" },
-        { en: "Muzaffarpur", or: "ମୁଜାଫରପୁର", hi: "मुजफ्फरपुर", bn: "মুজাফফরপুর", bho: "मुजफ्फरपुर" },
-        { en: "Siwan", or: "ସିୱାନ", hi: "सीवान", bn: "সিওয়ান", bho: "सीवान" },
-        { en: "Chapra", or: "ଛପରା", hi: "छपरा", bn: "ছাপরা", bho: "छपरा" },
-        { en: "Kolkata", or: "କୋଲକାତା", hi: "कोलकाता", bn: "কলকাতা", bho: "कोलकाता" },
-        { en: "Howrah", or: "ହାୱଡ଼ା", hi: "हावड़ा", bn: "হাওড়া", bho: "हावड़ा" },
-        { en: "Asansol", or: "ଆସନସୋଲ", hi: "आसनसोल", bn: "আসানসোল", bho: "আসানসোল" },
-        { en: "Delhi", or: "ଦିଲ୍ଲୀ", hi: "दिल्ली", bn: "দিল্লি", bho: "दिल्ली" },
-        { en: "Odisha", or: "ଓଡ଼ିଶା", hi: "ओडिशा", bn: "ওড়িশা", bho: "ओडिशा" },
-        { en: "Orissa", or: "ଓଡ଼ିଶା", hi: "ओडिशा", bn: "ଓଡ଼ିଶା", bho: "ओडिशा" },
-        { en: "Bihar", or: "ବିହାର", hi: "बिहार", bn: "বিহার", bho: "बिहार" },
-        { en: "West Bengal", or: "ପଶ୍ଚିମ ବଙ୍ଗ", hi: "पश्चिम बंगाल", bn: "পশ্চিমবঙ্গ", bho: "पश्चिम बंगाल" },
-        { en: "Uttar Pradesh", or: "ଉତ୍ତର ପ୍ରଦେଶ", hi: "उत्तर प्रदेश", bn: "উত্তর প্রদেশ", bho: "उत्तर प्रदेश" },
-        { en: "Madhya Pradesh", or: "ମଧ୍ୟ ପ୍ରଦେଶ", hi: "मध्य प्रदेश", bn: "মধ্য প্রদেশ", bho: "मध्य प्रदेश" },
-        { en: "Rajasthan", or: "ରାଜସ୍ଥାନ", hi: "राजस्थान", bn: "রাজস্থান", bho: "राजस्थान" },
-        { en: "Haryana", or: "ହରିୟାଣା", hi: "हरियाणा", bn: "হরিয়ানা", bho: "हरियाणा" },
-        { en: "Jharkhand", or: "ଝାଡ଼ଖଣ୍ଡ", hi: "झारखंड", bn: "ঝাড়খণ্ড", bho: "झारखंड" },
-        { en: "Chhattisgarh", or: "ଛତିଶଗଡ଼", hi: "छत्तीसगढ़", bn: "ছত্তিশগড়", bho: "छत्तीसगढ़" },
-        { en: "Ward", or: "ୱାର୍ଡ", hi: "वार्ड", bn: "ওয়ার্ড", bho: "वार्ड" },
-        { en: "GP", or: "ଗ୍ରାମ ପଞ୍ଚାୟତ", hi: "ग्राम पंचायत", bn: "গ্রাম পঞ্চায়েত", bho: "ग्राम पंचायत" },
-        { en: "Gram Panchayat", or: "ଗ୍ରାମ ପଞ୍ଚାୟତ", hi: "ग्राम पंचायत", bn: "গ্রাম পঞ্চায়েত", bho: "ग्राम पंचायत" },
-        { en: "District", or: "ଜିଲ୍ଲା", hi: "जिला", bn: "জেলা", bho: "जिला" },
-        { en: "Region", or: "ଅଞ୍ଚଳ", hi: "क्षेत्र", bn: "অঞ্চল", bho: "इलाका" },
-        { en: "Current Location", or: "ବର୍ତ୍ତମାନ ସ୍ଥାନ", hi: "वर्तमान स्थान", bn: "বর্তমান অবস্থান", bho: "अबो के लोकेशन" },
-        { en: "North India", or: "ଉତ୍ତର ଭାରତ", hi: "उत्तर भारत", bn: "উত্তর ভারত", bho: "उत्तर भारत" },
-        { en: "Northern India Region", or: "ଉତ୍ତର ଭାରତ ଅଞ୍ଚଳ", hi: "उत्तर भारत क्षेत्र", bn: "উত্তর ভারত অঞ্চল", bho: "उत्तर भारत इलाका" }
-      ];
-
-      const localizeAddress = (addressStr, lang = selectedLang) => {
-        if (!addressStr) return "";
-        const targetLang = lang || 'en';
-        let result = String(addressStr);
-
-        LOCATION_TRANSLATION_ENTITIES.forEach(entity => {
-          const targetReplacement = entity[targetLang] || entity['en'] || entity['hi'] || '';
-          if (!targetReplacement) return;
-
-          const allVariants = [
-            entity.en, entity.or, entity.hi, entity.bn, entity.bho
-          ].filter(Boolean);
-
-          allVariants.sort((a, b) => b.length - a.length);
-
-          allVariants.forEach(variant => {
-            if (!variant) return;
-            const isAscii = /^[\x00-\x7F]+$/.test(variant);
-            const escaped = variant.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            const pattern = isAscii ? new RegExp(`\\b${escaped}\\b`, 'gi') : new RegExp(escaped, 'g');
-            result = result.replace(pattern, targetReplacement);
-          });
-        });
-
-        return result;
-      };
-
-      const t = TRANSLATIONS[selectedLang] || TRANSLATIONS.en || TRANSLATIONS.hi;
-
-      // 3. Navigation Drawer & Notification State
-      const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-      const [isNotifOpen, setIsNotifOpen] = useState(false);
-      const [unreadNotifCount, setUnreadNotifCount] = useState(2);
-      const [activeTab, setActiveTab] = useState('identity'); // 'identity' | 'grievances' | 'security'
-      
-      const drawerRef = useRef(null);
-      const overlayRef = useRef(null);
-      const notifDrawerRef = useRef(null);
-      const notifOverlayRef = useRef(null);
-      const dpInputRef = useRef(null);
-
-      // 4. Voice Assistance State
-      const [isSpeaking, setIsSpeaking] = useState(false);
-
-      // 5. Citizen Profile Form State
-      const [name, setName] = useState('Rishav Yadav');
-      const [email, setEmail] = useState('rishav.yadav.odisha@gmail.com');
-      const [isEmailVerified, setIsEmailVerified] = useState(false);
-      const [emailOtpSent, setEmailOtpSent] = useState(false);
-      const [emailOtpCode, setEmailOtpCode] = useState('');
-      const [receivedEmailOtp, setReceivedEmailOtp] = useState('');
-      const [isSendingEmailOtp, setIsSendingEmailOtp] = useState(false);
-      const [isVerifyingEmailOtp, setIsVerifyingEmailOtp] = useState(false);
-      const [emailError, setEmailError] = useState('');
-      const [mobile, setMobile] = useState('9861234567');
-      const [aadhaar, setAadhaar] = useState('5482 9104 1940');
-      const [dpUrl, setDpUrl] = useState('assets/bg_1_smart_village.jpg');
-      const [village, setVillage] = useState('Kalyanpur Gram Panchayat (Ward 3)');
-      const [house, setHouse] = useState('Plot #14, Sector 2');
-      const [block, setBlock] = useState('Lathikata Block');
-      const [district, setDistrict] = useState('Sundargarh');
-      const [stateName, setStateName] = useState('Odisha');
-      const [pincode, setPincode] = useState('770037');
-
-      const [isDigiLockerVerified, setIsDigiLockerVerified] = useState(true);
-      const [isFetchingDigiLocker, setIsFetchingDigiLocker] = useState(false);
-      const [isSaving, setIsSaving] = useState(false);
-      const [toast, setToast] = useState(null);
-
-      // 6. User's Grievances List (Fetched from Backend DB)
-      const [myGrievances, setMyGrievances] = useState([]);
-      // 50 KM Regional Proximity Scanner State
-      const [localProblems, setLocalProblems] = useState([]);
-      const [scanRadius, setScanRadius] = useState(50);
-      const [isScanningNearby, setIsScanningNearby] = useState(false);
-      const [profileLocation, setProfileLocation] = useState(() => {
-        try {
-          const saved = localStorage.getItem('lok_swar_citizen_location');
-          return saved ? JSON.parse(saved) : { lat: 22.1245, lng: 84.0321, name: "Kalyanpur Gram Panchayat (Ward 3)" };
-        } catch(e) {
-          return { lat: 22.1245, lng: 84.0321, name: "Kalyanpur Gram Panchayat (Ward 3)" };
-        }
-      });
-
-      const scan50kmLocalIssues = async (lat = 22.1245, lng = 84.0321, radius = 50) => {
-        setIsScanningNearby(true);
-        try {
-          const res = await fetch(`/api/grievances/nearby?lat=${lat}&lng=${lng}&radius=${radius}`);
-          const data = await res.json();
-          if (data.success && data.reports) {
-            setLocalProblems(data.reports);
-          }
-        } catch(e) {
-          console.warn('Nearby scan notice:', e);
-        } finally {
-          setIsScanningNearby(false);
-        }
-      };
-
-      const handleUpvoteProfileIssue = async (probId) => {
-        playChime('tap');
-        setLocalProblems(prev => prev.map(p => {
-          if (p.id === probId) {
-            return { ...p, votes: (p.votes || 1) + 1, hasUpvoted: true };
-          }
-          return p;
-        }));
-
-        try {
-          await fetch('/api/grievances/endorse', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: probId, mobile: mobile || "9861234567" })
-          });
-          showToast(`✓ Upvoted report #${probId}! Community backing recorded.`);
-        } catch(e) {}
-      };
-
-      const showToast = (msg, type = 'success') => {
-        playChime(type === 'error' ? 'error' : 'success');
-        setToast({ message: msg, type });
-        setTimeout(() => setToast(null), 3500);
-      };
-
-      // Load Session and DB Grievances on Mount
-      useEffect(() => {
-        try {
-          const raw = localStorage.getItem('lok_swar_citizen_session') || localStorage.getItem('lok_swar_citizen_auth_session');
-          if (raw) {
-            const data = JSON.parse(raw);
-            setName(data.name || 'Rishav Yadav');
-            setEmail(data.email || 'rishav.yadav.odisha@gmail.com');
-            setMobile(data.mobile || '9861234567');
-            setAadhaar(data.aadhaar || '5482 9104 1940');
-            setDpUrl(data.dpUrl || 'assets/bg_1_smart_village.jpg');
-            setVillage(data.village || 'Kalyanpur Gram Panchayat (Ward 3)');
-            if (data.addressDetails) {
-              setHouse(data.addressDetails.house || 'Plot #14, Sector 2');
-              setBlock(data.addressDetails.block || 'Lathikata Block');
-              setDistrict(data.addressDetails.district || 'Sundargarh');
-              setPincode(data.addressDetails.pincode || '770037');
-            }
-          }
-        } catch(e) {}
-
-        scan50kmLocalIssues(profileLocation.lat, profileLocation.lng, 50);
-        // Fetch User Grievances from API
-        fetch('/api/grievances/list')
-          .then(r => r.json())
-          .then(data => {
-            if (data && data.reports) {
-              setMyGrievances(data.reports);
-            }
-          })
-          .catch(() => {});
-      }, []);
-
-      // GSAP Animations for Drawer
-      useEffect(() => {
-        if (isDrawerOpen && drawerRef.current && overlayRef.current) {
-          gsap.fromTo(overlayRef.current, { opacity: 0 }, { opacity: 1, duration: 0.25 });
-          gsap.fromTo(drawerRef.current, { x: -340 }, { x: 0, duration: 0.35, ease: "power3.out" });
-        }
-      }, [isDrawerOpen]);
-
-      const closeDrawer = () => {
-        if (drawerRef.current && overlayRef.current) {
-          gsap.to(drawerRef.current, { x: -340, duration: 0.25, ease: "power3.in" });
-          gsap.to(overlayRef.current, {
-            opacity: 0,
-            duration: 0.2,
-            onComplete: () => setIsDrawerOpen(false)
-          });
-        } else {
-          setIsDrawerOpen(false);
-        }
-      };
-
-      // GSAP Animations for Notification
-      useEffect(() => {
-        if (isNotifOpen && notifDrawerRef.current && notifOverlayRef.current) {
-          gsap.fromTo(notifOverlayRef.current, { opacity: 0 }, { opacity: 1, duration: 0.25 });
-          gsap.fromTo(notifDrawerRef.current, { x: 380 }, { x: 0, duration: 0.35, ease: "power3.out" });
-        }
-      }, [isNotifOpen]);
-
-      const closeNotif = () => {
-        if (notifDrawerRef.current && notifOverlayRef.current) {
-          gsap.to(notifDrawerRef.current, { x: 380, duration: 0.25, ease: "power3.in" });
-          gsap.to(notifOverlayRef.current, {
-            opacity: 0,
-            duration: 0.2,
-            onComplete: () => setIsNotifOpen(false)
-          });
-        } else {
-          setIsNotifOpen(false);
-        }
-      };
-
-      // Voice Assistance Reader
-      const handleVoiceGuidance = () => {
-        playChime('tap');
-        if (isSpeaking) {
-          window.speechSynthesis?.cancel();
-          setIsSpeaking(false);
-          return;
-        }
-        setIsSpeaking(true);
-        const speechText = `${t.brandTitle}. ${name}, your citizen profile is verified with UIDAI Aadhaar trust score 99 percent. Manage your DigiLocker address and review your active grievances.`;
-        const ut = new SpeechSynthesisUtterance(speechText);
-        ut.lang = selectedLang === 'hi' ? 'hi-IN' : selectedLang === 'bn' ? 'bn-IN' : 'en-IN';
-        ut.onend = () => setIsSpeaking(false);
-        ut.onerror = () => setIsSpeaking(false);
-        window.speechSynthesis?.speak(ut);
-      };
-
-      // Handle DP Upload (Real Server Persistence & LocalStorage Sync)
-      const handleDpUpload = (e) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async () => {
-          const b64 = reader.result;
-          setDpUrl(b64);
-          showToast("Saving profile picture in real...");
-
-          try {
-            const res = await fetch('/api/auth/citizen/upload-avatar', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                mobile: mobile || "9861234567",
-                name: name || "Rishav Yadav",
-                village: village || "Kalyanpur Gram Panchayat (Ward 3)",
-                image: b64
-              })
-            });
-            const data = await res.json();
-            if (data.success && data.dpUrl) {
-              setDpUrl(data.dpUrl);
-              const updatedSession = {
-                name,
-                email,
-                mobile,
-                aadhaar,
-                aadhaarMasked: `XXXX-XXXX-${aadhaar.replace(/\s+/g, '').slice(-4) || '1940'}`,
-                dpUrl: data.dpUrl,
-                village,
-                isAadhaarVerified: true,
-                digilockerVerified: isDigiLockerVerified,
-                addressDetails: { house, village, block, district, state: stateName, pincode }
-              };
-              localStorage.setItem('lok_swar_citizen_session', JSON.stringify(updatedSession));
-              localStorage.setItem('lok_swar_citizen_auth_session', JSON.stringify(updatedSession));
-              showToast("✓ Profile photo saved in real! Linked to your credentials.");
-            }
-          } catch(err) {
-            console.warn("Avatar upload error:", err);
-            showToast("Profile photo updated locally");
-          }
-        };
-        reader.readAsDataURL(file);
-      };
-
-      // DigiLocker Re-Sync Animation
-      const handleSyncDigiLocker = () => {
-        playChime('tap');
-        setIsFetchingDigiLocker(true);
-        setTimeout(() => {
-          setIsFetchingDigiLocker(false);
-          setIsDigiLockerVerified(true);
-          setHouse("Plot #14, Sector 2, Rajgangpur Road");
-          setVillage("Kalyanpur Gram Panchayat (Ward 3)");
-          setBlock("Lathikata Block");
-          setDistrict("Sundargarh");
-          setPincode("770037");
-          showToast("✓ Verified Address successfully fetched from DigiLocker!");
-        }, 1200);
-      };
-
-      // Save Profile Changes
-            // Email Confirmation Code Handlers (Free Email Linking)
-      const handleSendEmailOtp = async () => {
-        if (!email || !email.includes('@') || !email.includes('.')) {
-          showToast('Please enter a valid email address first', 'error');
-          return;
-        }
-        setIsSendingEmailOtp(true);
-        setEmailError('');
-        playChime('tap');
-        try {
-          const res = await fetch('/api/auth/citizen/send-email-otp', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ mobile, email })
-          });
-          const data = await res.json();
-          if (data.success) {
-            setEmailOtpSent(true);
-            setReceivedEmailOtp(data.otp);
-            playChime('success');
-            showToast(`Verification code generated for ${email}`);
-          } else {
-            setEmailError(data.error || 'Could not send verification code');
-          }
-        } catch(e) {
-          setEmailError('Server connection error');
-        } finally {
-          setIsSendingEmailOtp(false);
-        }
-      };
-
-      const handleVerifyEmailOtp = async () => {
-        if (!emailOtpCode.trim()) {
-          showToast('Please enter the 6-digit verification code', 'error');
-          return;
-        }
-        setIsVerifyingEmailOtp(true);
-        setEmailError('');
-        playChime('tap');
-        try {
-          const res = await fetch('/api/auth/citizen/verify-email-otp', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ mobile, email, otp: emailOtpCode.trim() })
-          });
-          const data = await res.json();
-          if (data.success) {
-            setIsEmailVerified(true);
-            setEmailOtpSent(false);
-            playChime('success');
-            showToast('✓ Email address verified & linked to your profile!');
-            try {
-              const raw = localStorage.getItem('lok_swar_citizen_session') || '{}';
-              const parsed = JSON.parse(raw);
-              parsed.email = email;
-              parsed.isEmailVerified = true;
-              localStorage.setItem('lok_swar_citizen_session', JSON.stringify(parsed));
-              localStorage.setItem('lok_swar_citizen_auth_session', JSON.stringify(parsed));
-            } catch(e) {}
-          } else {
-            setEmailError(data.error || 'Invalid verification code');
-            playChime('error');
-          }
-        } catch(e) {
-          setEmailError('Verification failed');
-        } finally {
-          setIsVerifyingEmailOtp(false);
-        }
-      };
-
-      const handleSaveProfile = async (e) => {
-        e.preventDefault();
-        playChime('tap');
-        setIsSaving(true);
-
-        const updated = {
-          name,
-          email,
-          mobile,
-          aadhaar,
-          aadhaarMasked: `XXXX-XXXX-${aadhaar.replace(/\s+/g, '').slice(-4) || '1940'}`,
-          dpUrl,
-          village,
-          isAadhaarVerified: true,
-          digilockerVerified: isDigiLockerVerified,
-          addressDetails: { house, village, block, district, state: stateName, pincode }
-        };
-
-        try {
-          localStorage.setItem('lok_swar_citizen_session', JSON.stringify(updated));
-          localStorage.setItem('lok_swar_citizen_auth_session', JSON.stringify(updated));
-          
-          // Persist to MongoDB backend
-          await fetch('/api/auth/citizen/profile', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updated)
-          });
-        } catch(err) {}
-
-        setIsSaving(false);
-        showToast("✓ Citizen Profile & DigiLocker e-KYC saved successfully in real!");
-      };
-
-      return (
-        <div className="min-h-screen w-full relative flex flex-col justify-between select-none font-sans overflow-x-hidden transition-colors duration-200 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 hero-dot-pattern">
-          
-          {/* TOAST POPUP */}
-          {toast && (
-            <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl border text-sm font-bold animate-in fade-in slide-in-from-bottom-5 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
-              <span className="text-emerald-500 font-bold">{toast.type === 'error' ? '⚠️' : '✓'}</span>
-              <span>{toast.message}</span>
-              <button onClick={() => setToast(null)} className="ml-2 text-slate-400 hover:text-slate-700 dark:hover:text-white text-xs cursor-pointer">✕</button>
-            </div>
-          )}
-
-          {/* 1. TOP NATIONAL TIRANGA STRIP */}
-          <div className="w-full h-1 bg-gradient-to-r from-amber-500 via-white to-emerald-500 z-50"></div>
-
-          {/* 2. GOVERNMENT UTILITY STRIP */}
-          <div className="w-full bg-slate-900 text-slate-200 border-b border-slate-800 text-[11px] px-4 md:px-8 py-1.5 flex items-center justify-between z-40 flex-wrap gap-2">
-            <div className="flex items-center gap-2 font-medium">
-              <span className="text-sm">🇮🇳</span>
-              <span className="text-white font-bold tracking-wide">{t.nationalTitle}</span>
-              <span className="text-slate-500 hidden sm:inline">|</span>
-              <span className="text-slate-300 hidden sm:inline">{t.odishaSub}</span>
-            </div>
-
-            <div className="flex items-center gap-3 font-medium flex-wrap">
-              <span className="text-slate-400 hidden md:inline">📞 National Helpline: <strong className="text-emerald-400 font-mono">1947</strong></span>
-              <span className="text-slate-600 hidden md:inline">•</span>
-              <span className="text-slate-400 hidden lg:inline">District Seva: <strong className="text-amber-400 font-mono">1800-345-6770</strong></span>
-              <span className="text-emerald-400 font-bold bg-emerald-950/80 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px]">
-                🛡️ MeitY Verified
-              </span>
-            </div>
-          </div>
-
-          {/* 3. PROFILE HEADER (CLEAN NAVIGATION WITHOUT LOGO / DRAWER BUTTON) */}
-          <header className="w-full px-4 md:px-8 py-3 flex items-center justify-between z-30 relative border-b shadow-xs transition-colors duration-200 bg-white/95 dark:bg-slate-900/95 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white backdrop-blur-md">
-            {/* Left: Menu Sidebar Toggle & Back Button */}
-            <div className="flex items-center gap-2.5">
-              <button
-                onClick={() => { playChime('tap'); setIsDrawerOpen(true); }}
-                className="min-w-[40px] min-h-[40px] flex items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 cursor-pointer active:scale-95 transition-all shadow-xs"
-                title="Open Navigation Menu"
-              >
-                <Icons.Menu className="w-5 h-5" />
-              </button>
-
-              <a
-                href="citizen.html"
-                onClick={() => playChime('tap')}
-                className="h-10 px-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all shadow-xs active:scale-95"
-              >
-                <span className="text-sm">←</span>
-                <span className="hidden sm:inline">{t.backToDashboard}</span>
-              </a>
-            </div>
-
-            {/* Right Controls: Voice Guide, Back to Dashboard, Language, Theme, Notif */}
-            <div className="flex items-center gap-2 flex-wrap">
-              {/* Natural Humanoid Speech Speaker */}
-              <button
-                onClick={handleVoiceGuidance}
-                className={`h-9 px-3 flex items-center gap-1.5 rounded-xl border text-xs font-bold cursor-pointer active:scale-95 transition-all shadow-xs ${
-                  isSpeaking
-                    ? 'bg-rose-600 text-white border-rose-500 animate-pulse'
-                    : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200'
-                }`}
-                title={isSpeaking ? "Mute Voice Guidance" : "Listen Spoken Guidance in Selected Language"}
-              >
-                <Icons.Speaker className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                <span className="hidden sm:inline">{isSpeaking ? t.voiceMute : t.voiceGuide}</span>
-              </button>
-
-
-
-              <a
-                href="admin.html"
-                className="px-3 py-1.5 rounded-xl font-bold text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 transition-all shadow-xs"
-              >
-                <span>{t.adminSuite}</span>
-              </a>
-
-              {/* Language Selector */}
-              <select
-                value={selectedLang}
-                onChange={(e) => handleLanguageChange(e.target.value)}
-                className="h-9 px-2.5 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 outline-none cursor-pointer shadow-xs"
-              >
-                <option value="en">🌐 English (EN)</option>
-                <option value="hi">🇮🇳 हिन्दी (HI)</option>
-                <option value="or">🏛️ ଓଡ଼ିଆ (OR)</option>
-                <option value="bho">🌾 भोजपुरी (BHO)</option>
-                <option value="bn">🌿 বাংলা (BN)</option>
-              </select>
-
-              {/* Theme Mode Toggle */}
-              <button
-                type="button"
-                onClick={toggleDarkMode}
-                className="min-w-[36px] min-h-[36px] px-2.5 flex items-center justify-center gap-1.5 rounded-xl border text-xs font-bold cursor-pointer active:scale-95 transition-all shadow-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-amber-300"
-                title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-              >
-                <span>{isDarkMode ? "☀️" : "🌙"}</span>
-                <span className="hidden sm:inline">{isDarkMode ? "Light" : "Dark"}</span>
-              </button>
-
-              {/* Notification Bell */}
-              <button
-                onClick={() => { playChime('tap'); setIsNotifOpen(true); }}
-                className="relative min-w-[36px] min-h-[36px] flex items-center justify-center rounded-xl border cursor-pointer active:scale-95 transition-all shadow-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200"
-                title={t.notifications}
-              >
-                <Icons.Bell className="w-4 h-4" />
-                {unreadNotifCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-600 text-white font-black text-[9px] flex items-center justify-center shadow-xs">
-                    {unreadNotifCount}
-                  </span>
-                )}
-              </button>
-            </div>
-          </header>
-
-          {/* 4. UNIVERSAL NAVIGATION DRAWER */}
-          {isDrawerOpen && (
-            <div className="fixed inset-0 z-50 flex">
-              <div
-                ref={overlayRef}
-                className="fixed inset-0 bg-black/60 backdrop-blur-xs"
-                onClick={closeDrawer}
-              />
-              <div
-                ref={drawerRef}
-                className="relative w-96 max-w-[88vw] h-full flex flex-col justify-between shadow-2xl z-10 border-r transition-colors duration-200 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
-              >
-                <div className="p-5 border-b flex items-center justify-between bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
-                  <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-2xl flex items-center justify-center text-xl font-bold bg-emerald-600 text-white shadow-sm border border-emerald-500/40">
-                      🏛️
-                    </div>
-                    <div>
-                      <h3 className="font-black text-base text-slate-900 dark:text-white">{t.drawerTitle}</h3>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-[10px] font-black px-2 py-0.5 rounded-full border bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700">
-                          {t.constituencyTag}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <button onClick={closeDrawer} className="p-2 text-lg font-bold text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer">✕</button>
-                </div>
-
-                <div className="flex-1 overflow-y-auto p-4 space-y-2.5">
-                  <div className="text-[11px] font-black uppercase tracking-wider px-1 mb-1 text-slate-500 dark:text-slate-400">
-                    {t.navSectionTitle}
-                  </div>
-
-                  {[
-                    { title: "होम व शिकायत प्रविष्टि", desc: "आवाज, टेक्स्ट व फोटो साक्ष्य दर्ज करें", icon: "🏛️", link: "citizen.html#/citizen" },
-                    { title: "प्रगति व जनमत समर्थन", desc: "लाइव सामुदायिक समर्थन व ट्रैकिंग", icon: "📊", link: "citizen.html#/admin_overview" },
-                    { title: "ग्राम जीआईएस हॉटस्पॉट मानचित्र", desc: "संसदीय क्षेत्र में भौगोलिक समस्याएं", icon: "🗺️", link: "citizen.html#/gis_map" },
-                    { title: "डेटा फ्यूजन व सैटेलाइट सत्यापन", desc: "सैटेलाइट, मौसम व आईओटी सत्यापन", icon: "🔍", link: "citizen.html#/data_fusion" },
-                    { title: "फील्ड ऑफिसर ऑडिट", desc: "भौतिक निरीक्षण व तकनीकी रिपोर्ट", icon: "📋", link: "citizen.html#/field_officer" },
-                    { title: "ड्रोन साइट निरीक्षण", desc: "एरियल साइट सर्वे व क्षति विश्लेषण", icon: "🛸", link: "citizen.html#/drone_simulator" },
-                    { title: "बजट व योजना आवंटन", desc: "₹10 करोड़ कंस्ट्रेंट ऑप्टिमाइज़र", icon: "💳", link: "citizen.html#/portfolio_optimizer" },
-                                        { title: "प्रशासनिक कमांड सूट", desc: "जिला अधिकारी लॉगइन व बजट स्वीकृति", icon: "🛡️", link: "admin.html" },
-                  ].map((tab, idx) => (
-                    <a
-                      key={idx}
-                      href={tab.link}
-                      onClick={() => { playChime('tap'); closeDrawer(); }}
-                      className={`w-full flex items-start gap-3.5 p-3.5 rounded-2xl border text-left cursor-pointer transition-all active:scale-95 shadow-xs ${
-                        tab.link === 'profile.html'
-                          ? 'bg-emerald-50/90 dark:bg-emerald-950/50 text-emerald-950 dark:text-emerald-100 border-emerald-300 dark:border-emerald-700/60 ring-2 ring-emerald-500/20'
-                          : 'bg-slate-50/70 dark:bg-slate-950/60 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100/80 dark:hover:bg-slate-900 text-slate-800 dark:text-slate-200'
-                      }`}
-                    >
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0 font-bold border ${
-                        tab.link === 'profile.html'
-                          ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
-                          : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-800'
-                      }`}>
-                        {tab.icon}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-sm truncate text-slate-900 dark:text-white">{tab.title}</h4>
-                        <p className="text-[11px] font-medium line-clamp-1 text-slate-500 dark:text-slate-400">{tab.desc}</p>
-                      </div>
-                    </a>
-                  ))}
-                </div>
-
-                <div className="p-4 border-t bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
-                  <button
-                    onClick={closeDrawer}
-                    className="w-full flex items-center justify-center p-3 rounded-2xl font-bold text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 cursor-pointer shadow-xs active:scale-95 transition-all border border-slate-300 dark:border-slate-700"
-                  >
-                    {t.closeMenu}
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-
-
-          {/* 5. NOTIFICATION FLYOUT */}
-          {isNotifOpen && (
-            <div className="fixed inset-0 z-50 flex justify-end">
-              <div
-                ref={notifOverlayRef}
-                className="fixed inset-0 bg-black/60 backdrop-blur-xs"
-                onClick={closeNotif}
-              />
-              <div
-                ref={notifDrawerRef}
-                className="relative w-96 max-w-[90vw] h-full flex flex-col justify-between shadow-2xl z-10 border-l transition-colors duration-200 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
-              >
-                <div className="p-5 border-b flex items-center justify-between bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-2xl">🔔</span>
-                    <div>
-                      <h3 className="font-black text-base text-slate-900 dark:text-white">{t.notifications}</h3>
-                      <div className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
-                        {unreadNotifCount} unread update(s)
-                      </div>
-                    </div>
-                  </div>
-                  <button onClick={closeNotif} className="p-1 text-lg font-bold text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer">✕</button>
-                </div>
-
-                <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                  <div className="p-3.5 rounded-2xl border bg-slate-50 dark:bg-slate-950/70 border-slate-200 dark:border-slate-800 space-y-1">
-                    <div className="flex justify-between text-xs font-bold text-slate-800 dark:text-slate-200">
-                      <span>✓ Grievance Sanctioned</span>
-                      <span className="text-[10px] text-slate-500">10m ago</span>
-                    </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-300">₹4.20 Cr SDRF fund released for Kalyanpur Culvert Reconstruction.</p>
-                  </div>
-                  <div className="p-3.5 rounded-2xl border bg-slate-50 dark:bg-slate-950/70 border-slate-200 dark:border-slate-800 space-y-1">
-                    <div className="flex justify-between text-xs font-bold text-slate-800 dark:text-slate-200">
-                      <span>🛸 Drone Survey Deployed</span>
-                      <span className="text-[10px] text-slate-500">1h ago</span>
-                    </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-300">Garuda-V4 UAV dispatched for aerial orthomosaic mapping in Ward 3.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* 6. MAIN PROFILE CONTENT & DYNAMIC TABS */}
-          <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-8 space-y-6 z-10 relative">
-            
-            {/* PROFILE HERO HEADER CARD */}
-            <div className="rounded-3xl p-6 md:p-8 border shadow-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 transition-colors">
-              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-                {/* Citizen DP with Dynamic Change Trigger */}
-                <div className="relative group flex-shrink-0">
-                  <img
-                    src={dpUrl || "assets/bg_1_smart_village.jpg"}
-                    alt={name}
-                    className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl object-cover border-4 border-slate-100 dark:border-slate-800 shadow-md group-hover:brightness-90 transition-all"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => { playChime('tap'); dpInputRef.current?.click(); }}
-                    className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-3xl opacity-0 group-hover:opacity-100 transition-all text-xs font-bold text-white cursor-pointer"
-                  >
-                    Change DP 📷
-                  </button>
-                  <input
-                    ref={dpInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleDpUpload}
-                    className="hidden"
-                  />
-                </div>
-
-                {/* Profile Identity Details */}
-                <div className="flex-1 text-center sm:text-left space-y-1.5">
-                  <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
-                    <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">{name || "Citizen User"}</h1>
-                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
-                      <span>✓</span>
-                      <span>{t.verifiedBadge}</span>
-                    </span>
-                  </div>
-                  
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                    AC-134 Sundargarh Constituency • 142 Gram Panchayats Public Ledger
-                  </p>
-
-                  <div className="flex items-center justify-center sm:justify-start gap-3 pt-2 text-xs font-mono flex-wrap text-slate-600 dark:text-slate-300">
-                    <span className="flex items-center gap-1">
-                      <span className="text-slate-400">📱 Mobile:</span>
-                      <strong className="text-slate-900 dark:text-white">+91-{mobile}</strong>
-                    </span>
-                    <span>•</span>
-                    <span className="flex items-center gap-1">
-                      <span className="text-slate-400">🇮🇳 Aadhaar:</span>
-                      <strong className="text-emerald-600 dark:text-emerald-400">XXXX-XXXX-{aadhaar.replace(/\s+/g, '').slice(-4) || '1940'}</strong>
-                    </span>
-                  </div>
-                </div>
-
-                {/* UIDAI Trust Score Card */}
-                <div className="text-center sm:text-right p-4 rounded-2xl border w-full sm:w-auto bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
-                  <div className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400">{t.trustScore}</div>
-                  <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400">99 / 100</div>
-                  <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">Priority Triage Tier 1</div>
-                </div>
-              </div>
-
-              {/* DYNAMIC TAB CONTROLS (SAME AESTHETIC AS MAIN PAGE SECTOR BUTTONS) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 pt-6 mt-6 border-t border-slate-100 dark:border-slate-800">
-                {[
-                  { id: 'identity', label: t.tabIdentity, sub: "DigiLocker Residential Details" },
-                  { id: 'grievances', label: t.tabGrievances, sub: `${myGrievances.length} Reports Tracked` },
-                  { id: 'local_scanner', label: "📍 50 KM Local Issues", sub: `${localProblems.length} Nearby Demands` },
-                  { id: 'security', label: t.tabSecurity, sub: "UIDAI Encryption & Identity Proof" }
-                ].map(tab => {
-                  const isSelected = activeTab === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      type="button"
-                      onClick={() => { playChime('tap'); setActiveTab(tab.id); }}
-                      className={`p-3 rounded-2xl border text-left cursor-pointer transition-all active:scale-95 shadow-xs ${
-                        isSelected
-                          ? 'bg-emerald-50/90 dark:bg-emerald-950/50 text-emerald-950 dark:text-emerald-100 border-emerald-300 dark:border-emerald-700/60 ring-2 ring-emerald-500/20'
-                          : 'bg-slate-50/70 dark:bg-slate-950/60 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-800 dark:text-slate-200'
-                      }`}
-                    >
-                      <div className="font-bold text-xs sm:text-sm">{tab.label}</div>
-                      <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">{tab.sub}</div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* TAB 1: E-KYC IDENTITY LEDGER FORM */}
-            {activeTab === 'identity' && (
-              <form onSubmit={handleSaveProfile} className="space-y-6 animate-in fade-in duration-200">
-                <div className="rounded-3xl p-6 md:p-8 border shadow-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 space-y-4">
-                  <div className="border-b pb-3 flex items-center justify-between border-slate-100 dark:border-slate-800">
-                    <h2 className="text-base font-bold flex items-center gap-2 text-slate-900 dark:text-white">
-                      <span>👤</span>
-                      <span>Personal Credentials & Contact Ledger</span>
-                    </h2>
-                    <span className="text-xs text-slate-500 dark:text-slate-400">Official UIDAI Profile</span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5">
-                        Full Legal Name
-                      </label>
-                      <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="w-full p-3 rounded-2xl border text-sm font-medium outline-none bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-emerald-500"
-                        required
-                      />
-                    </div>
-
-                    {/* EMAIL ADDRESS WITH CONFIRMATION & LINKING WIDGET */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400">
-                          Email Address (For Grievance Notifications)
-                        </label>
-                        {isEmailVerified ? (
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700">
-                            ✓ Verified & Linked
-                          </span>
-                        ) : (
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 border border-amber-300 dark:border-amber-700">
-                            Unverified
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="flex gap-2">
-                        <input
-                          type="email"
-                          value={email}
-                          onChange={(e) => { setEmail(e.target.value); setIsEmailVerified(false); }}
-                          placeholder="your.email@example.com"
-                          className="flex-1 p-3 rounded-2xl border text-sm font-medium outline-none bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-emerald-500"
-                        />
-                        {!isEmailVerified && (
-                          <button
-                            type="button"
-                            onClick={handleSendEmailOtp}
-                            disabled={isSendingEmailOtp}
-                            className="px-3.5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs cursor-pointer shadow-xs active:scale-95 transition-all whitespace-nowrap"
-                          >
-                            {isSendingEmailOtp ? 'Sending...' : 'Verify Email'}
-                          </button>
-                        )}
-                      </div>
-
-                      {/* EMAIL OTP CONFIRMATION BOX */}
-                      {emailOtpSent && !isEmailVerified && (
-                        <div className="p-3.5 rounded-2xl bg-emerald-50/90 dark:bg-slate-950 border border-emerald-400 space-y-2.5 shadow-sm animate-in fade-in">
-                          {receivedEmailOtp && (
-                            <div className="flex items-center justify-between text-xs">
-                              <span className="text-emerald-800 dark:text-emerald-300 font-bold">Confirmation Code:</span>
-                              <span className="font-mono font-black text-sm px-2.5 py-0.5 bg-emerald-600 text-white rounded-lg tracking-widest">{receivedEmailOtp}</span>
-                            </div>
-                          )}
-                          <div className="flex gap-2">
-                            <input
-                              type="text"
-                              maxLength="6"
-                              value={emailOtpCode}
-                              onChange={(e) => setEmailOtpCode(e.target.value.replace(/\D/g, ''))}
-                              placeholder="Enter 6-digit code"
-                              className="flex-1 p-2.5 rounded-xl border bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-xs font-mono font-bold text-center tracking-widest outline-none focus:border-emerald-500"
-                            />
-                            <button
-                              type="button"
-                              onClick={handleVerifyEmailOtp}
-                              disabled={isVerifyingEmailOtp}
-                              className="px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs cursor-pointer shadow-xs active:scale-95 transition-all"
-                            >
-                              {isVerifyingEmailOtp ? 'Verifying...' : 'Link Email'}
-                            </button>
-                          </div>
-                          {emailError && (
-                            <p className="text-[11px] font-bold text-rose-600 dark:text-rose-400">⚠️ {emailError}</p>
-                          )}
-                        </div>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5 flex items-center justify-between">
-                        <span>Registered Mobile</span>
-                        <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">✓ SMS OTP Verified</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={mobile}
-                        readOnly
-                        className="w-full p-3 rounded-2xl border font-mono text-sm outline-none bg-slate-100 dark:bg-slate-950/60 border-slate-200 dark:border-slate-800 text-slate-500 cursor-not-allowed"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5">
-                        Profile Avatar Picture
-                      </label>
-                      <div className="flex items-center gap-3">
-                        <button
-                          type="button"
-                          onClick={() => { playChime('tap'); dpInputRef.current?.click(); }}
-                          className="px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold cursor-pointer transition-all shadow-xs"
-                        >
-                          📁 Choose Image File
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => { playChime('tap'); setDpUrl('assets/bg_1_smart_village.jpg'); showToast("Reset to default avatar"); }}
-                          className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
-                        >
-                          Reset Default
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* DIGILOCKER ADDRESS SECTION */}
-                <div className="rounded-3xl p-6 md:p-8 border shadow-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 space-y-4">
-                  <div className="border-b pb-3 flex flex-wrap items-center justify-between gap-2 border-slate-100 dark:border-slate-800">
-                    <h2 className="text-base font-bold flex items-center gap-2 text-slate-900 dark:text-white">
-                      <span>📍</span>
-                      <span>Aadhaar DigiLocker e-KYC Address</span>
-                    </h2>
-                    
-                    <button
-                      type="button"
-                      onClick={handleSyncDigiLocker}
-                      disabled={isFetchingDigiLocker}
-                      className="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-bold cursor-pointer transition-all shadow-xs flex items-center gap-1.5"
-                    >
-                      <Icons.Refresh className={`w-3.5 h-3.5 ${isFetchingDigiLocker ? 'animate-spin' : ''}`} />
-                      <span>{isFetchingDigiLocker ? "Syncing with DigiLocker..." : t.syncDigiLocker}</span>
-                    </button>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="sm:col-span-2">
-                      <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5">
-                        Gram Panchayat & Ward Jurisdiction
-                      </label>
-                      <input
-                        type="text"
-                        value={village}
-                        onChange={(e) => setVillage(e.target.value)}
-                        className="w-full p-3 rounded-2xl border text-sm font-medium outline-none bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-emerald-500"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5">
-                        House / Plot No.
-                      </label>
-                      <input
-                        type="text"
-                        value={house}
-                        onChange={(e) => setHouse(e.target.value)}
-                        className="w-full p-3 rounded-2xl border text-sm font-medium outline-none bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-emerald-500"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5">
-                        Block / Tehsil
-                      </label>
-                      <input
-                        type="text"
-                        value={block}
-                        onChange={(e) => setBlock(e.target.value)}
-                        className="w-full p-3 rounded-2xl border text-sm font-medium outline-none bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-emerald-500"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5">
-                        District
-                      </label>
-                      <input
-                        type="text"
-                        value={district}
-                        readOnly
-                        className="w-full p-3 rounded-2xl border font-bold text-sm outline-none bg-slate-100 dark:bg-slate-950/60 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 cursor-not-allowed"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5">
-                        Postal PIN Code
-                      </label>
-                      <input
-                        type="text"
-                        value={pincode}
-                        onChange={(e) => setPincode(e.target.value)}
-                        className="w-full p-3 rounded-2xl border font-mono text-sm font-bold outline-none bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-emerald-500"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex justify-end">
-                  <button
-                    type="submit"
-                    disabled={isSaving}
-                    className="px-8 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs md:text-sm shadow-sm cursor-pointer transition-all active:scale-95 flex items-center gap-2"
-                  >
-                    <Icons.Check className="w-4 h-4" />
-                    <span>{isSaving ? "Saving..." : t.saveProfile}</span>
-                  </button>
-                </div>
-              </form>
-            )}
-
-            {/* TAB 2: MY LODGED GRIEVANCES */}
-            {activeTab === 'grievances' && (
-              <div className="rounded-3xl p-6 md:p-8 border shadow-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 space-y-4 animate-in fade-in duration-200">
-                <div className="border-b pb-3 flex items-center justify-between border-slate-100 dark:border-slate-800">
-                  <h2 className="text-base font-bold flex items-center gap-2 text-slate-900 dark:text-white">
-                    <span>📋</span>
-                    <span>My Lodged Grievance Reports & Upvote Ledger</span>
-                  </h2>
-                  <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-300">
-                    {myGrievances.length} Active Records
-                  </span>
-                </div>
-
-                <div className="space-y-3">
-                  {myGrievances.map((g) => (
-                    <div
-                      key={g.id}
-                      className="p-4 rounded-2xl border bg-slate-50/70 dark:bg-slate-950/70 border-slate-200 dark:border-slate-800 space-y-2"
-                    >
-                      <div className="flex items-center justify-between gap-2 flex-wrap">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-mono font-bold px-2 py-0.5 rounded border bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700">
-                            #{g.id}
-                          </span>
-                          <span className="text-xs font-bold px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
-                            {g.category || "General"}
-                          </span>
-                        </div>
-                        <span className="text-xs font-bold font-mono text-rose-600 dark:text-rose-400">
-                          {g.urgencyScore || 85}% Urgency
-                        </span>
-                      </div>
-                      <h4 className="font-bold text-sm text-slate-900 dark:text-white">{g.title}</h4>
-                      <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2">{g.adminEnglishTranslation || g.title}</p>
-                      <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-200/60 dark:border-slate-800">
-                        <span>📍 {g.village}</span>
-                        <span className="font-bold text-emerald-600 dark:text-emerald-400">👍 {g.votes || 1} Citizen Backers</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* TAB 3: SECURITY & VERIFICATION PROOF */}
-            {activeTab === 'security' && (
-              <div className="rounded-3xl p-6 md:p-8 border shadow-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 space-y-5 animate-in fade-in duration-200">
-                <div className="border-b pb-3 flex items-center justify-between border-slate-100 dark:border-slate-800">
-                  <h2 className="text-base font-bold flex items-center gap-2 text-slate-900 dark:text-white">
-                    <span>🛡️</span>
-                    <span>National Identity Sovereignty & DigiLocker Proof</span>
-                  </h2>
-                  <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">UIDAI 99% Sovereign Trust</span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="p-4 rounded-2xl border bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 space-y-1">
-                    <div className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400">Encryption Standard</div>
-                    <div className="text-sm font-bold text-slate-900 dark:text-white">AES-256 GCM Hardware</div>
-                    <p className="text-[11px] text-slate-500">Zero plain-text personal storage.</p>
-                  </div>
-
-                  <div className="p-4 rounded-2xl border bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 space-y-1">
-                    <div className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400">DigiLocker Status</div>
-                    <div className="text-sm font-bold text-emerald-600 dark:text-emerald-400">✓ Linked & Verified</div>
-                    <p className="text-[11px] text-slate-500">Direct MeitY Aadhaar gateway link.</p>
-                  </div>
-
-                  <div className="p-4 rounded-2xl border bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 space-y-1">
-                    <div className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400">Grievance Priority Tier</div>
-                    <div className="text-sm font-bold text-blue-600 dark:text-blue-400">Tier 1 Sovereign Pass</div>
-                    <p className="text-[11px] text-slate-500">Bypasses spam filters automatically.</p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </main>
-
-          {/* 7. FOOTER */}
-          <footer className="w-full max-w-5xl mx-auto px-4 py-6 border-t flex items-center justify-between text-xs flex-wrap gap-2 z-10 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
-            <div className="flex items-center gap-2 font-medium">
-              <Icons.ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              <span>{t.sovereigntyFooter}</span>
-            </div>
-            <div className="font-mono text-[11px]">
-              <span>AC-134 Sundargarh • Data Sovereignty Verified</span>
-            </div>
-          </footer>
-        </div>
-      );
-    }
-
-    ReactDOM.render(<ProfileApp />, document.getElementById('root'));
-  </script>');
+        const escaped = variant.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const pattern = isAscii ? new RegExp(`\\b${escaped}\\b`, 'gi') : new RegExp(escaped, 'g');
         result = result.replace(pattern, targetReplacement);
       });
@@ -2486,795 +1104,564 @@ function ProfileApp() {
     setIsSaving(false);
     showToast("✓ Citizen Profile & DigiLocker e-KYC saved successfully in real!");
   };
-  return /*#__PURE__*/_jsxs("div", {
-    className: "min-h-screen w-full relative flex flex-col justify-between select-none font-sans overflow-x-hidden transition-colors duration-200 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 hero-dot-pattern",
-    children: [toast && /*#__PURE__*/_jsxs("div", {
-      className: "fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl border text-sm font-bold animate-in fade-in slide-in-from-bottom-5 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white",
-      children: [/*#__PURE__*/_jsx("span", {
-        className: "text-emerald-500 font-bold",
-        children: toast.type === 'error' ? '⚠️' : '✓'
-      }), /*#__PURE__*/_jsx("span", {
-        children: toast.message
-      }), /*#__PURE__*/_jsx("button", {
-        onClick: () => setToast(null),
-        className: "ml-2 text-slate-400 hover:text-slate-700 dark:hover:text-white text-xs cursor-pointer",
-        children: "✕"
-      })]
-    }), /*#__PURE__*/_jsx("div", {
-      className: "w-full h-1 bg-gradient-to-r from-amber-500 via-white to-emerald-500 z-50"
-    }), /*#__PURE__*/_jsxs("div", {
-      className: "w-full bg-slate-900 text-slate-200 border-b border-slate-800 text-[11px] px-4 md:px-8 py-1.5 flex items-center justify-between z-40 flex-wrap gap-2",
-      children: [/*#__PURE__*/_jsxs("div", {
-        className: "flex items-center gap-2 font-medium",
-        children: [/*#__PURE__*/_jsx("span", {
-          className: "text-sm",
-          children: "🇮🇳"
-        }), /*#__PURE__*/_jsx("span", {
-          className: "text-white font-bold tracking-wide",
-          children: t.nationalTitle
-        }), /*#__PURE__*/_jsx("span", {
-          className: "text-slate-500 hidden sm:inline",
-          children: "|"
-        }), /*#__PURE__*/_jsx("span", {
-          className: "text-slate-300 hidden sm:inline",
-          children: t.odishaSub
-        })]
-      }), /*#__PURE__*/_jsxs("div", {
-        className: "flex items-center gap-3 font-medium flex-wrap",
-        children: [/*#__PURE__*/_jsxs("span", {
-          className: "text-slate-400 hidden md:inline",
-          children: ["📞 National Helpline: ", /*#__PURE__*/_jsx("strong", {
-            className: "text-emerald-400 font-mono",
-            children: "1947"
-          })]
-        }), /*#__PURE__*/_jsx("span", {
-          className: "text-slate-600 hidden md:inline",
-          children: "•"
-        }), /*#__PURE__*/_jsxs("span", {
-          className: "text-slate-400 hidden lg:inline",
-          children: ["District Seva: ", /*#__PURE__*/_jsx("strong", {
-            className: "text-amber-400 font-mono",
-            children: "1800-345-6770"
-          })]
-        }), /*#__PURE__*/_jsx("span", {
-          className: "text-emerald-400 font-bold bg-emerald-950/80 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px]",
-          children: "🛡️ MeitY Verified"
-        })]
-      })]
-    }), /*#__PURE__*/_jsxs("header", {
-      className: "w-full px-4 md:px-8 py-3 flex items-center justify-between z-30 relative border-b shadow-xs transition-colors duration-200 bg-white/95 dark:bg-slate-900/95 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white backdrop-blur-md",
-      children: [/*#__PURE__*/_jsxs("div", {
-        className: "flex items-center gap-2.5",
-        children: [/*#__PURE__*/_jsx("button", {
-          onClick: () => {
-            playChime('tap');
-            setIsDrawerOpen(true);
-          },
-          className: "min-w-[40px] min-h-[40px] flex items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 cursor-pointer active:scale-95 transition-all shadow-xs",
-          title: "Open Navigation Menu",
-          children: /*#__PURE__*/_jsx(Icons.Menu, {
-            className: "w-5 h-5"
-          })
-        }), /*#__PURE__*/_jsxs("a", {
-          href: "citizen.html",
-          onClick: () => playChime('tap'),
-          className: "h-10 px-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all shadow-xs active:scale-95",
-          children: [/*#__PURE__*/_jsx("span", {
-            className: "text-sm",
-            children: "←"
-          }), /*#__PURE__*/_jsx("span", {
-            className: "hidden sm:inline",
-            children: t.backToDashboard
-          })]
-        })]
-      }), /*#__PURE__*/_jsxs("div", {
-        className: "flex items-center gap-2 flex-wrap",
-        children: [/*#__PURE__*/_jsxs("button", {
-          onClick: handleVoiceGuidance,
-          className: `h-9 px-3 flex items-center gap-1.5 rounded-xl border text-xs font-bold cursor-pointer active:scale-95 transition-all shadow-xs ${isSpeaking ? 'bg-rose-600 text-white border-rose-500 animate-pulse' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200'}`,
-          title: isSpeaking ? "Mute Voice Guidance" : "Listen Spoken Guidance in Selected Language",
-          children: [/*#__PURE__*/_jsx(Icons.Speaker, {
-            className: "w-4 h-4 text-emerald-600 dark:text-emerald-400"
-          }), /*#__PURE__*/_jsx("span", {
-            className: "hidden sm:inline",
-            children: isSpeaking ? t.voiceMute : t.voiceGuide
-          })]
-        }), /*#__PURE__*/_jsx("a", {
-          href: "admin.html",
-          className: "px-3 py-1.5 rounded-xl font-bold text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 transition-all shadow-xs",
-          children: /*#__PURE__*/_jsx("span", {
-            children: t.adminSuite
-          })
-        }), /*#__PURE__*/_jsxs("select", {
-          value: selectedLang,
-          onChange: e => handleLanguageChange(e.target.value),
-          className: "h-9 px-2.5 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 outline-none cursor-pointer shadow-xs",
-          children: [/*#__PURE__*/_jsx("option", {
-            value: "en",
-            children: "🌐 English (EN)"
-          }), /*#__PURE__*/_jsx("option", {
-            value: "hi",
-            children: "🇮🇳 हिन्दी (HI)"
-          }), /*#__PURE__*/_jsx("option", {
-            value: "or",
-            children: "🏛️ ଓଡ଼ିଆ (OR)"
-          }), /*#__PURE__*/_jsx("option", {
-            value: "bho",
-            children: "🌾 भोजपुरी (BHO)"
-          }), /*#__PURE__*/_jsx("option", {
-            value: "bn",
-            children: "🌿 বাংলা (BN)"
-          })]
-        }), /*#__PURE__*/_jsxs("button", {
-          type: "button",
-          onClick: toggleDarkMode,
-          className: "min-w-[36px] min-h-[36px] px-2.5 flex items-center justify-center gap-1.5 rounded-xl border text-xs font-bold cursor-pointer active:scale-95 transition-all shadow-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-amber-300",
-          title: isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode",
-          children: [/*#__PURE__*/_jsx("span", {
-            children: isDarkMode ? "☀️" : "🌙"
-          }), /*#__PURE__*/_jsx("span", {
-            className: "hidden sm:inline",
-            children: isDarkMode ? "Light" : "Dark"
-          })]
-        }), /*#__PURE__*/_jsxs("button", {
-          onClick: () => {
-            playChime('tap');
-            setIsNotifOpen(true);
-          },
-          className: "relative min-w-[36px] min-h-[36px] flex items-center justify-center rounded-xl border cursor-pointer active:scale-95 transition-all shadow-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200",
-          title: t.notifications,
-          children: [/*#__PURE__*/_jsx(Icons.Bell, {
-            className: "w-4 h-4"
-          }), unreadNotifCount > 0 && /*#__PURE__*/_jsx("span", {
-            className: "absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-600 text-white font-black text-[9px] flex items-center justify-center shadow-xs",
-            children: unreadNotifCount
-          })]
-        })]
-      })]
-    }), isDrawerOpen && /*#__PURE__*/_jsxs("div", {
-      className: "fixed inset-0 z-50 flex",
-      children: [/*#__PURE__*/_jsx("div", {
-        ref: overlayRef,
-        className: "fixed inset-0 bg-black/60 backdrop-blur-xs",
-        onClick: closeDrawer
-      }), /*#__PURE__*/_jsxs("div", {
-        ref: drawerRef,
-        className: "relative w-96 max-w-[88vw] h-full flex flex-col justify-between shadow-2xl z-10 border-r transition-colors duration-200 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100",
-        children: [/*#__PURE__*/_jsxs("div", {
-          className: "p-5 border-b flex items-center justify-between bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800",
-          children: [/*#__PURE__*/_jsxs("div", {
-            className: "flex items-center gap-3",
-            children: [/*#__PURE__*/_jsx("div", {
-              className: "w-11 h-11 rounded-2xl flex items-center justify-center text-xl font-bold bg-emerald-600 text-white shadow-sm border border-emerald-500/40",
-              children: "🏛️"
-            }), /*#__PURE__*/_jsxs("div", {
-              children: [/*#__PURE__*/_jsx("h3", {
-                className: "font-black text-base text-slate-900 dark:text-white",
-                children: t.drawerTitle
-              }), /*#__PURE__*/_jsx("div", {
-                className: "flex items-center gap-2 mt-0.5",
-                children: /*#__PURE__*/_jsx("span", {
-                  className: "text-[10px] font-black px-2 py-0.5 rounded-full border bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700",
-                  children: t.constituencyTag
-                })
-              })]
-            })]
-          }), /*#__PURE__*/_jsx("button", {
-            onClick: closeDrawer,
-            className: "p-2 text-lg font-bold text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer",
-            children: "✕"
-          })]
-        }), /*#__PURE__*/_jsxs("div", {
-          className: "flex-1 overflow-y-auto p-4 space-y-2.5",
-          children: [/*#__PURE__*/_jsx("div", {
-            className: "text-[11px] font-black uppercase tracking-wider px-1 mb-1 text-slate-500 dark:text-slate-400",
-            children: t.navSectionTitle
-          }), [{
-            title: "होम व शिकायत प्रविष्टि",
-            desc: "आवाज, टेक्स्ट व फोटो साक्ष्य दर्ज करें",
-            icon: "🏛️",
-            link: "citizen.html#/citizen"
-          }, {
-            title: "प्रगति व जनमत समर्थन",
-            desc: "लाइव सामुदायिक समर्थन व ट्रैकिंग",
-            icon: "📊",
-            link: "citizen.html#/admin_overview"
-          }, {
-            title: "ग्राम जीआईएस हॉटस्पॉट मानचित्र",
-            desc: "संसदीय क्षेत्र में भौगोलिक समस्याएं",
-            icon: "🗺️",
-            link: "citizen.html#/gis_map"
-          }, {
-            title: "डेटा फ्यूजन व सैटेलाइट सत्यापन",
-            desc: "सैटेलाइट, मौसम व आईओटी सत्यापन",
-            icon: "🔍",
-            link: "citizen.html#/data_fusion"
-          }, {
-            title: "फील्ड ऑफिसर ऑडिट",
-            desc: "भौतिक निरीक्षण व तकनीकी रिपोर्ट",
-            icon: "📋",
-            link: "citizen.html#/field_officer"
-          }, {
-            title: "ड्रोन साइट निरीक्षण",
-            desc: "एरियल साइट सर्वे व क्षति विश्लेषण",
-            icon: "🛸",
-            link: "citizen.html#/drone_simulator"
-          }, {
-            title: "बजट व योजना आवंटन",
-            desc: "₹10 करोड़ कंस्ट्रेंट ऑप्टिमाइज़र",
-            icon: "💳",
-            link: "citizen.html#/portfolio_optimizer"
-          }, {
-            title: "प्रशासनिक कमांड सूट",
-            desc: "जिला अधिकारी लॉगइन व बजट स्वीकृति",
-            icon: "🛡️",
-            link: "admin.html"
-          }].map((tab, idx) => /*#__PURE__*/_jsxs("a", {
-            href: tab.link,
-            onClick: () => {
-              playChime('tap');
-              closeDrawer();
-            },
-            className: `w-full flex items-start gap-3.5 p-3.5 rounded-2xl border text-left cursor-pointer transition-all active:scale-95 shadow-xs ${tab.link === 'profile.html' ? 'bg-emerald-50/90 dark:bg-emerald-950/50 text-emerald-950 dark:text-emerald-100 border-emerald-300 dark:border-emerald-700/60 ring-2 ring-emerald-500/20' : 'bg-slate-50/70 dark:bg-slate-950/60 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100/80 dark:hover:bg-slate-900 text-slate-800 dark:text-slate-200'}`,
-            children: [/*#__PURE__*/_jsx("div", {
-              className: `w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0 font-bold border ${tab.link === 'profile.html' ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs' : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-800'}`,
-              children: tab.icon
-            }), /*#__PURE__*/_jsxs("div", {
-              className: "flex-1 min-w-0",
-              children: [/*#__PURE__*/_jsx("h4", {
-                className: "font-bold text-sm truncate text-slate-900 dark:text-white",
-                children: tab.title
-              }), /*#__PURE__*/_jsx("p", {
-                className: "text-[11px] font-medium line-clamp-1 text-slate-500 dark:text-slate-400",
-                children: tab.desc
-              })]
-            })]
-          }, idx))]
-        }), /*#__PURE__*/_jsx("div", {
-          className: "p-4 border-t bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800",
-          children: /*#__PURE__*/_jsx("button", {
-            onClick: closeDrawer,
-            className: "w-full flex items-center justify-center p-3 rounded-2xl font-bold text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 cursor-pointer shadow-xs active:scale-95 transition-all border border-slate-300 dark:border-slate-700",
-            children: t.closeMenu
-          })
-        })]
-      })]
-    }), isNotifOpen && /*#__PURE__*/_jsxs("div", {
-      className: "fixed inset-0 z-50 flex justify-end",
-      children: [/*#__PURE__*/_jsx("div", {
-        ref: notifOverlayRef,
-        className: "fixed inset-0 bg-black/60 backdrop-blur-xs",
-        onClick: closeNotif
-      }), /*#__PURE__*/_jsxs("div", {
-        ref: notifDrawerRef,
-        className: "relative w-96 max-w-[90vw] h-full flex flex-col justify-between shadow-2xl z-10 border-l transition-colors duration-200 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100",
-        children: [/*#__PURE__*/_jsxs("div", {
-          className: "p-5 border-b flex items-center justify-between bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800",
-          children: [/*#__PURE__*/_jsxs("div", {
-            className: "flex items-center gap-2.5",
-            children: [/*#__PURE__*/_jsx("span", {
-              className: "text-2xl",
-              children: "🔔"
-            }), /*#__PURE__*/_jsxs("div", {
-              children: [/*#__PURE__*/_jsx("h3", {
-                className: "font-black text-base text-slate-900 dark:text-white",
-                children: t.notifications
-              }), /*#__PURE__*/_jsxs("div", {
-                className: "text-[11px] font-bold text-emerald-600 dark:text-emerald-400",
-                children: [unreadNotifCount, " unread update(s)"]
-              })]
-            })]
-          }), /*#__PURE__*/_jsx("button", {
-            onClick: closeNotif,
-            className: "p-1 text-lg font-bold text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer",
-            children: "✕"
-          })]
-        }), /*#__PURE__*/_jsxs("div", {
-          className: "flex-1 overflow-y-auto p-4 space-y-3",
-          children: [/*#__PURE__*/_jsxs("div", {
-            className: "p-3.5 rounded-2xl border bg-slate-50 dark:bg-slate-950/70 border-slate-200 dark:border-slate-800 space-y-1",
-            children: [/*#__PURE__*/_jsxs("div", {
-              className: "flex justify-between text-xs font-bold text-slate-800 dark:text-slate-200",
-              children: [/*#__PURE__*/_jsx("span", {
-                children: "✓ Grievance Sanctioned"
-              }), /*#__PURE__*/_jsx("span", {
-                className: "text-[10px] text-slate-500",
-                children: "10m ago"
-              })]
-            }), /*#__PURE__*/_jsx("p", {
-              className: "text-xs text-slate-600 dark:text-slate-300",
-              children: "₹4.20 Cr SDRF fund released for Kalyanpur Culvert Reconstruction."
-            })]
-          }), /*#__PURE__*/_jsxs("div", {
-            className: "p-3.5 rounded-2xl border bg-slate-50 dark:bg-slate-950/70 border-slate-200 dark:border-slate-800 space-y-1",
-            children: [/*#__PURE__*/_jsxs("div", {
-              className: "flex justify-between text-xs font-bold text-slate-800 dark:text-slate-200",
-              children: [/*#__PURE__*/_jsx("span", {
-                children: "🛸 Drone Survey Deployed"
-              }), /*#__PURE__*/_jsx("span", {
-                className: "text-[10px] text-slate-500",
-                children: "1h ago"
-              })]
-            }), /*#__PURE__*/_jsx("p", {
-              className: "text-xs text-slate-600 dark:text-slate-300",
-              children: "Garuda-V4 UAV dispatched for aerial orthomosaic mapping in Ward 3."
-            })]
-          })]
-        })]
-      })]
-    }), /*#__PURE__*/_jsxs("main", {
-      className: "flex-1 max-w-5xl w-full mx-auto px-4 py-8 space-y-6 z-10 relative",
-      children: [/*#__PURE__*/_jsxs("div", {
-        className: "rounded-3xl p-6 md:p-8 border shadow-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 transition-colors",
-        children: [/*#__PURE__*/_jsxs("div", {
-          className: "flex flex-col sm:flex-row items-center sm:items-start gap-6",
-          children: [/*#__PURE__*/_jsxs("div", {
-            className: "relative group flex-shrink-0",
-            children: [/*#__PURE__*/_jsx("img", {
-              src: dpUrl || "assets/bg_1_smart_village.jpg",
-              alt: name,
-              className: "w-24 h-24 sm:w-28 sm:h-28 rounded-3xl object-cover border-4 border-slate-100 dark:border-slate-800 shadow-md group-hover:brightness-90 transition-all"
-            }), /*#__PURE__*/_jsx("button", {
-              type: "button",
-              onClick: () => {
-                playChime('tap');
-                dpInputRef.current?.click();
-              },
-              className: "absolute inset-0 flex items-center justify-center bg-black/60 rounded-3xl opacity-0 group-hover:opacity-100 transition-all text-xs font-bold text-white cursor-pointer",
-              children: "Change DP 📷"
-            }), /*#__PURE__*/_jsx("input", {
-              ref: dpInputRef,
-              type: "file",
-              accept: "image/*",
-              onChange: handleDpUpload,
-              className: "hidden"
-            })]
-          }), /*#__PURE__*/_jsxs("div", {
-            className: "flex-1 text-center sm:text-left space-y-1.5",
-            children: [/*#__PURE__*/_jsxs("div", {
-              className: "flex items-center justify-center sm:justify-start gap-2 flex-wrap",
-              children: [/*#__PURE__*/_jsx("h1", {
-                className: "text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white",
-                children: name || "Citizen User"
-              }), /*#__PURE__*/_jsxs("span", {
-                className: "text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1",
-                children: [/*#__PURE__*/_jsx("span", {
-                  children: "✓"
-                }), /*#__PURE__*/_jsx("span", {
-                  children: t.verifiedBadge
-                })]
-              })]
-            }), /*#__PURE__*/_jsx("p", {
-              className: "text-xs font-medium text-slate-500 dark:text-slate-400",
-              children: "AC-134 Sundargarh Constituency • 142 Gram Panchayats Public Ledger"
-            }), /*#__PURE__*/_jsxs("div", {
-              className: "flex items-center justify-center sm:justify-start gap-3 pt-2 text-xs font-mono flex-wrap text-slate-600 dark:text-slate-300",
-              children: [/*#__PURE__*/_jsxs("span", {
-                className: "flex items-center gap-1",
-                children: [/*#__PURE__*/_jsx("span", {
-                  className: "text-slate-400",
-                  children: "📱 Mobile:"
-                }), /*#__PURE__*/_jsxs("strong", {
-                  className: "text-slate-900 dark:text-white",
-                  children: ["+91-", mobile]
-                })]
-              }), /*#__PURE__*/_jsx("span", {
-                children: "•"
-              }), /*#__PURE__*/_jsxs("span", {
-                className: "flex items-center gap-1",
-                children: [/*#__PURE__*/_jsx("span", {
-                  className: "text-slate-400",
-                  children: "🇮🇳 Aadhaar:"
-                }), /*#__PURE__*/_jsxs("strong", {
-                  className: "text-emerald-600 dark:text-emerald-400",
-                  children: ["XXXX-XXXX-", aadhaar.replace(/\s+/g, '').slice(-4) || '1940']
-                })]
-              })]
-            })]
-          }), /*#__PURE__*/_jsxs("div", {
-            className: "text-center sm:text-right p-4 rounded-2xl border w-full sm:w-auto bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800",
-            children: [/*#__PURE__*/_jsx("div", {
-              className: "text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400",
-              children: t.trustScore
-            }), /*#__PURE__*/_jsx("div", {
-              className: "text-2xl font-black text-emerald-600 dark:text-emerald-400",
-              children: "99 / 100"
-            }), /*#__PURE__*/_jsx("div", {
-              className: "text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold",
-              children: "Priority Triage Tier 1"
-            })]
-          })]
-        }), /*#__PURE__*/_jsx("div", {
-          className: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 pt-6 mt-6 border-t border-slate-100 dark:border-slate-800",
-          children: [{
-            id: 'identity',
-            label: t.tabIdentity,
-            sub: "DigiLocker Residential Details"
-          }, {
-            id: 'grievances',
-            label: t.tabGrievances,
-            sub: `${myGrievances.length} Reports Tracked`
-          }, {
-            id: 'local_scanner',
-            label: "📍 50 KM Local Issues",
-            sub: `${localProblems.length} Nearby Demands`
-          }, {
-            id: 'security',
-            label: t.tabSecurity,
-            sub: "UIDAI Encryption & Identity Proof"
-          }].map(tab => {
-            const isSelected = activeTab === tab.id;
-            return /*#__PURE__*/_jsxs("button", {
-              type: "button",
-              onClick: () => {
-                playChime('tap');
-                setActiveTab(tab.id);
-              },
-              className: `p-3 rounded-2xl border text-left cursor-pointer transition-all active:scale-95 shadow-xs ${isSelected ? 'bg-emerald-50/90 dark:bg-emerald-950/50 text-emerald-950 dark:text-emerald-100 border-emerald-300 dark:border-emerald-700/60 ring-2 ring-emerald-500/20' : 'bg-slate-50/70 dark:bg-slate-950/60 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-800 dark:text-slate-200'}`,
-              children: [/*#__PURE__*/_jsx("div", {
-                className: "font-bold text-xs sm:text-sm",
-                children: tab.label
-              }), /*#__PURE__*/_jsx("div", {
-                className: "text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate",
-                children: tab.sub
-              })]
-            }, tab.id);
-          })
-        })]
-      }), activeTab === 'identity' && /*#__PURE__*/_jsxs("form", {
-        onSubmit: handleSaveProfile,
-        className: "space-y-6 animate-in fade-in duration-200",
-        children: [/*#__PURE__*/_jsxs("div", {
-          className: "rounded-3xl p-6 md:p-8 border shadow-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 space-y-4",
-          children: [/*#__PURE__*/_jsxs("div", {
-            className: "border-b pb-3 flex items-center justify-between border-slate-100 dark:border-slate-800",
-            children: [/*#__PURE__*/_jsxs("h2", {
-              className: "text-base font-bold flex items-center gap-2 text-slate-900 dark:text-white",
-              children: [/*#__PURE__*/_jsx("span", {
-                children: "👤"
-              }), /*#__PURE__*/_jsx("span", {
-                children: "Personal Credentials & Contact Ledger"
-              })]
-            }), /*#__PURE__*/_jsx("span", {
-              className: "text-xs text-slate-500 dark:text-slate-400",
-              children: "Official UIDAI Profile"
-            })]
-          }), /*#__PURE__*/_jsxs("div", {
-            className: "grid grid-cols-1 sm:grid-cols-2 gap-4",
-            children: [/*#__PURE__*/_jsxs("div", {
-              children: [/*#__PURE__*/_jsx("label", {
-                className: "block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5",
-                children: "Full Legal Name"
-              }), /*#__PURE__*/_jsx("input", {
-                type: "text",
-                value: name,
-                onChange: e => setName(e.target.value),
-                className: "w-full p-3 rounded-2xl border text-sm font-medium outline-none bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-emerald-500",
-                required: true
-              })]
-            }), /*#__PURE__*/_jsxs("div", {
-              className: "space-y-2",
-              children: [/*#__PURE__*/_jsxs("div", {
-                className: "flex items-center justify-between",
-                children: [/*#__PURE__*/_jsx("label", {
-                  className: "block text-xs font-bold uppercase text-slate-600 dark:text-slate-400",
-                  children: "Email Address (For Grievance Notifications)"
-                }), isEmailVerified ? /*#__PURE__*/_jsx("span", {
-                  className: "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700",
-                  children: "✓ Verified & Linked"
-                }) : /*#__PURE__*/_jsx("span", {
-                  className: "text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 border border-amber-300 dark:border-amber-700",
-                  children: "Unverified"
-                })]
-              }), /*#__PURE__*/_jsxs("div", {
-                className: "flex gap-2",
-                children: [/*#__PURE__*/_jsx("input", {
-                  type: "email",
-                  value: email,
-                  onChange: e => {
-                    setEmail(e.target.value);
-                    setIsEmailVerified(false);
-                  },
-                  placeholder: "your.email@example.com",
-                  className: "flex-1 p-3 rounded-2xl border text-sm font-medium outline-none bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-emerald-500"
-                }), !isEmailVerified && /*#__PURE__*/_jsx("button", {
-                  type: "button",
-                  onClick: handleSendEmailOtp,
-                  disabled: isSendingEmailOtp,
-                  className: "px-3.5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs cursor-pointer shadow-xs active:scale-95 transition-all whitespace-nowrap",
-                  children: isSendingEmailOtp ? 'Sending...' : 'Verify Email'
-                })]
-              }), emailOtpSent && !isEmailVerified && /*#__PURE__*/_jsxs("div", {
-                className: "p-3.5 rounded-2xl bg-emerald-50/90 dark:bg-slate-950 border border-emerald-400 space-y-2.5 shadow-sm animate-in fade-in",
-                children: [receivedEmailOtp && /*#__PURE__*/_jsxs("div", {
-                  className: "flex items-center justify-between text-xs",
-                  children: [/*#__PURE__*/_jsx("span", {
-                    className: "text-emerald-800 dark:text-emerald-300 font-bold",
-                    children: "Confirmation Code:"
-                  }), /*#__PURE__*/_jsx("span", {
-                    className: "font-mono font-black text-sm px-2.5 py-0.5 bg-emerald-600 text-white rounded-lg tracking-widest",
-                    children: receivedEmailOtp
-                  })]
-                }), /*#__PURE__*/_jsxs("div", {
-                  className: "flex gap-2",
-                  children: [/*#__PURE__*/_jsx("input", {
-                    type: "text",
-                    maxLength: "6",
-                    value: emailOtpCode,
-                    onChange: e => setEmailOtpCode(e.target.value.replace(/\D/g, '')),
-                    placeholder: "Enter 6-digit code",
-                    className: "flex-1 p-2.5 rounded-xl border bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-xs font-mono font-bold text-center tracking-widest outline-none focus:border-emerald-500"
-                  }), /*#__PURE__*/_jsx("button", {
-                    type: "button",
-                    onClick: handleVerifyEmailOtp,
-                    disabled: isVerifyingEmailOtp,
-                    className: "px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs cursor-pointer shadow-xs active:scale-95 transition-all",
-                    children: isVerifyingEmailOtp ? 'Verifying...' : 'Link Email'
-                  })]
-                }), emailError && /*#__PURE__*/_jsxs("p", {
-                  className: "text-[11px] font-bold text-rose-600 dark:text-rose-400",
-                  children: ["⚠️ ", emailError]
-                })]
-              })]
-            }), /*#__PURE__*/_jsxs("div", {
-              children: [/*#__PURE__*/_jsxs("label", {
-                className: "block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5 flex items-center justify-between",
-                children: [/*#__PURE__*/_jsx("span", {
-                  children: "Registered Mobile"
-                }), /*#__PURE__*/_jsx("span", {
-                  className: "text-[10px] text-emerald-600 dark:text-emerald-400 font-bold",
-                  children: "✓ SMS OTP Verified"
-                })]
-              }), /*#__PURE__*/_jsx("input", {
-                type: "text",
-                value: mobile,
-                readOnly: true,
-                className: "w-full p-3 rounded-2xl border font-mono text-sm outline-none bg-slate-100 dark:bg-slate-950/60 border-slate-200 dark:border-slate-800 text-slate-500 cursor-not-allowed"
-              })]
-            }), /*#__PURE__*/_jsxs("div", {
-              children: [/*#__PURE__*/_jsx("label", {
-                className: "block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5",
-                children: "Profile Avatar Picture"
-              }), /*#__PURE__*/_jsxs("div", {
-                className: "flex items-center gap-3",
-                children: [/*#__PURE__*/_jsx("button", {
-                  type: "button",
-                  onClick: () => {
-                    playChime('tap');
-                    dpInputRef.current?.click();
-                  },
-                  className: "px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold cursor-pointer transition-all shadow-xs",
-                  children: "📁 Choose Image File"
-                }), /*#__PURE__*/_jsx("button", {
-                  type: "button",
-                  onClick: () => {
-                    playChime('tap');
-                    setDpUrl('assets/bg_1_smart_village.jpg');
-                    showToast("Reset to default avatar");
-                  },
-                  className: "text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer",
-                  children: "Reset Default"
-                })]
-              })]
-            })]
-          })]
-        }), /*#__PURE__*/_jsxs("div", {
-          className: "rounded-3xl p-6 md:p-8 border shadow-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 space-y-4",
-          children: [/*#__PURE__*/_jsxs("div", {
-            className: "border-b pb-3 flex flex-wrap items-center justify-between gap-2 border-slate-100 dark:border-slate-800",
-            children: [/*#__PURE__*/_jsxs("h2", {
-              className: "text-base font-bold flex items-center gap-2 text-slate-900 dark:text-white",
-              children: [/*#__PURE__*/_jsx("span", {
-                children: "📍"
-              }), /*#__PURE__*/_jsx("span", {
-                children: "Aadhaar DigiLocker e-KYC Address"
-              })]
-            }), /*#__PURE__*/_jsxs("button", {
-              type: "button",
-              onClick: handleSyncDigiLocker,
-              disabled: isFetchingDigiLocker,
-              className: "px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-bold cursor-pointer transition-all shadow-xs flex items-center gap-1.5",
-              children: [/*#__PURE__*/_jsx(Icons.Refresh, {
-                className: `w-3.5 h-3.5 ${isFetchingDigiLocker ? 'animate-spin' : ''}`
-              }), /*#__PURE__*/_jsx("span", {
-                children: isFetchingDigiLocker ? "Syncing with DigiLocker..." : t.syncDigiLocker
-              })]
-            })]
-          }), /*#__PURE__*/_jsxs("div", {
-            className: "grid grid-cols-1 sm:grid-cols-2 gap-4",
-            children: [/*#__PURE__*/_jsxs("div", {
-              className: "sm:col-span-2",
-              children: [/*#__PURE__*/_jsx("label", {
-                className: "block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5",
-                children: "Gram Panchayat & Ward Jurisdiction"
-              }), /*#__PURE__*/_jsx("input", {
-                type: "text",
-                value: village,
-                onChange: e => setVillage(e.target.value),
-                className: "w-full p-3 rounded-2xl border text-sm font-medium outline-none bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-emerald-500",
-                required: true
-              })]
-            }), /*#__PURE__*/_jsxs("div", {
-              children: [/*#__PURE__*/_jsx("label", {
-                className: "block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5",
-                children: "House / Plot No."
-              }), /*#__PURE__*/_jsx("input", {
-                type: "text",
-                value: house,
-                onChange: e => setHouse(e.target.value),
-                className: "w-full p-3 rounded-2xl border text-sm font-medium outline-none bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-emerald-500"
-              })]
-            }), /*#__PURE__*/_jsxs("div", {
-              children: [/*#__PURE__*/_jsx("label", {
-                className: "block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5",
-                children: "Block / Tehsil"
-              }), /*#__PURE__*/_jsx("input", {
-                type: "text",
-                value: block,
-                onChange: e => setBlock(e.target.value),
-                className: "w-full p-3 rounded-2xl border text-sm font-medium outline-none bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-emerald-500"
-              })]
-            }), /*#__PURE__*/_jsxs("div", {
-              children: [/*#__PURE__*/_jsx("label", {
-                className: "block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5",
-                children: "District"
-              }), /*#__PURE__*/_jsx("input", {
-                type: "text",
-                value: district,
-                readOnly: true,
-                className: "w-full p-3 rounded-2xl border font-bold text-sm outline-none bg-slate-100 dark:bg-slate-950/60 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 cursor-not-allowed"
-              })]
-            }), /*#__PURE__*/_jsxs("div", {
-              children: [/*#__PURE__*/_jsx("label", {
-                className: "block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5",
-                children: "Postal PIN Code"
-              }), /*#__PURE__*/_jsx("input", {
-                type: "text",
-                value: pincode,
-                onChange: e => setPincode(e.target.value),
-                className: "w-full p-3 rounded-2xl border font-mono text-sm font-bold outline-none bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-emerald-500"
-              })]
-            })]
-          })]
-        }), /*#__PURE__*/_jsx("div", {
-          className: "flex justify-end",
-          children: /*#__PURE__*/_jsxs("button", {
-            type: "submit",
-            disabled: isSaving,
-            className: "px-8 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs md:text-sm shadow-sm cursor-pointer transition-all active:scale-95 flex items-center gap-2",
-            children: [/*#__PURE__*/_jsx(Icons.Check, {
-              className: "w-4 h-4"
-            }), /*#__PURE__*/_jsx("span", {
-              children: isSaving ? "Saving..." : t.saveProfile
-            })]
-          })
-        })]
-      }), activeTab === 'grievances' && /*#__PURE__*/_jsxs("div", {
-        className: "rounded-3xl p-6 md:p-8 border shadow-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 space-y-4 animate-in fade-in duration-200",
-        children: [/*#__PURE__*/_jsxs("div", {
-          className: "border-b pb-3 flex items-center justify-between border-slate-100 dark:border-slate-800",
-          children: [/*#__PURE__*/_jsxs("h2", {
-            className: "text-base font-bold flex items-center gap-2 text-slate-900 dark:text-white",
-            children: [/*#__PURE__*/_jsx("span", {
-              children: "📋"
-            }), /*#__PURE__*/_jsx("span", {
-              children: "My Lodged Grievance Reports & Upvote Ledger"
-            })]
-          }), /*#__PURE__*/_jsxs("span", {
-            className: "text-xs font-mono font-bold px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-300",
-            children: [myGrievances.length, " Active Records"]
-          })]
-        }), /*#__PURE__*/_jsx("div", {
-          className: "space-y-3",
-          children: myGrievances.map(g => /*#__PURE__*/_jsxs("div", {
-            className: "p-4 rounded-2xl border bg-slate-50/70 dark:bg-slate-950/70 border-slate-200 dark:border-slate-800 space-y-2",
-            children: [/*#__PURE__*/_jsxs("div", {
-              className: "flex items-center justify-between gap-2 flex-wrap",
-              children: [/*#__PURE__*/_jsxs("div", {
-                className: "flex items-center gap-2",
-                children: [/*#__PURE__*/_jsxs("span", {
-                  className: "text-xs font-mono font-bold px-2 py-0.5 rounded border bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700",
-                  children: ["#", g.id]
-                }), /*#__PURE__*/_jsx("span", {
-                  className: "text-xs font-bold px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800",
-                  children: g.category || "General"
-                })]
-              }), /*#__PURE__*/_jsxs("span", {
-                className: "text-xs font-bold font-mono text-rose-600 dark:text-rose-400",
-                children: [g.urgencyScore || 85, "% Urgency"]
-              })]
-            }), /*#__PURE__*/_jsx("h4", {
-              className: "font-bold text-sm text-slate-900 dark:text-white",
-              children: g.title
-            }), /*#__PURE__*/_jsx("p", {
-              className: "text-xs text-slate-600 dark:text-slate-300 line-clamp-2",
-              children: g.adminEnglishTranslation || g.title
-            }), /*#__PURE__*/_jsxs("div", {
-              className: "flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-200/60 dark:border-slate-800",
-              children: [/*#__PURE__*/_jsxs("span", {
-                children: ["📍 ", g.village]
-              }), /*#__PURE__*/_jsxs("span", {
-                className: "font-bold text-emerald-600 dark:text-emerald-400",
-                children: ["👍 ", g.votes || 1, " Citizen Backers"]
-              })]
-            })]
-          }, g.id))
-        })]
-      }), activeTab === 'security' && /*#__PURE__*/_jsxs("div", {
-        className: "rounded-3xl p-6 md:p-8 border shadow-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 space-y-5 animate-in fade-in duration-200",
-        children: [/*#__PURE__*/_jsxs("div", {
-          className: "border-b pb-3 flex items-center justify-between border-slate-100 dark:border-slate-800",
-          children: [/*#__PURE__*/_jsxs("h2", {
-            className: "text-base font-bold flex items-center gap-2 text-slate-900 dark:text-white",
-            children: [/*#__PURE__*/_jsx("span", {
-              children: "🛡️"
-            }), /*#__PURE__*/_jsx("span", {
-              children: "National Identity Sovereignty & DigiLocker Proof"
-            })]
-          }), /*#__PURE__*/_jsx("span", {
-            className: "text-xs font-bold text-emerald-600 dark:text-emerald-400",
-            children: "UIDAI 99% Sovereign Trust"
-          })]
-        }), /*#__PURE__*/_jsxs("div", {
-          className: "grid grid-cols-1 sm:grid-cols-3 gap-4",
-          children: [/*#__PURE__*/_jsxs("div", {
-            className: "p-4 rounded-2xl border bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 space-y-1",
-            children: [/*#__PURE__*/_jsx("div", {
-              className: "text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400",
-              children: "Encryption Standard"
-            }), /*#__PURE__*/_jsx("div", {
-              className: "text-sm font-bold text-slate-900 dark:text-white",
-              children: "AES-256 GCM Hardware"
-            }), /*#__PURE__*/_jsx("p", {
-              className: "text-[11px] text-slate-500",
-              children: "Zero plain-text personal storage."
-            })]
-          }), /*#__PURE__*/_jsxs("div", {
-            className: "p-4 rounded-2xl border bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 space-y-1",
-            children: [/*#__PURE__*/_jsx("div", {
-              className: "text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400",
-              children: "DigiLocker Status"
-            }), /*#__PURE__*/_jsx("div", {
-              className: "text-sm font-bold text-emerald-600 dark:text-emerald-400",
-              children: "✓ Linked & Verified"
-            }), /*#__PURE__*/_jsx("p", {
-              className: "text-[11px] text-slate-500",
-              children: "Direct MeitY Aadhaar gateway link."
-            })]
-          }), /*#__PURE__*/_jsxs("div", {
-            className: "p-4 rounded-2xl border bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 space-y-1",
-            children: [/*#__PURE__*/_jsx("div", {
-              className: "text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400",
-              children: "Grievance Priority Tier"
-            }), /*#__PURE__*/_jsx("div", {
-              className: "text-sm font-bold text-blue-600 dark:text-blue-400",
-              children: "Tier 1 Sovereign Pass"
-            }), /*#__PURE__*/_jsx("p", {
-              className: "text-[11px] text-slate-500",
-              children: "Bypasses spam filters automatically."
-            })]
-          })]
-        })]
-      })]
-    }), /*#__PURE__*/_jsxs("footer", {
-      className: "w-full max-w-5xl mx-auto px-4 py-6 border-t flex items-center justify-between text-xs flex-wrap gap-2 z-10 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400",
-      children: [/*#__PURE__*/_jsxs("div", {
-        className: "flex items-center gap-2 font-medium",
-        children: [/*#__PURE__*/_jsx(Icons.ShieldCheck, {
-          className: "w-4 h-4 text-emerald-600 dark:text-emerald-400"
-        }), /*#__PURE__*/_jsx("span", {
-          children: t.sovereigntyFooter
-        })]
-      }), /*#__PURE__*/_jsx("div", {
-        className: "font-mono text-[11px]",
-        children: /*#__PURE__*/_jsx("span", {
-          children: "AC-134 Sundargarh • Data Sovereignty Verified"
-        })
-      })]
-    })]
-  });
+  return /*#__PURE__*/React.createElement("div", {
+    className: "min-h-screen w-full relative flex flex-col justify-between select-none font-sans overflow-x-hidden transition-colors duration-200 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 hero-dot-pattern"
+  }, toast && /*#__PURE__*/React.createElement("div", {
+    className: "fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl border text-sm font-bold animate-in fade-in slide-in-from-bottom-5 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-emerald-500 font-bold"
+  }, toast.type === 'error' ? '⚠️' : '✓'), /*#__PURE__*/React.createElement("span", null, toast.message), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setToast(null),
+    className: "ml-2 text-slate-400 hover:text-slate-700 dark:hover:text-white text-xs cursor-pointer"
+  }, "✕")), /*#__PURE__*/React.createElement("div", {
+    className: "w-full h-1 bg-gradient-to-r from-amber-500 via-white to-emerald-500 z-50"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "w-full bg-slate-900 text-slate-200 border-b border-slate-800 text-[11px] px-4 md:px-8 py-1.5 flex items-center justify-between z-40 flex-wrap gap-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 font-medium"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-sm"
+  }, "🇮🇳"), /*#__PURE__*/React.createElement("span", {
+    className: "text-white font-bold tracking-wide"
+  }, t.nationalTitle), /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-500 hidden sm:inline"
+  }, "|"), /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-300 hidden sm:inline"
+  }, t.odishaSub)), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-3 font-medium flex-wrap"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-400 hidden md:inline"
+  }, "📞 National Helpline: ", /*#__PURE__*/React.createElement("strong", {
+    className: "text-emerald-400 font-mono"
+  }, "1947")), /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-600 hidden md:inline"
+  }, "•"), /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-400 hidden lg:inline"
+  }, "District Seva: ", /*#__PURE__*/React.createElement("strong", {
+    className: "text-amber-400 font-mono"
+  }, "1800-345-6770")), /*#__PURE__*/React.createElement("span", {
+    className: "text-emerald-400 font-bold bg-emerald-950/80 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px]"
+  }, "🛡️ MeitY Verified"))), /*#__PURE__*/React.createElement("header", {
+    className: "w-full px-4 md:px-8 py-3 flex items-center justify-between z-30 relative border-b shadow-xs transition-colors duration-200 bg-white/95 dark:bg-slate-900/95 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white backdrop-blur-md"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2.5"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      playChime('tap');
+      setIsDrawerOpen(true);
+    },
+    className: "min-w-[40px] min-h-[40px] flex items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 cursor-pointer active:scale-95 transition-all shadow-xs",
+    title: "Open Navigation Menu"
+  }, /*#__PURE__*/React.createElement(Icons.Menu, {
+    className: "w-5 h-5"
+  })), /*#__PURE__*/React.createElement("a", {
+    href: "citizen.html",
+    onClick: () => playChime('tap'),
+    className: "h-10 px-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all shadow-xs active:scale-95"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-sm"
+  }, "←"), /*#__PURE__*/React.createElement("span", {
+    className: "hidden sm:inline"
+  }, t.backToDashboard))), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 flex-wrap"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: handleVoiceGuidance,
+    className: `h-9 px-3 flex items-center gap-1.5 rounded-xl border text-xs font-bold cursor-pointer active:scale-95 transition-all shadow-xs ${isSpeaking ? 'bg-rose-600 text-white border-rose-500 animate-pulse' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200'}`,
+    title: isSpeaking ? "Mute Voice Guidance" : "Listen Spoken Guidance in Selected Language"
+  }, /*#__PURE__*/React.createElement(Icons.Speaker, {
+    className: "w-4 h-4 text-emerald-600 dark:text-emerald-400"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "hidden sm:inline"
+  }, isSpeaking ? t.voiceMute : t.voiceGuide)), /*#__PURE__*/React.createElement("a", {
+    href: "admin.html",
+    className: "px-3 py-1.5 rounded-xl font-bold text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 transition-all shadow-xs"
+  }, /*#__PURE__*/React.createElement("span", null, t.adminSuite)), /*#__PURE__*/React.createElement("select", {
+    value: selectedLang,
+    onChange: e => handleLanguageChange(e.target.value),
+    className: "h-9 px-2.5 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 outline-none cursor-pointer shadow-xs"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "en"
+  }, "🌐 English (EN)"), /*#__PURE__*/React.createElement("option", {
+    value: "hi"
+  }, "🇮🇳 हिन्दी (HI)"), /*#__PURE__*/React.createElement("option", {
+    value: "or"
+  }, "🏛️ ଓଡ଼ିଆ (OR)"), /*#__PURE__*/React.createElement("option", {
+    value: "bho"
+  }, "🌾 भोजपुरी (BHO)"), /*#__PURE__*/React.createElement("option", {
+    value: "bn"
+  }, "🌿 বাংলা (BN)")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: toggleDarkMode,
+    className: "min-w-[36px] min-h-[36px] px-2.5 flex items-center justify-center gap-1.5 rounded-xl border text-xs font-bold cursor-pointer active:scale-95 transition-all shadow-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-amber-300",
+    title: isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
+  }, /*#__PURE__*/React.createElement("span", null, isDarkMode ? "☀️" : "🌙"), /*#__PURE__*/React.createElement("span", {
+    className: "hidden sm:inline"
+  }, isDarkMode ? "Light" : "Dark")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      playChime('tap');
+      setIsNotifOpen(true);
+    },
+    className: "relative min-w-[36px] min-h-[36px] flex items-center justify-center rounded-xl border cursor-pointer active:scale-95 transition-all shadow-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200",
+    title: t.notifications
+  }, /*#__PURE__*/React.createElement(Icons.Bell, {
+    className: "w-4 h-4"
+  }), unreadNotifCount > 0 && /*#__PURE__*/React.createElement("span", {
+    className: "absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-600 text-white font-black text-[9px] flex items-center justify-center shadow-xs"
+  }, unreadNotifCount)))), isDrawerOpen && /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 z-50 flex"
+  }, /*#__PURE__*/React.createElement("div", {
+    ref: overlayRef,
+    className: "fixed inset-0 bg-black/60 backdrop-blur-xs",
+    onClick: closeDrawer
+  }), /*#__PURE__*/React.createElement("div", {
+    ref: drawerRef,
+    className: "relative w-96 max-w-[88vw] h-full flex flex-col justify-between shadow-2xl z-10 border-r transition-colors duration-200 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "p-5 border-b flex items-center justify-between bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-11 h-11 rounded-2xl flex items-center justify-center text-xl font-bold bg-emerald-600 text-white shadow-sm border border-emerald-500/40"
+  }, "🏛️"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "font-black text-base text-slate-900 dark:text-white"
+  }, t.drawerTitle), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 mt-0.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] font-black px-2 py-0.5 rounded-full border bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700"
+  }, t.constituencyTag)))), /*#__PURE__*/React.createElement("button", {
+    onClick: closeDrawer,
+    className: "p-2 text-lg font-bold text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
+  }, "✕")), /*#__PURE__*/React.createElement("div", {
+    className: "flex-1 overflow-y-auto p-4 space-y-2.5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-[11px] font-black uppercase tracking-wider px-1 mb-1 text-slate-500 dark:text-slate-400"
+  }, t.navSectionTitle), [{
+    title: "होम व शिकायत प्रविष्टि",
+    desc: "आवाज, टेक्स्ट व फोटो साक्ष्य दर्ज करें",
+    icon: "🏛️",
+    link: "citizen.html#/citizen"
+  }, {
+    title: "प्रगति व जनमत समर्थन",
+    desc: "लाइव सामुदायिक समर्थन व ट्रैकिंग",
+    icon: "📊",
+    link: "citizen.html#/admin_overview"
+  }, {
+    title: "ग्राम जीआईएस हॉटस्पॉट मानचित्र",
+    desc: "संसदीय क्षेत्र में भौगोलिक समस्याएं",
+    icon: "🗺️",
+    link: "citizen.html#/gis_map"
+  }, {
+    title: "डेटा फ्यूजन व सैटेलाइट सत्यापन",
+    desc: "सैटेलाइट, मौसम व आईओटी सत्यापन",
+    icon: "🔍",
+    link: "citizen.html#/data_fusion"
+  }, {
+    title: "फील्ड ऑफिसर ऑडिट",
+    desc: "भौतिक निरीक्षण व तकनीकी रिपोर्ट",
+    icon: "📋",
+    link: "citizen.html#/field_officer"
+  }, {
+    title: "ड्रोन साइट निरीक्षण",
+    desc: "एरियल साइट सर्वे व क्षति विश्लेषण",
+    icon: "🛸",
+    link: "citizen.html#/drone_simulator"
+  }, {
+    title: "बजट व योजना आवंटन",
+    desc: "₹10 करोड़ कंस्ट्रेंट ऑप्टिमाइज़र",
+    icon: "💳",
+    link: "citizen.html#/portfolio_optimizer"
+  }, {
+    title: "प्रशासनिक कमांड सूट",
+    desc: "जिला अधिकारी लॉगइन व बजट स्वीकृति",
+    icon: "🛡️",
+    link: "admin.html"
+  }].map((tab, idx) => /*#__PURE__*/React.createElement("a", {
+    key: idx,
+    href: tab.link,
+    onClick: () => {
+      playChime('tap');
+      closeDrawer();
+    },
+    className: `w-full flex items-start gap-3.5 p-3.5 rounded-2xl border text-left cursor-pointer transition-all active:scale-95 shadow-xs ${tab.link === 'profile.html' ? 'bg-emerald-50/90 dark:bg-emerald-950/50 text-emerald-950 dark:text-emerald-100 border-emerald-300 dark:border-emerald-700/60 ring-2 ring-emerald-500/20' : 'bg-slate-50/70 dark:bg-slate-950/60 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100/80 dark:hover:bg-slate-900 text-slate-800 dark:text-slate-200'}`
+  }, /*#__PURE__*/React.createElement("div", {
+    className: `w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0 font-bold border ${tab.link === 'profile.html' ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs' : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-800'}`
+  }, tab.icon), /*#__PURE__*/React.createElement("div", {
+    className: "flex-1 min-w-0"
+  }, /*#__PURE__*/React.createElement("h4", {
+    className: "font-bold text-sm truncate text-slate-900 dark:text-white"
+  }, tab.title), /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] font-medium line-clamp-1 text-slate-500 dark:text-slate-400"
+  }, tab.desc))))), /*#__PURE__*/React.createElement("div", {
+    className: "p-4 border-t bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: closeDrawer,
+    className: "w-full flex items-center justify-center p-3 rounded-2xl font-bold text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 cursor-pointer shadow-xs active:scale-95 transition-all border border-slate-300 dark:border-slate-700"
+  }, t.closeMenu)))), isNotifOpen && /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 z-50 flex justify-end"
+  }, /*#__PURE__*/React.createElement("div", {
+    ref: notifOverlayRef,
+    className: "fixed inset-0 bg-black/60 backdrop-blur-xs",
+    onClick: closeNotif
+  }), /*#__PURE__*/React.createElement("div", {
+    ref: notifDrawerRef,
+    className: "relative w-96 max-w-[90vw] h-full flex flex-col justify-between shadow-2xl z-10 border-l transition-colors duration-200 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "p-5 border-b flex items-center justify-between bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-2xl"
+  }, "🔔"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "font-black text-base text-slate-900 dark:text-white"
+  }, t.notifications), /*#__PURE__*/React.createElement("div", {
+    className: "text-[11px] font-bold text-emerald-600 dark:text-emerald-400"
+  }, unreadNotifCount, " unread update(s)"))), /*#__PURE__*/React.createElement("button", {
+    onClick: closeNotif,
+    className: "p-1 text-lg font-bold text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
+  }, "✕")), /*#__PURE__*/React.createElement("div", {
+    className: "flex-1 overflow-y-auto p-4 space-y-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "p-3.5 rounded-2xl border bg-slate-50 dark:bg-slate-950/70 border-slate-200 dark:border-slate-800 space-y-1"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between text-xs font-bold text-slate-800 dark:text-slate-200"
+  }, /*#__PURE__*/React.createElement("span", null, "✓ Grievance Sanctioned"), /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] text-slate-500"
+  }, "10m ago")), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-600 dark:text-slate-300"
+  }, "₹4.20 Cr SDRF fund released for Kalyanpur Culvert Reconstruction.")), /*#__PURE__*/React.createElement("div", {
+    className: "p-3.5 rounded-2xl border bg-slate-50 dark:bg-slate-950/70 border-slate-200 dark:border-slate-800 space-y-1"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between text-xs font-bold text-slate-800 dark:text-slate-200"
+  }, /*#__PURE__*/React.createElement("span", null, "🛸 Drone Survey Deployed"), /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] text-slate-500"
+  }, "1h ago")), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-600 dark:text-slate-300"
+  }, "Garuda-V4 UAV dispatched for aerial orthomosaic mapping in Ward 3."))))), /*#__PURE__*/React.createElement("main", {
+    className: "flex-1 max-w-5xl w-full mx-auto px-4 py-8 space-y-6 z-10 relative"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "rounded-3xl p-6 md:p-8 border shadow-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 transition-colors"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col sm:flex-row items-center sm:items-start gap-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "relative group flex-shrink-0"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: dpUrl || "assets/bg_1_smart_village.jpg",
+    alt: name,
+    className: "w-24 h-24 sm:w-28 sm:h-28 rounded-3xl object-cover border-4 border-slate-100 dark:border-slate-800 shadow-md group-hover:brightness-90 transition-all"
+  }), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => {
+      playChime('tap');
+      dpInputRef.current?.click();
+    },
+    className: "absolute inset-0 flex items-center justify-center bg-black/60 rounded-3xl opacity-0 group-hover:opacity-100 transition-all text-xs font-bold text-white cursor-pointer"
+  }, "Change DP 📷"), /*#__PURE__*/React.createElement("input", {
+    ref: dpInputRef,
+    type: "file",
+    accept: "image/*",
+    onChange: handleDpUpload,
+    className: "hidden"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "flex-1 text-center sm:text-left space-y-1.5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-center sm:justify-start gap-2 flex-wrap"
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white"
+  }, name || "Citizen User"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1"
+  }, /*#__PURE__*/React.createElement("span", null, "✓"), /*#__PURE__*/React.createElement("span", null, t.verifiedBadge))), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-medium text-slate-500 dark:text-slate-400"
+  }, "AC-134 Sundargarh Constituency • 142 Gram Panchayats Public Ledger"), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-center sm:justify-start gap-3 pt-2 text-xs font-mono flex-wrap text-slate-600 dark:text-slate-300"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "flex items-center gap-1"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-400"
+  }, "📱 Mobile:"), /*#__PURE__*/React.createElement("strong", {
+    className: "text-slate-900 dark:text-white"
+  }, "+91-", mobile)), /*#__PURE__*/React.createElement("span", null, "•"), /*#__PURE__*/React.createElement("span", {
+    className: "flex items-center gap-1"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-400"
+  }, "🇮🇳 Aadhaar:"), /*#__PURE__*/React.createElement("strong", {
+    className: "text-emerald-600 dark:text-emerald-400"
+  }, "XXXX-XXXX-", aadhaar.replace(/\s+/g, '').slice(-4) || '1940')))), /*#__PURE__*/React.createElement("div", {
+    className: "text-center sm:text-right p-4 rounded-2xl border w-full sm:w-auto bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400"
+  }, t.trustScore), /*#__PURE__*/React.createElement("div", {
+    className: "text-2xl font-black text-emerald-600 dark:text-emerald-400"
+  }, "99 / 100"), /*#__PURE__*/React.createElement("div", {
+    className: "text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold"
+  }, "Priority Triage Tier 1"))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 pt-6 mt-6 border-t border-slate-100 dark:border-slate-800"
+  }, [{
+    id: 'identity',
+    label: t.tabIdentity,
+    sub: "DigiLocker Residential Details"
+  }, {
+    id: 'grievances',
+    label: t.tabGrievances,
+    sub: `${myGrievances.length} Reports Tracked`
+  }, {
+    id: 'local_scanner',
+    label: "📍 50 KM Local Issues",
+    sub: `${localProblems.length} Nearby Demands`
+  }, {
+    id: 'security',
+    label: t.tabSecurity,
+    sub: "UIDAI Encryption & Identity Proof"
+  }].map(tab => {
+    const isSelected = activeTab === tab.id;
+    return /*#__PURE__*/React.createElement("button", {
+      key: tab.id,
+      type: "button",
+      onClick: () => {
+        playChime('tap');
+        setActiveTab(tab.id);
+      },
+      className: `p-3 rounded-2xl border text-left cursor-pointer transition-all active:scale-95 shadow-xs ${isSelected ? 'bg-emerald-50/90 dark:bg-emerald-950/50 text-emerald-950 dark:text-emerald-100 border-emerald-300 dark:border-emerald-700/60 ring-2 ring-emerald-500/20' : 'bg-slate-50/70 dark:bg-slate-950/60 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-800 dark:text-slate-200'}`
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "font-bold text-xs sm:text-sm"
+    }, tab.label), /*#__PURE__*/React.createElement("div", {
+      className: "text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate"
+    }, tab.sub));
+  }))), activeTab === 'identity' && /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleSaveProfile,
+    className: "space-y-6 animate-in fade-in duration-200"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "rounded-3xl p-6 md:p-8 border shadow-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 space-y-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "border-b pb-3 flex items-center justify-between border-slate-100 dark:border-slate-800"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-base font-bold flex items-center gap-2 text-slate-900 dark:text-white"
+  }, /*#__PURE__*/React.createElement("span", null, "👤"), /*#__PURE__*/React.createElement("span", null, "Personal Credentials & Contact Ledger")), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-slate-500 dark:text-slate-400"
+  }, "Official UIDAI Profile")), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 sm:grid-cols-2 gap-4"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5"
+  }, "Full Legal Name"), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: name,
+    onChange: e => setName(e.target.value),
+    className: "w-full p-3 rounded-2xl border text-sm font-medium outline-none bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-emerald-500",
+    required: true
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "block text-xs font-bold uppercase text-slate-600 dark:text-slate-400"
+  }, "Email Address (For Grievance Notifications)"), isEmailVerified ? /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700"
+  }, "✓ Verified & Linked") : /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 border border-amber-300 dark:border-amber-700"
+  }, "Unverified")), /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-2"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "email",
+    value: email,
+    onChange: e => {
+      setEmail(e.target.value);
+      setIsEmailVerified(false);
+    },
+    placeholder: "your.email@example.com",
+    className: "flex-1 p-3 rounded-2xl border text-sm font-medium outline-none bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-emerald-500"
+  }), !isEmailVerified && /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: handleSendEmailOtp,
+    disabled: isSendingEmailOtp,
+    className: "px-3.5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs cursor-pointer shadow-xs active:scale-95 transition-all whitespace-nowrap"
+  }, isSendingEmailOtp ? 'Sending...' : 'Verify Email')), emailOtpSent && !isEmailVerified && /*#__PURE__*/React.createElement("div", {
+    className: "p-3.5 rounded-2xl bg-emerald-50/90 dark:bg-slate-950 border border-emerald-400 space-y-2.5 shadow-sm animate-in fade-in"
+  }, receivedEmailOtp && /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between text-xs"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-emerald-800 dark:text-emerald-300 font-bold"
+  }, "Confirmation Code:"), /*#__PURE__*/React.createElement("span", {
+    className: "font-mono font-black text-sm px-2.5 py-0.5 bg-emerald-600 text-white rounded-lg tracking-widest"
+  }, receivedEmailOtp)), /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-2"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    maxLength: "6",
+    value: emailOtpCode,
+    onChange: e => setEmailOtpCode(e.target.value.replace(/\D/g, '')),
+    placeholder: "Enter 6-digit code",
+    className: "flex-1 p-2.5 rounded-xl border bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-xs font-mono font-bold text-center tracking-widest outline-none focus:border-emerald-500"
+  }), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: handleVerifyEmailOtp,
+    disabled: isVerifyingEmailOtp,
+    className: "px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs cursor-pointer shadow-xs active:scale-95 transition-all"
+  }, isVerifyingEmailOtp ? 'Verifying...' : 'Link Email')), emailError && /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] font-bold text-rose-600 dark:text-rose-400"
+  }, "⚠️ ", emailError))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5 flex items-center justify-between"
+  }, /*#__PURE__*/React.createElement("span", null, "Registered Mobile"), /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] text-emerald-600 dark:text-emerald-400 font-bold"
+  }, "✓ SMS OTP Verified")), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: mobile,
+    readOnly: true,
+    className: "w-full p-3 rounded-2xl border font-mono text-sm outline-none bg-slate-100 dark:bg-slate-950/60 border-slate-200 dark:border-slate-800 text-slate-500 cursor-not-allowed"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5"
+  }, "Profile Avatar Picture"), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-3"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => {
+      playChime('tap');
+      dpInputRef.current?.click();
+    },
+    className: "px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold cursor-pointer transition-all shadow-xs"
+  }, "📁 Choose Image File"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => {
+      playChime('tap');
+      setDpUrl('assets/bg_1_smart_village.jpg');
+      showToast("Reset to default avatar");
+    },
+    className: "text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
+  }, "Reset Default"))))), /*#__PURE__*/React.createElement("div", {
+    className: "rounded-3xl p-6 md:p-8 border shadow-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 space-y-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "border-b pb-3 flex flex-wrap items-center justify-between gap-2 border-slate-100 dark:border-slate-800"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-base font-bold flex items-center gap-2 text-slate-900 dark:text-white"
+  }, /*#__PURE__*/React.createElement("span", null, "📍"), /*#__PURE__*/React.createElement("span", null, "Aadhaar DigiLocker e-KYC Address")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: handleSyncDigiLocker,
+    disabled: isFetchingDigiLocker,
+    className: "px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-bold cursor-pointer transition-all shadow-xs flex items-center gap-1.5"
+  }, /*#__PURE__*/React.createElement(Icons.Refresh, {
+    className: `w-3.5 h-3.5 ${isFetchingDigiLocker ? 'animate-spin' : ''}`
+  }), /*#__PURE__*/React.createElement("span", null, isFetchingDigiLocker ? "Syncing with DigiLocker..." : t.syncDigiLocker))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 sm:grid-cols-2 gap-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "sm:col-span-2"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5"
+  }, "Gram Panchayat & Ward Jurisdiction"), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: village,
+    onChange: e => setVillage(e.target.value),
+    className: "w-full p-3 rounded-2xl border text-sm font-medium outline-none bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-emerald-500",
+    required: true
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5"
+  }, "House / Plot No."), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: house,
+    onChange: e => setHouse(e.target.value),
+    className: "w-full p-3 rounded-2xl border text-sm font-medium outline-none bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-emerald-500"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5"
+  }, "Block / Tehsil"), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: block,
+    onChange: e => setBlock(e.target.value),
+    className: "w-full p-3 rounded-2xl border text-sm font-medium outline-none bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-emerald-500"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5"
+  }, "District"), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: district,
+    readOnly: true,
+    className: "w-full p-3 rounded-2xl border font-bold text-sm outline-none bg-slate-100 dark:bg-slate-950/60 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 cursor-not-allowed"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1.5"
+  }, "Postal PIN Code"), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: pincode,
+    onChange: e => setPincode(e.target.value),
+    className: "w-full p-3 rounded-2xl border font-mono text-sm font-bold outline-none bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-emerald-500"
+  })))), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-end"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    disabled: isSaving,
+    className: "px-8 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs md:text-sm shadow-sm cursor-pointer transition-all active:scale-95 flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(Icons.Check, {
+    className: "w-4 h-4"
+  }), /*#__PURE__*/React.createElement("span", null, isSaving ? "Saving..." : t.saveProfile)))), activeTab === 'grievances' && /*#__PURE__*/React.createElement("div", {
+    className: "rounded-3xl p-6 md:p-8 border shadow-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 space-y-4 animate-in fade-in duration-200"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "border-b pb-3 flex items-center justify-between border-slate-100 dark:border-slate-800"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-base font-bold flex items-center gap-2 text-slate-900 dark:text-white"
+  }, /*#__PURE__*/React.createElement("span", null, "📋"), /*#__PURE__*/React.createElement("span", null, "My Lodged Grievance Reports & Upvote Ledger")), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-mono font-bold px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-300"
+  }, myGrievances.length, " Active Records")), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-3"
+  }, myGrievances.map(g => /*#__PURE__*/React.createElement("div", {
+    key: g.id,
+    className: "p-4 rounded-2xl border bg-slate-50/70 dark:bg-slate-950/70 border-slate-200 dark:border-slate-800 space-y-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between gap-2 flex-wrap"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-mono font-bold px-2 py-0.5 rounded border bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700"
+  }, "#", g.id), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-bold px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800"
+  }, g.category || "General")), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-bold font-mono text-rose-600 dark:text-rose-400"
+  }, g.urgencyScore || 85, "% Urgency")), /*#__PURE__*/React.createElement("h4", {
+    className: "font-bold text-sm text-slate-900 dark:text-white"
+  }, g.title), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-600 dark:text-slate-300 line-clamp-2"
+  }, g.adminEnglishTranslation || g.title), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-200/60 dark:border-slate-800"
+  }, /*#__PURE__*/React.createElement("span", null, "📍 ", g.village), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-emerald-600 dark:text-emerald-400"
+  }, "👍 ", g.votes || 1, " Citizen Backers")))))), activeTab === 'security' && /*#__PURE__*/React.createElement("div", {
+    className: "rounded-3xl p-6 md:p-8 border shadow-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 space-y-5 animate-in fade-in duration-200"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "border-b pb-3 flex items-center justify-between border-slate-100 dark:border-slate-800"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-base font-bold flex items-center gap-2 text-slate-900 dark:text-white"
+  }, /*#__PURE__*/React.createElement("span", null, "🛡️"), /*#__PURE__*/React.createElement("span", null, "National Identity Sovereignty & DigiLocker Proof")), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-bold text-emerald-600 dark:text-emerald-400"
+  }, "UIDAI 99% Sovereign Trust")), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 sm:grid-cols-3 gap-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "p-4 rounded-2xl border bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 space-y-1"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400"
+  }, "Encryption Standard"), /*#__PURE__*/React.createElement("div", {
+    className: "text-sm font-bold text-slate-900 dark:text-white"
+  }, "AES-256 GCM Hardware"), /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] text-slate-500"
+  }, "Zero plain-text personal storage.")), /*#__PURE__*/React.createElement("div", {
+    className: "p-4 rounded-2xl border bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 space-y-1"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400"
+  }, "DigiLocker Status"), /*#__PURE__*/React.createElement("div", {
+    className: "text-sm font-bold text-emerald-600 dark:text-emerald-400"
+  }, "✓ Linked & Verified"), /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] text-slate-500"
+  }, "Direct MeitY Aadhaar gateway link.")), /*#__PURE__*/React.createElement("div", {
+    className: "p-4 rounded-2xl border bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 space-y-1"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400"
+  }, "Grievance Priority Tier"), /*#__PURE__*/React.createElement("div", {
+    className: "text-sm font-bold text-blue-600 dark:text-blue-400"
+  }, "Tier 1 Sovereign Pass"), /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] text-slate-500"
+  }, "Bypasses spam filters automatically."))))), /*#__PURE__*/React.createElement("footer", {
+    className: "w-full max-w-5xl mx-auto px-4 py-6 border-t flex items-center justify-between text-xs flex-wrap gap-2 z-10 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 font-medium"
+  }, /*#__PURE__*/React.createElement(Icons.ShieldCheck, {
+    className: "w-4 h-4 text-emerald-600 dark:text-emerald-400"
+  }), /*#__PURE__*/React.createElement("span", null, t.sovereigntyFooter)), /*#__PURE__*/React.createElement("div", {
+    className: "font-mono text-[11px]"
+  }, /*#__PURE__*/React.createElement("span", null, "AC-134 Sundargarh • Data Sovereignty Verified"))));
 }
-ReactDOM.render(/*#__PURE__*/_jsx(ProfileApp, {}), document.getElementById('root'));
+ReactDOM.render(/*#__PURE__*/React.createElement(ProfileApp, null), document.getElementById('root'));
 </script>
 </body>
 </html>
