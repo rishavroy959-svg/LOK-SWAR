@@ -65,7 +65,7 @@ from services.sms_service import (
     is_phone_valid
 )
 
-PORT = 8000
+PORT = int(os.environ.get("PORT", 8000))
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 EMAIL_OTP_CACHE = {}
 UPLOADS_AUDIO_DIR = os.path.join(BASE_DIR, "uploads", "audio")
