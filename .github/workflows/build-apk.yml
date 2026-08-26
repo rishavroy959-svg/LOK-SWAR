@@ -1,0 +1,89 @@
+name: Build LokSwar Android APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Bundle Web Assets into Android App
+        run: |
+          mkdir -p android/app/src/main/assets
+          # Copy all web files, html, css, js, and assets
+          cp -r *.html android/app/src/main/assets/ || true
+          cp -r css android/app/src/main/assets/ || true
+          cp -r js android/app/src/main/assets/ || true
+          cp -r assets android/app/src/main/assets/ || true
+          cp -r db android/app/src/main/assets/ || true
+          cp -r *.jsx android/app/src/main/assets/ || true
+          cp -r *.js android/app/src/main/assets/ || true
+          cp -r *.ico android/app/src/main/assets/ || true
+          cp -r *.svg android/app/src/main/assets/ || true
+          echo "Web assets successfully bundled into Android assets directory."
+
+      - name: Generate Gradle Wrapper
+        working-directory: android
+        run: |
+          gradle wrapper --gradle-version 8.4 --distribution-type bin
+          chmod +x gradlew
+
+      - name: Build Debug APK
+        working-directory: android
+        run: |
+          ./gradlew assembleDebug --stacktrace
+
+      - name: Copy & Rename APK
+        run: |
+          mkdir -p build-output
+          cp android/app/build/outputs/apk/debug/app-debug.apk build-output/LokSwar-v1.0.apk
+
+      - name: Upload APK as Workflow Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: LokSwar-Android-APK
+          path: build-output/LokSwar-v1.0.apk
+          retention-days: 30
+
+      - name: Create or Update GitHub Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/heads/main')
+        with:
+          tag_name: v1.0.0-build
+          name: "LokSwar Android App v1.0.0"
+          body: |
+            ## 📱 LokSwar Android APK Build
+            
+            Download and install the **LokSwar Android Application** on your phone.
+            
+            ### 📥 Download:
+            - Click on **`LokSwar-v1.0.apk`** below to download directly to your Android device.
+            
+            ### ⚙️ Installation Instructions:
+            1. Download the APK file on your Android phone.
+            2. Tap on the downloaded file.
+            3. If prompted with *"Install unknown apps"*, toggle **Allow from this source**.
+            4. Tap **Install** and open **LokSwar**!
+          files: build-output/LokSwar-v1.0.apk
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
