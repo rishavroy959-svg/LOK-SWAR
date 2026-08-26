@@ -25,6 +25,11 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.4'
+
       - name: Bundle Web Assets into Android App
         run: |
           mkdir -p android/app/src/main/assets
@@ -40,21 +45,21 @@ jobs:
           cp -r *.svg android/app/src/main/assets/ || true
           echo "Web assets successfully bundled into Android assets directory."
 
-      - name: Generate Gradle Wrapper
+      - name: Build APK with Gradle
         working-directory: android
         run: |
-          gradle wrapper --gradle-version 8.4 --distribution-type bin
-          chmod +x gradlew
+          gradle assembleRelease --no-daemon --stacktrace
 
-      - name: Build Debug APK
-        working-directory: android
-        run: |
-          ./gradlew assembleDebug --stacktrace
-
-      - name: Copy & Rename APK
+      - name: Find and Prepare APK Output
         run: |
           mkdir -p build-output
-          cp android/app/build/outputs/apk/debug/app-debug.apk build-output/LokSwar-v1.0.apk
+          APK_PATH=$(find android/app/build/outputs/apk -name "*.apk" | head -n 1)
+          if [ -z "$APK_PATH" ]; then
+            echo "Error: No APK found after build!"
+            exit 1
+          fi
+          echo "Found APK at: $APK_PATH"
+          cp "$APK_PATH" build-output/LokSwar-v1.0.apk
 
       - name: Upload APK as Workflow Artifact
         uses: actions/upload-artifact@v4
@@ -67,15 +72,15 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/heads/main')
         with:
-          tag_name: v1.0.0-build
+          tag_name: v1.0.0-apk
           name: "LokSwar Android App v1.0.0"
           body: |
-            ## 📱 LokSwar Android APK Build
+            ## 📱 LokSwar Android APK
             
-            Download and install the **LokSwar Android Application** on your phone.
+            Download and install the **LokSwar Android Application** directly on your phone.
             
             ### 📥 Download:
-            - Click on **`LokSwar-v1.0.apk`** below to download directly to your Android device.
+            - Click on **`LokSwar-v1.0.apk`** below to download the APK.
             
             ### ⚙️ Installation Instructions:
             1. Download the APK file on your Android phone.
