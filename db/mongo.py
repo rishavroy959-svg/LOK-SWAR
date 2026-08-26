@@ -23,6 +23,20 @@ try:
 except ImportError:
     PYMONGO_AVAILABLE = False
 
+# Auto-load .env file from project root
+_env_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
+if os.path.exists(_env_path):
+    try:
+        with open(_env_path, "r", encoding="utf-8") as _f:
+            for _line in _f:
+                _line = _line.strip()
+                if _line and not _line.startswith("#") and "=" in _line:
+                    _k, _v = _line.split("=", 1)
+                    if _k.strip() not in os.environ:
+                        os.environ[_k.strip()] = _v.strip()
+    except Exception:
+        pass
+
 MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017/")
 DB_NAME = "lok_swar_db"
 
@@ -153,7 +167,8 @@ class LokSwarDB:
                 "createdAt": datetime.now().isoformat()
             }
         ]
-        self.db.citizens.insert_many(citizens)
+        for c in citizens:
+            self.db.citizens.update_one({"mobile": c["mobile"]}, {"$set": c}, upsert=True)
 
         # 3. Grievances Collection initialized clean for real citizen reports
         pass
@@ -165,7 +180,8 @@ class LokSwarDB:
             { "id": "SCH-3", "name": "5T School Infrastructure Fund", "totalPoolCr": 1.80, "sanctionedCr": 1.48, "utilizationPct": 82.2 },
             { "id": "SCH-4", "name": "Unallocated Emergency Pool", "totalPoolCr": 1.20, "sanctionedCr": 0.00, "utilizationPct": 0.0 }
         ]
-        self.db.budget_schemes.insert_many(schemes)
+        for s in schemes:
+            self.db.budget_schemes.update_one({"id": s["id"]}, {"$set": s}, upsert=True)
 
         # 5. Drone Missions
         missions = [
@@ -186,7 +202,8 @@ class LokSwarDB:
                 }
             }
         ]
-        self.db.drone_missions.insert_many(missions)
+        for m in missions:
+            self.db.drone_missions.update_one({"id": m["id"]}, {"$set": m}, upsert=True)
         print("[MongoDB] Seeding complete with default constituency data.")
 
     # -------------------------------------------------------------
