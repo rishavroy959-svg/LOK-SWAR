@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="hi" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lok Swar • Master Gateway & Authentication</title>
+  <meta name="description" content="Secure real-time access gateway for citizens and administrative officers of Sundargarh constituency AC-134.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Google Fonts: Outfit & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- React 18 & Babel Standalone -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- GSAP Animation Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <style>
+    html, body, #root {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100vh;
+      font-family: 'Outfit', sans-serif;
+    }
+    .hero-dot-pattern {
+      background-color: #f8fafc;
+      background-image: radial-gradient(rgba(100, 116, 139, 0.22) 1.2px, transparent 1.2px);
+      background-size: 24px 24px;
+    }
+    .dark .hero-dot-pattern, html.dark .hero-dot-pattern, body.dark .hero-dot-pattern {
+      background-color: #020617 !important;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1.2px, transparent 1.2px) !important;
+      background-size: 24px 24px !important;
+    }
+  </style>
+</head>
+<body class="antialiased bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-emerald-600 selection:text-white relative">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    // --- 1. WEB AUDIO TACTILE CHIMES SYNTHESIZER ---
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playChime(type = 'tap') {
+      try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        const now = ctx.currentTime;
+        if (type === 'tap') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(880, now);
+          osc.frequency.exponentialRampToValueAtTime(440, now + 0.06);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+          osc.start(now);
+          osc.stop(now + 0.06);
+        } else if (type === 'success') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.08);
+          osc.frequency.setValueAtTime(783.99, now + 0.16);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'error') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.exponentialRampToValueAtTime(110, now + 0.18);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+          osc.start(now);
+          osc.stop(now + 0.18);
+        }
+      } catch(e) {}
+    }
+
+    // --- 2. EMBEDDED SVG ICONS ---
+    const Icons = {
+      Menu: ({ className = "w-5 h-5" }) => (
+        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      ),
+      Speaker: ({ className = "w-5 h-5" }) => (
+        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+        </svg>
+      ),
+      ShieldCheck: ({ className = "w-4 h-4 text-emerald-500" }) => (
+        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+      ),
+      GovCrest: ({ className = "w-5 h-5 text-white" }) => (
+        <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2L2 7v3h20V7L12 2zm-8 9v8h2v-8H4zm6 0v8h2v-8h-2zm6 0v8h2v-8h-2zm-12 10v2h20v-2H2z" />
+        </svg>
+      ),
+    };
+
+    // --- 3. MULTILINGUAL TRANSLATION DICTIONARY ---
+    const i18n = {
+      hi: {
+        tagline: "ओडिशा राज्य नागरिक एवं प्रशासनिक खुफिया मंच",
+        constituency: "सुंदरगढ़ (AC-134)",
+        title: "लोक स्वर प्रवेश द्वार",
+        subtitle: "नागरिकों एवं प्रशासनिक अधिकारियों के लिए सुरक्षित रीयल-टाइम पोर्टल",
+        tabCitizen: "📱 नागरिक प्रमाणीकरण (Mobile OTP)",
+        tabAdmin: "🏛️ प्रशासनिक अधिकारी (Aadhaar / PIN)",
+        voiceGuide: "आवाज गाइड",
+        voiceMute: "मौन करें",
+        closeMenu: "✓ मेनू बंद करें",
+        drawerTitle: "नागरिक सेवाएं",
+        navSectionTitle: "मुख्य सेवाएं (7 पृष्ठ)",
+        mobileLabel: "पंजीकृत 10-अंकों का मोबाइल नंबर",
+        nameLabel: "नागरिक का नाम (वैकल्पिक)",
+        getOtpBtn: "ओटीपी प्राप्त करें (Get OTP) →",
+        verifyingBtn: "सत्यापित किया जा रहा है...",
+        verifyOtpBtn: "प्रवेश करें एवं शिकायत दर्ज करें →",
+        quickTestText: "त्वरित परीक्षण मोबाइल:",
+        enterOtpLabel: "प्राप्त 6-अंकों का ओटीपी दर्ज करें:",
+      },
+      or: {
+        tagline: "ଓଡ଼ିଶା ରାଜ୍ୟ ନାଗରିକ ଏବଂ ପ୍ରଶାସନିକ ପ୍ଲାଟଫର୍ମ",
+        constituency: "ସୁନ୍ଦରଗଡ଼ (AC-134)",
+        title: "ଲୋକ ସ୍ୱର ପ୍ରବେଶ ଦ୍ୱାର",
+        subtitle: "ନାଗରିକ ଓ ପ୍ରଶାସନିକ ସେବା ପାଇଁ ସୁରକ୍ଷିତ ରିଅଲ-ଟାଇମ୍ ଲଗଇନ୍",
+        tabCitizen: "📱 ନାଗରିକ ଲଗଇନ୍ (Mobile OTP)",
+        tabAdmin: "🏛️ ପ୍ରଶାସନିକ ଲଗଇନ୍ (Aadhaar / PIN)",
+        voiceGuide: "ଭଏସ୍ ଗାଇଡ୍",
+        voiceMute: "ବନ୍ଦ କରନ୍ତୁ",
+        closeMenu: "✓ ମେନୁ ବନ୍ଦ କରନ୍ତୁ",
+        drawerTitle: "ନାଗରିକ ସେବା",
+        navSectionTitle: "ମୁଖ୍ୟ ସେବା (୭ ପୃଷ୍ଠା)",
+        mobileLabel: "ପଞ୍ଜୀକୃତ ୧୦-ଅଙ୍କ ବିଶିଷ୍ଟ ମୋବାଇଲ୍ ନମ୍ବର",
+        nameLabel: "ନାଗରିକଙ୍କ ନାମ (ଇଚ୍ଛାଧୀନ)",
+        getOtpBtn: "ଓଟିପି ପାଆନ୍ତୁ (Get OTP) →",
+        verifyingBtn: "ଯାଞ୍ଚ ଚାଲିଛି...",
+        verifyOtpBtn: "ପ୍ରବେଶ କରନ୍ତୁ ଏବଂ ଅଭିଯୋଗ ଦାଖଲ କରନ୍ତୁ →",
+        quickTestText: "ପରୀକ୍ଷା ମୋବାଇଲ୍:",
+        enterOtpLabel: "୬-ଅଙ୍କ ବିଶିଷ୍ଟ ଓଟିପି ପ୍ରବେଶ କରନ୍ତୁ:",
+      },
+      bho: {
+        tagline: "ओडिशा राज्य नागरिक आ प्रशासनिक मंच",
+        constituency: "सुंदरगढ़ (AC-134)",
+        title: "लोक स्वर प्रवेश द्वार",
+        subtitle: "नागरिक आ प्रशासनिक अधिकारी खातिर सुरक्षित रीयल-टाइम पोर्टल",
+        tabCitizen: "📱 नागरिक प्रमाणीकरण (Mobile OTP)",
+        tabAdmin: "🏛️ प्रशासनिक अधिकारी (Aadhaar / PIN)",
+        voiceGuide: "आवाज गाइड",
+        voiceMute: "मौन करीं",
+        closeMenu: "✓ मेनू बंद करीं",
+        drawerTitle: "नागरिक सेवा",
+        navSectionTitle: "मुख्य सेवा (7 पृष्ठ)",
+        mobileLabel: "रजिस्टर्ड 10-अंक के मोबाइल नंबर",
+        nameLabel: "नागरिक के नाम (वैकल्पिक)",
+        getOtpBtn: "ओटीपी मँगाईं (Get OTP) →",
+        verifyingBtn: "जाँच हो रहल बा...",
+        verifyOtpBtn: "लॉगिन करीं आ शिकायत दर्ज़ करीं →",
+        quickTestText: "टेस्ट मोबाइल नंबर:",
+        enterOtpLabel: "6-अंक के ओटीपी दर्ज़ करीं:",
+      },
+      bn: {
+        tagline: "ওড়িশা রাজ্য নাগরিক ও প্রশাসনিক প্ল্যাটফর্ম",
+        constituency: "সুন্দরগড় (AC-134)",
+        title: "লোক স্বর প্রবেশদ্বার",
+        subtitle: "নাগরিক ও প্রশাসনিক সেবার জন্য সুরক্ষিত রিয়েল-টাইম লগইন",
+        tabCitizen: "📱 নাগরিক লগইন (Mobile OTP)",
+        tabAdmin: "🏛️ প্রশাসনিক লগইন (Aadhaar / PIN)",
+        voiceGuide: "ভয়েস গাইড",
+        voiceMute: "নিঃশব্দ করুন",
+        closeMenu: "✓ মেনু বন্ধ করুন",
+        drawerTitle: "নাগরিক পরিষেবা",
+        navSectionTitle: "প্রধান পরিষেবা (৭টি পৃষ্ঠা)",
+        mobileLabel: "নিবন্ধিত ১০-সংখ্যার মোবাইল নম্বর",
+        nameLabel: "নাগরিকের নাম (ঐচ্ছিক)",
+        getOtpBtn: "ওটিপি সংগ্রহ করুন (Get OTP) →",
+        verifyingBtn: "যাচাই করা হচ্ছে...",
+        verifyOtpBtn: "প্রবেশ করুন ও অভিযোগ জমা দিন →",
+        quickTestText: "টেস্ট মোবাইল নম্বর:",
+        enterOtpLabel: "প্রাপ্ত ৬-সংখ্যার ওটিপি লিখুন:",
+      },
+      en: {
+        tagline: "Odisha State Civic & Administrative Intelligence Platform",
+        constituency: "Sundargarh (AC-134)",
+        title: "Lok Swar Master Gateway",
+        subtitle: "Secure Real-Time Access for Citizens & Administrative Officers",
+        tabCitizen: "📱 Citizen Access (Mobile OTP)",
+        tabAdmin: "🏛️ District Command (Officer Login)",
+        voiceGuide: "Voice Guide",
+        voiceMute: "Mute",
+        closeMenu: "✓ Close Menu",
+        drawerTitle: "Citizen Services",
+        navSectionTitle: "Core Services (7 Pages)",
+        mobileLabel: "Registered 10-Digit Mobile Number",
+        nameLabel: "Citizen Name (Optional)",
+        getOtpBtn: "Get OTP (ओटीपी प्राप्त करें) →",
+        verifyingBtn: "Verifying Authentication...",
+        verifyOtpBtn: "Authenticate & Enter Dashboard →",
+        quickTestText: "Quick Test Mobile:",
+        enterOtpLabel: "Enter 6-Digit Verification OTP:",
+      }
+    };
+
+    function PortalLandingGateway() {
+      // 1. Language State (Synchronized & Defaulting to English)
+      const [selectedLang, setSelectedLang] = useState(() => {
+        try {
+          return localStorage.getItem('lok_swar_selected_language') || 'en';
+        } catch(e) {
+          return 'en';
+        }
+      });
+
+      const handleLanguageChange = (newLang) => {
+        setSelectedLang(newLang);
+        try {
+          localStorage.setItem('lok_swar_selected_language', newLang);
+          window.dispatchEvent(new Event('storage'));
+        } catch(e) {}
+        playChime('tap');
+      };
+
+      useEffect(() => {
+        const onStorage = (e) => {
+          const val = (e && e.key === 'lok_swar_selected_language' && e.newValue) 
+            || localStorage.getItem('lok_swar_selected_language') 
+            || 'en';
+          setSelectedLang(val);
+        };
+        window.addEventListener('storage', onStorage);
+        return () => window.removeEventListener('storage', onStorage);
+      }, []);
+
+      const t = i18n[selectedLang] || i18n.en || i18n.hi;
+
+      // 2. Theme State
+      const [isDarkMode, setIsDarkMode] = useState(() => {
+        try {
+          return localStorage.getItem('lok_swar_theme_mode') === 'dark';
+        } catch(e) {
+          return false;
+        }
+      });
+
+      useEffect(() => {
+        if (isDarkMode) {
+          document.documentElement.classList.add('dark');
+          document.body.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.body.classList.remove('dark');
+        }
+      }, [isDarkMode]);
+
+      const toggleDarkMode = () => {
+        playChime('tap');
+        setIsDarkMode(prev => {
+          const next = !prev;
+          try {
+            localStorage.setItem('lok_swar_theme_mode', next ? 'dark' : 'light');
+          } catch(e) {}
+          return next;
+        });
+      };
+
+      // 3. Navigation Drawer State
+      const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+      const drawerRef = useRef(null);
+      const overlayRef = useRef(null);
+
+      useEffect(() => {
+        if (isDrawerOpen && drawerRef.current && overlayRef.current) {
+          gsap.fromTo(overlayRef.current, { opacity: 0 }, { opacity: 1, duration: 0.25 });
+          gsap.fromTo(drawerRef.current, { x: -340 }, { x: 0, duration: 0.35, ease: "power3.out" });
+        }
+      }, [isDrawerOpen]);
+
+      const closeDrawer = () => {
+        if (drawerRef.current && overlayRef.current) {
+          gsap.to(drawerRef.current, { x: -340, duration: 0.25, ease: "power3.in" });
+          gsap.to(overlayRef.current, {
+            opacity: 0,
+            duration: 0.2,
+            onComplete: () => setIsDrawerOpen(false)
+          });
+        } else {
+          setIsDrawerOpen(false);
+        }
+      };
+
+      // 4. Voice Guidance Engine
+      const [isSpeaking, setIsSpeaking] = useState(false);
+      const activeAudioRef = useRef(null);
+
+      const handleVoiceGuidance = () => {
+        playChime('tap');
+        if (isSpeaking) {
+          if ('speechSynthesis' in window) {
+            try { window.speechSynthesis.cancel(); } catch (e) { }
+          }
+          if (activeAudioRef.current) {
+            try {
+              activeAudioRef.current.pause();
+              activeAudioRef.current.currentTime = 0;
+            } catch (e) { }
+            activeAudioRef.current = null;
+          }
+          setIsSpeaking(false);
+          return;
+        }
+
+        setIsSpeaking(true);
+        const speechText = `${t.title}. ${t.subtitle}.`;
+        
+        try {
+          const ttsAudio = new Audio(`/api/tts?text=${encodeURIComponent(speechText)}&lang=${encodeURIComponent(selectedLang)}`);
+          activeAudioRef.current = ttsAudio;
+          ttsAudio.onended = () => { setIsSpeaking(false); activeAudioRef.current = null; };
+          ttsAudio.onerror = () => { fallbackGatewaySpeech(speechText, selectedLang); };
+          
+          const playPromise = ttsAudio.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => fallbackGatewaySpeech(speechText, selectedLang));
+          }
+        } catch (e) {
+          fallbackGatewaySpeech(speechText, selectedLang);
+        }
+      };
+
+      const fallbackGatewaySpeech = (speechText, lang) => {
+        if (!('speechSynthesis' in window)) {
+          setTimeout(() => setIsSpeaking(false), 3000);
+          return;
+        }
+        try {
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.resume();
+          const ut = new SpeechSynthesisUtterance(speechText);
+          ut.rate = 0.90;
+          ut.lang = lang === 'hi' || lang === 'bho' ? 'hi-IN' : lang === 'or' ? 'or-IN' : lang === 'bn' ? 'bn-IN' : 'en-IN';
+          ut.onend = () => setIsSpeaking(false);
+          ut.onerror = () => setIsSpeaking(false);
+          window.speechSynthesis.speak(ut);
+        } catch (err) {
+          setIsSpeaking(false);
+        }
+      };
+
+      // 5. Authentication State
+      const [activeTab, setActiveTab] = useState('citizen'); // 'citizen' | 'admin'
+      const [citizenAuthMode, setCitizenAuthMode] = useState('login'); // 'login' | 'register' | 'reset'
+      const [loginIdentifier, setLoginIdentifier] = useState('9861234567');
+      const [loginPassword, setLoginPassword] = useState('admin123');
+      const [resetIdentifier, setResetIdentifier] = useState('9861234567');
+      const [newPassword, setNewPassword] = useState('');
+      const [regName, setRegName] = useState('');
+      const [regMobile, setRegMobile] = useState('');
+      const [regEmail, setRegEmail] = useState('');
+      const [regPassword, setRegPassword] = useState('');
+      const [regVillage, setRegVillage] = useState('');
+      const [isSubmittingAuth, setIsSubmittingAuth] = useState(false);
+
+      const [citizenMobile, setCitizenMobile] = useState('9861234567');
+      const [citizenName, setCitizenName] = useState('Rishav Yadav');
+      const [otpSent, setOtpSent] = useState(false);
+      const [citizenOtp, setCitizenOtp] = useState('');
+      const [receivedOtp, setReceivedOtp] = useState('');
+      const [otpTimer, setOtpTimer] = useState(60);
+      const [citizenError, setCitizenError] = useState('');
+      const [isSendingOtp, setIsSendingOtp] = useState(false);
+      const [isVerifyingCitizen, setIsVerifyingCitizen] = useState(false);
+
+      const [adminAadhaar, setAdminAadhaar] = useState('8899 1122 3344');
+      const [adminPassword, setAdminPassword] = useState('admin123');
+      const [adminError, setAdminError] = useState('');
+      const [isLoggingInAdmin, setIsLoggingInAdmin] = useState(false);
+
+      const [toastMsg, setToastMsg] = useState('');
+      const showToast = (msg) => {
+        setToastMsg(msg);
+        setTimeout(() => setToastMsg(''), 4500);
+      };
+
+      // Timer effect
+      useEffect(() => {
+        let interval = null;
+        if (otpSent && otpTimer > 0) {
+          interval = setInterval(() => setOtpTimer(prev => prev - 1), 1000);
+        }
+        return () => clearInterval(interval);
+      }, [otpSent, otpTimer]);
+
+      // Citizen Send OTP
+      // Handle Citizen Account Registration (Unique Mobile User ID + Password)
+      const handleCitizenRegister = async (e) => {
+        if (e) e.preventDefault();
+        setCitizenError('');
+        if (!regName.trim()) { setCitizenError('Please enter your full name'); return; }
+        if (regMobile.length !== 10) { setCitizenError('Please enter a valid 10-digit mobile number (User ID)'); return; }
+        if (regPassword.length < 4) { setCitizenError('Password must be at least 4 characters'); return; }
+
+        setIsSubmittingAuth(true);
+        playChime('tap');
+
+        try {
+          const res = await fetch('/api/auth/citizen/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: regName.trim(),
+              mobile: regMobile.trim(),
+              email: regEmail.trim(),
+              password: regPassword.trim(),
+              village: regVillage.trim() || 'Current Location'
+            })
+          });
+          const data = await res.json();
+          if (data.success && data.citizen) {
+            localStorage.setItem('lok_swar_citizen_session', JSON.stringify(data.citizen));
+            localStorage.setItem('lok_swar_citizen_auth_session', JSON.stringify(data.citizen));
+            playChime('success');
+            showToast(`✓ Account created! Welcome, ${data.citizen.name}`);
+            setTimeout(() => { window.location.href = 'citizen.html'; }, 600);
+          } else {
+            setCitizenError(data.error || 'Registration failed. Please try again.');
+          }
+        } catch (err) {
+          setCitizenError('Unable to connect to database server. Please check backend.');
+        } finally {
+          setIsSubmittingAuth(false);
+        }
+      };
+
+      // Handle Free Password Reset
+      const handleResetPassword = async (e) => {
+        if (e) e.preventDefault();
+        setCitizenError('');
+        if (resetIdentifier.length !== 10) { setCitizenError('Please enter your 10-digit registered mobile number'); return; }
+        if (newPassword.length < 4) { setCitizenError('New password must be at least 4 characters'); return; }
+
+        setIsSubmittingAuth(true);
+        playChime('tap');
+
+        try {
+          const res = await fetch('/api/auth/citizen/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              mobile: resetIdentifier.trim(),
+              newPassword: newPassword.trim()
+            })
+          });
+          const data = await res.json();
+          if (data.success) {
+            playChime('success');
+            showToast('✓ Password reset successfully! Please log in.');
+            setLoginIdentifier(resetIdentifier.trim());
+            setLoginPassword(newPassword.trim());
+            setCitizenAuthMode('login');
+          } else {
+            setCitizenError(data.error || 'Password reset failed');
+          }
+        } catch (err) {
+          setCitizenError('Unable to connect to database server');
+        } finally {
+          setIsSubmittingAuth(false);
+        }
+      };
+
+      // Handle Citizen Password Reset
+      const handleCitizenResetPassword = async (e) => {
+        if (e) e.preventDefault();
+        setCitizenError('');
+        if (!resetIdentifier.trim()) { setCitizenError('Please enter your mobile or email'); return; }
+        if (!newPassword.trim() || newPassword.length < 4) { setCitizenError('Password must be at least 4 characters'); return; }
+
+        setIsSubmittingAuth(true);
+        playChime('tap');
+
+        try {
+          const res = await fetch('/api/auth/citizen/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              identifier: resetIdentifier.trim(),
+              newPassword: newPassword.trim()
+            })
+          });
+          const data = await res.json();
+          if (data.success) {
+            playChime('success');
+            showToast('Password updated! You can now sign in.');
+            setLoginIdentifier(resetIdentifier.trim());
+            setLoginPassword(newPassword.trim());
+            setCitizenAuthMode('login');
+          } else {
+            setCitizenError(data.error || 'Password reset failed');
+          }
+        } catch (err) {
+          setCitizenError('Server connection error. Please try again.');
+        } finally {
+          setIsSubmittingAuth(false);
+        }
+      };
+
+      // Handle Real Citizen Password Login
+      const handleCitizenPasswordLogin = async (e) => {
+        if (e) e.preventDefault();
+        setCitizenError('');
+        if (!loginIdentifier.trim()) { setCitizenError('Please enter your mobile or email'); return; }
+        if (!loginPassword.trim()) { setCitizenError('Please enter your password'); return; }
+
+        setIsSubmittingAuth(true);
+        playChime('tap');
+
+        try {
+          const res = await fetch('/api/auth/citizen/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              identifier: loginIdentifier.trim(),
+              password: loginPassword.trim()
+            })
+          });
+          const data = await res.json();
+          if (data.success && data.citizen) {
+            localStorage.setItem('lok_swar_citizen_session', JSON.stringify(data.citizen));
+            localStorage.setItem('lok_swar_citizen_auth_session', JSON.stringify(data.citizen));
+            playChime('success');
+            showToast(`Welcome back, ${data.citizen.name}!`);
+            setTimeout(() => { window.location.href = 'citizen.html'; }, 600);
+          } else {
+            setCitizenError(data.error || 'Invalid credentials. Please verify your mobile/email and password.');
+          }
+        } catch (err) {
+          setCitizenError('Unable to connect to database server. Please check backend.');
+        } finally {
+          setIsSubmittingAuth(false);
+        }
+      };
+
+      const handleSendCitizenOtp = async (e) => {
+        if (e) e.preventDefault();
+        const cleanMobile = citizenMobile.replace(/\D/g, '');
+        if (cleanMobile.length !== 10) {
+          setCitizenError('Please enter a valid 10-digit mobile number');
+          playChime('error');
+          return;
+        }
+
+        setCitizenError('');
+        setIsSendingOtp(true);
+        playChime('tap');
+
+        try {
+          const res = await fetch('/api/auth/citizen/send-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mobile: cleanMobile })
+          });
+          const data = await res.json();
+          if (data.success) {
+            setOtpSent(true);
+            setReceivedOtp(data.otp);
+            setCitizenOtp(data.otp);
+            setOtpTimer(60);
+            playChime('success');
+            showToast(`OTP Dispatched: [${data.otp}]`);
+          } else {
+            setCitizenError(data.error || 'Failed to send OTP');
+            playChime('error');
+          }
+        } catch(err) {
+          // Fallback simulation
+          setOtpSent(true);
+          setReceivedOtp('739412');
+          setCitizenOtp('739412');
+          setOtpTimer(60);
+          playChime('success');
+          showToast('OTP Dispatched: [739412]');
+        } finally {
+          setIsSendingOtp(false);
+        }
+      };
+
+      // Citizen Verify OTP & Enter Dashboard
+      const handleVerifyCitizenLogin = async (e) => {
+        if (e) e.preventDefault();
+        if (!citizenOtp || citizenOtp.length < 4) {
+          setCitizenError('Please enter the 6-digit OTP received');
+          playChime('error');
+          return;
+        }
+
+        setIsVerifyingCitizen(true);
+        playChime('tap');
+
+        const cleanMobile = citizenMobile.replace(/\D/g, '');
+        try {
+          const res = await fetch('/api/auth/citizen/verify-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              mobile: cleanMobile,
+              otp: citizenOtp,
+              name: citizenName || 'Rishav Yadav'
+            })
+          });
+          const data = await res.json();
+          if (data.success) {
+            playChime('success');
+            localStorage.setItem('lok_swar_citizen_session', JSON.stringify(data.citizen));
+            localStorage.setItem('lok_swar_citizen_auth_session', JSON.stringify(data.citizen));
+            window.location.href = 'citizen.html';
+          } else {
+            setCitizenError(data.error || 'Invalid OTP code');
+            playChime('error');
+          }
+        } catch(err) {
+          // Fallback simulation
+          playChime('success');
+          const mockUser = {
+            name: citizenName || 'Rishav Yadav',
+            mobile: cleanMobile,
+            aadhaar: '5482 9104 1940',
+            aadhaarMasked: 'XXXX-XXXX-1940',
+            village: 'Kalyanpur Gram Panchayat (Ward 3)',
+            dpUrl: 'assets/bg_1_smart_village.jpg',
+            digilockerVerified: true
+          };
+          localStorage.setItem('lok_swar_citizen_session', JSON.stringify(mockUser));
+          localStorage.setItem('lok_swar_citizen_auth_session', JSON.stringify(mockUser));
+          window.location.href = 'citizen.html';
+        } finally {
+          setIsVerifyingCitizen(false);
+        }
+      };
+
+      // Admin Login
+      const handleAdminLogin = (e) => {
+        e.preventDefault();
+        playChime('tap');
+        setIsLoggingInAdmin(true);
+
+        setTimeout(() => {
+          setIsLoggingInAdmin(false);
+          playChime('success');
+          localStorage.setItem('lok_swar_admin_session', JSON.stringify({
+            name: "Dr. Subrat Tripathy, IAS",
+            designation: "District Magistrate & Collector",
+            badge: "Collector & District Magistrate",
+            aadhaar: adminAadhaar
+          }));
+          window.location.href = 'admin.html';
+        }, 600);
+      };
+
+      return (
+        <div className="min-h-screen w-full relative flex flex-col justify-between select-none font-sans overflow-x-hidden transition-colors duration-200 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 hero-dot-pattern">
+          
+          {/* TOAST POPUP */}
+          {toastMsg && (
+            <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-2xl bg-white dark:bg-slate-900 border-2 border-emerald-500 text-slate-900 dark:text-white font-bold text-xs md:text-sm shadow-2xl flex items-center gap-2.5 animate-in fade-in slide-in-from-top-4">
+              <span className="text-emerald-500">✓</span>
+              <span>{toastMsg}</span>
+            </div>
+          )}
+
+          {/* 1. TOP NATIONAL TIRANGA STRIP */}
+          <div className="w-full h-1 bg-gradient-to-r from-amber-500 via-white to-emerald-500 z-50"></div>
+
+          {/* 2. GOVERNMENT UTILITY STRIP */}
+          <div className="w-full bg-slate-900 text-slate-200 border-b border-slate-800 text-[11px] px-4 md:px-8 py-1.5 flex items-center justify-between z-40 flex-wrap gap-2">
+            <div className="flex items-center gap-2 font-medium">
+              <span className="text-sm">🇮🇳</span>
+              <span className="text-white font-bold tracking-wide">भारत सरकार • Government of India</span>
+              <span className="text-slate-500 hidden sm:inline">|</span>
+              <span className="text-slate-300 hidden sm:inline">Government of Odisha • Sundargarh District (AC-134)</span>
+            </div>
+
+            <div className="flex items-center gap-3 font-medium flex-wrap">
+              <span className="text-slate-400 hidden md:inline">UIDAI Helpline: <strong className="text-emerald-400 font-mono">1947</strong></span>
+              <span className="text-slate-600 hidden md:inline">•</span>
+              <span className="text-slate-400 hidden lg:inline">District Seva: <strong className="text-amber-400 font-mono">1800-345-6770</strong></span>
+              <span className="text-emerald-400 font-bold bg-emerald-950/80 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px]">
+                🛡️ MeitY Verified
+              </span>
+            </div>
+          </div>
+
+          {/* 3. TOP BRAND HEADER */}
+          <header className="w-full px-4 md:px-8 py-3 flex items-center justify-between z-30 relative border-b shadow-xs transition-colors duration-200 bg-white/95 dark:bg-slate-900/95 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white backdrop-blur-md">
+            {/* Left Brand & Menu Toggle */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => { playChime('tap'); setIsDrawerOpen(true); }}
+                className="min-w-[40px] min-h-[40px] flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 cursor-pointer active:scale-95 transition-all shadow-xs"
+                title="Open Navigation Menu"
+              >
+                <Icons.Menu className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-center gap-2 select-none">
+                <div className="w-9 h-9 rounded-full bg-[#4A154B] text-white flex items-center justify-center font-black text-xs shadow-md">
+                  LOK
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-black text-base tracking-tight text-[#16A34A] leading-tight flex items-center">
+                    SWAR<span className="text-[#4A154B]">.IN</span>
+                  </span>
+                  <span className="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                    {t.tagline}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Controls: Voice Guide, Language, Theme */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                onClick={handleVoiceGuidance}
+                className={`h-9 px-3 flex items-center gap-1.5 rounded-xl border text-xs font-bold cursor-pointer active:scale-95 transition-all shadow-xs ${
+                  isSpeaking
+                    ? 'bg-rose-600 text-white border-rose-500 animate-pulse'
+                    : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200'
+                }`}
+                title={isSpeaking ? "Mute Voice Guidance" : "Listen Spoken Guidance in Selected Language"}
+              >
+                <Icons.Speaker className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <span className="hidden sm:inline">{isSpeaking ? t.voiceMute : t.voiceGuide}</span>
+              </button>
+
+              {/* Language Selector */}
+              <select
+                value={selectedLang}
+                onChange={(e) => handleLanguageChange(e.target.value)}
+                className="h-9 px-2.5 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 outline-none cursor-pointer shadow-xs"
+              >
+                <option value="en">🌐 English (EN)</option>
+                <option value="hi">🇮🇳 हिन्दी (HI)</option>
+                <option value="or">🏛️ ଓଡ଼ିଆ (OR)</option>
+                <option value="bho">🌾 भोजपुरी (BHO)</option>
+                <option value="bn">🌿 বাংলা (BN)</option>
+              </select>
+
+              {/* Theme Mode Toggle */}
+              <button
+                type="button"
+                onClick={toggleDarkMode}
+                className="min-w-[36px] min-h-[36px] px-2.5 flex items-center justify-center gap-1.5 rounded-xl border text-xs font-bold cursor-pointer active:scale-95 transition-all shadow-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-amber-300"
+                title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              >
+                <span>{isDarkMode ? "☀️" : "🌙"}</span>
+                <span className="hidden sm:inline">{isDarkMode ? "Light" : "Dark"}</span>
+              </button>
+            </div>
+          </header>
+
+          {/* 4. UNIVERSAL NAVIGATION DRAWER */}
+          {isDrawerOpen && (
+            <div className="fixed inset-0 z-50 flex">
+              <div
+                ref={overlayRef}
+                className="fixed inset-0 bg-black/60 backdrop-blur-xs"
+                onClick={closeDrawer}
+              />
+              <div
+                ref={drawerRef}
+                className="relative w-96 max-w-[88vw] h-full flex flex-col justify-between shadow-2xl z-10 border-r transition-colors duration-200 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+              >
+                <div className="p-5 border-b flex items-center justify-between bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
+                  <div className="flex items-center gap-3">
+                    <div className="w-11 h-11 rounded-2xl flex items-center justify-center text-xl font-bold bg-emerald-600 text-white shadow-sm border border-emerald-500/40">
+                      🏛️
+                    </div>
+                    <div>
+                      <h3 className="font-black text-base text-slate-900 dark:text-white">{t.drawerTitle}</h3>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-[10px] font-black px-2 py-0.5 rounded-full border bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700">
+                          {t.constituency}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <button onClick={closeDrawer} className="p-2 text-lg font-bold text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer">✕</button>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-4 space-y-2.5">
+                  <div className="text-[11px] font-black uppercase tracking-wider px-1 mb-1 text-slate-500 dark:text-slate-400">
+                    {t.navSectionTitle}
+                  </div>
+
+                  {[
+                    { title: "होम व शिकायत प्रविष्टि", desc: "आवाज, टेक्स्ट व फोटो साक्ष्य दर्ज करें", icon: "🏛️", link: "citizen.html#/citizen" },
+                    { title: "प्रगति व जनमत समर्थन", desc: "लाइव सामुदायिक समर्थन व ट्रैकिंग", icon: "📊", link: "citizen.html#/admin_overview" },
+                    { title: "ग्राम जीआईएस हॉटस्पॉट मानचित्र", desc: "संसदीय क्षेत्र में भौगोलिक समस्याएं", icon: "🗺️", link: "citizen.html#/gis_map" },
+                    { title: "डेटा फ्यूजन व सैटेलाइट सत्यापन", desc: "सैटेलाइट, मौसम व आईओटी सत्यापन", icon: "🔍", link: "citizen.html#/data_fusion" },
+                    { title: "फील्ड ऑफिसर ऑडिट", desc: "भौतिक निरीक्षण व तकनीकी रिपोर्ट", icon: "📋", link: "citizen.html#/field_officer" },
+                    { title: "ड्रोन साइट निरीक्षण", desc: "एरियल साइट सर्वे व क्षति विश्लेषण", icon: "🛸", link: "citizen.html#/drone_simulator" },
+                    { title: "बजट व योजना आवंटन", desc: "₹10 करोड़ कंस्ट्रेंट ऑप्टिमाइज़र", icon: "💳", link: "citizen.html#/portfolio_optimizer" },
+                                        { title: "प्रशासनिक कमांड सूट", desc: "जिला अधिकारी लॉगइन व बजट स्वीकृति", icon: "🛡️", link: "admin.html" },
+                  ].map((tab, idx) => (
+                    <a
+                      key={idx}
+                      href={tab.link}
+                      onClick={() => { playChime('tap'); closeDrawer(); }}
+                      className="w-full flex items-start gap-3.5 p-3.5 rounded-2xl border text-left cursor-pointer transition-all active:scale-95 shadow-xs bg-slate-50/70 dark:bg-slate-950/60 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100/80 dark:hover:bg-slate-900 text-slate-800 dark:text-slate-200"
+                    >
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0 font-bold border bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-800">
+                        {tab.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-sm truncate text-slate-900 dark:text-white">{tab.title}</h4>
+                        <p className="text-[11px] font-medium line-clamp-1 text-slate-500 dark:text-slate-400">{tab.desc}</p>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+
+                <div className="p-4 border-t bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
+                  <button
+                    onClick={closeDrawer}
+                    className="w-full flex items-center justify-center p-3 rounded-2xl font-bold text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 cursor-pointer shadow-xs active:scale-95 transition-all border border-slate-300 dark:border-slate-700"
+                  >
+                    {t.closeMenu}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 5. MAIN GATEWAY HERO & AUTHENTICATION CARD */}
+          <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-8 z-10 relative flex flex-col justify-center items-center text-center space-y-6">
+            
+            {/* Official Gateway Header */}
+            <div className="max-w-xl space-y-1.5">
+              <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
+                {t.title}
+              </h1>
+              <p className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400">
+                {t.subtitle}
+              </p>
+            </div>
+
+            {/* UNIFIED DUAL PORTAL CARD */}
+            <div className="w-full max-w-xl rounded-3xl p-6 sm:p-8 border shadow-xl bg-white dark:bg-slate-900/95 border-slate-200 dark:border-slate-800 backdrop-blur-2xl text-left space-y-6 transition-all">
+              
+              {/* PORTAL SWITCHER TABS */}
+              <div className="grid grid-cols-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => { playChime('tap'); setActiveTab('citizen'); setCitizenError(''); }}
+                  className={`py-3 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                    activeTab === 'citizen'
+                      ? 'bg-emerald-50/90 dark:bg-emerald-950/50 text-emerald-950 dark:text-emerald-100 border border-emerald-300 dark:border-emerald-700/60 ring-2 ring-emerald-500/20 shadow-xs'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <span>{t.tabCitizen}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => { playChime('tap'); setActiveTab('admin'); setAdminError(''); }}
+                  className={`py-3 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                    activeTab === 'admin'
+                      ? 'bg-emerald-50/90 dark:bg-emerald-950/50 text-emerald-950 dark:text-emerald-100 border border-emerald-300 dark:border-emerald-700/60 ring-2 ring-emerald-500/20 shadow-xs'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <span>{t.tabAdmin}</span>
+                </button>
+              </div>
+
+              {/* TAB 1: CITIZEN AUTHENTICATION (REGISTER / LOGIN WITH DATABASE PERSISTENCE) */}
+              {activeTab === 'citizen' && (
+                <div className="space-y-4 animate-in fade-in-50">
+                  {/* Mode Switcher: Login vs Create Account */}
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                    <div>
+                      <h2 className="text-sm sm:text-base font-black text-slate-900 dark:text-white">
+                        {citizenAuthMode === 'register' ? 'नया नागरिक खाता बनाएं (Create Real Account)' : 'नागरिक लॉगिन (Citizen Login)'}
+                      </h2>
+                      <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">
+                        {citizenAuthMode === 'register' ? 'Register with Mobile & Email to receive grievance updates' : 'Sign in with your registered mobile/email and password'}
+                      </p>
+                    </div>
+                    <div className="flex rounded-xl bg-slate-100 dark:bg-slate-950 p-1 border border-slate-200 dark:border-slate-800 text-[11px] font-bold">
+                      <button
+                        type="button"
+                        onClick={() => { playChime('tap'); setCitizenAuthMode('login'); setCitizenError(''); }}
+                        className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${citizenAuthMode === 'login' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600 dark:text-slate-400'}`}
+                      >
+                        Login
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { playChime('tap'); setCitizenAuthMode('register'); setCitizenError(''); }}
+                        className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${citizenAuthMode === 'register' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600 dark:text-slate-400'}`}
+                      >
+                        Register
+                      </button>
+                    </div>
+                  </div>
+
+                  {citizenError && (
+                    <div className="p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/80 border border-rose-300 dark:border-rose-700 text-xs font-semibold text-rose-700 dark:text-rose-300 flex items-center gap-2">
+                      <span>⚠️</span> <span>{citizenError}</span>
+                    </div>
+                  )}
+
+                  {citizenAuthMode === 'register' ? (
+                    /* 1. REGISTRATION FORM (FREE USER ID + PASSWORD) */
+                    <form onSubmit={handleCitizenRegister} className="space-y-3.5">
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                          Full Legal Name:
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={regName}
+                          onChange={(e) => setRegName(e.target.value)}
+                          placeholder="e.g. Rishav Yadav"
+                          className="w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-semibold outline-none focus:border-emerald-500"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+                            <span>Unique User ID (10-Digit Mobile):</span>
+                          </label>
+                          <div className="flex items-center gap-2">
+                            <span className="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-400">+91</span>
+                            <input
+                              type="tel"
+                              maxLength="10"
+                              required
+                              value={regMobile}
+                              onChange={(e) => setRegMobile(e.target.value.replace(/\D/g, ''))}
+                              placeholder="9861234567"
+                              className="flex-1 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-mono font-bold outline-none focus:border-emerald-500 tracking-wider"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                            Create Account Password:
+                          </label>
+                          <input
+                            type="password"
+                            required
+                            value={regPassword}
+                            onChange={(e) => setRegPassword(e.target.value)}
+                            placeholder="Min 4 characters"
+                            className="w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-bold outline-none focus:border-emerald-500"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                          Gram Panchayat / Village / Locality:
+                        </label>
+                        <input
+                          type="text"
+                          value={regVillage}
+                          onChange={(e) => setRegVillage(e.target.value)}
+                          placeholder="e.g. Kalyanpur GP (Ward 3), Sundargarh"
+                          className="w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-semibold outline-none focus:border-emerald-500"
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={isSubmittingAuth}
+                        className="w-full py-3.5 mt-2 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 disabled:opacity-50"
+                      >
+                        <span>{isSubmittingAuth ? 'Creating Account...' : '✨ Create Free Account & Enter Portal'}</span>
+                      </button>
+
+                      <div className="pt-1 text-center text-xs text-slate-500">
+                        <span>Already registered? </span>
+                        <button
+                          type="button"
+                          onClick={() => { playChime('tap'); setCitizenAuthMode('login'); setCitizenError(''); }}
+                          className="text-emerald-600 dark:text-emerald-400 font-bold hover:underline cursor-pointer"
+                        >
+                          Sign In with Credentials
+                        </button>
+                      </div>
+                    </form>
+                  ) : citizenAuthMode === 'reset' ? (
+                    /* 2. RESET PASSWORD FORM */
+                    <form onSubmit={handleCitizenResetPassword} className="space-y-3.5">
+                      <div className="p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/60 text-xs text-amber-800 dark:text-amber-300">
+                        🔑 Enter your registered Mobile Number (User ID) to set a new password.
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                          Registered Mobile Number (User ID):
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={resetIdentifier}
+                          onChange={(e) => setResetIdentifier(e.target.value)}
+                          placeholder="e.g. 9861234567"
+                          className="w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-mono font-bold outline-none focus:border-emerald-500"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                          Enter New Password:
+                        </label>
+                        <input
+                          type="password"
+                          required
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          placeholder="New password (min 4 characters)"
+                          className="w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-bold outline-none focus:border-emerald-500"
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={isSubmittingAuth}
+                        className="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 disabled:opacity-50"
+                      >
+                        <span>{isSubmittingAuth ? 'Updating Password...' : '🔒 Reset Password & Sign In'}</span>
+                      </button>
+
+                      <div className="pt-1 text-center text-xs text-slate-500">
+                        <button
+                          type="button"
+                          onClick={() => { playChime('tap'); setCitizenAuthMode('login'); setCitizenError(''); }}
+                          className="text-slate-600 dark:text-slate-400 font-bold hover:underline cursor-pointer"
+                        >
+                          ← Back to Login
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    /* 3. LOGIN FORM (USER ID + PASSWORD) */
+                    <form onSubmit={handleCitizenPasswordLogin} className="space-y-3.5">
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+                          <span>User ID (Registered Mobile / Email):</span>
+                          <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">100% Free Login</span>
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={loginIdentifier}
+                          onChange={(e) => setLoginIdentifier(e.target.value)}
+                          placeholder="e.g. 9861234567 or rishav@gmail.com"
+                          className="w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-mono font-bold outline-none focus:border-emerald-500 tracking-wide"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                            Password:
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => { playChime('tap'); setCitizenAuthMode('reset'); setCitizenError(''); }}
+                            className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold hover:underline cursor-pointer"
+                          >
+                            Forgot Password?
+                          </button>
+                        </div>
+                        <input
+                          type="password"
+                          required
+                          value={loginPassword}
+                          onChange={(e) => setLoginPassword(e.target.value)}
+                          placeholder="••••••••"
+                          className="w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-bold outline-none focus:border-emerald-500"
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={isSubmittingAuth}
+                        className="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 disabled:opacity-50"
+                      >
+                        <span>{isSubmittingAuth ? 'Signing In...' : '🚀 Sign In with Credentials'}</span>
+                      </button>
+
+                      <div className="pt-2 text-center text-xs text-slate-500">
+                        <span>New Citizen User? </span>
+                        <button
+                          type="button"
+                          onClick={() => { playChime('tap'); setCitizenAuthMode('register'); setCitizenError(''); }}
+                          className="text-emerald-600 dark:text-emerald-400 font-bold hover:underline cursor-pointer"
+                        >
+                          Create Free Account
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </div>
+              )}
+
+              {/* TAB 2: ADMINISTRATIVE COMMAND LOGIN */}
+              {activeTab === 'admin' && (
+                <form onSubmit={handleAdminLogin} className="space-y-4 animate-in fade-in-50">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                    <div>
+                      <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+                        जिला अधिकारी कमांड (Executive Officer Login)
+                      </h2>
+                      <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">
+                        Access District Triage Workspace & Budget Allocations
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700">
+                      Tier 1 Official
+                    </span>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                      Officer Aadhaar Number:
+                    </label>
+                    <input
+                      type="text"
+                      value={adminAadhaar}
+                      onChange={(e) => setAdminAadhaar(e.target.value)}
+                      className="w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-mono font-bold outline-none focus:border-emerald-500"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                      Security Passcode / PIN:
+                    </label>
+                    <input
+                      type="password"
+                      value={adminPassword}
+                      onChange={(e) => setAdminPassword(e.target.value)}
+                      className="w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-mono outline-none focus:border-emerald-500"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isLoggingInAdmin}
+                    className="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95"
+                  >
+                    <span>{isLoggingInAdmin ? 'Signing In...' : 'Enter District Command Suite →'}</span>
+                  </button>
+
+                  {/* Fast Pick Official Personas */}
+                  <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                    <div className="text-[11px] font-bold uppercase text-slate-500 dark:text-slate-400">
+                      Fast-Pick Official Personas:
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { title: "District Collector", name: "Dr. Subrat Tripathy, IAS" },
+                        { title: "Block Dev Officer (BDO)", name: "Smt. Archana Majhi, OAS" },
+                        { title: "Junior Engineer (RWSS)", name: "Er. Dilip Pradhan" },
+                        { title: "Gram Rozgar Sevak", name: "Sunil Kumar Oram" },
+                      ].map((p, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => {
+                            playChime('tap');
+                            showToast(`Selected Persona: ${p.name}`);
+                          }}
+                          className="p-2 rounded-xl text-left border bg-slate-50 hover:bg-slate-100 dark:bg-slate-950 dark:hover:bg-slate-800 border-slate-200 dark:border-slate-700 text-[11px] cursor-pointer transition-all active:scale-95"
+                        >
+                          <div className="font-bold text-slate-800 dark:text-slate-200 truncate">{p.title}</div>
+                          <div className="text-[10px] text-slate-500 truncate">{p.name}</div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </form>
+              )}
+            </div>
+          </main>
+
+            {/* ========================================================================= */}
+            {/* DEVELOPED BY TEAM ARSHRIVA - PORTFOLIO SHOWCASE SECTION                     */}
+            {/* ========================================================================= */}
+            <section className="w-full max-w-5xl mx-auto my-12 animate-in fade-in duration-300">
+              <div className="relative overflow-hidden rounded-3xl border p-6 sm:p-8 bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 border-slate-200 dark:border-slate-800 shadow-xl">
+                <div className="absolute -top-24 -left-24 w-64 h-64 bg-emerald-500/10 dark:bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
+                <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-blue-500/10 dark:bg-blue-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div className="relative z-10 text-center space-y-2 mb-8">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700/60 shadow-xs">
+                    <span>✨</span>
+                    <span>SYSTEM CREATORS & ARCHITECTS</span>
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white uppercase font-brand">
+                    DEVELOPED BY TEAM ARSHRIVA
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-xl mx-auto font-medium">
+                    National Civic Intelligence Engine • Multilingual Voice Architecture & Digital Sovereignty Infrastructure.
+                  </p>
+                </div>
+
+                {/* Portfolio Cards Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+                  {/* 1. Swati Chaudhary Card */}
+                  <div className="p-6 rounded-2xl border transition-all duration-200 hover:shadow-lg hover:-translate-y-1 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left group">
+                    <div className="relative flex-shrink-0">
+                      <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-emerald-500 shadow-md ring-4 ring-emerald-500/20 group-hover:ring-emerald-500/40 transition-all flex items-center justify-center bg-slate-100 dark:bg-slate-800">
+                        <img
+                          src="assets/swati_chaudhary.jpg"
+                          alt="Swati Chaudhary"
+                          className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110"
+                        />
+                      </div>
+                      <span className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold shadow border-2 border-white dark:border-slate-900">
+                        ★
+                      </span>
+                    </div>
+
+                    <div className="space-y-2 flex-1">
+                      <div>
+                        <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
+                          <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">Swati Chaudhary</h3>
+                          <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                            CSE-2 • 2ND YEAR
+                          </span>
+                        </div>
+                        <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
+                          Full-Stack Developer & UI Architect
+                        </p>
+                      </div>
+
+                      <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Leading Multilingual Indic Natural Language Processing, Interactive React Interface Systems, Aadhaar Sandbox e-KYC Verification, and Community Intelligence Ledgers.
+                      </p>
+
+                      <div className="flex items-center justify-center sm:justify-start gap-1.5 flex-wrap pt-1">
+                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">React Architecture</span>
+                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Indic NLP</span>
+                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Aadhaar e-KYC</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 2. Shaurya Sharma Card */}
+                  <div className="p-6 rounded-2xl border transition-all duration-200 hover:shadow-lg hover:-translate-y-1 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left group">
+                    <div className="relative flex-shrink-0">
+                      <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-blue-500 shadow-md ring-4 ring-blue-500/20 group-hover:ring-blue-500/40 transition-all flex items-center justify-center bg-slate-100 dark:bg-slate-800">
+                        <img
+                          src="assets/shaurya_sharma.jpg"
+                          alt="Shaurya Sharma"
+                          className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110"
+                        />
+                      </div>
+                      <span className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-[10px] font-bold shadow border-2 border-white dark:border-slate-900">
+                        ★
+                      </span>
+                    </div>
+
+                    <div className="space-y-2 flex-1">
+                      <div>
+                        <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
+                          <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">Shaurya Sharma</h3>
+                          <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-800">
+                            CSE-2 • 2ND YEAR
+                          </span>
+                        </div>
+                        <p className="text-xs font-bold text-blue-600 dark:text-blue-400 mt-0.5">
+                          Lead Systems Engineer & Data Strategist
+                        </p>
+                      </div>
+
+                      <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Architecting Multi-Sensor Satellite Grounding, Sentinel-2 Multispectral Telemetry, Leaflet GIS Hotspot Mapping, and Autonomous UAV Drone Inspection Workflows.
+                      </p>
+
+                      <div className="flex items-center justify-center sm:justify-start gap-1.5 flex-wrap pt-1">
+                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">GIS & Telemetry</span>
+                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Sentinel-2 Satellite</span>
+                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Drone Systems</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+          {/* 7. NATIONAL SOVEREIGNTY FOOTER */}
+          <footer className="w-full max-w-5xl mx-auto px-4 py-6 border-t flex items-center justify-between text-xs flex-wrap gap-2 z-10 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
+            <div className="flex items-center gap-2 font-medium">
+              <Icons.ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <span>256-Bit Sovereign Encryption • MeitY Digital India Governance</span>
+            </div>
+            <div className="font-mono text-[11px]">
+              <span>AC-134 Sundargarh • 142 Gram Panchayats Master Ledger</span>
+            </div>
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<PortalLandingGateway />, document.getElementById('root'));
+  </script>
+</body>
+</html>

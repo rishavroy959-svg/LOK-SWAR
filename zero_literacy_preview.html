@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>People's Priorities - Zero-Literacy Gemini Interface Preview</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- React 18 & Babel CDN for in-browser JSX execution -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-950">
+  <div id="root"></div>
+
+  <!-- React JSX Script -->
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    function ZeroLiteracyApp() {
+      const [inputText, setInputText] = useState('');
+      const [isRecording, setIsRecording] = useState(false);
+      const [audioBlob, setAudioBlob] = useState(null);
+      const [photoPreview, setPhotoPreview] = useState(null);
+      const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+      const [isOnline, setIsOnline] = useState(navigator.onLine);
+      const [pendingSyncCount, setPendingSyncCount] = useState(0);
+      const [selectedLang, setSelectedLang] = useState('hi');
+      const [submitSuccess, setSubmitSuccess] = useState(false);
+      const [currentLocationName, setCurrentLocationName] = useState(() => {
+        return localStorage.getItem('lok_swar_user_location_name') || localStorage.getItem('lok_swar_detected_region') || 'Live Location';
+      });
+
+      useEffect(() => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(async (pos) => {
+            try {
+              const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&zoom=18&addressdetails=1`);
+              const data = await res.json();
+              if (data && data.address) {
+                const addr = data.address;
+                const state = (addr.state || '');
+                const district = addr.state_district || addr.county || addr.district || addr.city || addr.town || '';
+                const village = addr.village || addr.suburb || addr.neighbourhood || addr.residential || addr.hamlet || addr.town || addr.city || '';
+                const locParts = [village, district, state].filter(Boolean);
+                const loc = locParts.join(', ') || addr.display_name;
+                setCurrentLocationName(loc);
+                localStorage.setItem('lok_swar_user_location_name', loc);
+              }
+            } catch(e) {}
+          });
+        }
+      }, []);
+
+      const mediaRecorderRef = useRef(null);
+      const audioChunksRef = useRef([]);
+      const canvasRef = useRef(null);
+      const animationFrameRef = useRef(null);
+      const fileInputRef = useRef(null);
+
+      const i18n = {
+        hi: {
+          brand: "जन प्राथमिकताएं",
+          subBrand: "People's Priorities • Zero-Literacy PWA",
+          placeholder: "बोलें या अपनी समस्या लिखें...",
+          submitBtn: "रिपोर्ट जमा करें / SUBMIT REPORT",
+          recordingPrompt: "🔴 आपकी आवाज़ रिकॉर्ड हो रही है... बोलें",
+          readAloudText: "जन प्राथमिकताएं ऐप में आपका स्वागत है। माइक बटन दबाकर अपनी समस्या बोलें या कैमरा से फोटो लें और नीचे हरा बटन दबाएं।",
+          offlineBanner: "🟢 फोन में सुरक्षित - इंटरनेट आने पर स्वतः भेजा जाएगा",
+          drawerTitle: "मुख्य विकल्प",
+          menuStatus: "मेरे उत्तर देखें (Track Status)",
+          menuSuggest: "नया सुझाव (Suggest Project)",
+          menuLang: "भाषा बदलें (Change Language)",
+          menuOffline: "ऑफ़लाइन कतार (Offline Queue)",
+          menuOfficer: "अधिकारी लॉगिन (Officer Login)",
+          photoAttached: "फोटो संलग्न है",
+          successMessage: "आपकी रिपोर्ट सफलतापूर्वक दर्ज कर ली गई है!"
+        },
+        or: {
+          brand: "ଜନ ପ୍ରାଥମିକତା",
+          subBrand: "People's Priorities • Zero-Literacy PWA",
+          placeholder: "କୁହନ୍ତୁ କିମ୍ବା ଆପଣଙ୍କ ସମସ୍ୟା ଲେଖନ୍ତୁ...",
+          submitBtn: "ରିପୋର୍ଟ ଦାଖଲ କରନ୍ତୁ / SUBMIT REPORT",
+          recordingPrompt: "🔴 ଆପଣଙ୍କ ସ୍ୱର ରେକର୍ଡ ହେଉଛି... କୁହନ୍ତୁ",
+          readAloudText: "ଜନ ପ୍ରାଥମିକତା ଆପକୁ ସ୍ୱାଗତ। ମାଇକ୍ ବଟନ୍ ଦବାଇ ଆପଣଙ୍କ ସମସ୍ୟା କୁହନ୍ତୁ କିମ୍ବା ଫଟୋ ନେଇ ସବୁଜ ବଟନ୍ ଦବାନ୍ତୁ।",
+          offlineBanner: "🟢 ଫୋନରେ ସୁରକ୍ଷିତ - ଇଣ୍ଟରନେଟ୍ ଆସିଲେ ପଠାଯିବ",
+          drawerTitle: "ମୁଖ୍ୟ ବିକଳ୍ପ",
+          menuStatus: "ମୋର ଷ୍ଟାଟସ୍ ଦେଖନ୍ତୁ (Track Status)",
+          menuSuggest: "ନୂତନ ପ୍ରସ୍ତାବ (Suggest Project)",
+          menuLang: "ଭାଷା ବଦଳାନ୍ତୁ (Change Language)",
+          menuOffline: "ଅଫଲାଇନ୍ ତାଲିକା (Offline Queue)",
+          menuOfficer: "ଅଧିକାରୀ ଲଗଇନ୍ (Officer Login)",
+          photoAttached: "ଫଟୋ ଯୋଡ଼ାଗଲା",
+          successMessage: "ଆପଣଙ୍କ ରିପୋର୍ଟ ସଫଳତାର ସହ ଦାଖଲ ହୋଇଛି!"
+        },
+        en: {
+          brand: "People's Priorities",
+          subBrand: `जन प्राथमिकताएं • ${currentLocationName || 'Live Location'}`,
+          placeholder: "Speak or type your problem here...",
+          submitBtn: "SUBMIT REPORT / रिपोर्ट जमा करें",
+          recordingPrompt: "🔴 Recording voice... Speak clearly now",
+          readAloudText: "Welcome to People's Priorities. Tap the large microphone button to speak your problem, or tap camera to attach a photo, then press the green submit button.",
+          offlineBanner: "🟢 Saved on phone - Will send automatically when online",
+          drawerTitle: "Menu Options",
+          menuStatus: "Check My Status",
+          menuSuggest: "Suggest Infrastructure",
+          menuLang: "Change Language",
+          menuOffline: "Offline Queue",
+          menuOfficer: "Officer Login",
+          photoAttached: "Photo Attached",
+          successMessage: "Your priority report has been registered successfully!"
+        }
+      };
+
+      const t = i18n[selectedLang] || i18n.hi;
+
+      const playAudioChime = (type = 'success') => {
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+          const ctx = new AudioCtx();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          if (type === 'success') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(659.25, ctx.currentTime + 0.15);
+            osc.frequency.exponentialRampToValueAtTime(783.99, ctx.currentTime + 0.30);
+            gain.gain.setValueAtTime(0.3, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.6);
+          } else {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(440, ctx.currentTime);
+            gain.gain.setValueAtTime(0.2, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.15);
+          }
+        } catch (e) {}
+      };
+
+      const handleReadAloud = () => {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(t.readAloudText);
+          utterance.rate = 0.88;
+          if (selectedLang === 'hi') utterance.lang = 'hi-IN';
+          else if (selectedLang === 'or') utterance.lang = 'or-IN';
+          else utterance.lang = 'en-IN';
+          window.speechSynthesis.speak(utterance);
+          playAudioChime('tap');
+        }
+      };
+
+      const toggleRecording = async () => {
+        if (isRecording) {
+          setIsRecording(false);
+          playAudioChime('tap');
+          if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+            mediaRecorderRef.current.stop();
+          }
+          if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+          if (!inputText) {
+            setInputText(
+              selectedLang === 'or'
+                ? 'ଆମ ଗାଁ କଲ୍ୟାଣପୁରରୁ ଡାକ୍ତରଖାନା ଯିବା ରାସ୍ତା ବର୍ଷାରେ ଭାଙ୍ଗିଯାଇଛି।'
+                : 'हमारे गांव कल्याणपुर से अस्पताल जाने वाली सड़क बारिश में बह गई है।'
+            );
+          }
+        } else {
+          audioChunksRef.current = [];
+          playAudioChime('tap');
+          try {
+            if (navigator.mediaDevices?.getUserMedia) {
+              const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+              const recorder = new MediaRecorder(stream);
+              mediaRecorderRef.current = recorder;
+              recorder.ondataavailable = (e) => {
+                if (e.data.size > 0) audioChunksRef.current.push(e.data);
+              };
+              recorder.onstop = () => {
+                const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+                setAudioBlob(blob);
+                stream.getTracks().forEach((tr) => tr.stop());
+              };
+              recorder.start();
+            }
+          } catch (err) {}
+          setIsRecording(true);
+          drawWaveform();
+        }
+      };
+
+      const drawWaveform = () => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let phase = 0;
+        const render = () => {
+          if (!isRecording) return;
+          animationFrameRef.current = requestAnimationFrame(render);
+          ctx.fillStyle = '#0f172a';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.beginPath();
+          ctx.lineWidth = 4;
+          ctx.strokeStyle = '#ef4444';
+          const sliceWidth = canvas.width / 40;
+          let x = 0;
+          for (let i = 0; i < 40; i++) {
+            const v = Math.sin(phase + i * 0.3) * Math.cos(phase * 0.7 + i * 0.15);
+            const y = canvas.height / 2 + v * (canvas.height / 2.8);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+            x += sliceWidth;
+          }
+          ctx.stroke();
+          phase += 0.2;
+        };
+        render();
+      };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!inputText && !audioBlob && !photoPreview) {
+          handleReadAloud();
+          return;
+        }
+        playAudioChime('success');
+        setSubmitSuccess(true);
+        setTimeout(() => {
+          setInputText('');
+          setAudioBlob(null);
+          setPhotoPreview(null);
+          setSubmitSuccess(false);
+        }, 3500);
+      };
+
+      return (
+        <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between select-none relative font-sans antialiased">
+          {/* Top Bar */}
+          <header className="w-full bg-slate-900/90 backdrop-blur border-b border-slate-800 px-4 py-3 sticky top-0 z-30 flex items-center justify-between shadow-md">
+            <button
+              onClick={() => { playAudioChime('tap'); setIsDrawerOpen(true); }}
+              className="min-w-[56px] min-h-[56px] flex items-center justify-center rounded-2xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-200 text-2xl"
+              aria-label="Open Navigation Drawer"
+            >
+              ☰
+            </button>
+
+            <div className="text-center">
+              <h1 className="text-xl md:text-2xl font-bold tracking-tight text-white flex items-center justify-center gap-1.5">
+                <span className="text-amber-400">🏛️</span> {t.brand}
+              </h1>
+              <p className="text-[11px] text-slate-400 font-medium tracking-wide uppercase">{t.subBrand}</p>
+            </div>
+
+            <button
+              onClick={handleReadAloud}
+              className="min-w-[56px] min-h-[56px] flex items-center justify-center rounded-2xl bg-amber-500/15 border border-amber-500/30 hover:bg-amber-500/25 active:scale-95 text-amber-400 text-2xl"
+              aria-label="Listen"
+            >
+              🔊
+            </button>
+          </header>
+
+          {/* Main Hero Input */}
+          <main className="flex-1 max-w-xl w-full mx-auto px-4 flex flex-col justify-center py-6">
+            {submitSuccess && (
+              <div className="mb-6 p-4 rounded-2xl bg-emerald-500/20 border-2 border-emerald-500 text-emerald-300 flex items-center gap-3 animate-bounce">
+                <span className="text-3xl">✅</span>
+                <div>
+                  <p className="font-bold text-base">{t.successMessage}</p>
+                  <p className="text-xs text-emerald-400/90">Queued in District Planning Ledger.</p>
+                </div>
+              </div>
+            )}
+
+            {photoPreview && (
+              <div className="mb-3 relative inline-block self-center rounded-2xl overflow-hidden border-2 border-blue-500 shadow-lg">
+                <img src={photoPreview} alt="Evidence" className="w-40 h-28 object-cover" />
+                <button
+                  onClick={() => { setPhotoPreview(null); if (fileInputRef.current) fileInputRef.current.value = ''; }}
+                  className="absolute top-1 right-1 p-1 rounded-full bg-slate-900/80 text-white hover:bg-red-600"
+                >
+                  ✕
+                </button>
+                <div className="absolute bottom-0 inset-x-0 bg-slate-950/80 text-[10px] text-center text-slate-300 py-0.5">
+                  📷 {t.photoAttached}
+                </div>
+              </div>
+            )}
+
+            {isRecording && (
+              <div className="mb-3 bg-slate-900 rounded-2xl border-2 border-red-500 p-2 text-center shadow-xl">
+                <p className="text-xs font-bold text-red-400 mb-1 animate-pulse">{t.recordingPrompt}</p>
+                <canvas ref={canvasRef} width="400" height="60" className="w-full h-14 rounded-xl bg-slate-950" />
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <div className={`w-full rounded-3xl bg-slate-900/90 border-2 transition-all shadow-2xl p-2.5 flex items-center gap-2 ${isRecording ? 'border-red-500 ring-4 ring-red-500/20 bg-red-950/20' : 'border-slate-700 hover:border-slate-500'}`}>
+                <button
+                  type="button"
+                  onClick={toggleRecording}
+                  className={`min-w-[58px] min-h-[58px] rounded-2xl flex items-center justify-center text-2xl transition-all active:scale-90 ${isRecording ? 'bg-red-600 text-white animate-pulse' : 'bg-red-500/20 text-red-400 border border-red-500/40'}`}
+                >
+                  {isRecording ? '⏹' : '🎙️'}
+                </button>
+
+                <input
+                  type="text"
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  placeholder={t.placeholder}
+                  className="flex-1 bg-transparent text-white text-lg md:text-xl font-medium placeholder-slate-500 px-2 py-3 outline-none border-none"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => { playAudioChime('tap'); fileInputRef.current?.click(); }}
+                  className="min-w-[58px] min-h-[58px] rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center text-2xl transition-all active:scale-90"
+                >
+                  📷
+                </button>
+                <input ref={fileInputRef} type="file" accept="image/*" capture="environment" onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) { setPhotoPreview(URL.createObjectURL(file)); playAudioChime('tap'); }
+                }} className="hidden" />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full min-h-[60px] rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 active:scale-[0.98] text-white font-bold text-lg md:text-xl shadow-xl flex items-center justify-center gap-3 transition-all border border-emerald-400/30"
+              >
+                <span>{t.submitBtn} 🚀</span>
+              </button>
+            </form>
+          </main>
+
+          {/* Footer */}
+          <footer className="w-full px-4 py-2 bg-slate-900 border-t border-slate-800 text-center text-xs text-slate-400">
+            🟢 Online 4G/5G • {currentLocationName || "Live Location"} • People's Priorities PWA
+          </footer>
+
+          {/* Slide-out Drawer */}
+          {isDrawerOpen && (
+            <div className="fixed inset-0 z-50 flex">
+              <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setIsDrawerOpen(false)} />
+              <div className="relative w-80 max-w-[85vw] bg-slate-900 border-r border-slate-800 h-full p-6 flex flex-col justify-between shadow-2xl z-10">
+                <div>
+                  <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
+                    <span className="font-bold text-lg text-white">🏛️ {t.drawerTitle}</span>
+                    <button onClick={() => setIsDrawerOpen(false)} className="p-2 text-slate-400 hover:text-white text-xl">✕</button>
+                  </div>
+
+                  <nav className="flex flex-col gap-2">
+                    <button onClick={() => { setIsDrawerOpen(false); alert('Tracking your reports...'); }} className="w-full flex items-center gap-3 p-3.5 rounded-2xl bg-slate-800/60 text-left text-slate-200 font-medium">
+                      🔍 <span>{t.menuStatus}</span>
+                    </button>
+                    <button onClick={() => { setIsDrawerOpen(false); setInputText('हमारे गांव में प्राथमिक स्वास्थ्य केंद्र का निर्माण किया जाए।'); }} className="w-full flex items-center gap-3 p-3.5 rounded-2xl bg-slate-800/60 text-left text-slate-200 font-medium">
+                      🏗️ <span>{t.menuSuggest}</span>
+                    </button>
+
+                    <div className="p-3.5 rounded-2xl bg-slate-800/60 flex flex-col gap-2">
+                      <span className="text-slate-200 font-medium">🌐 {t.menuLang}</span>
+                      <select
+                        value={selectedLang}
+                        onChange={(e) => { setSelectedLang(e.target.value); playAudioChime('tap'); }}
+                        className="w-full mt-1 bg-slate-950 text-white rounded-xl border border-slate-700 p-2.5 text-sm font-semibold outline-none"
+                      >
+                        <option value="hi">हिन्दी (Hindi)</option>
+                        <option value="or">ଓଡ଼ିଆ (Odia)</option>
+                        <option value="en">English (English)</option>
+                      </select>
+                    </div>
+                  </nav>
+                </div>
+
+                <div className="pt-4 border-t border-slate-800">
+                  <a href="http://localhost:8000" className="w-full flex items-center justify-center gap-2 p-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold border border-slate-700">
+                    🔐 <span>{t.menuOfficer}</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<ZeroLiteracyApp />);
+  </script>
+</body>
+</html>

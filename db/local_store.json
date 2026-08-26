@@ -1,0 +1,152 @@
+{
+  "citizens": {
+    "9861234567": {
+      "mobile": "9861234567",
+      "name": "Rishav Yadav",
+      "village": "Kalyanpur Gram Panchayat (Ward 3)",
+      "aadhaar": "5482 9104 1940",
+      "aadhaarMasked": "XXXX-XXXX-1940",
+      "isAadhaarVerified": true,
+      "trustScore": 99,
+      "dpUrl": "assets/bg_1_smart_village.jpg",
+      "email": "rishav.yadav.odisha@gmail.com",
+      "addressDetails": {
+        "house": "Plot #14, Sector 2",
+        "village": "Kalyanpur Gram Panchayat (Ward 3)",
+        "ward": "",
+        "block": "Lathikata Block",
+        "district": "Sundargarh",
+        "state": "Odisha",
+        "pincode": "770037",
+        "fullAddress": "Plot #14, Sector 2, Kalyanpur Gram Panchayat (Ward 3), Lathikata Block, Sundargarh District, Odisha - 770037"
+      },
+      "digilockerVerified": true,
+      "govtIdUrl": ""
+    },
+    "9437123456": {
+      "name": "Swati Chaudhary",
+      "mobile": "9437123456",
+      "email": "swati.chaudhary@gmail.com",
+      "password": "mypassword123",
+      "village": "Plot #12, Janla Sector 3, Khordha, Odisha - 752054",
+      "aadhaarMasked": "Verified Citizen",
+      "isAadhaarVerified": true,
+      "trustScore": 99,
+      "dpUrl": "assets/bg_1_smart_village.jpg",
+      "createdAt": "2026-08-26T20:24:23.726789",
+      "updatedAt": "2026-08-26T20:24:23.727217"
+    },
+    "9853112233": {
+      "name": "Arjun Pattnaik",
+      "mobile": "9853112233",
+      "email": "",
+      "isEmailVerified": false,
+      "password": "newUpdatedPassword456",
+      "village": "Janla Ward 4, Khordha",
+      "aadhaarMasked": "Verified Citizen",
+      "isAadhaarVerified": true,
+      "trustScore": 99,
+      "dpUrl": "assets/bg_1_smart_village.jpg",
+      "createdAt": "2026-08-26T20:55:16.060381",
+      "updatedAt": "2026-08-26T20:55:22.167907"
+    },
+    "9853990186": {
+      "name": "Arjun Pattnaik",
+      "mobile": "9853990186",
+      "email": "arjun.pattnaik@gmail.com",
+      "isEmailVerified": true,
+      "password": "newUpdatedPassword456",
+      "village": "Janla Ward 4, Khordha",
+      "aadhaarMasked": "Verified Citizen",
+      "isAadhaarVerified": true,
+      "trustScore": 99,
+      "dpUrl": "assets/bg_1_smart_village.jpg",
+      "createdAt": "2026-08-26T20:57:32.585086",
+      "updatedAt": "2026-08-26T20:57:44.860062"
+    }
+  },
+  "officers": {
+    "admin@sundargarh.gov.in": {
+      "id": "admin@sundargarh.gov.in",
+      "aadhaar": "889911223344",
+      "aadhaarFormatted": "8899 1122 3344",
+      "password": "admin123",
+      "name": "Dr. K. C. Tripathy (IAS)",
+      "designation": "District Magistrate & Collector",
+      "department": "District Administration",
+      "badge": "District Head",
+      "avatar": "👨‍💼",
+      "jurisdiction": "AC-134 Sundargarh"
+    },
+    "dpc.planner@sundargarh.gov.in": {
+      "id": "dpc.planner@sundargarh.gov.in",
+      "aadhaar": "556677889900",
+      "aadhaarFormatted": "5566 7788 9900",
+      "password": "admin123",
+      "name": "Er. Rishav Yadav",
+      "designation": "District Planning Coordinator (DPC)",
+      "department": "Planning Dept",
+      "badge": "Budget Sanction Head",
+      "avatar": "📋",
+      "jurisdiction": "142 Gram Panchayats"
+    },
+    "ee.roads@sundargarh.gov.in": {
+      "id": "ee.roads@sundargarh.gov.in",
+      "aadhaar": "123456789012",
+      "aadhaarFormatted": "1234 5678 9012",
+      "password": "admin123",
+      "name": "Er. Sunita Soren",
+      "designation": "Executive Engineer (R&B)",
+      "department": "Works Dept",
+      "badge": "Field Ops Lead",
+      "avatar": "👷‍♀️",
+      "jurisdiction": "Lathikata & Bisra Blocks"
+    },
+    "drone.commander@sundargarh.gov.in": {
+      "id": "drone.commander@sundargarh.gov.in",
+      "aadhaar": "998877665544",
+      "aadhaarFormatted": "9988 7766 5544",
+      "password": "admin123",
+      "name": "Squadron Ldr. S. Patnaik",
+      "designation": "Aerial Drone Telemetry Commander",
+      "department": "Odisha Space Applications Centre (ORSAC) Liaison",
+      "badge": "UAV Squad Lead",
+      "avatar": "🛸",
+      "jurisdiction": "Aerial Disaster Survey Grid"
+    }
+  },
+  "grievances": {},
+  "budget_schemes": {
+    "SCH-1": {
+      "id": "SCH-1",
+      "name": "SDRF Disaster Relief Fund",
+      "totalPoolCr": 4.5,
+      "sanctionedCr": 0.0,
+      "utilizationPct": 0.0
+    },
+    "SCH-2": {
+      "id": "SCH-2",
+      "name": "Jal Jeevan Mission (RWSS)",
+      "totalPoolCr": 2.5,
+      "sanctionedCr": 0.0,
+      "utilizationPct": 0.0
+    },
+    "SCH-3": {
+      "id": "SCH-3",
+      "name": "5T School Infrastructure Fund",
+      "totalPoolCr": 1.8,
+      "sanctionedCr": 0.0,
+      "utilizationPct": 0.0
+    },
+    "SCH-4": {
+      "id": "SCH-4",
+      "name": "Unallocated Emergency Pool",
+      "totalPoolCr": 1.2,
+      "sanctionedCr": 0.0,
+      "utilizationPct": 0.0
+    }
+  },
+  "drone_missions": {},
+  "audio_recordings": {},
+  "voice_notes": {}
+}

@@ -1,0 +1,518 @@
+================================================================================
+LOK SWAR (लोक स्वर) • PEOPLE'S PRIORITIES
+COMPLETE PROJECT ARCHITECTURE, TECHNICAL SPECIFICATION & SYSTEM DOCUMENTATION
+================================================================================
+Generated Date: 2026-08-25
+Jurisdiction: Sundargarh Assembly Constituency (AC-134), Odisha, India
+Mission: "From People's Voices to Evidence-Based Development Decisions"
+
+================================================================================
+TABLE OF CONTENTS
+================================================================================
+1. EXECUTIVE SUMMARY & MISSION STATEMENT
+2. HIGH-LEVEL SYSTEM ARCHITECTURE & DATA FLOW (ASCII DIAGRAMS)
+3. REPOSITORY DIRECTORY & FILE STRUCTURE
+4. CORE SUBSYSTEMS & TECHNOLOGY STACK
+   4.1 Multi-Lingual Speech, NLP & Dialect Normalization Engine
+   4.2 Database Layer & High-Availability Persistence
+   4.3 Telecom SMS Gateway & OTP Verification Engine
+   4.4 12-Factor Priority Scoring & 0-1 Knapsack MILP Optimizer
+   4.5 Multi-Source Evidence Fusion & Discrepancy Detection Engine
+   4.6 Autonomous Drone Telemetry & Computer Vision Simulator
+   4.7 Interactive Frontend & Web Audio Tactile Synthesis
+5. COMPLETE REST API SPECIFICATIONS & ENDPOINTS
+6. ADMINISTRATIVE PERSONAS, ROLES & ACCESS CREDENTIALS
+7. DATA SCHEMAS & DOCUMENT MODELS
+8. MATHEMATICAL FORMULATION & ALGORITHMIC EQUATIONS
+9. EXECUTION, LOCAL TESTING & CLOUD DEPLOYMENT GUIDE
+
+================================================================================
+1. EXECUTIVE SUMMARY & MISSION STATEMENT
+================================================================================
+Lok Swar (लोक स्वर) / People's Priorities is an advanced civic intelligence, 
+multi-dialect voice grievance intake, GIS spatial analysis, autonomous drone 
+verification, and mathematical budget allocation platform.
+
+Core Problems Addressed:
+1. The Digital & Literacy Divide: Rural citizens unable to type formal text can 
+   submit voice grievances in local dialects (Bhojpuri/Bihari, Odia, Bengali, Hindi).
+2. Administrative Delays: Spoken audio is instantly transcribed, converted into 
+   Administrative English/Hindi, categorized across 7+ departments, matched with 
+   statutory government schemes, and assigned an urgency priority score.
+3. Information Discrepancy: Physical ground ground-truth is cross-referenced 
+   against official administrative registries, satellite data, and IoT sensors.
+4. Opaque Resource Allocation: A transparent 12-factor Multi-Attribute Utility 
+   Theory (MAUT) and Mixed-Integer Linear Programming (MILP) 0-1 Knapsack solver 
+   allocates constituency budgets (e.g. ₹10 Crore pool) with statutory rural equity 
+   guarantees.
+
+================================================================================
+2. HIGH-LEVEL SYSTEM ARCHITECTURE & DATA FLOW
+================================================================================
+
++-----------------------------------------------------------------------------+
+|                              CITIZEN PORTAL                                 |
+|  - Zero-Literacy Voice Recorder (Bhojpuri, Odia, Hindi, Bengali, English)   |
+|  - 50km GPS Civic Proximity Scanner (Haversine Formula)                     |
+|  - Community Upvoting & 1-Citizen-1-Vote Endorsements                       |
+|  - DigiLocker e-KYC Identity Ledger & Masked Aadhaar Verification           |
++---------------------------------------+-------------------------------------+
+                                        |
+                                        v HTTP / REST / Audio Payload
++-----------------------------------------------------------------------------+
+|                          PRIMARY API SERVER (Python)                        |
+|  File: server.py | Port: 8000 | Multi-Threaded HTTPServer                   |
++-------------------+-------------------+-------------------+-----------------+
+                    |                   |                   |
+                    v                   v                   v
++-----------------------+ +-----------------------+ +-----------------------+
+|  AI & TRANSLATION     | |  TELECOM SMS GATEWAY  | |  PERSISTENCE ENGINE   |
+|  services/            | |  services/            | |  db/mongo.py          |
+|  translation_ai.py    | |  sms_service.py       | |                       |
+|                       | |                       | | - MongoDB Atlas /     |
+| - Speech-to-Text (STT)| | - Fast2SMS (India)    | |   Local (lok_swar_db) |
+| - Dialect Normalizer  | | - Twilio (Global)     | | - High-Availability   |
+| - Multi-tier NMT      | | - MSG91               | |   Local JSON Cache    |
+| - Scheme Matching     | | - 6-Digit OTP Engine  | |   (local_store.json)  |
+| - Neural TTS Audio    | | - 300s TTL Store      | | - Uploads Directory   |
++-----------------------+ +-----------------------+ +-----------------------+
+                    ^                   ^                   ^
+                    |                   |                   |
++-------------------+-------------------+-------------------+-----------------+
+|                       DISTRICT ADMIN COMMAND SUITE                          |
+|  - Live Grievance & Demand Triage Matrix                                    |
+|  - Executive Brief Extraction & Departmental Routing                        |
+|  - Autonomous Drone Telemetry HUD (MAVLink Simulator)                       |
+|  - Mathematical Budget Sanctions & PMGSY/SDRF Scheme Allocations            |
++-----------------------------------------------------------------------------+
+
+================================================================================
+3. REPOSITORY DIRECTORY & FILE STRUCTURE
+================================================================================
+
+c:/Hackathon/ARSHRIVA/
+│
+├── index.html                    Master Entry Gateway & Dual-Role Authentication
+├── citizen.html                  Citizen Grievance Portal (Intake, GIS, Scanner, Audio)
+├── admin.html                    District Administrative Command Suite (DM, DPC, EE)
+├── profile.html                  Citizen e-KYC Identity Ledger & DigiLocker Manager
+├── server.py                     Primary Python Multi-Threaded REST API Server (Port 8000)
+├── DEPLOYMENT_GUIDE.md           Production Deployment & SMS Integration Guide
+├── Procfile                      Cloud Deployment Process Configuration
+├── render.yaml                   Render Cloud Infrastructure as Code specification
+├── requirements.txt              Python Dependencies (pymongo, speechrecognition)
+├── START_APP.bat                 1-Click Local Execution Script for Windows
+│
+├── services/                     AI, Speech, Translation & Telecom Engine
+│   ├── translation_ai.py         Multi-Lingual STT, Dialect NLP & Scheme Matcher
+│   └── sms_service.py            Telecom SMS OTP Gateway (Fast2SMS, Twilio, MSG91)
+│
+├── db/                           Data Persistence & High-Availability Layer
+│   ├── mongo.py                  Dual MongoDB/Local JSON Persistence Engine
+│   └── local_store.json          Local JSON Storage Cache & High-Speed Fallback
+│
+├── backend/                      Node.js/Express Microservice (Port 5000)
+│   ├── server.js                 Express Server for Voice Note Intake
+│   ├── package.json              Node Dependencies (express, mongoose, multer, cors)
+│   ├── controllers/              Controller logic (voiceNoteController.js)
+│   ├── models/                   Mongoose Model Schemas (VoiceNote.js)
+│   ├── routes/                   Express Route Handlers (voiceNoteRoutes.js)
+│   └── middleware/               Global Error Handling & Request Logging
+│
+├── js/                           Frontend Logic, Algorithms & Micro-Components
+│   ├── app.js                    Main Application Orchestrator & Router
+│   ├── components/               Modular UI Views
+│   │   ├── admin_overview.js     District Triage Matrix & Progress Analytics
+│   │   ├── citizen_view.js       Voice Recorder & Multi-Category Intake
+│   │   ├── gis_map.js            Leaflet GIS Spatial Map & Constituency Hotzones
+│   │   ├── data_fusion.js        Registry vs. Ground Claim Corroboration
+│   │   ├── field_officer.js      Physical Inspection & Field Audit Verification
+│   │   ├── drone_simulator.js    MAVLink Telemetry & Aerial CV Damage HUD
+│   │   ├── priority_ranking.js   12-Factor Priority Scoring Breakdown Matrix
+│   │   ├── portfolio_optimizer.js 0-1 Knapsack Budget Allocator (₹10 Cr Pool)
+│   │   ├── thematic_clusters.js  NLP Semantic Cluster Analysis
+│   │   ├── audit_log.js          Immutable Chronological District Ledger
+│   │   ├── guided_demo.js        Step-by-step Interactive Walkthrough
+│   │   └── header.js             Navigation Bar & Multilingual Dialect Picker
+│   ├── data/
+│   │   └── constituency_data.js  AC-134 Sundargarh Synthetic Ground Truth & Wards
+│   └── services/
+│       ├── optimizer.js          0-1 Knapsack MILP & MAUT Scoring Engine
+│       ├── evidence_fusion.js    Tri-Factor Evidence Scorer & Discrepancy Finder
+│       ├── audio_ai.js           Web Audio Synthesis & Speech Recording System
+│       ├── cv_ai.js              Computer Vision Aerial Bounding Box Detection
+│       ├── fluid_simulation.js   Interactive WebGL Fluid Physics System
+│       ├── offline_store.js      IndexedDB & LocalStorage Client-Side Cache
+│       └── animation_system.js   GSAP 3 Physics & Micro-Animation System
+│
+├── css/
+│   └── styles.css                Glassmorphism, Dark/Light Mode & Layout Styles
+│
+└── uploads/                      Static Media Storage
+    ├── audio/                    Saved Citizen Voice Notes (.webm / .wav)
+    └── photos/                   Saved Damage Evidence Photos & Profile Avatars
+
+================================================================================
+4. CORE SUBSYSTEMS & TECHNOLOGY STACK
+================================================================================
+
+4.1 MULTI-LINGUAL SPEECH, NLP & DIALECT NORMALIZATION ENGINE (services/translation_ai.py)
+--------------------------------------------------------------------------------
+- Dialect Identification:
+  Detects and normalizes Bhojpuri/Bihari colloquialisms (markers like 'बा', 'नइखे', 
+  'गइल', 'पुलवा', 'सड़किया', 'चापाकल', 'जर गइल', 'चुअता'), Odia script (\u0B00-\u0B7F), 
+  Bengali script (\u0980-\u09FF), Devanagari Hindi (\u0900-\u097F), and English.
+- Multi-Tier Neural Translation:
+  1. Primary: Google GTX Neural Machine Translation API
+  2. Secondary: MyMemory Translation API
+  3. Tertiary: Deterministic Domain-Specific Civic Fallback Lexicon
+- Departmental Auto-Categorization & Statutory Scheme Matcher:
+  * Power & Electricity -> Deen Dayal Upadhyaya Gram Jyoti Yojana / OPTCL Grid Pool (Urgency: 94.0)
+  * Roads & Connectivity -> SDRF Disaster Relief Fund / PMGSY Rural Roads (Urgency: 92.5)
+  * Drinking Water & RWSS -> Jal Jeevan Mission - Har Ghar Jal (Urgency: 89.0)
+  * Healthcare & PHC -> National Health Mission (NHM) & BSKY (Urgency: 95.0)
+  * Education & Schools -> 5T High School Transformation Fund / Samagra Shiksha (Urgency: 86.0)
+  * Drainage & Floods -> State Urban & Rural Flood Mitigation Pool (Urgency: 84.0)
+  * Canal Irrigation -> Pradhan Mantri Krishi Sinchayee Yojana - PMKSY (Urgency: 82.0)
+- Natural Humanoid TTS Voice Audio Stream:
+  Endpoint /api/tts?text=...&lang=... generates dynamic MP3 voice guidance in native tongues.
+
+4.2 DATABASE LAYER & HIGH-AVAILABILITY PERSISTENCE (db/mongo.py)
+--------------------------------------------------------------------------------
+- Dual-Engine Support:
+  Automatically connects to MongoDB (URI: mongodb://localhost:27017/lok_swar_db or Atlas).
+  If MongoDB is unreachable, it seamlessly fails over to a zero-config local JSON persistence 
+  engine (db/local_store.json) with identical query APIs and schema indexes.
+- Database Collections:
+  * citizens: Registered Mobile, Full Name, Village, Masked Aadhaar, Trust Score, Avatar.
+  * officers: Administrative ID, Aadhaar, Password, Designation, Department, Jurisdiction.
+  * grievances: Full report lifecycle, audio URLs, photo URLs, translations, votes, opinions, notes.
+  * budget_schemes: Total pool amount, sanctioned funds, utilization percentages.
+  * drone_missions: Flight telemetry, 3D orthomosaic resolutions, volumetric damage metrics.
+  * voice_notes: Standalone voice recording submissions and review statuses.
+
+4.3 TELECOM SMS GATEWAY & OTP VERIFICATION (services/sms_service.py)
+--------------------------------------------------------------------------------
+- Multi-Provider Live Dispatch:
+  1. Fast2SMS: Recommended for instant delivery across Indian telecom operators.
+  2. Twilio: Global E.164 standard telecom delivery.
+  3. MSG91: Enterprise DLT OTP route.
+  4. Local Console / Sandbox Mode: Fallback output with dynamic generation.
+- Security & Expiration:
+  Generates genuine 6-digit random OTPs with a 300-second (5 minute) Time-To-Live (TTL).
+
+4.4 12-FACTOR PRIORITY SCORING & 0-1 KNAPSACK MILP OPTIMIZER (js/services/optimizer.js)
+--------------------------------------------------------------------------------
+- Computes priority scores using Multi-Attribute Utility Theory (MAUT):
+  * Citizen Demand Intensity (20%)
+  * Problem Severity / Threat to Life (15%)
+  * Affected Population Size (15%)
+  * Infrastructure Gap Distance (15%)
+  * Accessibility / Monsoon Cutoff Deficit (10%)
+  * Socio-Economic & Tribal Vulnerability (10%)
+  * Evidence Confidence Level (10%)
+  * Engineering Feasibility & Readiness (5%)
+- Optimization Algorithm:
+  Solves a Mixed-Integer Linear Programming 0-1 Knapsack problem against the constituency 
+  budget cap (e.g. ₹10.0 Crore), ordering candidate projects by Value Density while enforcing 
+  a statutory Minimum Rural Equity quota (ensuring remote tribal villages are never deprioritized).
+
+4.5 MULTI-SOURCE EVIDENCE FUSION & DISCREPANCY DETECTION (js/services/evidence_fusion.js)
+--------------------------------------------------------------------------------
+- Tri-Factor Evidence Formula:
+  Composite Score = (Demand Score * 0.35) + (Registry Score * 0.35) + (Verification Multiplier * 100 * 0.30)
+- Automated Discrepancy Detection:
+  Identifies discrepancies between citizen perceptions and official government registries 
+  (e.g., road marked 'operational' in PMGSY registry vs. ground reality of culvert collapse).
+
+4.6 AUTONOMOUS DRONE TELEMETRY & COMPUTER VISION SIMULATOR (js/components/drone_simulator.js)
+--------------------------------------------------------------------------------
+- MAVLink Telemetry HUD:
+  Simulates real-time altitude, battery percentage, ground speed, and 3D RTK GPS Satellite Fix.
+- Computer Vision Canvas:
+  Renders aerial drone footage with real-time bounding boxes detecting road cracks, washed-out 
+  culverts, and flooded fields, generating a tamper-proof SHA-256 evidence hash.
+
+4.7 INTERACTIVE FRONTEND & WEB AUDIO TACTILE SYNTHESIS
+--------------------------------------------------------------------------------
+- Built with React 18, Babel standalone, TailwindCSS (Dark/Light themes), and GSAP 3 Physics.
+- Custom Web Audio API synthesizer generates real-time tactile sound chimes for touch actions, 
+  successful OTP validations, and administrative warnings.
+
+================================================================================
+5. COMPLETE REST API SPECIFICATIONS & ENDPOINTS (server.py)
+================================================================================
+
+CITIZEN AUTHENTICATION & PROFILE
+--------------------------------------------------------------------------------
+1. POST /api/auth/citizen/send-otp
+   Request:  { "mobile": "9861234567" }
+   Response: { "success": true, "realSmsSent": true, "provider": "Fast2SMS", "otp": "582910" }
+
+2. POST /api/auth/citizen/verify-otp
+   Request:  { "mobile": "9861234567", "otp": "582910", "name": "Rishav Yadav" }
+   Response: { "success": true, "citizen": { "mobile": "9861234567", "trustScore": 99, ... } }
+
+3. POST /api/auth/citizen/upload-avatar
+   Request:  { "mobile": "9861234567", "image": "data:image/jpeg;base64,..." }
+   Response: { "success": true, "dpUrl": "uploads/photos/avatar_9861234567_1724589.jpg" }
+
+4. POST /api/auth/citizen/profile
+   Request:  { "mobile": "9861234567", "name": "Rishav Yadav", "village": "Kalyanpur" }
+   Response: { "success": true, "citizen": { ... } }
+
+5. POST /api/auth/citizen/digilocker-fetch
+   Request:  { "mobile": "9861234567", "aadhaar": "548291041940" }
+   Response: { "success": true, "source": "DigiLocker UIDAI Registry", "trustScore": 99, ... }
+
+6. POST /api/auth/admin/login
+   Request:  { "aadhaar": "889911223344", "password": "admin123" }
+   Response: { "success": true, "officer": { "name": "Dr. K. C. Tripathy (IAS)", ... } }
+
+GRIEVANCE INTAKE & CIVIC ACTIONS
+--------------------------------------------------------------------------------
+7. GET /api/grievances/list
+   Response: { "success": true, "count": 12, "data": [ { "id": "PROB-101", ... } ] }
+
+8. GET /api/grievances/<id>
+   Response: { "success": true, "data": { "id": "PROB-101", "opinions": [...], ... } }
+
+9. GET /api/grievances/nearby?lat=22.1245&lng=84.0321&radius=50
+   Description: 50-km Radius Civic Proximity Scanner with Haversine distance filtering.
+   Response:    { "success": true, "radiusKm": 50.0, "count": 8, "data": [...] }
+
+10. POST /api/grievances/submit
+    Request:  {
+                "text": "पुलिया टूट गइल बा",
+                "spokenLanguage": "Bhojpuri",
+                "audioRecordings": [ { "audioBase64": "...", "duration": 12 } ],
+                "photoBase64": "...",
+                "village": "Kalyanpur Gram Panchayat (Ward 3)"
+              }
+    Response: { "success": true, "grievance": { "id": "PROB-842", "category": "Roads", ... } }
+
+11. POST /api/grievances/endorse (or /api/grievances/<id>/vote)
+    Description: 1-Citizen-1-Vote Community Endorsement with duplicate prevention.
+    Request:     { "id": "PROB-101", "mobile": "9861234567" }
+    Response:    { "success": true, "votes": 483, "grievance": { ... } }
+
+12. POST /api/grievances/<id>/opinion
+    Request:  { "text": "Ambulances cannot cross", "tag": "🚨 Medical Emergency" }
+    Response: { "success": true, "grievance": { ... } }
+
+13. PUT /api/grievances/<id>/status
+    Request:  { "status": "In Progress", "statusStage": 2, "officialResponse": "..." }
+    Response: { "success": true, "grievance": { ... } }
+
+14. DELETE /api/grievances/<id>
+    Response: { "success": true, "message": "Grievance PROB-101 withdrawn and deleted successfully" }
+
+15. DELETE /api/grievances/clear-all
+    Response: { "success": true, "message": "All grievances cleared successfully" }
+
+AI, SPEECH, TELEMETRY & BUDGETS
+--------------------------------------------------------------------------------
+16. GET /api/tts?text=...&lang=hi
+    Description: Natural Humanoid TTS MP3 Audio Stream.
+    Response:    Binary MP3 audio stream (Content-Type: audio/mpeg)
+
+17. POST /api/translate
+    Request:  { "text": "चापाकल खराब बा", "spokenLanguage": "Bhojpuri" }
+    Response: { "success": true, "translatedText": "the handpump is broken", "category": "Drinking Water", ... }
+
+18. POST /api/speech-to-text
+    Request:  { "audioBase64": "...", "spokenLanguage": "Odia" }
+    Response: { "success": true, "transcribedText": "...", "translatedText": "...", ... }
+
+19. GET /api/admin/budget/overview
+    Response: { "success": true, "data": [ { "id": "SCH-1", "name": "SDRF Disaster Fund", ... } ] }
+
+20. POST /api/admin/budget/allocate
+    Request:  { "grievanceId": "PROB-101", "amountCr": 4.20, "schemeName": "SDRF Disaster Relief Fund" }
+    Response: { "success": true, "grievance": { ... } }
+
+21. GET /api/drone/missions
+    Response: { "success": true, "data": [ { "id": "DRONE-001", "status": "Completed", ... } ] }
+
+22. POST /api/admin/drone/dispatch
+    Request:  { "targetGrievanceId": "PROB-101", "notes": "Autonomous UAV survey" }
+    Response: { "success": true, "mission": { "id": "DRONE-482", ... } }
+
+23. POST /api/voice-notes/upload
+    Request:  { "citizenId": "9861234567", "citizenName": "Rishav Yadav", "audioBase64": "...", "duration": 15 }
+    Response: { "success": true, "data": { "id": "VN-1724589", "status": "pending", ... } }
+
+24. PATCH /api/voice-notes/admin/<id>/status
+    Request:  { "status": "reviewed" }
+    Response: { "success": true, "data": { ... } }
+
+================================================================================
+6. ADMINISTRATIVE PERSONAS, ROLES & ACCESS CREDENTIALS
+================================================================================
+
+All administrative accounts share the default demo password: admin123
+
+1. DISTRICT MAGISTRATE & COLLECTOR (IAS)
+   - Name:         Dr. K. C. Tripathy (IAS)
+   - Identifier:   8899 1122 3344 or admin@sundargarh.gov.in
+   - Role:         District Head & Executive Disaster Authority
+   - Jurisdiction: AC-134 Sundargarh Entire Constituency
+
+2. DISTRICT PLANNING COORDINATOR (DPC)
+   - Name:         Er. Rishav Yadav
+   - Identifier:   5566 7788 9900 or dpc.planner@sundargarh.gov.in
+   - Role:         Planning & Budget Sanction Head
+   - Jurisdiction: 142 Gram Panchayats & 24 Urban Wards
+
+3. EXECUTIVE ENGINEER (R&B WORKS)
+   - Name:         Er. Sunita Soren
+   - Identifier:   1234 5678 9012 or ee.roads@sundargarh.gov.in
+   - Role:         Works & Road Infrastructure Field Lead
+   - Jurisdiction: Lathikata & Bisra Blocks
+
+4. AERIAL DRONE TELEMETRY COMMANDER
+   - Name:         Squadron Leader S. Patnaik
+   - Identifier:   9988 7766 5544 or drone.commander@sundargarh.gov.in
+   - Role:         UAV Squad Lead & Space Applications Liaison
+   - Jurisdiction: AC-134 Aerial Disaster Survey Grid
+
+================================================================================
+7. DATA SCHEMAS & DOCUMENT MODELS
+================================================================================
+
+CITIZEN SCHEMA
+{
+  "mobile": "9861234567",
+  "name": "Rishav Yadav",
+  "village": "Kalyanpur Gram Panchayat (Ward 3)",
+  "aadhaar": "5482 9104 1940",
+  "aadhaarMasked": "XXXX-XXXX-1940",
+  "isAadhaarVerified": true,
+  "digilockerVerified": true,
+  "trustScore": 99,
+  "dpUrl": "uploads/photos/avatar_9861234567_1724589.jpg",
+  "createdAt": "2026-08-25T12:00:00.000Z"
+}
+
+GRIEVANCE DOCUMENT SCHEMA
+{
+  "id": "PROB-101",
+  "author": "Rishav Yadav",
+  "citizenMobile": "9861234567",
+  "aadhaarMasked": "XXXX-XXXX-1940",
+  "isAadhaarVerified": true,
+  "title": "Kalyanpur Bridge washed out completely in monsoon flood",
+  "aiAnalyzedTitle": "Critical Bridge Washout & Transportation Disruption",
+  "titleOriginal": "ଆମ ଗାଁ କଲ୍ୟାଣପୁରରୁ ଡାକ୍ତରଖାନା ଯିବା ରାସ୍ତା ବର୍ଷାରେ ଭାଙ୍ଗିଯାଇଛି।",
+  "spokenLanguage": "Odia",
+  "audioRecordingUrl": "uploads/audio/kalyanpur_bridge_report.webm",
+  "audioRecordings": [
+    {
+      "id": "audio-1",
+      "title": "Voice Note #1",
+      "url": "/uploads/audio/voice_rec_1724589_1.webm",
+      "duration": 14.5,
+      "lang": "Odia"
+    }
+  ],
+  "transcribedOriginalText": "ଆମ ଗାଁ କଲ୍ୟାଣପୁରରୁ ଡାକ୍ତରଖାନା ଯିବା ରାସ୍ତା ବର୍ଷାରେ ଭାଙ୍ଗିଯାଇଛି। ୧୮,୪୦୦ ଲୋକ ଅଟକି ରହିଛନ୍ତି।",
+  "directEnglishTranslation": "The road from our village Kalyanpur to the hospital gets completely washed out during rains.",
+  "adminEnglishTranslation": "Monsoon floods have completely washed away the main concrete bridge culvert. Over 18,400 villagers are cut off.",
+  "adminHindiTranslation": "मानसून की बाढ़ में कल्याणपुर की मुख्य पुलिया पूरी तरह बह गई है।",
+  "category": "Roads & Connectivity",
+  "suggestedScheme": "SDRF Disaster Relief Fund / PMGSY Rural Roads",
+  "village": "Kalyanpur Gram Panchayat (Ward 3)",
+  "block": "Lathikata",
+  "gps": "22.1245° N, 84.0321° E",
+  "affectedPopulation": 18400,
+  "urgencyScore": 96.4,
+  "status": "Field Audit Completed",
+  "statusStage": 2,
+  "officialResponse": "Ground inspection completed. ₹4.2 Cr emergency reconstruction proposal submitted.",
+  "assignedOfficer": "Er. Sunita Soren (EE, Works)",
+  "allocatedBudgetCr": 4.20,
+  "votes": 482,
+  "photoUrl": "assets/bg_1_smart_village.jpg",
+  "hasAudio": true,
+  "opinions": [
+    {
+      "id": "op-1",
+      "name": "Sunita Soren",
+      "aadhaarMasked": "XXXX-XXXX-4812",
+      "text": "Ambulances cannot cross at all.",
+      "tag": "🚨 Medical Emergency",
+      "time": "1 hour ago"
+    }
+  ],
+  "officialNotes": [
+    {
+      "date": "18 Aug, 10:30 AM",
+      "author": "Dr. K. C. Tripathy (IAS)",
+      "text": "Emergency disaster intake verified. Drone survey flight ordered."
+    }
+  ]
+}
+
+================================================================================
+8. MATHEMATICAL FORMULATION & ALGORITHMIC EQUATIONS
+================================================================================
+
+1. HAVERSINE DISTANCE FORMULA (50km Civic Proximity Scanner):
+   Given point P1(lat1, lng1) and P2(lat2, lng2):
+   dLat = radians(lat2 - lat1)
+   dLng = radians(lng2 - lng1)
+   a = sin²(dLat / 2) + cos(radians(lat1)) * cos(radians(lat2)) * sin²(dLng / 2)
+   c = 2 * atan2(sqrt(a), sqrt(1 - a))
+   Distance (km) = Earth_Radius (6371.0 km) * c
+
+2. MULTI-ATTRIBUTE UTILITY THEORY (MAUT) 12-FACTOR SCORE:
+   Priority_Score = (Demand_Score * 0.20) +
+                    (Severity_Score * 0.15) +
+                    (Normalized_Population_Score * 0.15) +
+                    (Infrastructure_Gap_Score * 0.15) +
+                    (Accessibility_Gap_Score * 0.10) +
+                    (Socio_Economic_Impact_Score * 0.10) +
+                    (Evidence_Confidence_Score * 0.10) +
+                    (Feasibility_Score * 0.05)
+
+3. COMPOSITE VALUE DENSITY (For Knapsack Sorting):
+   Benefit_Per_Crore = (Priority_Score * (Population / 1000.0)) / max(0.1, Cost_In_Crores)
+   Value_Density = (Priority_Score * 0.60) + (Benefit_Per_Crore * 0.40)
+
+4. 0-1 KNAPSACK MIXED-INTEGER LINEAR PROGRAMMING (MILP) FORMULATION:
+   Maximize:     Σ (Value_Density_j * x_j)  for all candidate projects j in {1..N}
+   Subject to:   Σ (Cost_j * x_j) <= Total_Budget_Cap (e.g. ₹10.0 Cr)
+                 Σ (Rural_Flag_j * x_j) >= Min_Rural_Quota (e.g. 2 projects)
+                 x_j in {0, 1}
+
+================================================================================
+9. EXECUTION, LOCAL TESTING & CLOUD DEPLOYMENT GUIDE
+================================================================================
+
+LOCAL EXECUTION:
+1. Double-click `START_APP.bat` or run:
+   python server.py
+2. Access URLs in browser:
+   - Master Gateway:    http://localhost:8000/
+   - Citizen Portal:    http://localhost:8000/citizen.html
+   - Admin Suite:       http://localhost:8000/admin.html
+   - e-KYC Ledger:      http://localhost:8000/profile.html
+
+REAL SMS INTEGRATION (.env configuration):
+To send live SMS to Indian phone numbers:
+1. Sign up at https://www.fast2sms.com/
+2. Get Authorization API Key
+3. Set in .env:
+   FAST2SMS_API_KEY=your_key_here
+4. Restart server.py
+
+1-CLICK CLOUD DEPLOYMENT (Render / Cloudflare):
+- Deploy via Git on Render using Python 3 environment.
+  Build Command: pip install -r requirements.txt
+  Start Command: python server.py
+- Or instant public mobile tunnel:
+  npx cloudflared tunnel --url http://localhost:8000
+
+================================================================================
+END OF DOCUMENTATION
+================================================================================

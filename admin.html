@@ -1,0 +1,2203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lok Swar • District Administrative Command Suite (AC-134 Sundargarh)</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: "class" };</script>
+  
+  <!-- GSAP 3 Animation & Physics Engine CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <!-- React 18 & Babel CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Google Fonts: Outfit & Inter for high legibility -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+      <style>
+    html, body, #root {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      min-height: 100vh;
+      font-family: 'Outfit', sans-serif;
+    }
+    .hero-dot-pattern {
+      background-color: #f8fafc;
+      background-image: radial-gradient(rgba(100, 116, 139, 0.22) 1.2px, transparent 1.2px);
+      background-size: 24px 24px;
+    }
+    .dark .hero-dot-pattern, html.dark .hero-dot-pattern, body.dark .hero-dot-pattern {
+      background-color: #020617 !important;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1.2px, transparent 1.2px) !important;
+      background-size: 24px 24px !important;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased selection:bg-blue-600 selection:text-white">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    const Icons = {
+      GovCrest: ({ className = "w-6 h-6" }) => (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+        </svg>
+      ),
+      ShieldCheck: ({ className = "w-4 h-4 inline-block text-emerald-400" }) => (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <path d="M9 12l2 2 4-4" />
+        </svg>
+      ),
+      Search: ({ className = "w-4 h-4" }) => (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+      )
+    };
+
+    const DEMO_OFFICERS = [
+      {
+        id: "admin@sundargarh.gov.in",
+        aadhaar: "8899 1122 3344",
+        name: "Dr. K. C. Tripathy (IAS)",
+        designation: "District Magistrate & Collector",
+        department: "District Administration & Disaster Management",
+        badge: "District Head",
+        avatar: "👨‍💼",
+        jurisdiction: "AC-134 Sundargarh Entire Constituency"
+      },
+      {
+        id: "dpc.planner@sundargarh.gov.in",
+        aadhaar: "5566 7788 9900",
+        name: "Er. Rishav Yadav",
+        designation: "District Planning Coordinator (DPC)",
+        department: "Planning & Coordination Dept",
+        badge: "Budget Sanction Head",
+        avatar: "📋",
+        jurisdiction: "142 Gram Panchayats"
+      },
+      {
+        id: "ee.roads@sundargarh.gov.in",
+        aadhaar: "1234 5678 9012",
+        name: "Er. Sunita Soren",
+        designation: "Executive Engineer (R&B)",
+        department: "Works & Road Infrastructure Dept",
+        badge: "Field Ops Lead",
+        avatar: "👷‍♀️",
+        jurisdiction: "Lathikata & Bisra Blocks"
+      },
+      {
+        id: "drone.commander@sundargarh.gov.in",
+        aadhaar: "9988 7766 5544",
+        name: "Squadron Ldr. S. Patnaik",
+        designation: "Aerial Drone Telemetry Commander",
+        department: "Odisha Space Applications Centre (ORSAC) Liaison",
+        badge: "UAV Squad Lead",
+        avatar: "🛸",
+        jurisdiction: "Aerial Disaster Survey Grid"
+      }
+    ];
+
+    const INITIAL_REPORTS = [];
+
+    // Multi-Language Translation Dictionary
+    const ADMIN_TRANSLATIONS = {
+      en: {
+        nationalTitle: "Government of India",
+        subTitle: "Office of the District Magistrate & Collector, Sundargarh",
+        suiteTitle: "District Administrative Command Suite",
+        constituency: "AC-134 SUNDARGARH",
+        btnBroadcast: "Send Official Broadcast",
+        citizenPortal: "Citizen Portal",
+        gateway: "Gateway",
+        signOut: "Sign Out",
+        tabTriage: "Grievance Triage Queue",
+        tabFactCheck: "Multi-Sensor Fact Check & Grounding",
+        tabFieldAudit: "Field Officer Audits & JE Reports",
+        deptTitle: "Department & Sector Classification",
+        deptSub: "District executive triage matrix • Routing public reports to relevant departmental engineers",
+        sectorAll: "All Sectors",
+        sectorRoads: "Roads & Works",
+        sectorWater: "Water & RWSS",
+        sectorPower: "Power & Grid",
+        sectorHealth: "Health & NHM",
+        sectorAgri: "Agriculture",
+        sectorEdu: "Education",
+        totalReports: "Total Verified Reports",
+        criticalHotspots: "Critical Urgency Hotspots",
+        budgetSanctioned: "Budget Sanctioned",
+        droneFlights: "Drone Flights Deployed",
+        queueTitle: "Live Grievance & Demands Triage",
+        actionTools: "Administrative Action Tools:",
+        btnExecBrief: "Executive Brief",
+        btnMatchScheme: "Match Scheme",
+        btnDroneSurvey: "Drone Telemetry",
+        btnCitizenSms: "Citizen Dispatch",
+        btnUpdateStatus: "Update Status",
+        btnSanctionBudget: "Sanction Budget",
+        btnDeployDrone: "Deploy Drone",
+        btnFulfill: "Mark Fulfilled",
+        btnDelete: "Delete"
+      },
+      hi: {
+        nationalTitle: "भारत सरकार",
+        subTitle: "जिला मजिस्ट्रेट एवं कलेक्टर कार्यालय, सुंदरगढ़",
+        suiteTitle: "जिला प्रशासनिक कमांड सूट",
+        constituency: "एसी-134 सुंदरगढ़",
+        btnBroadcast: "आधिकारिक घोषणा भेजें",
+        citizenPortal: "नागरिक पोर्टल",
+        gateway: "मुख्य द्वार",
+        signOut: "साइन आउट",
+        tabTriage: "शिकायत ट्राइएज कतार",
+        tabFactCheck: "बहु-सेंसर तथ्य-जांच व साक्ष्य",
+        tabFieldAudit: "क्षेत्रीय अधिकारी ऑडिट व जेई रिपोर्ट",
+        deptTitle: "विभाग एवं क्षेत्र वर्गीकरण",
+        deptSub: "जिला प्रशासनिक वर्गीकरण मैट्रिक्स • संबंधित विभागीय इंजीनियरों को शिकायतें अग्रेषित करना",
+        sectorAll: "सभी विभाग",
+        sectorRoads: "सड़क एवं निर्माण",
+        sectorWater: "पेयजल एवं स्वच्छता",
+        sectorPower: "विद्युत एवं ग्रिड",
+        sectorHealth: "स्वास्थ्य एवं एनएचएम",
+        sectorAgri: "कृषि एवं सिंचाई",
+        sectorEdu: "शिक्षा विभाग",
+        totalReports: "कुल सत्यापित शिकायतें",
+        criticalHotspots: "अति संवेदनशील हॉटस्पॉट",
+        budgetSanctioned: "स्वीकृत बजट",
+        droneFlights: "तैनात ड्रोन उड़ानें",
+        queueTitle: "लाइव जनसमस्या एवं मांग ट्राइएज",
+        actionTools: "प्रशासनिक त्वरित उपकरण:",
+        btnExecBrief: "कार्यकारी सारांश",
+        btnMatchScheme: "योजना मिलान",
+        btnDroneSurvey: "ड्रोन सर्वे",
+        btnCitizenSms: "नागरिक एसएमएस",
+        btnUpdateStatus: "स्थिति बदलें",
+        btnSanctionBudget: "बजट स्वीकृति",
+        btnDeployDrone: "ड्रोन भेजें",
+        btnFulfill: "समाधान पूर्ण",
+        btnDelete: "हटाएं"
+      },
+      or: {
+        nationalTitle: "ଭାରତ ସରକାର",
+        subTitle: "ଜିଲ୍ଲାପାଳ ଏବଂ ଜିଲ୍ଲା ମାଜିଷ୍ଟ୍ରେଟଙ୍କ କାର୍ଯ୍ୟାଳୟ, ସୁନ୍ଦରଗଡ଼",
+        suiteTitle: "ଜିଲ୍ଲା ପ୍ରଶାସନିକ କମାଣ୍ଡ ସୁଇଟ୍",
+        constituency: "AC-୧୩୪ ସୁନ୍ଦରଗଡ଼",
+        btnBroadcast: "ସରକାରୀ ଘୋଷଣା ପ୍ରେରଣ",
+        citizenPortal: "ନାଗରିକ ପୋର୍ଟାଲ୍",
+        gateway: "ମୁଖ୍ୟ ଦ୍ୱାର",
+        signOut: "ସାଇନ୍ ଆଉଟ୍",
+        tabTriage: "ଅଭିଯୋଗ ଟ୍ରାଇଏଜ୍ ତାଲିକା",
+        tabFactCheck: "ବହୁ-ସେନ୍ସର ତଥ୍ୟ ଯାଞ୍ଚ ଓ ପ୍ରମାଣ",
+        tabFieldAudit: "କ୍ଷେତ୍ର ଅଧିକାରୀ ଅଡିଟ୍ ଓ JE ରିପୋର୍ଟ",
+        deptTitle: "ବିଭାଗ ଓ କ୍ଷେତ୍ର ବର୍ଗୀକରଣ",
+        deptSub: "ଜିଲ୍ଲା ପ୍ରଶାସନିକ କାର୍ଯ୍ୟାନୁଷ୍ଠାନ ମ୍ୟାଟ୍ରିକ୍ସ • ବିଭାଗୀୟ ଯନ୍ତ୍ରୀଙ୍କୁ ଅଭିଯୋଗ ପ୍ରେରଣ",
+        sectorAll: "ସମସ୍ତ ବିଭାଗ",
+        sectorRoads: "ରାସ୍ତା ଓ ନିର୍ମାଣ",
+        sectorWater: "ପାନୀୟ ଜଳ (RWSS)",
+        sectorPower: "ବିଦ୍ୟୁତ ଓ ଗ୍ରୀଡ଼",
+        sectorHealth: "ସ୍ୱାସ୍ଥ୍ୟ (NHM)",
+        sectorAgri: "କୃଷି ଓ ଜଳସେଚନ",
+        sectorEdu: "ବିଦ୍ୟାଳୟ ଶିକ୍ଷା",
+        totalReports: "ମୋଟ ଯାଞ୍ଚ ହୋଇଥିବା ଅଭିଯୋଗ",
+        criticalHotspots: "ଜରୁରୀ ସମସ୍ୟା ହଟସ୍ପଟ୍",
+        budgetSanctioned: "ମଞ୍ଜୁର ହୋଇଥିବା ବଜେଟ",
+        droneFlights: "ଡ୍ରୋନ୍ ସର୍ଭେ ଉଡ଼ାଣ",
+        queueTitle: "ଲାଇଭ୍ ଅଭିଯୋଗ ଟ୍ରାଇଏଜ୍",
+        actionTools: "ପ୍ରଶାସନିକ ଉପକରଣ:",
+        btnExecBrief: "କାର୍ଯ୍ୟନିର୍ବାହୀ ସାରାଂଶ",
+        btnMatchScheme: "ଯୋଜନା ମେଳଣ",
+        btnDroneSurvey: "ଡ୍ରୋନ୍ ସର୍ଭେ",
+        btnCitizenSms: "ନାଗରିକ ଏସଏମଏସ",
+        btnUpdateStatus: "ସ୍ଥିତି ଅଦ୍ୟତନ",
+        btnSanctionBudget: "ବଜେଟ୍ ମଞ୍ଜୁର",
+        btnDeployDrone: "ଡ୍ରୋନ୍ ପ୍ରେରଣ",
+        btnFulfill: "ସମାଧାନ ସମ୍ପୂର୍ଣ୍ଣ",
+        btnDelete: "ହଟାନ୍ତୁ"
+      },
+      bho: {
+        nationalTitle: "भारत सरकार",
+        subTitle: "जिला मजिस्ट्रेट आ कलेक्टर कार्यालय, सुंदरगढ़",
+        suiteTitle: "जिला प्रशासनिक कमांड सूट",
+        constituency: "एसी-134 सुंदरगढ़",
+        btnBroadcast: "सरकारी घोषणा भेजीं",
+        citizenPortal: "नागरिक पोर्टल",
+        gateway: "मुख्य द्वार",
+        signOut: "साइन आउट",
+        tabTriage: "शिकायत ट्राइएज कतार",
+        tabFactCheck: "सेंसर तथ्य-जांच आ साक्ष्य",
+        tabFieldAudit: "क्षेत्रीय अधिकारी ऑडिट आ जेई रिपोर्ट",
+        deptTitle: "विभाग आ क्षेत्र वर्गीकरण",
+        deptSub: "जिला प्रशासनिक वर्गीकरण • संबंधित इंजीनियरन के रिपोट भेजे के व्यवस्था",
+        sectorAll: "सभ्भे विभाग",
+        sectorRoads: "सड़क आ निर्माण",
+        sectorWater: "नल जल आ पानी",
+        sectorPower: "बिजली आ ग्रिड",
+        sectorHealth: "स्वास्थ्य विभाग",
+        sectorAgri: "खेती आ सिंचाई",
+        sectorEdu: "शिक्षा विभाग",
+        totalReports: "कुल जांचल रिपोट",
+        criticalHotspots: "जरूरी हॉटस्पॉट",
+        budgetSanctioned: "मंजूर बजट",
+        droneFlights: "ड्रोन उड़ान",
+        queueTitle: "लाइव समस्या समाधान",
+        actionTools: "प्रशासनिक औजार:",
+        btnExecBrief: "मुख्य सारांश",
+        btnMatchScheme: "योजना जोड़ें",
+        btnDroneSurvey: "ड्रोन जांच",
+        btnCitizenSms: "नागरिक एसएमएस",
+        btnUpdateStatus: "स्थिति बदलें",
+        btnSanctionBudget: "बजट पास करीं",
+        btnDeployDrone: "ड्रोन भेजीं",
+        btnFulfill: "काम पूरा भइल",
+        btnDelete: "हटाईं"
+      },
+      bn: {
+        nationalTitle: "ভারত সরকার",
+        subTitle: "জেলাশাসক ও কালেক্টরের কার্যালয়, সুন্দরগড়",
+        suiteTitle: "জেলা প্রশাসনিক কমান্ড স্যুট",
+        constituency: "এসি-১৩৪ সুন্দরগড়",
+        btnBroadcast: "অফিসিয়াল ঘোষণা পাঠান",
+        citizenPortal: "নাগরিক পোর্টাল",
+        gateway: "প্রবেশদ্বার",
+        signOut: "সাইন আউট",
+        tabTriage: "অভিযোগ ট্রায়াজ সারি",
+        tabFactCheck: "বহু-সেন্সর সত্যতা যাচাই ও প্রমাণ",
+        tabFieldAudit: "ফিল্ড অফিসার অডিট ও জেআই রিপোর্ট",
+        deptTitle: "বিভাগ ও ক্ষেত্র শ্রেণীবিন্যাস",
+        deptSub: "জেলা প্রশাসনিক ট্রায়াজ ম্যাট্রিক্স • সংশ্লিষ্ট ইঞ্জিনিয়ারদের কাছে অভিযোগ প্রেরণ",
+        sectorAll: "সকল বিভাগ",
+        sectorRoads: "সড়ক ও নির্মাণ",
+        sectorWater: "পানীয় জল ও আরডাব্লিউএসএস",
+        sectorPower: "বিদ্যুৎ ও গ্রিড",
+        sectorHealth: "স্বাস্থ্য ও এনএইচএম",
+        sectorAgri: "কৃষি ও সেচ",
+        sectorEdu: "শিক্ষা বিভাগ",
+        totalReports: "মোট যাচাইকৃত অভিযোগ",
+        criticalHotspots: "জরুরি হটস্পট",
+        budgetSanctioned: "অনুমোদিত বাজেট",
+        droneFlights: "ড্রোন সমীক্ষা ফ্লাইট",
+        queueTitle: "লাইভ অভিযোগ ট্রায়াজ",
+        actionTools: "প্রশাসনিক সরঞ্জাম:",
+        btnExecBrief: "সারসংক্ষেপ",
+        btnMatchScheme: "যোজনা মেলান",
+        btnDroneSurvey: "ড্রোন সমীক্ষা",
+        btnCitizenSms: "নাগরিক এসএমএস",
+        btnUpdateStatus: "স্ট্যাটাস আপডেট",
+        btnSanctionBudget: "বাজেট অনুমোদন",
+        btnDeployDrone: "ড্রোন প্রেরণ",
+        btnFulfill: "সমাধান সম্পন্ন",
+        btnDelete: "মুছুন"
+      }
+    };
+
+    // Comprehensive Multi-Dialect Regional Address & Location Translator
+    const LOCATION_TRANSLATIONS = {
+      "Janla": { hi: "जानला", or: "ଜାନଳା", bn: "জানলা", bho: "जानला", en: "Janla" },
+      "Khordha": { hi: "खोरधा", or: "ଖୋର୍ଦ୍ଧା", bn: "খোরধা", bho: "खोरधा", en: "Khordha" },
+      "Khurda": { hi: "खोरधा", or: "ଖୋର୍ଦ୍ଧା", bn: "খোরধা", bho: "खोरधा", en: "Khordha" },
+      "Bhubaneswar": { hi: "भुवनेश्वर", or: "ଭୁବନେଶ୍ୱର", bn: "ভুবনেশ্বর", bho: "भुवनेश्वर", en: "Bhubaneswar" },
+      "Cuttack": { hi: "कटक", or: "କଟକ", bn: "কটক", bho: "कटक", en: "Cuttack" },
+      "Sundargarh": { hi: "सुंदरगढ़", or: "ସୁନ୍ଦରଗଡ଼", bn: "সুন্দরগড়", bho: "सुंदरगढ़", en: "Sundargarh" },
+      "Sundergarh": { hi: "सुंदरगढ़", or: "ସୁନ୍ଦରଗଡ଼", bn: "সুন্দরগড়", bho: "सुंदरगढ़", en: "Sundargarh" },
+      "AC-134 Sundargarh": { hi: "एसी-134 सुंदरगढ़", or: "AC-୧୩୪ ସୁନ୍ଦରଗଡ଼", bn: "এসি-১৩৪ সুন্দরগড়", bho: "एसी-134 सुंदरगढ़", en: "AC-134 Sundargarh" },
+      "AC-134 SUNDARGARH": { hi: "एसी-134 सुंदरगढ़", or: "AC-୧୩୪ ସୁନ୍ଦରଗଡ଼", bn: "এসি-১৩৪ সুন্দরগড়", bho: "एसी-134 सुंदरगढ़", en: "AC-134 SUNDARGARH" },
+      "Sambalpur": { hi: "संबलपुर", or: "ସମ୍ବଲପୁର", bn: "সম্বলপুর", bho: "संबलपुर", en: "Sambalpur" },
+      "Rourkela": { hi: "राउरकेला", or: "ରାଉରକେଲା", bn: "রাউরকেল্লা", bho: "राउरकेला", en: "Rourkela" },
+      "Puri": { hi: "पुरी", or: "ପୁରୀ", bn: "পুরী", bho: "पुरी", en: "Puri" },
+      "Balasore": { hi: "बालेश्वर", or: "ବାଲେଶ୍ୱର", bn: "বালেশ্বর", bho: "बालेश्वर", en: "Balasore" },
+      "Baleswar": { hi: "बालेश्वर", or: "ବାଲେଶ୍ୱର", bn: "বালেশ্বর", bho: "बालेश्वर", en: "Baleswar" },
+      "Berhampur": { hi: "ब्रह्मपुर", or: "ବ୍ରହ୍ମପୁର", bn: "ব্রহ্মপুর", bho: "ब्रह्मपुर", en: "Berhampur" },
+      "Brahmapur": { hi: "ब्रह्मपुर", or: "ବ୍ରହ୍ମପୁର", bn: "ব্রহ্মপুর", bho: "ब्रह्मपुर", en: "Brahmapur" },
+      "Kalyanpur": { hi: "कल्याणपुर", or: "କଲ୍ୟାଣପୁର", bn: "কল্যাণপুর", bho: "कल्याणपुर", en: "Kalyanpur" },
+      "Jhirpani": { hi: "झिरपानी", or: "ଝିରପାଣି", bn: "ঝিরপানি", bho: "झिरपानी", en: "Jhirpani" },
+      "Bhojpur": { hi: "भोजपुर", or: "ଭୋଜପୁର", bn: "ভোজপুর", bho: "भोजपुर", en: "Bhojpur" },
+      "Patna": { hi: "पटना", or: "ପାଟନା", bn: "পাটনা", bho: "पटना", en: "Patna" },
+      "Gaya": { hi: "गया", or: "ଗୟା", bn: "গয়া", bho: "गया", en: "Gaya" },
+      "Muzaffarpur": { hi: "मुजफ्फरपुर", or: "ମୁଜାଫରପୁର", bn: "মুজাফফরপুর", bho: "मुजफ्फरपुर", en: "Muzaffarpur" },
+      "Siwan": { hi: "सीवान", or: "ସିୱାନ", bn: "সিওয়ান", bho: "सीवान", en: "Siwan" },
+      "Chapra": { hi: "छपरा", or: "ଛପରା", bn: "ছাপরা", bho: "छपरा", en: "Chapra" },
+      "Kolkata": { hi: "कोलकाता", or: "କୋଲକାତା", bn: "কলকাতা", bho: "कोलकाता", en: "Kolkata" },
+      "Howrah": { hi: "हावड़ा", or: "ହାୱଡ଼ା", bn: "হাওড়া", bho: "हावड़ा", en: "Howrah" },
+      "Asansol": { hi: "आसनसोल", or: "ଆସନସୋଲ", bn: "আসানসোল", bho: "आसनसोल", en: "Asansol" },
+      "Delhi": { hi: "दिल्ली", or: "ଦିଲ୍ଲୀ", bn: "দিল্লি", bho: "दिल्ली", en: "Delhi" },
+      "Odisha": { hi: "ओडिशा", or: "ଓଡ଼ିଶା", bn: "ওড়িশা", bho: "ओडिशा", en: "Odisha" },
+      "Orissa": { hi: "ओडिशा", or: "ଓଡ଼ିଶା", bn: "ওড়িশା", bho: "ओडिशा", en: "Odisha" },
+      "Bihar": { hi: "बिहार", or: "ବିହାର", bn: "বিহার", bho: "बिहार", en: "Bihar" },
+      "West Bengal": { hi: "पश्चिम बंगाल", or: "ପଶ୍ଚିମ ବଙ୍ଗ", bn: "পশ্চিমবঙ্গ", bho: "पश्चिम बंगाल", en: "West Bengal" },
+      "Uttar Pradesh": { hi: "उत्तर प्रदेश", or: "ଉତ୍ତର ପ୍ରଦେଶ", bn: "উত্তর প্রদেশ", bho: "उत्तर प्रदेश", en: "Uttar Pradesh" },
+      "Madhya Pradesh": { hi: "मध्य प्रदेश", or: "ମଧ୍ୟ ପ୍ରଦେଶ", bn: "মধ্য প্রদেশ", bho: "मध्य प्रदेश", en: "Madhya Pradesh" },
+      "Rajasthan": { hi: "राजस्थान", or: "ରାଜସ୍ଥାନ", bn: "রাজস্থান", bho: "राजस्थान", en: "Rajasthan" },
+      "Haryana": { hi: "हरियाणा", or: "ହରିୟାଣା", bn: "হরিয়ানা", bho: "हरियाणा", en: "Haryana" },
+      "Jharkhand": { hi: "झारखंड", or: "ଝାଡ଼ଖଣ୍ଡ", bn: "ঝাড়খণ্ড", bho: "झारखंड", en: "Jharkhand" },
+      "Chhattisgarh": { hi: "छत्तीसगढ़", or: "ଛତିଶଗଡ଼", bn: "ছত্তিশগড়", bho: "छत्तीसगढ़", en: "Chhattisgarh" },
+      "Ward": { hi: "वार्ड", or: "ୱାର୍ଡ", bn: "ওয়ার্ড", bho: "वार्ड", en: "Ward" },
+      "GP": { hi: "ग्राम पंचायत", or: "ଗ୍ରାମ ପଞ୍ଚାୟତ", bn: "গ্রাম পঞ্চায়েত", bho: "ग्राम पंचायत", en: "GP" },
+      "Gram Panchayat": { hi: "ग्राम पंचायत", or: "ଗ୍ରାମ ପଞ୍ଚାୟତ", bn: "গ্রাম পঞ্চায়েত", bho: "ग्राम पंचायत", en: "Gram Panchayat" },
+      "District": { hi: "जिला", or: "ଜିଲ୍ଲା", bn: "জেলা", bho: "जिला", en: "District" },
+      "Region": { hi: "क्षेत्र", or: "ଅଞ୍ଚଳ", bn: "অঞ্চল", bho: "इलाका", en: "Region" },
+      "Current Location": { hi: "वर्तमान स्थान", or: "ବର୍ତ୍ତମାନ ସ୍ଥାନ", bn: "বর্তমান অবস্থান", bho: "अबो के लोकेशन", en: "Current Location" },
+      "North India": { hi: "उत्तर भारत", or: "ଉତ୍ତର ଭାରତ", bn: "উত্তর ভারত", bho: "उत्तर भारत", en: "North India" },
+      "Northern India Region": { hi: "उत्तर भारत क्षेत्र", or: "ଉତ୍ତର ଭାରତ ଅଞ୍ଚଳ", bn: "উত্তর ভারত অঞ্চল", bho: "उत्तर भारत इलाका", en: "Northern India Region" }
+    };
+
+    const localizeAddress = (addressStr, lang = 'en') => {
+      if (!addressStr) return "";
+      if (lang === 'en') return addressStr;
+
+      let result = String(addressStr);
+
+      Object.keys(LOCATION_TRANSLATIONS).forEach(key => {
+        const regex = new RegExp(`\\b${key}\\b`, 'gi');
+        const transObj = LOCATION_TRANSLATIONS[key];
+        const replacement = transObj[lang] || transObj.hi || key;
+        result = result.replace(regex, replacement);
+      });
+
+      return result;
+    };
+
+    const getDrawerNavItems = (lang = 'en') => {
+      const headers = {
+        en: { header: "District Command Suite", constituency: "AC-134 SUNDARGARH", section: "Administrative Modules", close: "Close Navigation Menu" },
+        hi: { header: "जिला प्रशासनिक सूट", constituency: "सुंदरगढ़ जिला", section: "प्रशासनिक सेवाएं", close: "मेनू बंद करें" },
+        or: { header: "ଜିଲ୍ଲା ପ୍ରଶାସନିକ ସୁଇଟ୍", constituency: "ସୁନ୍ଦରଗଡ଼ ଜିଲ୍ଲା", section: "ପ୍ରଶାସନିକ ମଡ୍ୟୁଲ୍", close: "ମେନୁ ବନ୍ଦ କରନ୍ତୁ" },
+        bho: { header: "जिला प्रशासनिक सूट", constituency: "सुंदरगढ़ जिला", section: "प्रशासनिक सेवा", close: "मेनू बंद करीं" },
+        bn: { header: "জেলা প্রশাসনিক স্যুট", constituency: "সুন্দরগড় জেলা", section: "প্রশাসনিক মডিউল", close: "মেনু বন্ধ করুন" }
+      };
+      const items = {
+        en: [
+          { tabId: "triage", icon: "📊", title: "Live Grievance Triage Queue", desc: "Prioritize, sanction budget and dispatch orders", link: "#/triage" },
+          { tabId: "data_fusion", icon: "🛰️", title: "Multi-Sensor Ground Truth & Fact Check", desc: "Sentinel-2 satellite, IMD rainfall & IoT sensors", link: "#/data_fusion" },
+          { tabId: "field_officer", icon: "📋", title: "Field Officer Audits & JE Inspections", desc: "Junior Engineer physical on-site verification reports", link: "#/field_officer" },
+          { tabId: null, icon: "🏛️", title: "Citizen Portal", desc: "Access public grievance intake & priority ledger", link: "citizen.html" },
+          { tabId: null, icon: "🌐", title: "National Gateway", desc: "Return to central identity portal", link: "index.html" }
+        ],
+        hi: [
+          { tabId: "triage", icon: "📊", title: "लाइव जनसमस्या व मांग ट्राइएज", desc: "प्राथमिकता निर्धारण, बजट स्वीकृति व आदेश", link: "#/triage" },
+          { tabId: "data_fusion", icon: "🛰️", title: "बहु-सेंसर तथ्य-जांच व सैटेलाइट सत्यापन", desc: "सेंटिनल उपग्रह, वर्षामापी व आईओटी सेंसर मिलान", link: "#/data_fusion" },
+          { tabId: "field_officer", icon: "📋", title: "क्षेत्रीय अधिकारी ऑडिट व जेई निरीक्षण", desc: "कनिष्ठ अभियंता ऑन-साइट सत्यापन रिपोर्ट", link: "#/field_officer" },
+          { tabId: null, icon: "🏛️", title: "नागरिक पोर्टल", desc: "नागरिक शिकायत व जन प्राथमिकता पोर्टल", link: "citizen.html" },
+          { tabId: null, icon: "🌐", title: "राष्ट्रीय मुख्य द्वार", desc: "केंद्रीय पहचान पोर्टल", link: "index.html" }
+        ],
+        or: [
+          { tabId: "triage", icon: "📊", title: "ଲାଇଭ୍ ଅଭିଯୋଗ ଟ୍ରାଇଏଜ୍ ତାଲିକା", desc: "ପ୍ରାଥମିକତା ନିର୍ଦ୍ଧାରଣ, ବଜେଟ୍ ମଞ୍ଜୁରୀ ଓ ଆଦେଶ", link: "#/triage" },
+          { tabId: "data_fusion", icon: "🛰️", title: "ବହୁ-ସେନ୍ସର ତଥ୍ୟ ଯାଞ୍ଚ ଓ ସାଟେଲାଇଟ୍ ପ୍ରମାଣ", desc: "ସେଣ୍ଟିନେଲ୍-୨ ଉପଗ୍ରହ, ବୃଷ୍ଟିପାତ ଓ IoT ସେନ୍ସର", link: "#/data_fusion" },
+          { tabId: "field_officer", icon: "📋", title: "କ୍ଷେତ୍ର ଅଧିକାରୀ ଅଡିଟ୍ ଓ JE ଯାଞ୍ଚ", desc: "କନିଷ୍ଠ ଯନ୍ତ୍ରୀ ସାଇଟ୍ ଯାଞ୍ଚ ଓ ଆକଳନ ରିପୋର୍ଟ", link: "#/field_officer" },
+          { tabId: null, icon: "🏛️", title: "ନାଗରିକ ପୋର୍ଟାଲ୍", desc: "ନାଗରିକ ଅଭିଯୋଗ ଓ ଜନ ପ୍ରାଥମିକତା ଖାତା", link: "citizen.html" },
+          { tabId: null, icon: "🌐", title: "ମୁଖ୍ୟ ପ୍ରବେଶ ଦ୍ୱାର", desc: "କେନ୍ଦ୍ରୀୟ ପୋର୍ଟାଲ୍", link: "index.html" }
+        ],
+        bho: [
+          { tabId: "triage", icon: "📊", title: "लाइव समस्या ट्राइएज", desc: "प्राथमिकता निर्धारण, बजट मंजूरी आ आदेश", link: "#/triage" },
+          { tabId: "data_fusion", icon: "🛰️", title: "सेंसर तथ्य-जांच आ सैटेलाइट मिलान", desc: "सैटेलाइट, बारिश आ आईओटी सेंसर जांच", link: "#/data_fusion" },
+          { tabId: "field_officer", icon: "📋", title: "क्षेत्रीय अधिकारी ऑडिट आ जेई रिपोर्ट", desc: "इंजीनियर ऑन-साइट जांच आ रिपोर्ट", link: "#/field_officer" },
+          { tabId: null, icon: "🏛️", title: "नागरिक पोर्टल", desc: "नागरिक शिकायत पोर्टल", link: "citizen.html" },
+          { tabId: null, icon: "🌐", title: "मुख्य द्वार", desc: "केंद्रीय पोर्टल", link: "index.html" }
+        ],
+        bn: [
+          { tabId: "triage", icon: "📊", title: "লাইভ অভিযোগ ট্রায়াজ কিউ", desc: "অগ্রাধিকার নির্ধারণ, বাজেট অনুমোদন ও আদেশ", link: "#/triage" },
+          { tabId: "data_fusion", icon: "🛰️", title: "বহু-সেন্সর সত্যতা যাচাই ও স্যাটেলাইট গ্রাউন্ডিং", desc: "সেন্টিনেল-২ স্যাটেলাইট, বৃষ্টিপাত ও IoT সেন্সর", link: "#/data_fusion" },
+          { tabId: "field_officer", icon: "📋", title: "ফিল্ড অফিসার অডিট ও জেআই পরিদর্শন", desc: "জুনিয়র ইঞ্জিনিয়ার অন-সাইট যাচাই রিপোর্ট", link: "#/field_officer" },
+          { tabId: null, icon: "🏛️", title: "নাগরিক পোর্টাল", desc: "নাগরিক অভিযোগ ও জন অগ্রাধিকার খতিয়ান", link: "citizen.html" },
+          { tabId: null, icon: "🌐", title: "জাতীয় প্রবেশদ্বার", desc: "মূল পোর্টাল", link: "index.html" }
+        ]
+      };
+      const h = headers[lang] || headers.en;
+      const it = items[lang] || items.en;
+      return { ...h, items: it };
+    };
+
+    function AdminSoftwareSuite() {
+      // 0. Language State (Default: English 'en')
+      const [selectedLang, setSelectedLang] = useState(() => {
+        try {
+          return localStorage.getItem('lok_swar_selected_language') || 'en';
+        } catch(e) {
+          return 'en';
+        }
+      });
+
+      const handleLanguageChange = (newLang) => {
+        setSelectedLang(newLang);
+        try {
+          localStorage.setItem('lok_swar_selected_language', newLang);
+          window.dispatchEvent(new Event('storage'));
+        } catch(e) {}
+        playChime('tap');
+      };
+
+      useEffect(() => {
+        const onStorage = (e) => {
+          const val = (e && e.key === 'lok_swar_selected_language' && e.newValue) 
+            || localStorage.getItem('lok_swar_selected_language') 
+            || 'en';
+          setSelectedLang(val);
+        };
+        window.addEventListener('storage', onStorage);
+        return () => window.removeEventListener('storage', onStorage);
+      }, []);
+
+      const t = ADMIN_TRANSLATIONS[selectedLang] || ADMIN_TRANSLATIONS.en;
+
+      // 1. Authentication State (Seamless Government Officer Session)
+      const [currentUser, setCurrentUser] = useState(() => {
+        try {
+          const saved = localStorage.getItem('lok_swar_admin_suite_session') || localStorage.getItem('lok_swar_admin_session');
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            if (parsed && parsed.name) return parsed;
+          }
+        } catch(e) {}
+        return DEMO_OFFICERS[0];
+      });
+      const [isAuthenticated, setIsAuthenticated] = useState(true);
+      const [loginId, setLoginId] = useState("admin@sundargarh.gov.in");
+      const [loginPassword, setLoginPassword] = useState("admin123");
+      const [loginError, setLoginError] = useState("");
+
+      // 2. Navigation State & Browser History Sync
+      const [activeTab, setActiveTab] = useState(() => {
+        const hash = window.location.hash.replace('#/', '') || 'triage';
+        return hash;
+      });
+      const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem('lok_swar_theme_mode') === 'dark');
+      useEffect(() => {
+        if (isDarkMode) {
+          document.documentElement.classList.add('dark');
+          document.body.classList.add('dark');
+          document.body.style.backgroundColor = '#020617';
+          document.body.style.color = '#f8fafc';
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.body.classList.remove('dark');
+          document.body.style.backgroundColor = '#f8fafc';
+          document.body.style.color = '#0f172a';
+        }
+      }, [isDarkMode]);
+
+      const toggleDarkMode = () => {
+        setIsDarkMode(prev => {
+          const next = !prev;
+          try {
+            localStorage.setItem('lok_swar_theme_mode', next ? 'dark' : 'light');
+          } catch(e) {}
+          return next;
+        });
+      };
+      const [searchQuery, setSearchQuery] = useState("");
+      const [filterCategory, setFilterCategory] = useState("All");
+
+      // Browser History
+      useEffect(() => {
+        const handlePopState = () => {
+          const hash = window.location.hash.replace('#/', '') || 'triage';
+          setActiveTab(hash);
+        };
+        window.addEventListener('popstate', handlePopState);
+        return () => window.removeEventListener('popstate', handlePopState);
+      }, []);
+
+      const navigateTab = (tabName) => {
+        setActiveTab(tabName);
+        window.history.pushState({ tab: tabName }, '', `#/${tabName}`);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      // 3. Database State (Connected to MongoDB lok_swar_db & Local Storage)
+      const getInitialReports = () => {
+        try {
+          const custom = JSON.parse(localStorage.getItem('lok_swar_custom_grievances') || '[]');
+          return custom.filter(r => !['TKT-101', 'TKT-102', 'TKT-103', 'TKT-104', 'PROB-101', 'PROB-102'].includes(r.id));
+        } catch (e) {
+          return [];
+        }
+      };
+
+      const [reports, setReports] = useState(getInitialReports);
+      const [selectedReport, setSelectedReport] = useState(() => getInitialReports()[0] || null);
+
+      // Load live grievances from MongoDB API & Local Storage
+      const refreshGrievances = () => {
+        fetch('/api/grievances/list')
+          .then(res => res.json())
+          .then(data => {
+            if (!data) return;
+            const list = data.reports || data.data || [];
+            if (Array.isArray(list)) {
+              const cleanList = list.filter(r => !['TKT-101', 'TKT-102', 'TKT-103', 'TKT-104', 'PROB-101', 'PROB-102'].includes(r.id));
+              setReports(cleanList);
+              setSelectedReport(prev => {
+                if (!prev) return cleanList[0] || null;
+                return cleanList.find(r => r.id === prev.id) || cleanList[0] || null;
+              });
+            }
+          })
+          .catch(() => {
+            const localData = getInitialReports();
+            setReports(localData);
+            setSelectedReport(prev => {
+              if (!prev) return localData[0] || null;
+              return localData.find(r => r.id === prev.id) || localData[0] || null;
+            });
+          });
+      };
+
+      useEffect(() => {
+        refreshGrievances();
+        const pollTimer = setInterval(refreshGrievances, 3000);
+        return () => clearInterval(pollTimer);
+      }, []);
+
+      // 4. Modals State
+      const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
+      const [isDroneModalOpen, setIsDroneModalOpen] = useState(false);
+      const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+      const [isOrderPrintModalOpen, setIsOrderPrintModalOpen] = useState(false);
+      const [isBroadcastModalOpen, setIsBroadcastModalOpen] = useState(false);
+
+      // Form State for Modals
+      const [inputBudgetAmount, setInputBudgetAmount] = useState("4.20");
+      const [inputFundingScheme, setInputFundingScheme] = useState("SDRF (State Disaster Relief Fund)");
+      const [inputNewStatus, setInputNewStatus] = useState("Budget Sanctioned");
+      const [inputOfficerName, setInputOfficerName] = useState("Er. Sunita Soren (EE)");
+      const [inputOfficerNote, setInputOfficerNote] = useState("");
+      const [broadcastTitle, setBroadcastTitle] = useState("");
+      const [broadcastMessage, setBroadcastMessage] = useState("");
+      const [broadcastGP, setBroadcastGP] = useState("All Gram Panchayats");
+
+      const [selectedDroneModel, setSelectedDroneModel] = useState("Garuda-V4 Quadcopter (Thermal + 4K Optical)");
+      const [selectedFlightAltitude, setSelectedFlightAltitude] = useState("120m AGL");
+      const [isDroneSimulating, setIsDroneSimulating] = useState(false);
+      const [droneTelemetryProgress, setDroneTelemetryProgress] = useState(0);
+
+      // Notification Toast
+            // Drawer State & GSAP Animations
+      const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+      const drawerRef = useRef(null);
+      const overlayRef = useRef(null);
+
+      const openDrawer = () => {
+        setIsDrawerOpen(true);
+        playChime('tap');
+      };
+
+      const closeDrawer = () => {
+        if (drawerRef.current && overlayRef.current && typeof gsap !== 'undefined') {
+          gsap.to(drawerRef.current, { x: -350, duration: 0.25, ease: 'power2.in' });
+          gsap.to(overlayRef.current, { opacity: 0, duration: 0.25, onComplete: () => setIsDrawerOpen(false) });
+        } else {
+          setIsDrawerOpen(false);
+        }
+      };
+
+      useEffect(() => {
+        if (isDrawerOpen && drawerRef.current && overlayRef.current && typeof gsap !== 'undefined') {
+          gsap.fromTo(overlayRef.current, { opacity: 0 }, { opacity: 1, duration: 0.25 });
+          gsap.fromTo(drawerRef.current, { x: -350 }, { x: 0, duration: 0.35, ease: 'back.out(1.2)' });
+        }
+      }, [isDrawerOpen]);
+
+      const [toastMsg, setToastMsg] = useState("");
+
+      const showToast = (msg) => {
+        setToastMsg(msg);
+        setTimeout(() => setToastMsg(""), 4000);
+      };
+
+      const playChime = () => {
+        // Silent for professional government portal
+      };
+
+      // Handle Login (12-Digit Aadhaar ID + Official Password)
+      const handleLoginSubmit = async (e) => {
+        e.preventDefault();
+        const cleanAadhaar = loginId.replace(/\s+/g, '').replace(/-/g, '');
+        try {
+          const res = await fetch('/api/auth/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ aadhaar: cleanAadhaar, password: loginPassword })
+          });
+          const data = await res.json();
+          if (data.success && data.officer) {
+            setCurrentUser(data.officer);
+            setIsAuthenticated(true);
+            localStorage.setItem('lok_swar_admin_suite_session', JSON.stringify(data.officer));
+            playChime('success');
+            showToast(`Welcome, ${data.officer.name} (${data.officer.designation})`);
+            return;
+          }
+        } catch(err) {}
+
+        const matched = DEMO_OFFICERS.find(o => 
+          o.id.toLowerCase() === loginId.toLowerCase() || 
+          o.aadhaar?.replace(/\s+/g, '') === cleanAadhaar
+        );
+        if (matched || loginPassword === 'admin123' || loginPassword === 'admin') {
+          const userObj = matched || DEMO_OFFICERS[0];
+          setCurrentUser(userObj);
+          setIsAuthenticated(true);
+          localStorage.setItem('lok_swar_admin_suite_session', JSON.stringify(userObj));
+          playChime('success');
+          showToast(`Welcome, ${userObj.name} (${userObj.designation})`);
+        } else {
+          setLoginError("Invalid credentials. Try Aadhaar: 8899 1122 3344 / admin123");
+        }
+      };
+
+      const handlePersonaSwitch = (officer) => {
+        setCurrentUser(officer);
+        setIsAuthenticated(true);
+        localStorage.setItem('lok_swar_admin_suite_session', JSON.stringify(officer));
+        playChime('success');
+        showToast(`Switched active session to: ${officer.name} (${officer.badge})`);
+      };
+
+      const handleLogout = () => {
+        setIsAuthenticated(false);
+        setCurrentUser(null);
+        localStorage.removeItem('lok_swar_admin_suite_session');
+        playChime('tap');
+      };
+
+      // Status Update Action
+      const handleCommitStatusUpdate = (e) => {
+        e.preventDefault();
+        playChime('success');
+        let stageNum = 1;
+        if (inputNewStatus === "Field Audit Completed") stageNum = 2;
+        else if (inputNewStatus === "Budget Sanctioned") stageNum = 3;
+        else if (inputNewStatus === "Work In Progress" || inputNewStatus === "Drone Deployed") stageNum = 4;
+        else if (inputNewStatus === "Resolved") stageNum = 5;
+
+        const newNote = inputOfficerNote.trim() ? {
+          date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }),
+          author: activeUser.name,
+          text: inputOfficerNote.trim()
+        } : null;
+
+        setReports(prev => prev.map(r => {
+          if (r.id === selectedReport.id) {
+            const updated = {
+              ...r,
+              status: inputNewStatus,
+              statusStage: stageNum,
+              assignedOfficer: inputOfficerName || r.assignedOfficer,
+              officialNotes: newNote ? [newNote, ...r.officialNotes] : r.officialNotes
+            };
+            setSelectedReport(updated);
+            return updated;
+          }
+          return r;
+        }));
+
+        setIsStatusModalOpen(false);
+        setInputOfficerNote("");
+        showToast(`Ticket #${activeReport?.id || ''} status updated to "${inputNewStatus}"!`);
+      };
+
+      // 1-Click Fulfill Request
+      const handleFulfillRequestInstant = (reportId) => {
+        playChime('success');
+        const note = {
+          date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }),
+          author: `${activeUser.name} (${activeUser.designation})`,
+          text: `Request Officially Fulfilled & Work Certified. Completion notification dispatched to citizen.`
+        };
+
+        setReports(prev => prev.map(r => {
+          if (r.id === reportId) {
+            const updated = {
+              ...r,
+              status: "Resolved & Closed",
+              statusStage: 5,
+              officialNotes: [note, ...r.officialNotes]
+            };
+            if (selectedReport?.id === reportId) setSelectedReport(updated);
+            return updated;
+          }
+          return r;
+        }));
+
+        showToast(`Ticket #${reportId} marked Resolved! Citizen SMS Notification Sent.`);
+      };
+
+      // Budget Allocation Action
+      const handleCommitBudgetAllocation = (e) => {
+        e.preventDefault();
+        playChime('success');
+        const amountNum = parseFloat(inputBudgetAmount) || 0;
+        
+        const note = {
+          date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }),
+          author: `${activeUser.name} (${activeUser.designation})`,
+          text: `Official Budget Sanction of ₹${amountNum.toFixed(2)} Cr approved under ${inputFundingScheme}. Order Number: ORD-DPC/2026/${activeReport?.id || ''}`
+        };
+
+        setReports(prev => prev.map(r => {
+          if (r.id === selectedReport.id) {
+            const updated = {
+              ...r,
+              allocatedBudgetCr: amountNum,
+              fundingScheme: inputFundingScheme,
+              status: "Budget Sanctioned",
+              statusStage: 3,
+              officialNotes: [note, ...r.officialNotes]
+            };
+            setSelectedReport(updated);
+            return updated;
+          }
+          return r;
+        }));
+
+        setIsBudgetModalOpen(false);
+        showToast(`Sanctioned ₹${amountNum.toFixed(2)} Cr under ${inputFundingScheme} for #${activeReport?.id || ''}!`);
+      };
+
+      // Drone Telemetry Assignment
+      const handleDispatchDroneEnquiry = (e) => {
+        e.preventDefault();
+        setIsDroneSimulating(true);
+        setDroneTelemetryProgress(10);
+        playChime('success');
+
+        const interval = setInterval(() => {
+          setDroneTelemetryProgress(prev => {
+            if (prev >= 100) {
+              clearInterval(interval);
+              setIsDroneSimulating(false);
+              
+              const mission = {
+                droneModel: selectedDroneModel,
+                flightAltitude: selectedFlightAltitude,
+                orthomosaicResolution: "1.8 cm/pixel",
+                surveyDate: "Live Survey (" + new Date().toLocaleTimeString() + ")",
+                status: "Flight Completed (LiDAR & 4K Aerial Orthomosaic Generated)",
+                damageAssessment: `Live Telemetry Complete for ${activeReport?.village || ''}. GPS Coordinates: ${activeReport?.gps}. Detailed 3D volume & damage telemetry attached to file.`
+              };
+
+              const note = {
+                date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }),
+                author: "Aerial Drone Command Squad",
+                text: `Automated UAV enquiry flight completed via ${selectedDroneModel} at ${selectedFlightAltitude}. 3D aerial model uploaded.`
+              };
+
+              setReports(prev => prev.map(r => {
+                if (r.id === selectedReport.id) {
+                  const updated = {
+                    ...r,
+                    droneAssigned: true,
+                    droneMission: mission,
+                    officialNotes: [note, ...r.officialNotes]
+                  };
+                  setSelectedReport(updated);
+                  return updated;
+                }
+                return r;
+              }));
+
+              setIsDroneModalOpen(false);
+              showToast(`Drone flight completed! Aerial damage analysis attached to #${activeReport?.id || ''}`);
+              return 100;
+            }
+            return prev + 25;
+          });
+        }, 600);
+      };
+
+      // Send Official Broadcast
+      const handleSendBroadcast = (e) => {
+        e.preventDefault();
+        if (!broadcastTitle.trim() || !broadcastMessage.trim()) return;
+        playChime('success');
+        showToast(`Official Broadcast "${broadcastTitle}" dispatched to citizens in ${broadcastGP}!`);
+        setIsBroadcastModalOpen(false);
+        setBroadcastTitle("");
+        setBroadcastMessage("");
+      };
+
+      // Delete / Withdraw Report Admin Action
+      const handleDeleteGrievanceAdmin = async (reportId) => {
+        if (!confirm(`Are you sure you want to delete report #${reportId} from the database?`)) return;
+        setReports(prev => prev.filter(r => r.id !== reportId));
+        if (selectedReport?.id === reportId) {
+          setSelectedReport(null);
+        }
+        try {
+          await fetch(`/api/grievances/${reportId}`, { method: 'DELETE' });
+        } catch(e) {
+          try {
+            await fetch(`/api/grievances/${reportId}/delete`, { method: 'POST' });
+          } catch(err) {}
+        }
+        showToast(`Report #${reportId} deleted successfully.`);
+      };
+
+      // Matches Department filter helper
+      const matchesDept = (r, catFilter) => {
+        if (!catFilter || catFilter === "All") return true;
+        const c = (r.category || '').toLowerCase();
+        const t = (r.title || '').toLowerCase();
+        const f = catFilter.toLowerCase();
+        if (f === 'roads' || f === 'road') return c.includes('road') || c.includes('bridge') || c.includes('connectivity') || t.includes('road') || t.includes('bridge');
+        if (f === 'water') return c.includes('water') || c.includes('rwss') || c.includes('jal') || t.includes('water') || t.includes('pump');
+        if (f === 'power' || f === 'electricity') return c.includes('power') || c.includes('elec') || c.includes('grid') || t.includes('power') || t.includes('electric');
+        if (f === 'health') return c.includes('health') || c.includes('medical') || c.includes('phc') || t.includes('health') || t.includes('hospital');
+        if (f === 'agri' || f === 'agriculture') return c.includes('agri') || c.includes('canal') || c.includes('irrigation') || t.includes('canal') || t.includes('crop');
+        if (f === 'edu' || f === 'education') return c.includes('edu') || c.includes('school') || t.includes('school');
+        return c === f || c.includes(f);
+      };
+
+      // Filtered Reports
+      const filteredReports = reports.filter(r => {
+        const titleText = ((r.aiAnalyzedTitle || r.title || '') + " " + (r.titleOriginal || '')).toLowerCase();
+        const idText = (r.id || '').toLowerCase();
+        const villageText = (r.village || '').toLowerCase();
+        const citizenText = (r.citizenName || r.author || '').toLowerCase();
+        const q = searchQuery.toLowerCase();
+        const matchesSearch = !q || titleText.includes(q) || idText.includes(q) || villageText.includes(q) || citizenText.includes(q);
+        const matchesCategory = matchesDept(r, filterCategory);
+        return matchesSearch && matchesCategory;
+      });
+
+      const totalBudgetSanctioned = reports.reduce((acc, r) => acc + (r.allocatedBudgetCr || 0), 0);
+      const activeUser = currentUser || DEMO_OFFICERS[0];
+      const activeReport = selectedReport || (filteredReports && filteredReports[0]) || null;
+
+      // LOGIN VIEW (IF NOT AUTHENTICATED)
+      if (!isAuthenticated) {
+        return (
+          <div className="min-h-screen w-full relative flex flex-col justify-between select-none overflow-x-hidden transition-colors duration-200 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 hero-dot-pattern">
+            <div className="w-full max-w-xl bg-slate-900/90 backdrop-blur-2xl border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-6">
+              <div className="flex items-center gap-3.5 pb-5 border-b border-slate-200 dark:border-slate-800">
+                <div className="w-12 h-12 rounded-2xl bg-blue-600/90 text-white text-2xl font-black flex items-center justify-center shadow-lg border border-blue-400/30">
+                  <Icons.GovCrest className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-white">District Administrative Command Suite</h1>
+                  <p className="text-xs text-slate-400 font-medium">AC-134 Sundargarh • Official Grievance & Budget Command</p>
+                </div>
+              </div>
+
+              {loginError && <div className="p-3 rounded-xl bg-red-950/80 border border-red-500/50 text-red-300 text-xs font-bold">{loginError}</div>}
+
+              <form onSubmit={handleLoginSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold uppercase text-slate-700 dark:text-slate-300 mb-1.5 flex items-center justify-between">
+                    <span>12-Digit Aadhaar ID / Official Username</span>
+                    <span className="text-[10px] text-blue-400 font-mono">UIDAI Official</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={loginId}
+                    onChange={(e) => setLoginId(e.target.value)}
+                    placeholder="8899 1122 3344"
+                    className="w-full p-3 rounded-xl bg-slate-950 border border-slate-700 text-white font-medium text-sm outline-none font-mono tracking-wider focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold uppercase text-slate-700 dark:text-slate-300 mb-1.5">Official Password</label>
+                  <input
+                    type="password"
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full p-3 rounded-xl bg-slate-950 border border-slate-700 text-white font-medium text-sm outline-none font-mono tracking-wider focus:border-blue-500"
+                  />
+                </div>
+                <button type="submit" className="w-full py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 font-bold text-sm text-white shadow-xl cursor-pointer transition-all active:scale-95">
+                  Secure Officer Sign In
+                </button>
+              </form>
+
+              <div className="pt-4 border-t border-slate-800 space-y-3">
+                <div className="text-xs font-bold text-slate-400 uppercase">Officer Presets:</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {DEMO_OFFICERS.map(officer => (
+                    <button
+                      key={officer.id}
+                      onClick={() => handlePersonaSwitch(officer)}
+                      className="p-3 rounded-xl bg-slate-950 border border-slate-800 hover:border-blue-500 text-left flex items-center gap-2.5 cursor-pointer"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-blue-900/40 text-blue-300 flex items-center justify-center font-bold text-xs flex-shrink-0">
+                        {officer.badge.charAt(0)}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-xs font-bold text-white truncate">{officer.name}</div>
+                        <div className="text-[10px] text-slate-400 truncate">{officer.designation}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex justify-center gap-4 pt-2 text-xs font-bold text-slate-400">
+                <a href="citizen.html" className="hover:text-blue-400">Citizen Portal</a>
+                <span>•</span>
+                <a href="index.html" className="hover:text-blue-400">Gateway</a>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // AUTHENTICATED DASHBOARD (STRICT EXECUTIVE NIGHT MODE)
+      return (
+        <div className="min-h-screen w-full flex flex-col font-sans select-none bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 hero-dot-pattern transition-colors duration-200">
+          
+          {/* 1. NATIONAL TIRANGA STRIP */}
+          <div className="w-full h-1 bg-gradient-to-r from-amber-500 via-white to-emerald-500 z-50"></div>
+
+          {/* 2. TOP GOVERNMENT CIVIC UTILITY STRIP (myScheme / CoWIN style) */}
+          <div className="w-full bg-slate-950/95 border-b border-slate-200 dark:border-slate-800 text-[11px] px-4 md:px-8 py-1.5 flex items-center justify-between z-40 text-slate-700 dark:text-slate-300 flex-wrap gap-2">
+            <div className="flex items-center gap-2 font-medium">
+              <span className="text-sm">🇮🇳</span>
+              <span className="text-white font-bold tracking-wide">{t.nationalTitle || "Government of India"}</span>
+              <span className="text-slate-600 hidden sm:inline">|</span>
+              <span className="text-slate-400 hidden sm:inline">{t.subTitle || "Office of the District Magistrate & Collector, Sundargarh"}</span>
+            </div>
+
+            <div className="flex items-center gap-3 font-medium flex-wrap">
+              <span className="text-slate-400 hidden md:inline">Disaster Helpline: <strong className="text-emerald-400 font-mono">1077</strong></span>
+              <span className="text-slate-600 hidden md:inline">•</span>
+              <span className="text-slate-400 hidden lg:inline">NIC District Grid: <strong className="text-blue-400 font-mono">1800-345-6770</strong></span>
+              <span className="text-emerald-400 font-bold bg-emerald-950/80 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px]">
+                🛡️ Authorized Command
+              </span>
+            </div>
+          </div>
+
+          {toastMsg && (
+            <div className="fixed top-5 right-5 z-50 p-3.5 rounded-xl bg-slate-900 text-white font-bold text-xs shadow-2xl border border-blue-500 animate-in slide-in-from-top-3 flex items-center gap-2">
+              <Icons.ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span>{toastMsg}</span>
+            </div>
+          )}
+
+          {/* TOP HEADER */}
+          <header className="w-full px-6 py-3.5 border-b flex flex-wrap items-center justify-between gap-4 sticky top-0 z-40 backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={openDrawer}
+                className="p-2.5 rounded-2xl border transition-all active:scale-95 cursor-pointer shadow-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border-slate-300 dark:border-slate-700"
+                title="Open Navigation Menu"
+              >
+                <span className="text-base font-bold">☰</span>
+              </button>
+
+              <div className="w-10 h-10 rounded-xl bg-blue-600/90 text-white flex items-center justify-center shadow border border-blue-400/30">
+                <Icons.GovCrest className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-900/60 text-blue-300 uppercase tracking-wider">
+                  {localizeAddress("AC-134 Sundargarh", selectedLang)}
+                </span>
+                <h1 className="text-base md:text-lg font-bold">
+                  {t.suiteTitle || "District Administrative Command Suite"}
+                </h1>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              <button
+                onClick={() => setIsBroadcastModalOpen(true)}
+                className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-amber-300 font-bold text-xs border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 cursor-pointer shadow"
+              >
+                <span>{t.btnBroadcast || "Send Official Broadcast"}</span>
+              </button>
+
+              <div className="px-3 py-1.5 rounded-xl border flex items-center gap-2 bg-slate-900 border-slate-800">
+                <div className="text-left">
+                  <div className="text-xs font-bold text-white">{activeUser.name}</div>
+                  <div className="text-[10px] text-slate-400">{activeUser.designation}</div>
+                </div>
+              </div>
+
+                            {/* Language Switcher */}
+              <div className="relative flex items-center">
+                <select
+                  value={selectedLang}
+                  onChange={(e) => handleLanguageChange(e.target.value)}
+                  className="h-[34px] px-2.5 text-xs font-bold rounded-xl border bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 outline-none cursor-pointer shadow-xs transition-colors"
+                >
+                  <option value="en">🌐 English (EN)</option>
+                  <option value="hi">🇮🇳 हिन्दी (HI)</option>
+                  <option value="or">🏛️ ଓଡ଼ିଆ (OR)</option>
+                  <option value="bho">🌾 भोजपुरी (BHO)</option>
+                  <option value="bn">🌿 বাংলা (BN)</option>
+                </select>
+              </div>
+
+              {/* Theme Toggle Button */}
+              <button
+                type="button"
+                onClick={toggleDarkMode}
+                className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-amber-300 font-bold text-xs border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 cursor-pointer shadow"
+                title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              >
+                <span>{isDarkMode ? "☀️" : "🌙"}</span>
+                <span className="hidden sm:inline">{isDarkMode ? "Light" : "Dark"}</span>
+              </button>
+
+              <a href="citizen.html" className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-bold text-xs flex items-center gap-1">
+                <span>{t.citizenPortal || "Citizen Portal"}</span>
+              </a>
+
+              <a href="index.html" className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-700 font-bold text-xs flex items-center gap-1">
+                <span>{t.gateway || "Gateway"}</span>
+              </a>
+
+              <button onClick={handleLogout} className="px-3 py-1.5 rounded-xl bg-rose-950/60 border border-rose-500/40 text-rose-300 font-bold text-xs cursor-pointer hover:bg-rose-900">
+                {t.signOut || "Sign Out"}
+              </button>
+            </div>
+          </header>
+
+          {/* UNIVERSAL NAVIGATION DRAWER (DYNAMIC LOCALIZED) */}
+          {isDrawerOpen && (() => {
+            const drawerData = getDrawerNavItems(selectedLang || 'en');
+            return (
+              <div className="fixed inset-0 z-50 flex">
+                <div
+                  ref={overlayRef}
+                  className="fixed inset-0 bg-black/60 backdrop-blur-xs animate-in fade-in"
+                  onClick={closeDrawer}
+                />
+                <div
+                  ref={drawerRef}
+                  className="relative w-96 max-w-[88vw] h-full flex flex-col justify-between shadow-2xl z-10 border-r transition-colors duration-200 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 animate-in slide-in-from-left duration-200"
+                >
+                  <div className="p-5 border-b flex items-center justify-between bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
+                    <div className="flex items-center gap-3">
+                      <div className="w-11 h-11 rounded-2xl flex items-center justify-center text-xl font-bold bg-emerald-600 text-white shadow-sm border border-emerald-500/40">
+                        🏛️
+                      </div>
+                      <div>
+                        <h3 className="font-black text-base text-slate-900 dark:text-white">{drawerData.header}</h3>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700">
+                            {drawerData.constituency}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <button onClick={closeDrawer} className="p-2 text-lg font-bold text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer active:scale-90 transition-transform">✕</button>
+                  </div>
+
+                  <div className="flex-1 overflow-y-auto p-4 space-y-2.5">
+                    <div className="text-[11px] font-black uppercase tracking-wider px-1 mb-1 text-slate-500 dark:text-slate-400">
+                      {drawerData.section}
+                    </div>
+
+                    {drawerData.items.map((tab, idx) => {
+                      const isCurrent = tab.tabId ? activeTab === tab.tabId : tab.link === 'admin.html';
+                      return (
+                        <a
+                          key={idx}
+                          href={tab.link}
+                          onClick={(e) => {
+                            if (tab.tabId) {
+                              e.preventDefault();
+                              navigateTab(tab.tabId);
+                            }
+                            playChime('tap');
+                            closeDrawer();
+                          }}
+                          className={`w-full flex items-start gap-3.5 p-3.5 rounded-2xl border text-left cursor-pointer transition-all active:scale-95 shadow-xs ${
+                            isCurrent
+                              ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 border-slate-900 dark:border-slate-100 shadow-md ring-2 ring-slate-900/20'
+                              : 'bg-slate-50/80 dark:bg-slate-950/60 border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 text-slate-900 dark:text-slate-100'
+                          }`}
+                        >
+                          <span className="text-2xl mt-0.5">{tab.icon}</span>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-bold text-sm tracking-tight truncate">{tab.title}</div>
+                            <div className={`text-[11px] mt-0.5 line-clamp-1 ${isCurrent ? 'text-slate-300 dark:text-slate-700' : 'text-slate-500 dark:text-slate-400'}`}>
+                              {tab.desc}
+                            </div>
+                          </div>
+                        </a>
+                      );
+                    })}
+                  </div>
+
+                  <div className="p-4 border-t bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 space-y-2.5">
+                    {/* LOGOUT OPTION FOR OFFICIAL */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playChime('tap');
+                        try {
+                          localStorage.removeItem('lok_swar_admin_session');
+                          localStorage.removeItem('lok_swar_admin_auth_session');
+                        } catch (e) {}
+                        showToast('Official session ended. Redirecting to Gateway...');
+                        setTimeout(() => { window.location.href = 'index.html'; }, 500);
+                      }}
+                      className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-950/70 text-rose-700 dark:text-rose-300 font-bold text-xs border border-rose-200 dark:border-rose-800 cursor-pointer active:scale-95 transition-all"
+                    >
+                      <span>🚪</span>
+                      <span>लॉग आउट (Official Log Out)</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={closeDrawer}
+                      className="w-full py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs border border-slate-300 dark:border-slate-700 cursor-pointer active:scale-95 transition-all"
+                    >
+                      {drawerData.close}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* MAIN WORKSPACE */}
+          <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
+
+            {/* EXECUTIVE MODULE NAVIGATION TABS */}
+            <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-x-auto">
+              <button
+                type="button"
+                onClick={() => navigateTab('triage')}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs cursor-pointer transition-all ${
+                  activeTab === 'triage'
+                    ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-md scale-[1.02]'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <span>📊</span>
+                <span>{t.tabTriage || "Grievance Triage Queue"}</span>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${activeTab === 'triage' ? 'bg-slate-700 dark:bg-slate-300 text-white dark:text-slate-900' : 'bg-slate-200 dark:bg-slate-800'}`}>
+                  {reports.length}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => navigateTab('data_fusion')}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs cursor-pointer transition-all ${
+                  activeTab === 'data_fusion'
+                    ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-md scale-[1.02]'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <span>🛰️</span>
+                <span>{t.tabFactCheck || "Multi-Sensor Fact Check & Grounding"}</span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300">
+                  Sentinel-2 & IoT
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => navigateTab('field_officer')}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs cursor-pointer transition-all ${
+                  activeTab === 'field_officer'
+                    ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-md scale-[1.02]'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <span>📋</span>
+                <span>{t.tabFieldAudit || "Field Officer Audits & JE Reports"}</span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">
+                  JE Verified
+                </span>
+              </button>
+            </div>
+            
+              
+            {activeTab === 'data_fusion' ? (
+              /* MULTI-SENSOR CONTEXTUAL GROUNDING & FACT CHECK SUITE */
+              <div className="space-y-6 animate-in fade-in duration-200">
+                {/* 1. Census Baseline & Demographic Grounding */}
+                <div className="p-6 md:p-8 rounded-3xl border shadow-sm space-y-4 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">
+                  <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl">🛰️</span>
+                        <h2 className="text-lg md:text-xl font-black text-slate-900 dark:text-white">
+                          Demographic & Census Grounding Matrix (AC-134 Sundargarh)
+                        </h2>
+                      </div>
+                      <p className="text-xs mt-0.5 text-slate-500 dark:text-slate-400">
+                        Objective cross-referencing of citizen grievances against official Census, SECC vulnerability indicators & GIS deficit models
+                      </p>
+                    </div>
+                    <span className="px-3 py-1 rounded-xl bg-blue-100 dark:bg-blue-950/80 border border-blue-300 dark:border-blue-700/60 text-blue-700 dark:text-blue-300 text-xs font-bold font-mono">
+                      ✓ Real-Time Grounding Active
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-1">
+                    <div className="p-4 rounded-2xl border bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
+                      <div className="text-[11px] font-bold uppercase text-slate-500 dark:text-slate-400">Total Population</div>
+                      <div className="text-2xl font-black text-slate-900 dark:text-white mt-1">2,84,600</div>
+                      <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">142 Gram Panchayats</div>
+                    </div>
+                    <div className="p-4 rounded-2xl border bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
+                      <div className="text-[11px] font-bold uppercase text-slate-500 dark:text-slate-400">BPL Vulnerability Ratio</div>
+                      <div className="text-2xl font-black text-amber-600 dark:text-amber-400 mt-1">38.4%</div>
+                      <div className="text-[10px] text-amber-600 dark:text-amber-400 mt-0.5">High Socio-Economic Vulnerability</div>
+                    </div>
+                    <div className="p-4 rounded-2xl border bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
+                      <div className="text-[11px] font-bold uppercase text-slate-500 dark:text-slate-400">Tribal SC/ST Index</div>
+                      <div className="text-2xl font-black text-purple-600 dark:text-purple-400 mt-1">62.8%</div>
+                      <div className="text-[10px] text-purple-600 dark:text-purple-400 mt-0.5">Priority Triage Tier 1 Mandate</div>
+                    </div>
+                    <div className="p-4 rounded-2xl border bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
+                      <div className="text-[11px] font-bold uppercase text-slate-500 dark:text-slate-400">Road Infrastructure Gap</div>
+                      <div className="text-2xl font-black text-rose-600 dark:text-rose-400 mt-1">-34.2%</div>
+                      <div className="text-[10px] text-rose-600 dark:text-rose-400 mt-0.5">Deficit vs Odisha State Norms</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Multi-Sensor Ground Truth & Perception Reconciliation */}
+                <div className="p-6 md:p-8 rounded-3xl border shadow-sm space-y-5 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">
+                  <div className="pb-3 border-b border-slate-200 dark:border-slate-800">
+                    <h3 className="text-base md:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+                      <span>🔍</span>
+                      <span>Multi-Sensor Ground Truth & Fact-Check Reconciliation</span>
+                    </h3>
+                    <p className="text-xs mt-0.5 text-slate-500 dark:text-slate-400">
+                      Automated cross-validation combining European Space Agency Sentinel-2 multispectral satellite analysis, IMD AWS rainfall feeds, and IoT pipeline flow sensors.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="p-5 rounded-2xl border space-y-2.5 bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-blue-600 dark:text-blue-400">🛰️ Sentinel-2 Satellite Analysis</span>
+                        <span className="text-[10px] font-mono font-bold bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded">ESA Level-2A</span>
+                      </div>
+                      <div className="text-sm font-bold text-slate-900 dark:text-white">Surface Reflectance Shift: +42%</div>
+                      <p className="text-xs text-slate-600 dark:text-slate-400">
+                        Multispectral NDVI & B8A NIR reflectance corroborates complete washout of Kalyanpur culvert embankment on 21 August 2026.
+                      </p>
+                      <div className="pt-2 border-t text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                        ✓ Optical Grounding: 99.2% Confidence
+                      </div>
+                    </div>
+
+                    <div className="p-5 rounded-2xl border space-y-2.5 bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">🌧️ IMD Telemetry Sensor</span>
+                        <span className="text-[10px] font-mono font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded">Sundargarh AWS</span>
+                      </div>
+                      <div className="text-sm font-bold text-slate-900 dark:text-white">24-Hour Rainfall: 114.8 mm</div>
+                      <p className="text-xs text-slate-600 dark:text-slate-400">
+                        Automated tipping bucket gauge recorded 114.8 mm localized downpour, directly corroborating flash flood timing reported by citizens.
+                      </p>
+                      <div className="pt-2 border-t text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                        ✓ Hydro Grounding: 98.6% Corroborated
+                      </div>
+                    </div>
+
+                    <div className="p-5 rounded-2xl border space-y-2.5 bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-purple-600 dark:text-purple-400">📡 IoT RWSS Pressure Sensor</span>
+                        <span className="text-[10px] font-mono font-bold bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded">Node #KLP-03</span>
+                      </div>
+                      <div className="text-sm font-bold text-slate-900 dark:text-white">RWSS Line Pressure: 0.0 PSI</div>
+                      <p className="text-xs text-slate-600 dark:text-slate-400">
+                        Smart telemetry node in Kalyanpur Ward 3 recorded sudden line pressure drop from 45.2 PSI to 0.0 PSI, confirming pipe burst.
+                      </p>
+                      <div className="pt-2 border-t text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                        ✓ IoT Telemetry: 100% Corroborated
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Live Sensor Verification Matrix Table */}
+                <div className="p-6 md:p-8 rounded-3xl border shadow-sm space-y-4 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+                    <h3 className="font-bold text-sm md:text-base text-slate-900 dark:text-white">
+                      Live Multi-Sensor Fact-Check Verification Status ({reports.length} Incidents)
+                    </h3>
+                    <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                      100% Sensor Fact-Checked
+                    </span>
+                  </div>
+
+                  <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                    {reports.map((report, idx) => (
+                      <div key={report.id || idx} className="py-3.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-mono font-bold text-slate-500">#{report.id}</span>
+                            <span className="text-xs font-bold text-slate-900 dark:text-white">{report.title || report.aiAnalyzedTitle}</span>
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold">
+                              {report.category || 'Roads'}
+                            </span>
+                          </div>
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                            Location: {report.location || report.village || 'Sundargarh Block'} • Urgency: {report.urgencyScore || 90}%
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-[11px] font-bold px-2.5 py-1 rounded-xl bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-800">
+                            🛰️ Satellite: Verified (+42% Shift)
+                          </span>
+                          <span className="text-[11px] font-bold px-2.5 py-1 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                            🌧️ Rain Gauge: Corroborated
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => { setSelectedReport(report); navigateTab('triage'); }}
+                            className="px-3 py-1 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs cursor-pointer hover:opacity-90"
+                          >
+                            Inspect Triage →
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : activeTab === 'field_officer' ? (
+              /* FIELD OFFICER AUDITS & JUNIOR ENGINEER INSPECTIONS SUITE */
+              <div className="space-y-6 animate-in fade-in duration-200">
+                {/* 1. Header & Summary Stats */}
+                <div className="p-6 md:p-8 rounded-3xl border shadow-sm space-y-4 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">
+                  <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl">📋</span>
+                        <h2 className="text-lg md:text-xl font-black text-slate-900 dark:text-white">
+                          Field Officer Audits & Junior Engineer Inspection Reports
+                        </h2>
+                      </div>
+                      <p className="text-xs mt-0.5 text-slate-500 dark:text-slate-400">
+                        Official on-site physical engineering inspections, structural damage measurements, and SDRF / PMGSY scheme sanction estimates
+                      </p>
+                    </div>
+                    <span className="px-3 py-1 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-700/60 text-emerald-700 dark:text-emerald-300 text-xs font-bold font-mono">
+                      ✓ Physical Audits Certified
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-1">
+                    <div className="p-4 rounded-2xl border bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
+                      <div className="text-[11px] font-bold uppercase text-slate-500 dark:text-slate-400">Completed Site Audits</div>
+                      <div className="text-2xl font-black text-slate-900 dark:text-white mt-1">18 Verified</div>
+                      <div className="text-[10px] text-emerald-600 dark:text-emerald-400 mt-0.5">100% Geo-tagged & Timed</div>
+                    </div>
+                    <div className="p-4 rounded-2xl border bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
+                      <div className="text-[11px] font-bold uppercase text-slate-500 dark:text-slate-400">Sanction Estimates Prepared</div>
+                      <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">₹6.45 Cr</div>
+                      <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Across 12 Major Works</div>
+                    </div>
+                    <div className="p-4 rounded-2xl border bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
+                      <div className="text-[11px] font-bold uppercase text-slate-500 dark:text-slate-400">Assigned Junior Engineers</div>
+                      <div className="text-2xl font-black text-blue-600 dark:text-blue-400 mt-1">6 Engineers</div>
+                      <div className="text-[10px] text-blue-600 dark:text-blue-400 mt-0.5">PWD, RWSS & School Dept</div>
+                    </div>
+                    <div className="p-4 rounded-2xl border bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
+                      <div className="text-[11px] font-bold uppercase text-slate-500 dark:text-slate-400">Emergency Cutoff Hotspots</div>
+                      <div className="text-2xl font-black text-rose-600 dark:text-rose-400 mt-1">3 Sites</div>
+                      <div className="text-[10px] text-rose-600 dark:text-rose-400 mt-0.5">Priority Work Order Issued</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Official Engineering Audit Dossiers */}
+                <div className="space-y-4">
+                  {[
+                    {
+                      id: "AUD-101",
+                      title: "Kalyanpur Culvert Bridge Complete Washout",
+                      officer: "Er. Rishav Yadav",
+                      designation: "Junior Engineer, PWD Sundargarh Division",
+                      date: "21 August 2026, 03:30 PM",
+                      gps: "22.1284° N, 84.0321° E",
+                      estimateCr: 4.20,
+                      scheme: "SDRF Disaster Relief & PMGSY Culvert Reconstruction",
+                      status: "Sanction Recommended",
+                      notes: "Physical verification conducted on-site. The box culvert bridge at Kalyanpur GP connecting 3,200 villagers has experienced total foundation scour and wing wall collapse due to 114.8mm flash runoff. Temporary bailey bridge or emergency diversion required immediately. Detailed engineering estimate of ₹4.20 Cr prepared under SDRF norms.",
+                      badgeColor: "emerald"
+                    },
+                    {
+                      id: "AUD-102",
+                      title: "Gopabandhu High School 380 sq.m Roof Structural Damage",
+                      officer: "Er. Ananya Mohapatra",
+                      designation: "Junior Engineer, School & Mass Education Dept",
+                      date: "22 August 2026, 11:15 AM",
+                      gps: "22.1450° N, 84.0410° E",
+                      estimateCr: 0.185,
+                      scheme: "Mo School 5T High School Transformation Grant",
+                      status: "Technical Sanction Approved",
+                      notes: "Classroom Block B roof suffered severe water logging, plaster delamination, and electrical short circuit risk affecting 240 students. Pre-cast RCC slab waterproofing and false ceiling replacement estimate of ₹18.50 Lakhs submitted to DPC Sundargarh.",
+                      badgeColor: "blue"
+                    },
+                    {
+                      id: "AUD-103",
+                      title: "Kalyanpur Ward 3 Drinking Water Main Supply Pipeline Burst",
+                      officer: "Er. B. Patnaik",
+                      designation: "Assistant Engineer, Rural Water Supply & Sanitation (RWSS)",
+                      date: "23 August 2026, 09:45 AM",
+                      gps: "22.1320° N, 84.0295° E",
+                      estimateCr: 0.12,
+                      scheme: "Jal Jeevan Mission Emergency Repair Fund",
+                      status: "Work In Progress",
+                      notes: "High pressure ductile iron pipeline ruptured along 120m stretch due to subgrade soil subsidence. 480 households without potable piped water. Repair crew mobilized with 120m DI K9 pipes; emergency water tankers dispatched.",
+                      badgeColor: "purple"
+                    }
+                  ].map((audit) => (
+                    <div key={audit.id} className="p-6 md:p-7 rounded-3xl border shadow-sm space-y-4 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">
+                      <div className="flex flex-wrap items-start justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                              #{audit.id}
+                            </span>
+                            <h3 className="text-base font-black text-slate-900 dark:text-white">
+                              {audit.title}
+                            </h3>
+                          </div>
+                          <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 mt-1 flex-wrap">
+                            <span className="font-bold text-slate-700 dark:text-slate-300">👷 {audit.officer} ({audit.designation})</span>
+                            <span>•</span>
+                            <span>📅 {audit.date}</span>
+                            <span>•</span>
+                            <span className="font-mono">📍 {audit.gps}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-black px-3 py-1 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800">
+                            ✓ Verified On-Site
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs leading-relaxed text-slate-700 dark:text-slate-300">
+                        <strong className="text-slate-900 dark:text-white font-bold block mb-1">Junior Engineer Technical Findings:</strong>
+                        "{audit.notes}"
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                        <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
+                          <span className="text-[10px] font-bold uppercase text-slate-500">Prepared Estimate</span>
+                          <div className="text-sm font-black text-emerald-600 dark:text-emerald-400 mt-0.5">₹{audit.estimateCr.toFixed(2)} Cr</div>
+                        </div>
+                        <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
+                          <span className="text-[10px] font-bold uppercase text-slate-500">Statutory Scheme</span>
+                          <div className="text-xs font-bold text-slate-900 dark:text-white mt-0.5 truncate">{audit.scheme}</div>
+                        </div>
+                        <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
+                          <span className="text-[10px] font-bold uppercase text-slate-500">Administrative Status</span>
+                          <div className="text-xs font-bold text-blue-600 dark:text-blue-400 mt-0.5">{audit.status}</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              /* DEFAULT: GRIEVANCE TRIAGE QUEUE & WORKSPACE */
+              <div className="space-y-6 animate-in fade-in duration-200">
+                {/* 1. DEPARTMENT & SECTOR CLASSIFICATION (AT THE TOP) */}
+                <div className="p-5 md:p-6 rounded-3xl border shadow-xl bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-slate-900 dark:bg-white"></span>
+                        <h3 className="text-base md:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+                          {t.deptTitle || "Department & Sector Classification"}
+                        </h3>
+                      </div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                        {t.deptSub || "District executive triage matrix • Routing public reports to relevant departmental engineers"}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800">
+                        7 Sector Views
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* 7 Department Sector Cards (Including ALL) */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
+                    {[
+                      { id: 'all', icon: '🏛️', name: t.sectorAll || 'All Sectors', dept: 'Holistic Triage', count: reports.length },
+                      { id: 'roads', icon: '🛣️', name: t.sectorRoads || 'Roads & Works', dept: 'PWD / PMGSY', count: reports.filter(r => matchesDept(r, 'roads')).length },
+                      { id: 'water', icon: '🚰', name: t.sectorWater || 'Water & RWSS', dept: 'Jal Jeevan Mission', count: reports.filter(r => matchesDept(r, 'water')).length },
+                      { id: 'power', icon: '⚡', name: t.sectorPower || 'Power & Grid', dept: 'OPTCL / TPWODL', count: reports.filter(r => matchesDept(r, 'power')).length },
+                      { id: 'health', icon: '🏥', name: t.sectorHealth || 'Health & NHM', dept: 'CDMO Health Wing', count: reports.filter(r => matchesDept(r, 'health')).length },
+                      { id: 'agri', icon: '🌾', name: t.sectorAgri || 'Agriculture', dept: 'CAD / Irrigation', count: reports.filter(r => matchesDept(r, 'agri')).length },
+                      { id: 'edu', icon: '🏫', name: t.sectorEdu || 'Education', dept: 'S&ME School Dept', count: reports.filter(r => matchesDept(r, 'edu')).length },
+                    ].map(sec => {
+                      const isSelected = filterCategory.toLowerCase() === sec.id || (sec.id === 'all' && filterCategory === 'All');
+                      return (
+                        <div
+                          key={sec.id}
+                          onClick={() => {
+                            setFilterCategory(sec.id === 'all' ? 'All' : sec.id);
+                          }}
+                          className={`p-3.5 rounded-2xl border transition-all text-center space-y-1.5 shadow-xs cursor-pointer active:scale-95 ${
+                            isSelected
+                              ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 border-slate-900 dark:border-slate-100 shadow-md scale-[1.02]'
+                              : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 text-slate-900 dark:text-slate-100'
+                          }`}
+                          title={`Filter by ${sec.name}`}
+                        >
+                          <div className="text-2xl">{sec.icon}</div>
+                          <div className={`text-xs font-bold truncate ${isSelected ? 'text-white dark:text-slate-900' : 'text-slate-900 dark:text-white'}`}>{sec.name}</div>
+                          <div className={`text-[10px] truncate ${isSelected ? 'text-slate-300 dark:text-slate-700' : 'text-slate-500 dark:text-slate-400'}`}>{sec.dept}</div>
+                          <div className={`pt-1 border-t text-[11px] font-mono font-bold ${
+                            isSelected ? 'border-slate-700 dark:border-slate-300 text-white dark:text-slate-900' : 'border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300'
+                          }`}>
+                            {sec.count} {sec.count === 1 ? 'Report' : 'Reports'}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* KPI STATS */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="p-4 rounded-3xl border shadow-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">
+                    <div className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t.totalReports || "Total Verified Reports"}</div>
+                    <div className="text-2xl font-black text-slate-900 dark:text-white mt-1">1,248</div>
+                    <div className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">Across 142 Gram Panchayats</div>
+                  </div>
+
+                  <div className="p-4 rounded-3xl border shadow-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">
+                    <div className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t.criticalHotspots || "Critical Urgency Hotspots"}</div>
+                    <div className="text-2xl font-black text-rose-600 dark:text-rose-400 mt-1">48 Cutoffs</div>
+                    <div className="text-[11px] font-bold text-rose-600 dark:text-rose-400 mt-0.5">Requiring immediate audit</div>
+                  </div>
+
+                  <div className="p-4 rounded-3xl border shadow-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">
+                    <div className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t.budgetSanctioned || "Budget Sanctioned"}</div>
+                    <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">₹{totalBudgetSanctioned.toFixed(2)} Cr</div>
+                    <div className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">Disbursed from ₹10 Cr pool</div>
+                  </div>
+
+                  <div className="p-4 rounded-3xl border shadow-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">
+                    <div className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t.droneFlights || "Drone Flights Deployed"}</div>
+                    <div className="text-2xl font-black text-amber-600 dark:text-amber-400 mt-1">14 Missions</div>
+                    <div className="text-[11px] font-bold text-amber-600 dark:text-amber-400 mt-0.5">Aerial Orthomosaic LiDAR</div>
+                  </div>
+                </div>
+
+                {/* SPLIT TRIAGE WORKSPACE */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                  
+                  {/* LEFT: QUEUE */}
+                  <div className="lg:col-span-5 space-y-4">
+                    <div className="p-4 rounded-3xl border space-y-3 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search ticket #, village, citizen or issue..."
+                        className="w-full p-3 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs font-bold outline-none font-mono-code"
+                      />
+                      <div className="flex flex-wrap gap-1.5">
+                        {["All", "Roads", "Water", "Education"].map(cat => (
+                          <button
+                            key={cat}
+                            onClick={() => setFilterCategory(cat)}
+                            className={`px-3 py-1 rounded-xl text-[11px] font-bold ${filterCategory === cat ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'}`}
+                          >
+                            {cat}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 max-h-[620px] overflow-y-auto pr-1">
+                      {filteredReports.length === 0 ? (
+                        <div className="p-10 text-center rounded-3xl border space-y-3 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">
+                          <div className="text-3xl">📋</div>
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white">No Reports in Queue</h4>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
+                            Real citizen grievances submitted via voice or the citizen portal will appear here in real time.
+                          </p>
+                        </div>
+                      ) : (
+                        filteredReports.map(report => (
+                          <div
+                            key={report.id}
+                            onClick={() => setSelectedReport(report)}
+                            className={`p-4 rounded-3xl border text-left cursor-pointer transition-all ${
+                              selectedReport?.id === report.id
+                                ? 'bg-slate-100 dark:bg-slate-800/90 border-slate-400 dark:border-slate-600 ring-2 ring-slate-400/30 shadow-md'
+                                : 'bg-slate-50 dark:bg-slate-950/70 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between mb-1.5 flex-wrap gap-1">
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-xs font-mono font-bold text-slate-700 dark:text-slate-700 dark:text-slate-300">#{report.id}</span>
+                                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700">
+                                  {report.category || 'General'}
+                                </span>
+                              </div>
+                              <span className="text-xs font-black text-rose-500">{report.urgencyScore || 90}% Urgency</span>
+                            </div>
+
+                            <h3 className="text-sm font-black line-clamp-1 text-slate-900 dark:text-white">
+                              {report.aiAnalyzedTitle || report.title}
+                            </h3>
+
+                            {/* INLINE AUDIO MINI PLAYER FOR FAST LISTENING */}
+                            {(report.audioRecordingUrl || report.hasAudio || (report.audioRecordings && report.audioRecordings.length > 0)) && (
+                              <div className="mt-2 p-1.5 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 flex items-center justify-between gap-2" onClick={e => e.stopPropagation()}>
+                                <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
+                                  <span>🎙️</span> <span>{report.spokenLanguage || 'Voice'}</span>
+                                </span>
+                                <audio
+                                  controls
+                                  className="h-6 w-44 rounded outline-none"
+                                  src={report.audioRecordingUrl || (report.audioRecordings && report.audioRecordings[0]?.url) || "uploads/audio/kalyanpur_bridge_report.webm"}
+                                />
+                              </div>
+                            )}
+
+                            <div className="flex justify-between text-[11px] mt-2 pt-2 border-t border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 font-medium">
+                              <span>📍 {localizeAddress(report.village || "Sundargarh", selectedLang)}</span>
+                              <span className="text-amber-700 dark:text-amber-400 font-bold">👍 {report.votes || 1} Backers</span>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+
+                  {/* RIGHT: DETAIL & ACTIONS */}
+                  <div className="lg:col-span-7 space-y-5">
+                    {activeReport ? (
+                      <div className="p-6 rounded-3xl border shadow-xl space-y-5 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">
+                        <div className="flex justify-between items-start pb-4 border-b border-slate-200 dark:border-slate-800">
+                          <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-sm font-mono font-bold text-slate-800 dark:text-slate-200">#{activeReport?.id || ''}</span>
+                              <span className="text-xs font-black px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700">
+                                {activeReport?.status || 'Pending'}
+                              </span>
+                              <span className="text-xs font-black px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700">
+                                {activeReport?.category || 'Roads & Connectivity'}
+                              </span>
+                            </div>
+                            <h2 className="text-xl font-black mt-1 text-slate-900 dark:text-white">{activeReport?.aiAnalyzedTitle || activeReport?.title || 'Report'}</h2>
+                            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">{localizeAddress(activeReport?.village || '', selectedLang)} • GPS: {activeReport?.gps || "22.2492° N, 84.8828° E"}</p>
+                          </div>
+                          <div className="text-right bg-rose-500/10 border border-rose-500/30 p-2.5 rounded-2xl">
+                            <div className="text-2xl font-black text-rose-500">{activeReport?.urgencyScore || 85}%</div>
+                            <div className="text-[9px] font-bold text-slate-400 uppercase">Priority Rank</div>
+                          </div>
+                        </div>
+
+                        {/* ADMINISTRATIVE ACTION BAR */}
+                        <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2.5 text-slate-900 dark:text-slate-100">
+                          <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-700 dark:text-slate-300">
+                            <span>{t.actionTools || "Administrative Action Tools:"}</span>
+                            <span className="text-[10px] text-blue-400 font-mono">1-Tap Actions</span>
+                          </div>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setInputOfficerNote(`[Executive Brief]: Verified ground report for ${activeReport?.title || 'Report'}. Recommended for expedited sanction under ${activeReport?.suggestedScheme || 'SDRF'}.`);
+                                setIsStatusModalOpen(true);
+                                playChime('tap');
+                                showToast("Executive Brief pre-filled into Status note!");
+                              }}
+                              className="p-2.5 rounded-2xl bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95"
+                            >
+                              <span>{t.btnExecBrief}</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setInputFundingScheme(selectedReport.suggestedScheme || "SDRF Disaster Relief Fund");
+                                setInputBudgetAmount(selectedReport.urgencyScore > 92 ? "4.20" : "1.80");
+                                setIsBudgetModalOpen(true);
+                                playChime('tap');
+                                showToast(`Matched Scheme: ${activeReport?.suggestedScheme || 'SDRF'}`);
+                              }}
+                              className="p-2.5 rounded-2xl bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95"
+                            >
+                              <span>{t.btnMatchScheme}</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setIsDroneModalOpen(true);
+                                playChime('tap');
+                                showToast("Coordinates dispatched for aerial drone survey");
+                              }}
+                              className="p-2.5 rounded-2xl bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95"
+                            >
+                              <span>{t.btnDroneSurvey}</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                playChime('success');
+                                showToast(`Dispatched official SMS update to citizen in ${activeReport?.spokenLanguage || 'Odia'}!`);
+                              }}
+                              className="p-2.5 rounded-2xl bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95"
+                            >
+                              <span>{t.btnCitizenSms}</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* REFINED CLEAN ACTION BUTTONS */}
+                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-1">
+                          <button
+                            type="button"
+                            onClick={() => setIsStatusModalOpen(true)}
+                            className="p-3 rounded-2xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 font-bold text-xs shadow-xs cursor-pointer transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                          >
+                            <span>{t.btnUpdateStatus}</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setIsBudgetModalOpen(true)}
+                            className="p-3 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 font-bold text-xs border border-slate-300 dark:border-slate-700 shadow-xs cursor-pointer transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                          >
+                            <span>{t.btnSanctionBudget}</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setIsDroneModalOpen(true)}
+                            className="p-3 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 font-bold text-xs border border-slate-300 dark:border-slate-700 shadow-xs cursor-pointer transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                          >
+                            <span>{t.btnDeployDrone}</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handleFulfillRequestInstant(activeReport?.id)}
+                            className="p-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs cursor-pointer transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                          >
+                            <span>{t.btnFulfill}</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteGrievanceAdmin(activeReport?.id)}
+                            className="p-3 rounded-2xl bg-slate-100 hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-slate-300 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-800 font-bold text-xs shadow-xs cursor-pointer transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                          >
+                            <span>{t.btnDelete}</span>
+                          </button>
+                        </div>
+
+                        {/* CITIZEN AUDIO RECORDING & TRANSLATION PANEL */}
+                        <div className="p-5 rounded-3xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-4 shadow-sm text-slate-900 dark:text-slate-100">
+                          <div className="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-slate-200 dark:border-slate-800">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-bold text-slate-900 dark:text-white">
+                                Citizen Voice Recording & Acoustic Diagnostics ({activeReport?.spokenLanguage || 'Odia'})
+                              </span>
+                            </div>
+                            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">
+                              ✓ Verified Audio
+                            </span>
+                          </div>
+
+                          {/* Native Audio Player */}
+                          <div className="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
+                            <audio
+                              controls
+                              className="w-full h-8 outline-none rounded-lg"
+                              src={activeReport?.audioRecordingUrl || (activeReport?.audioRecordings && activeReport?.audioRecordings[0]?.url) || "uploads/audio/kalyanpur_bridge_report.webm"}
+                            >
+                              Your browser does not support audio playback.
+                            </audio>
+                          </div>
+
+                          {/* Acoustic & Speech Intelligence Badge */}
+                          <div className="grid grid-cols-3 gap-2.5 text-[10px] font-bold text-center">
+                            <div className="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
+                              <div className="text-slate-500 dark:text-slate-400 uppercase text-[9px]">SPEECH CLARITY</div>
+                              <div className="text-xs font-black text-emerald-600 dark:text-emerald-400 mt-0.5">98.4% Clear</div>
+                            </div>
+                            <div className="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
+                              <div className="text-slate-500 dark:text-slate-400 uppercase text-[9px]">DETECTED DIALECT</div>
+                              <div className="text-xs font-black text-slate-900 dark:text-white mt-0.5">{activeReport?.spokenLanguage || 'Odia'}</div>
+                            </div>
+                            <div className="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
+                              <div className="text-slate-500 dark:text-slate-400 uppercase text-[9px]">COMMUNITY BACKING</div>
+                              <div className="text-xs font-black text-amber-600 dark:text-amber-400 mt-0.5">{activeReport?.votes || 1} Citizens</div>
+                            </div>
+                          </div>
+
+                          {/* Spoken Original Text */}
+                          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs shadow-xs space-y-1">
+                            <div className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400">
+                              Original Spoken Text ({activeReport?.spokenLanguage || 'Odia'}):
+                            </div>
+                            <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm">
+                              "{activeReport?.titleOriginal || selectedReport.transcribedOriginalText || selectedReport.title}"
+                            </p>
+                          </div>
+
+                          {/* Administrative English Translation */}
+                          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs shadow-xs space-y-2">
+                            <div className="text-[10px] font-bold uppercase text-slate-700 dark:text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                              <span>Administrative English Summary (For Collector / DPC):</span>
+                            </div>
+                            <p className="font-medium text-slate-900 dark:text-slate-100 text-xs sm:text-sm leading-relaxed">
+                              {activeReport?.adminEnglishTranslation || selectedReport.description || "Field inspection recommended for immediate connectivity restoration."}
+                            </p>
+                            {activeReport?.adminHindiTranslation && (
+                              <div className="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-700 dark:text-slate-700 dark:text-slate-300">
+                                <strong className="text-slate-900 dark:text-white">हिन्दी सारांश: </strong>
+                                {activeReport?.adminHindiTranslation}
+                              </div>
+                            )}
+                            {activeReport?.adminBhojpuriTranslation && (
+                              <div className="mt-1 text-[11px] text-slate-700 dark:text-slate-700 dark:text-slate-300">
+                                <strong className="text-slate-900 dark:text-white">भोजपुरी सारांश: </strong>
+                                {activeReport?.adminBhojpuriTranslation}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Multi-Sensor Fact Check Corroboration */}
+                        <div className="p-4 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 text-xs space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-blue-900 dark:text-blue-300 flex items-center gap-1.5">
+                              <span>🛰️</span> <span>Multi-Sensor Fact-Check Grounding</span>
+                            </span>
+                            <span className="text-[10px] font-mono font-bold bg-blue-200 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded">
+                              100% Corroborated
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-slate-700 dark:text-slate-300">
+                            <div className="p-2 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-blue-100 dark:border-blue-900">
+                              <strong className="text-blue-700 dark:text-blue-400">Sentinel-2 Optical: </strong>
+                              <span>+42% surface reflectance shift confirms culvert washout.</span>
+                            </div>
+                            <div className="p-2 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-blue-100 dark:border-blue-900">
+                              <strong className="text-emerald-700 dark:text-emerald-400">IMD Rain Gauge: </strong>
+                              <span>114.8 mm 24-hr rainfall matches timestamp.</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Field Officer Audit Verification Note */}
+                        <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-xs space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5">
+                              <span>📋</span> <span>Field Officer Physical Verification</span>
+                            </span>
+                            <span className="text-[10px] font-mono font-bold bg-emerald-200 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-2 py-0.5 rounded">
+                              ✓ On-Site JE Verified
+                            </span>
+                          </div>
+                          <p className="text-[11px] leading-relaxed text-slate-700 dark:text-slate-300">
+                            <strong>Er. Rishav Yadav (JE PWD):</strong> "Physical inspection completed. Culvert bridge requires urgent reconstruction under SDRF scheme. Estimate ₹4.20 Cr validated."
+                          </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
+                          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-xs">
+                            <div className="font-bold text-slate-500 dark:text-slate-400 text-[11px]">💰 Sanctioned Budget</div>
+                            <div className="text-lg font-black text-emerald-600 dark:text-emerald-400 mt-0.5">₹{(activeReport?.allocatedBudgetCr || 0).toFixed(2)} Cr</div>
+                            <div className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">{activeReport?.fundingScheme || selectedReport.suggestedScheme || "SDRF Disaster Relief"}</div>
+                          </div>
+
+                          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-xs">
+                            <div className="font-bold text-slate-500 dark:text-slate-400 text-[11px]">👷 Assigned Officer</div>
+                            <div className="text-sm font-black text-slate-900 dark:text-white mt-0.5">{activeReport?.assignedOfficer || "Pending Assignment"}</div>
+                            <div className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Citizen: {activeReport?.citizenName || selectedReport.author || "Rishav Yadav"}</div>
+                          </div>
+                        </div>
+
+                        {activeReport?.droneAssigned && activeReport?.droneMission && (
+                          <div className="p-4 rounded-2xl p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/60 text-xs space-y-1">
+                            <div className="font-black text-amber-900 dark:text-amber-300">🛸 Drone Mission: {activeReport?.droneMission.droneModel}</div>
+                            <p className="text-[11px] text-slate-700 dark:text-slate-700 dark:text-slate-300">{activeReport?.droneMission.damageAssessment}</p>
+                          </div>
+                        )}
+
+                        <div className="space-y-2">
+                          <h4 className="text-xs font-bold uppercase text-slate-500 dark:text-slate-400">📜 Audit Notes ({(activeReport?.officialNotes || []).length})</h4>
+                          {(activeReport?.officialNotes || []).map((note, idx) => (
+                            <div key={idx} className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs shadow-xs">
+                              <div className="flex justify-between text-[10px] font-bold text-slate-900 dark:text-white mb-1">
+                                <span>{note.author}</span>
+                                <span className="text-slate-500">{note.date}</span>
+                              </div>
+                              <p className="text-slate-700 dark:text-slate-300">{note.text}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-16 text-center rounded-3xl border space-y-3 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">
+                        <div className="text-4xl">🛡️</div>
+                        <h3 className="text-base font-bold text-slate-900 dark:text-white">No Incident Selected</h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+                          Select any real citizen grievance from the queue to review audio recordings, verify ground telemetry, and sanction emergency budget.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                </div>
+              </div>
+            )}
+
+            {/* ========================================================================= */}
+            {/* DEVELOPED BY TEAM ARSHRIVA - ONLY ON MAIN OVERVIEW DASHBOARD                 */}
+            {/* ========================================================================= */}
+            {activeTab === 'overview' && (
+            <section className="w-full max-w-7xl mx-auto mt-12 mb-6 animate-in fade-in duration-300">
+              <div className="relative overflow-hidden rounded-3xl border p-6 sm:p-8 bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 border-slate-200 dark:border-slate-800 shadow-xl">
+                <div className="absolute -top-24 -left-24 w-64 h-64 bg-emerald-500/10 dark:bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
+                <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-blue-500/10 dark:bg-blue-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div className="relative z-10 text-center space-y-2 mb-8">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700/60 shadow-xs">
+                    <span>✨</span>
+                    <span>SYSTEM ARCHITECTS & DEVELOPERS</span>
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white uppercase font-brand">
+                    DEVELOPED BY TEAM ARSHRIVA
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-xl mx-auto font-medium">
+                    District Administration Engine • Geo-Spatial Triage Matrix & Multilingual Citizen Intelligence Infrastructure.
+                  </p>
+                </div>
+
+                {/* Portfolio Cards Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+                  {/* 1. Swati Chaudhary Card */}
+                  <div className="p-6 rounded-2xl border transition-all duration-200 hover:shadow-lg hover:-translate-y-1 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left group">
+                    <div className="relative flex-shrink-0">
+                      <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-emerald-500 shadow-md ring-4 ring-emerald-500/20 group-hover:ring-emerald-500/40 transition-all flex items-center justify-center bg-slate-100 dark:bg-slate-800">
+                        <img
+                          src="assets/swati_chaudhary.jpg"
+                          alt="Swati Chaudhary"
+                          className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110"
+                        />
+                      </div>
+                      <span className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold shadow border-2 border-white dark:border-slate-900">
+                        ★
+                      </span>
+                    </div>
+
+                    <div className="space-y-2 flex-1">
+                      <div>
+                        <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
+                          <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">Swati Chaudhary</h3>
+                          <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                            CSE-2 • 2ND YEAR
+                          </span>
+                        </div>
+                        <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
+                          Full-Stack Developer & UI Architect
+                        </p>
+                      </div>
+
+                      <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Leading Multilingual Indic Natural Language Processing, Interactive React Interface Systems, Aadhaar Sandbox e-KYC Verification, and Community Intelligence Ledgers.
+                      </p>
+
+                      <div className="flex items-center justify-center sm:justify-start gap-1.5 flex-wrap pt-1">
+                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">React Architecture</span>
+                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Indic NLP</span>
+                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Aadhaar e-KYC</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 2. Shaurya Sharma Card */}
+                  <div className="p-6 rounded-2xl border transition-all duration-200 hover:shadow-lg hover:-translate-y-1 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left group">
+                    <div className="relative flex-shrink-0">
+                      <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-blue-500 shadow-md ring-4 ring-blue-500/20 group-hover:ring-blue-500/40 transition-all flex items-center justify-center bg-slate-100 dark:bg-slate-800">
+                        <img
+                          src="assets/shaurya_sharma.jpg"
+                          alt="Shaurya Sharma"
+                          className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110"
+                        />
+                      </div>
+                      <span className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-[10px] font-bold shadow border-2 border-white dark:border-slate-900">
+                        ★
+                      </span>
+                    </div>
+
+                    <div className="space-y-2 flex-1">
+                      <div>
+                        <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
+                          <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">Shaurya Sharma</h3>
+                          <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-800">
+                            CSE-2 • 2ND YEAR
+                          </span>
+                        </div>
+                        <p className="text-xs font-bold text-blue-600 dark:text-blue-400 mt-0.5">
+                          Lead Systems Engineer & Data Strategist
+                        </p>
+                      </div>
+
+                      <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Architecting Multi-Sensor Satellite Grounding, Sentinel-2 Multispectral Telemetry, Leaflet GIS Hotspot Mapping, and Autonomous UAV Drone Inspection Workflows.
+                      </p>
+
+                      <div className="flex items-center justify-center sm:justify-start gap-1.5 flex-wrap pt-1">
+                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">GIS & Telemetry</span>
+                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Sentinel-2 Satellite</span>
+                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Drone Systems</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+            )}
+
+            <footer className="w-full text-center py-4 text-[11px] font-semibold text-slate-400 border-t border-slate-200 dark:border-slate-800">
+              National District Command Suite • {t.nationalTitle || "Government of India"} • {localizeAddress("AC-134 Sundargarh", selectedLang)}
+            </footer>
+
+          </main>
+
+          {/* STATUS MODAL */}
+          {isStatusModalOpen && selectedReport && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+              <div className="w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-2xl space-y-4 text-left text-slate-900 dark:text-slate-100">
+                <h3 className="text-base font-black text-slate-900 dark:text-white">Update Status (#{activeReport?.id || ''})</h3>
+                <form onSubmit={handleCommitStatusUpdate} className="space-y-4">
+                  <select value={inputNewStatus} onChange={(e) => setInputNewStatus(e.target.value)} className="w-full p-3 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-bold outline-none">
+                    <option value="Pending Review">Stage 1: Pending Review</option>
+                    <option value="Field Audit Completed">Stage 2: Field Audit Completed</option>
+                    <option value="Budget Sanctioned">Stage 3: Budget Sanctioned</option>
+                    <option value="Work In Progress">Stage 4: Work In Progress</option>
+                    <option value="Resolved">Stage 5: Resolved & Completed</option>
+                  </select>
+                  <textarea rows="3" value={inputOfficerNote} onChange={(e) => setInputOfficerNote(e.target.value)} placeholder="Add official update note..." className="w-full p-3 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-bold outline-none" />
+                  <div className="flex gap-2.5 pt-2">
+                    <button type="button" onClick={() => { playChime('tap'); setIsStatusModalOpen(false); }} className="flex-1 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs cursor-pointer active:scale-95 transition-all shadow-xs">Cancel</button>
+                    <button type="submit" className="flex-1 py-3 rounded-2xl bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-900 font-bold text-xs cursor-pointer active:scale-95 transition-all shadow-md">Save Update</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* BUDGET MODAL */}
+          {isBudgetModalOpen && selectedReport && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+              <div className="w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-2xl space-y-4 text-left text-slate-900 dark:text-slate-100">
+                <h3 className="text-base font-black text-slate-900 dark:text-white">Sanction Budget (#{activeReport?.id || ''})</h3>
+                <form onSubmit={handleCommitBudgetAllocation} className="space-y-4">
+                  <input type="number" step="0.01" value={inputBudgetAmount} onChange={(e) => setInputBudgetAmount(e.target.value)} className="w-full p-3 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-base font-black outline-none font-mono-code" />
+                  <select value={inputFundingScheme} onChange={(e) => setInputFundingScheme(e.target.value)} className="w-full p-3 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-bold outline-none">
+                    <option value="SDRF (State Disaster Relief Fund)">SDRF (State Disaster Relief Fund)</option>
+                    <option value="5T High School Infrastructure Fund">5T High School Infrastructure Fund</option>
+                    <option value="District Mineral Foundation (DMF)">District Mineral Foundation (DMF)</option>
+                    <option value="Jal Jeevan Mission (RWSS)">Jal Jeevan Mission (RWSS)</option>
+                  </select>
+                  <div className="flex gap-2.5 pt-2">
+                    <button type="button" onClick={() => { playChime('tap'); setIsBudgetModalOpen(false); }} className="flex-1 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs cursor-pointer active:scale-95 transition-all shadow-xs">Cancel</button>
+                    <button type="submit" className="flex-1 py-3 rounded-2xl bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-900 font-bold text-xs cursor-pointer active:scale-95 transition-all shadow-md">Approve Sanction</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* DRONE MODAL */}
+          {isDroneModalOpen && selectedReport && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+              <div className="w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-2xl space-y-4 text-left text-slate-900 dark:text-slate-100">
+                <h3 className="text-base font-black text-slate-900 dark:text-white">Assign Drone Telemetry (#{activeReport?.id || ''})</h3>
+                {!isDroneSimulating ? (
+                  <form onSubmit={handleDispatchDroneEnquiry} className="space-y-4">
+                    <select value={selectedDroneModel} onChange={(e) => setSelectedDroneModel(e.target.value)} className="w-full p-3 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-bold outline-none">
+                      <option value="Garuda-V4 Quadcopter (Thermal + 4K Optical)">Garuda-V4 Quadcopter (Thermal + 4K Optical)</option>
+                      <option value="Netra-3 UAV (LiDAR Topography)">Netra-3 UAV (LiDAR Topography)</option>
+                    </select>
+                    <div className="flex gap-2.5 pt-2">
+                      <button type="button" onClick={() => { playChime('tap'); setIsDroneModalOpen(false); }} className="flex-1 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs cursor-pointer active:scale-95 transition-all shadow-xs">Cancel</button>
+                      <button type="submit" className="flex-1 py-3 rounded-2xl bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-900 font-bold text-xs cursor-pointer active:scale-95 transition-all shadow-md">Launch UAV Flight</button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="py-8 text-center space-y-4">
+                    <div className="flex items-center justify-center gap-2 text-sm font-bold text-slate-900 dark:text-slate-100">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span>UAV In-Flight Telemetry Active ({droneTelemetryProgress}%)</span>
+                    </div>
+                    <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+                      <div className="h-full bg-slate-900 dark:bg-slate-100 transition-all duration-150" style={{ width: `${droneTelemetryProgress}%` }} />
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Transmitting real-time orthomosaic elevation models to district ledger...</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* OFFICIAL BROADCAST MODAL */}
+          {isBroadcastModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+              <div className="w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-2xl space-y-4 text-left text-slate-900 dark:text-slate-100">
+                <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+                  <span>📢</span> Dispatch Official District Announcement
+                </h3>
+                <form onSubmit={handleSendBroadcast} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">Target Gram Panchayats</label>
+                    <select value={broadcastGP} onChange={(e) => setBroadcastGP(e.target.value)} className="w-full p-3 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-bold outline-none">
+                      <option value="All Gram Panchayats">All 142 Gram Panchayats (Constituency-Wide)</option>
+                      <option value="Kalyanpur Gram Panchayat">Kalyanpur Gram Panchayat (Flood Zone)</option>
+                      <option value="Jhirpani Tribal Hamlet">Jhirpani Tribal Hamlet (Water Zone)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">Announcement Title</label>
+                    <input type="text" value={broadcastTitle} onChange={(e) => setBroadcastTitle(e.target.value)} placeholder="e.g. Emergency Pontoon Bridge Construction Started" className="w-full p-3 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-bold outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">Detailed Message for Citizen Feeds</label>
+                    <textarea rows="3" value={broadcastMessage} onChange={(e) => setBroadcastMessage(e.target.value)} placeholder="Enter details for citizens..." className="w-full p-3 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-bold outline-none" />
+                  </div>
+                  <div className="flex gap-2.5 pt-2">
+                    <button type="button" onClick={() => { playChime('tap'); setIsBroadcastModalOpen(false); }} className="flex-1 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs cursor-pointer active:scale-95 transition-all shadow-xs">Cancel</button>
+                    <button type="submit" className="flex-1 py-3 rounded-2xl bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-900 font-bold text-xs cursor-pointer active:scale-95 transition-all shadow-md">Dispatch Broadcast</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+        </div>
+      );
+    }
+
+    ReactDOM.render(<AdminSoftwareSuite />, document.getElementById('root'));
+  </script>
+</body>
+</html>
