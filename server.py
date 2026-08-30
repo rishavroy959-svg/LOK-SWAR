@@ -17,6 +17,20 @@ import mimetypes
 from datetime import datetime
 import math
 
+# Auto-load .env from root
+_env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+if os.path.exists(_env_path):
+    try:
+        with open(_env_path, "r", encoding="utf-8") as _f:
+            for _line in _f:
+                _line = _line.strip()
+                if _line and not _line.startswith("#") and "=" in _line:
+                    _k, _v = _line.split("=", 1)
+                    if _k.strip() not in os.environ:
+                        os.environ[_k.strip()] = _v.strip()
+    except Exception:
+        pass
+
 def parse_gps_coords(gps_val):
     """Extract (lat, lng) float tuple from string or dict"""
     if isinstance(gps_val, dict):
@@ -660,8 +674,8 @@ class LokSwarBackendHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(json.dumps(ekyc_data).encode('utf-8'))
             return
 
-        # 4. ADMIN AUTH: Officer Aadhaar Number + Password Login
-        if path == "/api/auth/admin/login":
+        # 4. ADMIN / OFFICER AUTH: Officer Aadhaar Number + Password Login
+        if path == "/api/auth/admin/login" or path == "/api/auth/officer/login":
             identifier = body.get("aadhaar") or body.get("email") or body.get("id") or body.get("loginId") or ""
             identifier = str(identifier).strip()
             password = str(body.get("password", "")).strip()
