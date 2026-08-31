@@ -799,16 +799,20 @@ function ProfileApp() {
 
   // Load Session and DB Grievances on Mount
   useEffect(() => {
+    let currentMobile = "9861234567";
     try {
       const raw = localStorage.getItem('lok_swar_citizen_session') || localStorage.getItem('lok_swar_citizen_auth_session');
       if (raw) {
         const data = JSON.parse(raw);
-        setName(data.name || 'Rishav Yadav');
-        setEmail(data.email || 'rishav.yadav.odisha@gmail.com');
-        setMobile(data.mobile || '9861234567');
-        setAadhaar(data.aadhaar || '5482 9104 1940');
-        setDpUrl(data.dpUrl || 'assets/bg_1_smart_village.jpg');
-        setVillage(data.village || 'Kalyanpur Gram Panchayat (Ward 3)');
+        if (data.name) setName(data.name);
+        if (data.email) setEmail(data.email);
+        if (data.mobile) {
+          setMobile(data.mobile);
+          currentMobile = data.mobile;
+        }
+        if (data.aadhaar) setAadhaar(data.aadhaar);
+        if (data.dpUrl) setDpUrl(data.dpUrl);
+        if (data.village) setVillage(data.village);
         if (data.addressDetails) {
           setHouse(data.addressDetails.house || 'Plot #14, Sector 2');
           setBlock(data.addressDetails.block || 'Lathikata Block');
@@ -818,8 +822,8 @@ function ProfileApp() {
       }
     } catch (e) {}
     scan50kmLocalIssues(profileLocation.lat, profileLocation.lng, 50);
-    // Fetch User Grievances from API
-    fetch('/api/grievances/list').then(r => r.json()).then(data => {
+    // Fetch User's specific unique Grievances from API
+    fetch(`/api/grievances/list?userId=${encodeURIComponent(currentMobile)}`).then(r => r.json()).then(data => {
       if (data && data.reports) {
         setMyGrievances(data.reports);
       }

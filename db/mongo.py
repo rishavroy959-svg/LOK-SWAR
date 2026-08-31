@@ -149,6 +149,8 @@ class LokSwarDB:
             {
                 "mobile": "9861234567",
                 "name": "Rishav Yadav",
+                "password": "password123",
+                "email": "rishav.yadav.odisha@gmail.com",
                 "village": "Kalyanpur Gram Panchayat (Ward 3)",
                 "aadhaarMasked": "XXXX-XXXX-1940",
                 "isAadhaarVerified": True,
@@ -159,6 +161,8 @@ class LokSwarDB:
             {
                 "mobile": "9437123890",
                 "name": "Sunita Soren",
+                "password": "password123",
+                "email": "sunita.soren@gmail.com",
                 "village": "Jhirpani Tribal Hamlet (Sector 2)",
                 "aadhaarMasked": "XXXX-XXXX-4812",
                 "isAadhaarVerified": True,
@@ -256,7 +260,8 @@ class LokSwarDB:
         if not self.local_data.get("citizens"):
             self.local_data["citizens"] = {
                 "9861234567": {
-                    "mobile": "9861234567", "name": "Rishav Yadav",
+                    "mobile": "9861234567", "name": "Rishav Yadav", "password": "password123",
+                    "email": "rishav.yadav.odisha@gmail.com",
                     "village": "Kalyanpur Gram Panchayat (Ward 3)", "aadhaarMasked": "XXXX-XXXX-1940",
                     "isAadhaarVerified": True, "trustScore": 99, "dpUrl": "assets/bg_1_smart_village.jpg"
                 }

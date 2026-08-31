@@ -899,11 +899,20 @@ function AdminSoftwareSuite() {
         if (parsed && parsed.name) return parsed;
       }
     } catch (e) {}
-    return DEMO_OFFICERS[0];
+    return null;
   });
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const [loginId, setLoginId] = useState("admin@sundargarh.gov.in");
-  const [loginPassword, setLoginPassword] = useState("admin123");
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    try {
+      const saved = localStorage.getItem('lok_swar_admin_suite_session') || localStorage.getItem('lok_swar_admin_session');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.name) return true;
+      }
+    } catch (e) {}
+    return false;
+  });
+  const [loginId, setLoginId] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
   const [loginError, setLoginError] = useState("");
 
   // 2. Navigation State & Browser History Sync
@@ -1069,10 +1078,20 @@ function AdminSoftwareSuite() {
     // Silent for professional government portal
   };
 
-  // Handle Login (12-Digit Aadhaar ID + Official Password)
+  // Handle Login (12-Digit Aadhaar ID / Official Email + Official Password)
   const handleLoginSubmit = async e => {
-    e.preventDefault();
-    const cleanAadhaar = loginId.replace(/\s+/g, '').replace(/-/g, '');
+    if (e) e.preventDefault();
+    setLoginError("");
+    const cleanAadhaar = loginId.trim().replace(/\s+/g, '').replace(/-/g, '');
+    const cleanPass = loginPassword.trim();
+    if (!cleanAadhaar) {
+      setLoginError("Please enter your 12-digit Official Aadhaar or Official Email");
+      return;
+    }
+    if (!cleanPass) {
+      setLoginError("Please enter your official security password");
+      return;
+    }
     try {
       const res = await fetch('/api/auth/admin/login', {
         method: 'POST',
@@ -1081,7 +1100,7 @@ function AdminSoftwareSuite() {
         },
         body: JSON.stringify({
           aadhaar: cleanAadhaar,
-          password: loginPassword
+          password: cleanPass
         })
       });
       const data = await res.json();
@@ -1089,27 +1108,22 @@ function AdminSoftwareSuite() {
         setCurrentUser(data.officer);
         setIsAuthenticated(true);
         localStorage.setItem('lok_swar_admin_suite_session', JSON.stringify(data.officer));
+        localStorage.setItem('lok_swar_admin_session', JSON.stringify(data.officer));
         playChime('success');
-        showToast(`Welcome, ${data.officer.name} (${data.officer.designation})`);
+        showToast(`✓ Verified: Welcome, ${data.officer.name} (${data.officer.designation})`);
         return;
+      } else {
+        setLoginError(data.error || "Authentication failed. Invalid Officer Aadhaar or Password.");
       }
-    } catch (err) {}
-    const matched = DEMO_OFFICERS.find(o => o.id.toLowerCase() === loginId.toLowerCase() || o.aadhaar?.replace(/\s+/g, '') === cleanAadhaar);
-    if (matched || loginPassword === 'admin123' || loginPassword === 'admin') {
-      const userObj = matched || DEMO_OFFICERS[0];
-      setCurrentUser(userObj);
-      setIsAuthenticated(true);
-      localStorage.setItem('lok_swar_admin_suite_session', JSON.stringify(userObj));
-      playChime('success');
-      showToast(`Welcome, ${userObj.name} (${userObj.designation})`);
-    } else {
-      setLoginError("Invalid credentials. Try Aadhaar: 8899 1122 3344 / admin123");
+    } catch (err) {
+      setLoginError("Server communication error. Please ensure backend is running.");
     }
   };
   const handlePersonaSwitch = officer => {
     setCurrentUser(officer);
     setIsAuthenticated(true);
     localStorage.setItem('lok_swar_admin_suite_session', JSON.stringify(officer));
+    localStorage.setItem('lok_swar_admin_session', JSON.stringify(officer));
     playChime('success');
     showToast(`Switched active session to: ${officer.name} (${officer.badge})`);
   };
@@ -1117,7 +1131,9 @@ function AdminSoftwareSuite() {
     setIsAuthenticated(false);
     setCurrentUser(null);
     localStorage.removeItem('lok_swar_admin_suite_session');
+    localStorage.removeItem('lok_swar_admin_session');
     playChime('tap');
+    showToast("Logged out of Administrative Command Suite");
   };
 
   // Status Update Action

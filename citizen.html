@@ -2476,7 +2476,7 @@ function CitizenPortalApp() {
   };
 
   // Profile Save Handler
-  const handleSaveProfile = e => {
+  const handleSaveProfile = async e => {
     if (e) e.preventDefault();
     const updated = {
       ...citizenUser,
@@ -2491,6 +2491,14 @@ function CitizenPortalApp() {
     setCitizenUser(updated);
     try {
       localStorage.setItem('lok_swar_citizen_session', JSON.stringify(updated));
+      localStorage.setItem('lok_swar_citizen_auth_session', JSON.stringify(updated));
+      await fetch('/api/auth/citizen/profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updated)
+      });
     } catch (e) {}
     setIsProfileModalOpen(false);
     playChime('success');

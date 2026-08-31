@@ -196,11 +196,23 @@ class LokSwarBackendHandler(http.server.SimpleHTTPRequestHandler):
             }).encode('utf-8'))
             return
 
-        # 1. Grievance List
+        # 1. Grievance List (Supports constituency-wide triage or per-user filtering via ?userId= or ?mobile=)
         if path == "/api/grievances/list" or path == "/api/grievances":
+            user_id = query.get("userId", [None])[0] or query.get("mobile", [None])[0]
             grievances = db.get_grievances()
+            if user_id:
+                clean_uid = str(user_id).strip().replace("+91", "").replace(" ", "").replace("-", "")
+                filtered = [
+                    g for g in grievances 
+                    if str(g.get("userId", "")).replace("+91", "").replace(" ", "").replace("-", "") == clean_uid
+                    or str(g.get("mobile", "")).replace("+91", "").replace(" ", "").replace("-", "") == clean_uid
+                    or str(g.get("authorMobile", "")).replace("+91", "").replace(" ", "").replace("-", "") == clean_uid
+                ]
+                self._set_headers(200)
+                self.wfile.write(json.dumps({"success": True, "count": len(filtered), "data": filtered, "reports": filtered}).encode('utf-8'))
+                return
             self._set_headers(200)
-            self.wfile.write(json.dumps({"success": True, "count": len(grievances), "data": grievances}).encode('utf-8'))
+            self.wfile.write(json.dumps({"success": True, "count": len(grievances), "data": grievances, "reports": grievances}).encode('utf-8'))
             return
 
         # 2. Single Grievance Details
@@ -400,7 +412,7 @@ class LokSwarBackendHandler(http.server.SimpleHTTPRequestHandler):
                 return
 
             expected_pwd = citizen.get("password")
-            if expected_pwd and password != expected_pwd and password != "admin123" and password != "1234":
+            if not expected_pwd or password != expected_pwd:
                 self._set_headers(401)
                 self.wfile.write(json.dumps({"success": False, "error": "Incorrect password. Please try again or reset your password."}).encode('utf-8'))
                 return
@@ -687,7 +699,7 @@ class LokSwarBackendHandler(http.server.SimpleHTTPRequestHandler):
                 return
 
             expected_pwd = officer.get("password", "admin123")
-            if password != expected_pwd and password != "admin123" and password != "admin":
+            if password != expected_pwd:
                 self._set_headers(401)
                 self.wfile.write(json.dumps({"success": False, "error": "Invalid official password. Please re-enter"}).encode('utf-8'))
                 return
@@ -793,6 +805,8 @@ class LokSwarBackendHandler(http.server.SimpleHTTPRequestHandler):
                 "id": new_gid,
                 "author": body.get("author") or body.get("citizenName") or c_user.get("name") or "Citizen User",
                 "citizenMobile": c_mobile,
+                "authorMobile": c_mobile,
+                "userId": c_mobile,
                 "citizenEmail": c_email,
                 "emailUpdatesEnabled": bool(c_email),
                 "aadhaarMasked": body.get("aadhaarMasked") or "Verified Citizen",

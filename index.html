@@ -385,9 +385,9 @@ function PortalLandingGateway() {
   // 5. Authentication State
   const [activeTab, setActiveTab] = useState('citizen'); // 'citizen' | 'admin'
   const [citizenAuthMode, setCitizenAuthMode] = useState('login'); // 'login' | 'register' | 'reset'
-  const [loginIdentifier, setLoginIdentifier] = useState('9861234567');
-  const [loginPassword, setLoginPassword] = useState('admin123');
-  const [resetIdentifier, setResetIdentifier] = useState('9861234567');
+  const [loginIdentifier, setLoginIdentifier] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [resetIdentifier, setResetIdentifier] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [regName, setRegName] = useState('');
   const [regMobile, setRegMobile] = useState('');
@@ -395,8 +395,8 @@ function PortalLandingGateway() {
   const [regPassword, setRegPassword] = useState('');
   const [regVillage, setRegVillage] = useState('');
   const [isSubmittingAuth, setIsSubmittingAuth] = useState(false);
-  const [citizenMobile, setCitizenMobile] = useState('9861234567');
-  const [citizenName, setCitizenName] = useState('Rishav Yadav');
+  const [citizenMobile, setCitizenMobile] = useState('');
+  const [citizenName, setCitizenName] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [citizenOtp, setCitizenOtp] = useState('');
   const [receivedOtp, setReceivedOtp] = useState('');
@@ -404,8 +404,8 @@ function PortalLandingGateway() {
   const [citizenError, setCitizenError] = useState('');
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [isVerifyingCitizen, setIsVerifyingCitizen] = useState(false);
-  const [adminAadhaar, setAdminAadhaar] = useState('8899 1122 3344');
-  const [adminPassword, setAdminPassword] = useState('admin123');
+  const [adminAadhaar, setAdminAadhaar] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
   const [adminError, setAdminError] = useState('');
   const [isLoggingInAdmin, setIsLoggingInAdmin] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
@@ -563,73 +563,52 @@ function PortalLandingGateway() {
   const handleCitizenPasswordLogin = async e => {
     if (e) e.preventDefault();
     setCitizenError('');
-    if (!loginIdentifier.trim()) {
-      setCitizenError('Please enter your mobile or email');
+    const cleanId = loginIdentifier.trim().replace(/\s+/g, '');
+    const cleanPass = loginPassword.trim();
+    if (!cleanId) {
+      setCitizenError('Please enter your registered 10-digit mobile number or email');
+      playChime('error');
       return;
     }
-    if (!loginPassword.trim()) {
-      setCitizenError('Please enter your password');
+    if (!cleanPass) {
+      setCitizenError('Please enter your account password');
+      playChime('error');
       return;
     }
     setIsSubmittingAuth(true);
     playChime('tap');
-    const cleanId = loginIdentifier.trim();
-    const urlsToTry = ['/api/auth/citizen/login', 'http://localhost:8000/api/auth/citizen/login', 'http://127.0.0.1:8000/api/auth/citizen/login'];
-    let loggedIn = false;
-    for (const url of urlsToTry) {
-      try {
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            identifier: cleanId,
-            password: loginPassword.trim()
-          })
-        });
-        const data = await res.json();
-        if (data.success && data.citizen) {
-          localStorage.setItem('lok_swar_citizen_session', JSON.stringify(data.citizen));
-          localStorage.setItem('lok_swar_citizen_auth_session', JSON.stringify(data.citizen));
-          playChime('success');
-          showToast(`Welcome back, ${data.citizen.name}!`);
-          loggedIn = true;
-          setTimeout(() => {
-            window.location.href = 'citizen.html';
-          }, 500);
-          break;
-        } else if (data.error && !data.error.includes('not found') && !data.error.includes('Cannot')) {
-          setCitizenError(data.error);
-          setIsSubmittingAuth(false);
-          return;
-        }
-      } catch (err) {
-        // Try next URL
+    try {
+      const res = await fetch('/api/auth/citizen/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          identifier: cleanId,
+          password: cleanPass
+        })
+      });
+      const data = await res.json();
+      if (data.success && data.citizen) {
+        localStorage.setItem('lok_swar_citizen_session', JSON.stringify(data.citizen));
+        localStorage.setItem('lok_swar_citizen_auth_session', JSON.stringify(data.citizen));
+        playChime('success');
+        showToast(`✓ Welcome back, ${data.citizen.name}!`);
+        setTimeout(() => {
+          window.location.href = 'citizen.html';
+        }, 500);
+      } else {
+        setCitizenError(data.error || 'Authentication failed. Please check your credentials or create a new account.');
+        playChime('error');
       }
+    } catch (err) {
+      setCitizenError('Unable to connect to server. Please verify backend connection.');
+      playChime('error');
+    } finally {
+      setIsSubmittingAuth(false);
     }
-    if (!loggedIn) {
-      // Offline / Standalone Fallback Session
-      const mockUser = {
-        name: cleanId === '9861234567' ? 'Rishav Yadav' : cleanId.includes('@') ? cleanId.split('@')[0] : 'Citizen User',
-        mobile: cleanId.replace(/\D/g, '') || '9861234567',
-        aadhaar: '5482 9104 1940',
-        aadhaarMasked: 'XXXX-XXXX-1940',
-        village: 'Kalyanpur Gram Panchayat (Ward 3)',
-        dpUrl: 'assets/bg_1_smart_village.jpg',
-        isAadhaarVerified: true,
-        trustScore: 99
-      };
-      localStorage.setItem('lok_swar_citizen_session', JSON.stringify(mockUser));
-      localStorage.setItem('lok_swar_citizen_auth_session', JSON.stringify(mockUser));
-      playChime('success');
-      showToast(`Welcome back, ${mockUser.name}!`);
-      setTimeout(() => {
-        window.location.href = 'citizen.html';
-      }, 500);
-    }
-    setIsSubmittingAuth(false);
   };
+
   const handleSendCitizenOtp = async e => {
     if (e) e.preventDefault();
     const cleanMobile = citizenMobile.replace(/\D/g, '');
@@ -658,19 +637,14 @@ function PortalLandingGateway() {
         setCitizenOtp(data.otp);
         setOtpTimer(60);
         playChime('success');
-        showToast(`OTP Dispatched: [${data.otp}]`);
+        showToast(`OTP Dispatched to +91-${cleanMobile}`);
       } else {
         setCitizenError(data.error || 'Failed to send OTP');
         playChime('error');
       }
     } catch (err) {
-      // Fallback simulation
-      setOtpSent(true);
-      setReceivedOtp('739412');
-      setCitizenOtp('739412');
-      setOtpTimer(60);
-      playChime('success');
-      showToast('OTP Dispatched: [739412]');
+      setCitizenError('Failed to send OTP. Server unreachable.');
+      playChime('error');
     } finally {
       setIsSendingOtp(false);
     }
@@ -695,56 +669,79 @@ function PortalLandingGateway() {
         },
         body: JSON.stringify({
           mobile: cleanMobile,
-          otp: citizenOtp,
-          name: citizenName || 'Rishav Yadav'
+          otp: citizenOtp.trim(),
+          name: citizenName.trim() || 'Citizen User'
         })
       });
       const data = await res.json();
-      if (data.success) {
+      if (data.success && data.citizen) {
         playChime('success');
         localStorage.setItem('lok_swar_citizen_session', JSON.stringify(data.citizen));
         localStorage.setItem('lok_swar_citizen_auth_session', JSON.stringify(data.citizen));
-        window.location.href = 'citizen.html';
+        showToast(`✓ Welcome, ${data.citizen.name}!`);
+        setTimeout(() => {
+          window.location.href = 'citizen.html';
+        }, 500);
       } else {
-        setCitizenError(data.error || 'Invalid OTP code');
+        setCitizenError(data.error || 'Invalid or expired OTP code');
         playChime('error');
       }
     } catch (err) {
-      // Fallback simulation
-      playChime('success');
-      const mockUser = {
-        name: citizenName || 'Rishav Yadav',
-        mobile: cleanMobile,
-        aadhaar: '5482 9104 1940',
-        aadhaarMasked: 'XXXX-XXXX-1940',
-        village: 'Kalyanpur Gram Panchayat (Ward 3)',
-        dpUrl: 'assets/bg_1_smart_village.jpg',
-        digilockerVerified: true
-      };
-      localStorage.setItem('lok_swar_citizen_session', JSON.stringify(mockUser));
-      localStorage.setItem('lok_swar_citizen_auth_session', JSON.stringify(mockUser));
-      window.location.href = 'citizen.html';
+      setCitizenError('OTP verification failed. Server unreachable.');
+      playChime('error');
     } finally {
       setIsVerifyingCitizen(false);
     }
   };
 
-  // Admin Login
-  const handleAdminLogin = e => {
-    e.preventDefault();
-    playChime('tap');
+  // Real Administrative Officer Authentication (Strict verification against /api/auth/admin/login)
+  const handleAdminLogin = async e => {
+    if (e) e.preventDefault();
+    setAdminError('');
+    const cleanAadhaar = adminAadhaar.trim().replace(/\s+/g, '');
+    const cleanPass = adminPassword.trim();
+    if (!cleanAadhaar) {
+      setAdminError('Please enter your 12-digit Official Aadhaar ID or official email');
+      playChime('error');
+      return;
+    }
+    if (!cleanPass) {
+      setAdminError('Please enter your official security password');
+      playChime('error');
+      return;
+    }
     setIsLoggingInAdmin(true);
-    setTimeout(() => {
+    playChime('tap');
+    try {
+      const res = await fetch('/api/auth/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          aadhaar: cleanAadhaar,
+          password: cleanPass
+        })
+      });
+      const data = await res.json();
+      if (data.success && data.officer) {
+        localStorage.setItem('lok_swar_admin_suite_session', JSON.stringify(data.officer));
+        localStorage.setItem('lok_swar_admin_session', JSON.stringify(data.officer));
+        playChime('success');
+        showToast(`✓ Verified: Welcome, ${data.officer.name} (${data.officer.designation})`);
+        setTimeout(() => {
+          window.location.href = 'admin.html';
+        }, 500);
+      } else {
+        setAdminError(data.error || 'Unauthorized. Invalid Officer Aadhaar Number or Official Password.');
+        playChime('error');
+      }
+    } catch (err) {
+      setAdminError('Unable to connect to server. Please verify backend connection.');
+      playChime('error');
+    } finally {
       setIsLoggingInAdmin(false);
-      playChime('success');
-      localStorage.setItem('lok_swar_admin_session', JSON.stringify({
-        name: "Dr. Subrat Tripathy, IAS",
-        designation: "District Magistrate & Collector",
-        badge: "Collector & District Magistrate",
-        aadhaar: adminAadhaar
-      }));
-      window.location.href = 'admin.html';
-    }, 600);
+    }
   };
   return /*#__PURE__*/React.createElement("div", {
     className: "min-h-screen w-full relative flex flex-col justify-between select-none font-sans overflow-x-hidden transition-colors duration-200 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 hero-dot-pattern"
