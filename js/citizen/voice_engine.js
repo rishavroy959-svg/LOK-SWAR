@@ -2221,16 +2221,18 @@ const GUIDANCE_DICTIONARY = {
       utterance.lang = BCP47_LANG_MAP[currentLang] || 'hi-IN';
 
       const voices = window.speechSynthesis.getVoices() || [];
+      // Strict voice matching: only match voices that truly support the target language/script.
+      // Languages like Odia, Assamese, Sindhi, Kashmiri should NOT fall back to Hindi/Urdu/Bengali
+      // browser voices — if no matching voice, return false so /api/tts handles it instead.
       const matchedVoice = voices.find(v => {
         const vl = (v.lang || '').toLowerCase();
         return vl.startsWith(currentLang) ||
+               vl.startsWith(BCP47_LANG_MAP[currentLang]?.toLowerCase() || currentLang) ||
                (currentLang === 'bho' && vl.startsWith('hi')) ||
                (currentLang === 'mai' && vl.startsWith('hi')) ||
                (currentLang === 'sat' && vl.startsWith('hi')) ||
-               (currentLang === 'ks' && (vl.startsWith('ur') || vl.startsWith('ks'))) ||
-               (currentLang === 'sd' && (vl.startsWith('ur') || vl.startsWith('sd'))) ||
-               (currentLang === 'as' && (vl.startsWith('as') || vl.startsWith('bn'))) ||
-               (currentLang === 'or' && (vl.startsWith('or') || vl.startsWith('hi')));
+               (currentLang === 'ks' && vl.startsWith('ur')) ||
+               (currentLang === 'sd' && vl.startsWith('ur'));
       });
 
       // If non-English selected and browser OS lacks native Indian voice for this language:

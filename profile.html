@@ -1036,7 +1036,13 @@ function ProfileApp() {
     setIsSpeaking(true);
     const speechText = `${t.brandTitle}. ${name}, your citizen profile is verified with UIDAI Aadhaar trust score 99 percent. Manage your DigiLocker address and review your active grievances.`;
     const ut = new SpeechSynthesisUtterance(speechText);
-    ut.lang = selectedLang === 'hi' ? 'hi-IN' : selectedLang === 'bn' ? 'bn-IN' : 'en-IN';
+    const profileLangMap = {
+      hi: 'hi-IN', bho: 'hi-IN', or: 'or-IN', bn: 'bn-IN', en: 'en-IN',
+      ta: 'ta-IN', te: 'te-IN', kn: 'kn-IN', ml: 'ml-IN', mr: 'mr-IN',
+      gu: 'gu-IN', pa: 'pa-IN', ur: 'ur-IN', sd: 'ur-IN', as: 'as-IN',
+      mai: 'hi-IN', sat: 'hi-IN', ks: 'ur-IN'
+    };
+    ut.lang = profileLangMap[selectedLang] || 'hi-IN';
     ut.onend = () => setIsSpeaking(false);
     ut.onerror = () => setIsSpeaking(false);
     window.speechSynthesis?.speak(ut);
