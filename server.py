@@ -160,7 +160,7 @@ class LokSwarBackendHandler(http.server.SimpleHTTPRequestHandler):
                 "mai": "hi", "maithili": "hi",
                 "sat": "hi", "santali": "hi",
                 "ks": "ur", "kashmiri": "ur",
-                "sd": "hi", "sindhi": "hi",
+                "sd": "ur", "sindhi": "ur",
                 "bho": "hi", "bhojpuri": "hi", "bihari": "hi",
                 "hi": "hi", "hindi": "hi",
                 "en": "en", "english": "en"

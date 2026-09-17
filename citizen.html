@@ -623,8 +623,8 @@ function CitizenPortalApp() {
     muteAllSpeech();
 
     const currentLang = overrideLang || selectedLang || 'hi';
-    const langEntry = (key && GUIDANCE_DICTIONARY[key] && (GUIDANCE_DICTIONARY[key][currentLang] || GUIDANCE_DICTIONARY[key].hi || GUIDANCE_DICTIONARY[key].en)) || {};
-    const displayText = customText || langEntry.display || "लोक स्वर आवाज सहायक";
+    const langEntry = (key && GUIDANCE_DICTIONARY && GUIDANCE_DICTIONARY[key] && (GUIDANCE_DICTIONARY[key][currentLang] || GUIDANCE_DICTIONARY[key].hi || GUIDANCE_DICTIONARY[key].en)) || {};
+    const displayText = customText || langEntry.display || (window.CITIZEN_I18N?.[currentLang]?.brandTitle ? `${window.CITIZEN_I18N[currentLang].brandTitle} Voice Guide` : "Lok Swar Voice Assistant");
     const spokenText = customText || langEntry.spoken || displayText;
     const enSub = langEntry.enSub || "";
 
@@ -637,24 +637,41 @@ function CitizenPortalApp() {
     });
     setIsSpeaking(true);
 
-    // Instant speech: trigger SpeechSynthesis immediately with zero network delay
-    fallbackBrowserSpeech(spokenText, currentLang);
+    const onSpeechEnd = () => {
+      setIsSpeaking(false);
+      setTimeout(() => {
+        setTtsPopupMessage(prev => (prev && prev.display === displayText ? null : prev));
+      }, 2500);
+      activeAudioElementRef.current = null;
+    };
 
-    // Backup: If SpeechSynthesis has no voices or errors out, stream via /api/tts
-    if (!('speechSynthesis' in window) || window.speechSynthesis.getVoices().length === 0) {
+    const playViaBackendTts = () => {
       try {
         const ttsAudio = new Audio(`/api/tts?text=${encodeURIComponent(spokenText)}&lang=${encodeURIComponent(currentLang)}`);
         activeAudioElementRef.current = ttsAudio;
-        ttsAudio.onended = () => {
-          setIsSpeaking(false);
-          setTimeout(() => setTtsPopupMessage(null), 2500);
-          activeAudioElementRef.current = null;
+        ttsAudio.onended = onSpeechEnd;
+        ttsAudio.onerror = () => {
+          onSpeechEnd();
         };
         const playPromise = ttsAudio.play();
         if (playPromise !== undefined) {
-          playPromise.catch(() => {});
+          playPromise.catch(() => {
+            fallbackBrowserSpeech(spokenText, currentLang, onSpeechEnd, onSpeechEnd);
+          });
         }
-      } catch (e) {}
+      } catch (e) {
+        fallbackBrowserSpeech(spokenText, currentLang, onSpeechEnd, onSpeechEnd);
+      }
+    };
+
+    // If non-English and browser does not have native voices installed for this language,
+    // stream studio-quality native neural audio from /api/tts
+    const started = fallbackBrowserSpeech(spokenText, currentLang, onSpeechEnd, () => {
+      playViaBackendTts();
+    });
+
+    if (!started) {
+      playViaBackendTts();
     }
   };
 
@@ -708,6 +725,19 @@ function CitizenPortalApp() {
           bho: `${title}। रउआ एह विकल्प पर क्लिक कइले बानी।`,
           or: `${title}। ଆପଣ ଏହି ବିକଳ୍ପ ଉପରେ କ୍ଲିକ୍ କରିଛନ୍ତି।`,
           bn: `${title}। আপনি এই বিকল্পটিতে ক্লিক করেছেন।`,
+          gu: `${title}। તમે આ વિકલ્પ પર ક્લિક કર્યું છે.`,
+          pa: `${title}। ਤੁਸੀਂ ਇਸ ਵਿਕਲਪ 'ਤੇ ਕਲਿੱਕ ਕੀਤਾ ਹੈ।`,
+          mr: `${title}। आपण या पर्यायावर क्लिक केले आहे.`,
+          ta: `${title}। நீங்கள் இந்த விருப்பத்தை கிளிக் செய்துள்ளீர்கள்.`,
+          te: `${title}। మీరు ఈ ఎంపికపై క్లిక్ చేశారు.`,
+          kn: `${title}। ನೀವು ಈ ಆಯ್ಕೆಯನ್ನು ಕ್ಲಿಕ್ ಮಾಡಿದ್ದೀರಿ.`,
+          ml: `${title}। നിങ്ങൾ ഈ ഓപ്ഷനിൽ ക്ലിക്ക് ചെയ്തു.`,
+          ur: `${title}۔ آپ نے اس آپشن پر کلک کیا ہے۔`,
+          sd: `${title}۔ توهان هن اختيار تي ڪلڪ ڪيو آهي.`,
+          as: `${title}। আপুনি এই বিকল্পটোত ক্লিক কৰিছে।`,
+          mai: `${title}। अहाँ एहि विकल्प पर क्लिक कएलहुँ अछि।`,
+          sat: `${title}᱾ ᱟᱢ ᱱᱚᱶᱟ ᱚᱯᱥᱚᱱ ᱨᱮ ᱴᱮᱯ ᱠᱮᱫᱟ᱾`,
+          ks: `${title}۔ تُہؠ کٔر اَتھ آپشنَس پؠٹھ کِلک۔`,
           en: `${title}. You clicked this option.`
         };
         const spoken = localizedTitles[selectedLang] || localizedTitles.en;
@@ -2315,9 +2345,32 @@ function CitizenPortalApp() {
   const i18n = window.CITIZEN_I18N;
   const rawT = i18n[selectedLang] || i18n.hi;
   const localizedLocation = localizeAddress(currentLocationName, selectedLang);
-  const govPrefix = selectedLang === 'or' ? 'ଭାରତ ସରକାର' : selectedLang === 'bn' ? 'ভারত সরকার' : selectedLang === 'hi' || selectedLang === 'bho' ? 'भारत सरकार' : 'Government of India';
-  const defaultDistrict = selectedLang === 'or' ? 'ସ୍ଥାନୀୟ କ୍ଷେତ୍ର' : selectedLang === 'bn' ? 'স্থানীয় এলাকা' : selectedLang === 'hi' || selectedLang === 'bho' ? 'स्थानीय क्षेत्र' : 'Local Ward';
-  const defaultLiveTag = selectedLang === 'or' ? 'ବର୍ତ୍ତମାନ ସ୍ଥାନ' : selectedLang === 'bn' ? 'বর্তমান অবস্থান' : selectedLang === 'bho' ? 'अबो के लोकेशन' : selectedLang === 'hi' ? 'लाइव स्थान' : 'Live Location';
+  const govPrefixMap = {
+    hi: 'भारत सरकार', bho: 'भारत सरकार', or: 'ଭାରତ ସରକାର', bn: 'ভারত সরকার',
+    gu: 'ભારત સરકાર', pa: 'ਭਾਰਤ ਸਰਕਾਰ', mr: 'भारत सरकार', ta: 'இந்திய அரசு',
+    te: 'భారత ప్రభుత్వం', kn: 'ಭಾರತ ಸರ್ಕಾರ', ml: 'ഭാരത സർക്കാർ', ur: 'حکومت ہند',
+    sd: 'ڀارت سرڪار', as: 'ভাৰত চৰকাৰ', mai: 'भारत सरकार', sat: 'ᱵᱷᱟᱨᱚᱛ ᱥᱚᱨᱠᱟᱨ',
+    ks: 'ہِندوستانُک حۆکوٗمَتھ', en: 'Government of India'
+  };
+  const govPrefix = govPrefixMap[selectedLang] || 'Government of India';
+
+  const defaultDistrictMap = {
+    hi: 'स्थानीय क्षेत्र', bho: 'स्थानीय क्षेत्र', or: 'ସ୍ଥାନୀୟ କ୍ଷେତ୍ର', bn: 'স্থানীয় এলাকা',
+    gu: 'સ્થાનિક વિસ્તાર', pa: 'ਸਥਾਨਕ ਖੇਤਰ', mr: 'स्थानिक क्षेत्र', ta: 'உள்ளூர் பகுதி',
+    te: 'స్థానిక ప్రాంతం', kn: 'ಸ್ಥಳೀಯ ಪ್ರದೇಶ', ml: 'പ്രാദേശിക പ്രദേശം', ur: 'مقامی علاقہ',
+    sd: 'مقامي علائقو', as: 'স্থানীয় এলেকা', mai: 'स्थानीय क्षेत्र', sat: 'ᱴᱚᱴᱷᱟᱠᱤᱭᱟᱹ ᱡᱟᱭᱜᱟ',
+    ks: 'مقامی علاقہٕ', en: 'Local Ward'
+  };
+  const defaultDistrict = defaultDistrictMap[selectedLang] || 'Local Ward';
+
+  const defaultLiveTagMap = {
+    hi: 'लाइव स्थान', bho: 'अबो के लोकेशन', or: 'ବର୍ତ୍ତମାନ ସ୍ଥାନ', bn: 'বর্তমান অবস্থান',
+    gu: 'લાઈવ સ્થાન', pa: 'ਲਾਈਵ ਟਿਕਾਣਾ', mr: 'थेट स्थान', ta: 'நேரலை இருப்பிடம்',
+    te: 'లైవ్ లొకేషన్', kn: 'ಲೈವ್ ಸ್ಥಳ', ml: 'ലൈവ് ലൊക്കേഷൻ', ur: 'لائیو مقام',
+    sd: 'لائيو لوڪيشن', as: 'লাইভ স্থান', mai: 'लाइव स्थान', sat: 'ᱞᱟᱭᱤᱵᱽ ᱡᱟᱭᱜᱟ',
+    ks: 'لائیو لوکیشن', en: 'Live Location'
+  };
+  const defaultLiveTag = defaultLiveTagMap[selectedLang] || 'Live Location';
   const isLocReal = currentLocationName && currentLocationName !== 'Detecting Live Location...' && !currentLocationName.includes('Sundargarh');
   const t = {
     ...rawT,
@@ -2596,7 +2649,7 @@ function CitizenPortalApp() {
     className: `w-4 h-4 ${isVoiceGuideActive ? (isSpeaking ? 'text-white animate-bounce' : 'text-white') : 'text-[#d48c48] dark:text-[#e8a361]'}`
   }), /*#__PURE__*/React.createElement("span", {
     className: "flex items-center gap-1"
-  }, isVoiceGuideActive ? (isSpeaking ? "🔊 बोल रहा है..." : "🔊 आवाज गाइड: ऑन") : "🔇 आवाज गाइड: म्यूट")), (ttsPopupMessage || isSpeaking) && /*#__PURE__*/React.createElement("div", {
+  }, isVoiceGuideActive ? (isSpeaking ? `🔊 ${t.speaking || 'Speaking...'}` : `🔊 ${t.voiceGuideOn || 'Voice Guide: ON'}`) : `🔇 ${t.voiceGuideMute || 'Voice Guide: Muted'}`)), (ttsPopupMessage || isSpeaking) && /*#__PURE__*/React.createElement("div", {
     className: "fixed top-20 right-4 sm:right-8 z-50 w-[380px] sm:w-[480px] max-w-[94vw] px-4 py-3 rounded-[1.5rem] bg-white/95 dark:bg-[#282624]/95 backdrop-blur-md border-2 border-emerald-500/60 shadow-2xl animate-in slide-in-from-top-2 duration-200 text-left"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center justify-between gap-3"
@@ -2622,7 +2675,7 @@ function CitizenPortalApp() {
     title: "Dismiss"
   }, "✕"))), /*#__PURE__*/React.createElement("p", {
     className: "mt-1.5 text-xs sm:text-sm font-medium text-[#5a5551] dark:text-[#eae6e1] leading-relaxed"
-  }, "\"", typeof ttsPopupMessage === 'string' ? ttsPopupMessage : ttsPopupMessage?.text || ttsPopupMessage?.display || "लोक स्वर में आपका स्वागत है।", "\""))), currentView === 'citizen' && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("a", {
+  }, "\"", typeof ttsPopupMessage === 'string' ? ttsPopupMessage : ttsPopupMessage?.text || ttsPopupMessage?.display || (t.brandTitle ? `${t.brandTitle} • ${t.voiceGuide}` : "Lok Swar Voice Assistant"), "\""))), currentView === 'citizen' && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("a", {
     href: "index.html",
     className: "hidden md:flex px-3 py-1.5 rounded-[1rem] border border-[#f0ece6] dark:border-[#423f3b] font-bold text-xs bg-[#f7f5f2] hover:bg-[#f0ece6] dark:bg-[#33302d] dark:hover:bg-slate-700 text-[#5a5551] dark:text-[#d1ccc6] items-center gap-1.5 transition-all shadow-xs"
   }, /*#__PURE__*/React.createElement("span", null, t.gateway)), /*#__PURE__*/React.createElement("a", {

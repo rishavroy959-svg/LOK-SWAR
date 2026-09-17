@@ -1,3499 +1,2216 @@
 // js/citizen/voice_engine.js - Voice Assistant Guidance Engine & Dictionary
 (function() {
 const GUIDANCE_DICTIONARY = {
-    welcome: {
-      hi: {
-        "display": "लोक स्वर में आपका स्वागत है। स्क्रीन पर कहीं भी क्लिक करें, मैं बोलकर आपका मार्गदर्शन करूँगा।",
-        "spoken": "लोक स्वर में आपका स्वागत है। स्क्रीन पर कहीं भी क्लिक करें, मैं बोलकर आपका मार्गदर्शन करूँगा।",
-        "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
-      },
-      bho: {
-        "display": "लोक स्वर में रउआ के स्वागत बा। स्क्रीन पर कहीं भी क्लिक करब, हम बोल के बताएम।",
-        "spoken": "लोक स्वर में रउआ के स्वागत बा। स्क्रीन पर कहीं भी क्लिक करब, हम बोल के बताएम।",
-        "enSub": "Welcome to Lok Swar. Tap anywhere for speech guidance in Bhojpuri."
-      },
-      or: {
-        "display": "ଲୋକ ସ୍ୱର ପୋର୍ଟାଲକୁ ସ୍ୱାଗତ। ସ୍କ୍ରିନରେ ଯେକୌଣସି ସ୍ଥାନରେ କ୍ଲିକ୍ କରନ୍ତୁ, ଭଏସ୍ ଆସିଷ୍ଟାଣ୍ଟ ଆପଣଙ୍କୁ ସାହାଯ୍ୟ କରିବ।",
-        "spoken": "ଲୋକ ସ୍ୱର ପୋର୍ଟାଲକୁ ସ୍ୱାଗତ। ସ୍କ୍ରିନରେ ଯେକୌଣସି ସ୍ଥାନରେ କ୍ଲିକ୍ କରନ୍ତୁ, ଭଏସ୍ ଆସିଷ୍ଟାଣ୍ଟ ଆପଣଙ୍କୁ ସାହାଯ୍ୟ କରିବ।",
-        "enSub": "Welcome to Lok Swar. Tap anywhere for speech guidance in Odia."
-      },
-      bn: {
-        "display": "লোক স্বর পোর্টালে স্বাগতম। স্ক্রিনে যেকোনো স্থানে ক্লিক করলে ভয়েস অ্যাসিস্ট্যান্ট আপনাকে সাহায্য করবে।",
-        "spoken": "লোক স্বর পোর্টালে স্বাগতম। স্ক্রিনে যেকোনো স্থানে ক্লিক করলে ভয়েস অ্যাসিস্ট্যান্ট আপনাকে সাহায্য করবে।",
-        "enSub": "Welcome to Lok Swar. Tap anywhere for speech guidance in Bengali."
-      },
-      en: {
-        "display": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech.",
-        "spoken": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech.",
-        "enSub": "Voice guidance active. Tap any element to hear its description."
-      },
-      ta: {
-        "display": "லோக் ஸ்வருக்கு வரவேற்கிறோம். பக்கத்தில் எங்கு வேண்டுமானாலும் தட்டவும், குரல் உதவியாளர் உங்களை வழிநடத்துவார்.",
-        "spoken": "லோக் ஸ்வருக்கு வரவேற்கிறோம். பக்கத்தில் எங்கு வேண்டுமானாலும் தட்டவும், குரல் உதவியாளர் உங்களை வழிநடத்துவார்.",
-        "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
-      },
-      te: {
-        "display": "లోక్ స్వర్ కు స్వాగతం. పేజీపై ఎక్కడైనా నొక్కండి, వాయిస్ అసిస్టెంట్ మీకు మార్గనిర్దేశం చేస్తుంది.",
-        "spoken": "లోక్ స్వర్ కు స్వాగతం. పేజీపై ఎక్కడైనా నొక్కండి, వాయిస్ అసిస్టెంట్ మీకు మార్గనిర్దేశం చేస్తుంది.",
-        "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
-      },
-      kn: {
-        "display": "ಲೋಕ್ ಸ್ವರಗೆ ಸುಸ್ವಾಗತ. ಪುಟದಲ್ಲಿ ಎಲ್ಲಿಯಾದರೂ ಟ್ಯಾಪ್ ಮಾಡಿ ಮತ್ತು ಧ್ವನಿ ಸಹಾಯಕರು ನಿಮಗೆ ಮಾರ್ಗದರ್ಶನ ನೀಡುತ್ತಾರೆ.",
-        "spoken": "ಲೋಕ್ ಸ್ವರಗೆ ಸುಸ್ವಾಗತ. ಪುಟದಲ್ಲಿ ಎಲ್ಲಿಯಾದರೂ ಟ್ಯಾಪ್ ಮಾಡಿ ಮತ್ತು ಧ್ವನಿ ಸಹಾಯಕರು ನಿಮಗೆ ಮಾರ್ಗದರ್ಶನ ನೀಡುತ್ತಾರೆ.",
-        "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
-      },
-      ml: {
-        "display": "ലോക് സ്വറിലേക്ക് സ്വാഗതം. പേജിൽ എവിടെയെങ്കിലും ടാപ്പ് ചെയ്യുക, വോയ്‌സ് അസിസ്റ്റൻ്റ് നിങ്ങളെ നയിക്കും.",
-        "spoken": "ലോക് സ്വറിലേക്ക് സ്വാഗതം. പേജിൽ എവിടെയെങ്കിലും ടാപ്പ് ചെയ്യുക, വോയ്‌സ് അസിസ്റ്റൻ്റ് നിങ്ങളെ നയിക്കും.",
-        "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
-      },
-      mr: {
-        "display": "लोक स्वर मध्ये आपले स्वागत आहे. पृष्ठावर कोठेही टॅप करा आणि व्हॉइस असिस्टंट तुम्हाला मार्गदर्शन करेल.",
-        "spoken": "लोक स्वर मध्ये आपले स्वागत आहे. पृष्ठावर कोठेही टॅप करा आणि व्हॉइस असिस्टंट तुम्हाला मार्गदर्शन करेल.",
-        "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
-      },
-      gu: {
-        "display": "લોક સ્વરમાં તમારું સ્વાગત છે. પૃષ્ઠ પર ગમે ત્યાં ટેપ કરો અને વૉઇસ સહાયક તમને માર્ગદર્શન આપશે.",
-        "spoken": "લોક સ્વરમાં તમારું સ્વાગત છે. પૃષ્ઠ પર ગમે ત્યાં ટેપ કરો અને વૉઇસ સહાયક તમને માર્ગદર્શન આપશે.",
-        "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
-      },
-      pa: {
-        "display": "ਲੋਕ ਸਵਰ ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ। ਪੰਨੇ 'ਤੇ ਕਿਤੇ ਵੀ ਟੈਪ ਕਰੋ ਅਤੇ ਵੌਇਸ ਅਸਿਸਟੈਂਟ ਤੁਹਾਨੂੰ ਮਾਰਗਦਰਸ਼ਨ ਕਰੇਗਾ।",
-        "spoken": "ਲੋਕ ਸਵਰ ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ। ਪੰਨੇ 'ਤੇ ਕਿਤੇ ਵੀ ਟੈਪ ਕਰੋ ਅਤੇ ਵੌਇਸ ਅਸਿਸਟੈਂਟ ਤੁਹਾਨੂੰ ਮਾਰਗਦਰਸ਼ਨ ਕਰੇਗਾ।",
-        "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
-      },
-      ur: {
-        "display": "لوک سور میں خوش آمدید۔ صفحہ پر کہیں بھی تھپتھپائیں اور وائس اسسٹنٹ آپ کی رہنمائی کرے گا۔",
-        "spoken": "لوک سور میں خوش آمدید۔ صفحہ پر کہیں بھی تھپتھپائیں اور وائس اسسٹنٹ آپ کی رہنمائی کرے گا۔",
-        "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
-      },
-      sd: {
-        "display": "لوڪ سور ۾ ڀليڪار. صفحي تي ڪٿي به ٽيپ ڪريو ۽ وائس اسسٽنٽ توهان جي رهنمائي ڪندو.",
-        "spoken": "لوڪ سور ۾ ڀليڪار. صفحي تي ڪٿي به ٽيپ ڪريو ۽ وائس اسسٽنٽ توهان جي رهنمائي ڪندو.",
-        "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
-      },
-      as: {
-        "display": "লোক স্বৰলৈ স্বাগতম। পৃষ্ঠাটোত যিকোনো ঠাইতে টিপক আৰু ভয়েচ এচিষ্টেণ্টে আপোনাক পথ প্ৰদৰ্শন কৰিব।",
-        "spoken": "লোক স্বৰলৈ স্বাগতম। পৃষ্ঠাটোত যিকোনো ঠাইতে টিপক আৰু ভয়েচ এচিষ্টেণ্টে আপোনাক পথ প্ৰদৰ্শন কৰিব।",
-        "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
-      },
-      mai: {
-        "display": "लोक स्वर मे अहाँक स्वागत अछि। पन्ना पर कतौ टैप करू आ वॉयस असिस्टेंट अहाँक मार्गदर्शन करत।",
-        "spoken": "लोक स्वर मे अहाँक स्वागत अछि। पन्ना पर कतौ टैप करू आ वॉयस असिस्टेंट अहाँक मार्गदर्शन करत।",
-        "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
-      },
-      sat: {
-        "display": "ᱞᱚᱠ ᱥᱣᱚᱨ ᱨᱮ ᱟᱢᱟᱜ ᱥᱟᱹᱜᱩᱱ ᱫᱟᱨᱟᱢ᱾ ᱯᱮᱡᱽ ᱨᱮ ᱡᱟᱦᱟᱸ ᱨᱮᱜᱮ ᱴᱮᱯ ᱢᱮ ᱟᱨ ᱵᱷᱚᱭᱮᱥ ᱟᱥᱤᱥᱴᱮᱱᱴ ᱟᱢᱮ ᱜᱟᱭᱤᱰ ᱢᱮᱭᱟ᱾",
-        "spoken": "ᱞᱚᱠ ᱥᱣᱚᱨ ᱨᱮ ᱟᱢᱟᱜ ᱥᱟᱹᱜᱩᱱ ᱫᱟᱨᱟᱢ᱾ ᱯᱮᱡᱽ ᱨᱮ ᱡᱟᱦᱟᱸ ᱨᱮᱜᱮ ᱴᱮᱯ ᱢᱮ ᱟᱨ ᱵᱷᱚᱭᱮᱥ ᱟᱥᱤᱥᱴᱮᱱᱴ ᱟᱢᱮ ᱜᱟᱭᱤᱰ ᱢᱮᱭᱟ᱾",
-        "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
-      },
-      ks: {
-        "display": "لوک سورَس مَنٛز خۄش آمدید۔ پیجَس پؠٹھ کُنہِ تِہ جاۓ دَبٲوِو تہٕ وائس اَسِسٹنٹ کَرِ تُہٕنٛز رَہنُمٲیی۔",
-        "spoken": "لوک سورَس مَنٛز خۄش آمدید۔ پیجَس پؠٹھ کُنہِ تِہ جاۓ دَبٲوِو تہٕ وائس اَسِسٹنٹ کَرِ تُہٕنٛز رَہنُمٲیی۔",
-        "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
-      }
-
+  "welcome": {
+    "hi": {
+      "display": "लोक स्वर में आपका स्वागत है। स्क्रीन पर कहीं भी क्लिक करें, मैं बोलकर आपका मार्गदर्शन करूँगा।",
+      "spoken": "लोक स्वर में आपका स्वागत है। स्क्रीन पर कहीं भी क्लिक करें, मैं बोलकर आपका मार्गदर्शन करूँगा।",
+      "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
     },
-    search_input: {
-      hi: {
-        display: "शिकायत इनपुट बॉक्स: अपनी समस्या लिखें या माइक बटन दबाकर बोलें।",
-        spoken: "यह शिकायत लिखने का मुख्य बॉक्स है। अपनी समस्या टाइप करें या माइक बटन दबाकर बोलें।",
-        enSub: "Grievance input box: Type or speak your civic problem here."
-      },
-      bho: {
-        display: "समस्या इनपुट बॉक्स: आपन समस्या लिखीं भा माइक दबा के बोलीं।",
-        spoken: "ई समस्या लिखे के मुख्य बॉक्स बा। आपन समस्या लिखीं भा माइक दबा के बोलीं।",
-        enSub: "Grievance input box in Bhojpuri."
-      },
-      or: {
-        display: "ଅଭିଯୋଗ ଇନପୁଟ୍ ବକ୍ସ: ଆପଣଙ୍କ ସମସ୍ୟା ଟାଇପ୍ କରନ୍ତୁ କିମ୍ବା ମାଇକ୍ ଦବାଇ କୁହନ୍ତୁ।",
-        spoken: "ଏହା ଅଭିଯୋଗ ଲେଖିବା ପାଇଁ ମୁଖ୍ୟ ବକ୍ସ। ଆପଣଙ୍କ ସମସ୍ୟା ଟାଇପ୍ କରନ୍ତୁ କିମ୍ବା ମାଇକ୍ ଦବାଇ କୁହନ୍ତୁ।",
-        enSub: "Grievance input box in Odia."
-      },
-      bn: {
-        display: "অভিযোগ লেখার বাক্স: আপনার समस्या टाइप করুন বা মাইক চেপে বলুন।",
-        spoken: "এটি অভিযোগ লেখার মূল বাক্স। আপনার समस्या टाइप করুন বা মাইক চেপে বলুন।",
-        enSub: "Grievance input box in Bengali."
-      },
-      ta: {
-
-        display: "Grievance Input Box: Type your issue or tap the microphone to speak.",
-
-        spoken: "This is the main complaint box. Type your issue or tap the microphone to speak.",
-
-        enSub: "Primary input bar for civic grievances."
-
-      },
-      te: {
-
-        display: "Grievance Input Box: Type your issue or tap the microphone to speak.",
-
-        spoken: "This is the main complaint box. Type your issue or tap the microphone to speak.",
-
-        enSub: "Primary input bar for civic grievances."
-
-      },
-      kn: {
-
-        display: "Grievance Input Box: Type your issue or tap the microphone to speak.",
-
-        spoken: "This is the main complaint box. Type your issue or tap the microphone to speak.",
-
-        enSub: "Primary input bar for civic grievances."
-
-      },
-      ml: {
-
-        display: "Grievance Input Box: Type your issue or tap the microphone to speak.",
-
-        spoken: "This is the main complaint box. Type your issue or tap the microphone to speak.",
-
-        enSub: "Primary input bar for civic grievances."
-
-      },
-      mr: {
-
-        display: "Grievance Input Box: Type your issue or tap the microphone to speak.",
-
-        spoken: "This is the main complaint box. Type your issue or tap the microphone to speak.",
-
-        enSub: "Primary input bar for civic grievances."
-
-      },
-      gu: {
-
-        display: "Grievance Input Box: Type your issue or tap the microphone to speak.",
-
-        spoken: "This is the main complaint box. Type your issue or tap the microphone to speak.",
-
-        enSub: "Primary input bar for civic grievances."
-
-      },
-      pa: {
-
-        display: "Grievance Input Box: Type your issue or tap the microphone to speak.",
-
-        spoken: "This is the main complaint box. Type your issue or tap the microphone to speak.",
-
-        enSub: "Primary input bar for civic grievances."
-
-      },
-      ur: {
-
-        display: "Grievance Input Box: Type your issue or tap the microphone to speak.",
-
-        spoken: "This is the main complaint box. Type your issue or tap the microphone to speak.",
-
-        enSub: "Primary input bar for civic grievances."
-
-      },
-      as: {
-
-        display: "Grievance Input Box: Type your issue or tap the microphone to speak.",
-
-        spoken: "This is the main complaint box. Type your issue or tap the microphone to speak.",
-
-        enSub: "Primary input bar for civic grievances."
-
-      },
-      mai: {
-
-        display: "Grievance Input Box: Type your issue or tap the microphone to speak.",
-
-        spoken: "This is the main complaint box. Type your issue or tap the microphone to speak.",
-
-        enSub: "Primary input bar for civic grievances."
-
-      },
-      sat: {
-
-        display: "Grievance Input Box: Type your issue or tap the microphone to speak.",
-
-        spoken: "This is the main complaint box. Type your issue or tap the microphone to speak.",
-
-        enSub: "Primary input bar for civic grievances."
-
-      },
-      ks: {
-
-        display: "Grievance Input Box: Type your issue or tap the microphone to speak.",
-
-        spoken: "This is the main complaint box. Type your issue or tap the microphone to speak.",
-
-        enSub: "Primary input bar for civic grievances."
-
-      },
-      sd: {
-
-        display: "Grievance Input Box: Type your issue or tap the microphone to speak.",
-
-        spoken: "This is the main complaint box. Type your issue or tap the microphone to speak.",
-
-        enSub: "Primary input bar for civic grievances."
-
-      },
-      en: {
-        display: "Grievance Input Box: Type your issue or tap the microphone to speak.",
-        spoken: "This is the main complaint box. Type your issue or tap the microphone to speak.",
-        enSub: "Primary input bar for civic grievances."
-      }
+    "bho": {
+      "display": "लोक स्वर में रउआ के स्वागत बा। स्क्रीन पर कहीं भी क्लिक करब, हम बोल के बताएम।",
+      "spoken": "लोक स्वर में रउआ के स्वागत बा। स्क्रीन पर कहीं भी क्लिक करब, हम बोल के बताएम।",
+      "enSub": "Welcome to Lok Swar. Tap anywhere for speech guidance in Bhojpuri."
     },
-    mic_button: {
-      hi: {
-        display: "माइक रिकॉर्डिंग: अपनी क्षेत्रीय भाषा में समस्या बोलने के लिए यहाँ क्लिक करें।",
-        spoken: "माइक रिकॉर्डिंग बटन। अपनी क्षेत्रीय भाषा में समस्या बोलने के लिए यहाँ क्लिक करें।",
-        enSub: "Microphone recording: Speak your issue in your local dialect."
-      },
-      bho: {
-        display: "माइक बटन: आपन भाषा में समस्या बोले खातिर क्लिक करीं।",
-        spoken: "माइक बटन। आपन भाषा में समस्या बोले खातिर क्लिक करीं।",
-        enSub: "Tap to record voice in Bhojpuri."
-      },
-      or: {
-        display: "ମାଇକ୍ ରେକର୍ଡିଂ: ନିଜ ଭାଷାରେ ସମସ୍ୟା କହିବା ପାଇଁ ଏଠାରେ କ୍ଲିକ୍ କରନ୍ତୁ।",
-        spoken: "ମାଇକ୍ ରେକର୍ଡିଂ ବଟନ୍। ନିଜ ଭାଷାରେ ସମସ୍ୟା କହିବା ପାଇଁ ଏଠାରେ କ୍ଲିକ୍ କରନ୍ତୁ।",
-        enSub: "Tap to record voice in Odia."
-      },
-      bn: {
-        display: "মাইক রেকর্ডিং: নিজের ভাষায় समस्या বলতে এখানে ক্লিক করুন।",
-        spoken: "মাইক রেকর্ডিং বোতাম। নিজের ভাষায় সমস্যা বলতে এখানে ক্লিক করুন।",
-        enSub: "Tap to record voice in Bengali."
-      },
-      ta: {
-
-        display: "Microphone Recording: Click to speak your civic issue.",
-
-        spoken: "Microphone recording button. Click to record your issue in your spoken language.",
-
-        enSub: "Click to record voice grievance."
-
-      },
-      te: {
-
-        display: "Microphone Recording: Click to speak your civic issue.",
-
-        spoken: "Microphone recording button. Click to record your issue in your spoken language.",
-
-        enSub: "Click to record voice grievance."
-
-      },
-      kn: {
-
-        display: "Microphone Recording: Click to speak your civic issue.",
-
-        spoken: "Microphone recording button. Click to record your issue in your spoken language.",
-
-        enSub: "Click to record voice grievance."
-
-      },
-      ml: {
-
-        display: "Microphone Recording: Click to speak your civic issue.",
-
-        spoken: "Microphone recording button. Click to record your issue in your spoken language.",
-
-        enSub: "Click to record voice grievance."
-
-      },
-      mr: {
-
-        display: "Microphone Recording: Click to speak your civic issue.",
-
-        spoken: "Microphone recording button. Click to record your issue in your spoken language.",
-
-        enSub: "Click to record voice grievance."
-
-      },
-      gu: {
-
-        display: "Microphone Recording: Click to speak your civic issue.",
-
-        spoken: "Microphone recording button. Click to record your issue in your spoken language.",
-
-        enSub: "Click to record voice grievance."
-
-      },
-      pa: {
-
-        display: "Microphone Recording: Click to speak your civic issue.",
-
-        spoken: "Microphone recording button. Click to record your issue in your spoken language.",
-
-        enSub: "Click to record voice grievance."
-
-      },
-      ur: {
-
-        display: "Microphone Recording: Click to speak your civic issue.",
-
-        spoken: "Microphone recording button. Click to record your issue in your spoken language.",
-
-        enSub: "Click to record voice grievance."
-
-      },
-      as: {
-
-        display: "Microphone Recording: Click to speak your civic issue.",
-
-        spoken: "Microphone recording button. Click to record your issue in your spoken language.",
-
-        enSub: "Click to record voice grievance."
-
-      },
-      mai: {
-
-        display: "Microphone Recording: Click to speak your civic issue.",
-
-        spoken: "Microphone recording button. Click to record your issue in your spoken language.",
-
-        enSub: "Click to record voice grievance."
-
-      },
-      sat: {
-
-        display: "Microphone Recording: Click to speak your civic issue.",
-
-        spoken: "Microphone recording button. Click to record your issue in your spoken language.",
-
-        enSub: "Click to record voice grievance."
-
-      },
-      ks: {
-
-        display: "Microphone Recording: Click to speak your civic issue.",
-
-        spoken: "Microphone recording button. Click to record your issue in your spoken language.",
-
-        enSub: "Click to record voice grievance."
-
-      },
-      sd: {
-
-        display: "Microphone Recording: Click to speak your civic issue.",
-
-        spoken: "Microphone recording button. Click to record your issue in your spoken language.",
-
-        enSub: "Click to record voice grievance."
-
-      },
-      en: {
-        display: "Microphone Recording: Click to speak your civic issue.",
-        spoken: "Microphone recording button. Click to record your issue in your spoken language.",
-        enSub: "Click to record voice grievance."
-      }
+    "or": {
+      "display": "ଲୋକ ସ୍ୱର ପୋର୍ଟାଲକୁ ସ୍ୱାଗତ। ସ୍କ୍ରିନରେ ଯେକୌଣସି ସ୍ଥାନରେ କ୍ଲିକ୍ କରନ୍ତୁ, ଭଏସ୍ ଆସିଷ୍ଟାଣ୍ଟ ଆପଣଙ୍କୁ ସାହାଯ୍ୟ କରିବ।",
+      "spoken": "ଲୋକ ସ୍ୱର ପୋର୍ଟାଲକୁ ସ୍ୱାଗତ। ସ୍କ୍ରିନରେ ଯେକୌଣସି ସ୍ଥାନରେ କ୍ଲିକ୍ କରନ୍ତୁ, ଭଏସ୍ ଆସିଷ୍ଟାଣ୍ଟ ଆପଣଙ୍କୁ ସାହାଯ୍ୟ କରିବ।",
+      "enSub": "Welcome to Lok Swar. Tap anywhere for speech guidance in Odia."
     },
-    submit_button: {
-      hi: {
-        display: "रिपोर्ट जमा करें: अपनी नागरिक शिकायत आधिकारिक पोर्टल पर दर्ज करने के लिए यहाँ दबाएं।",
-        spoken: "रिपोर्ट जमा करने का बटन। अपनी शिकायत आधिकारिक सरकारी पोर्टल पर दर्ज करने के लिए यहाँ दबाएं।",
-        enSub: "Submit grievance report to official public ledger."
-      },
-      bho: {
-        display: "रिपोर्ट जमा करीं: पोर्टल पर शिकायत दर्ज करे खातिर दबाईं।",
-        spoken: "रिपोर्ट जमा करे के बटन। सरकारी पोर्टल पर शिकायत दर्ज करे खातिर दबाईं।",
-        enSub: "Submit report in Bhojpuri."
-      },
-      or: {
-        display: "ରିପୋର୍ଟ ଦାଖଲ: ସରକାରୀ ପୋର୍ଟାଲରେ ଅଭିଯୋଗ ଦାଖଲ କରିବାକୁ ଏଠାରେ ଦବାନ୍ତୁ।",
-        spoken: "ରିପୋର୍ଟ ଦାଖଲ ବଟନ୍। ସରକାରୀ ପୋର୍ଟାଲରେ ଅଭିଯୋଗ ଦାଖଲ କରିବାକୁ ଏଠାରେ ଦବାନ୍ତୁ।",
-        enSub: "Submit report in Odia."
-      },
-      bn: {
-        display: "রিপোর্ট জমা দিন: পোর্টালে আপনার অভিযোগ দায়ের করতে এখানে চাপুন।",
-        spoken: "রিপোর্ট জমা দিন বোতাম। সরকারি পোর্টালে আপনার অভিযোগ দায়ের করতে এখানে চাপুন।",
-        enSub: "Submit report in Bengali."
-      },
-      ta: {
-
-        display: "Submit Report: Tap to officially file your civic complaint.",
-
-        spoken: "Submit Report button. Tap to officially submit your complaint to the government portal.",
-
-        enSub: "Official filing button."
-
-      },
-      te: {
-
-        display: "Submit Report: Tap to officially file your civic complaint.",
-
-        spoken: "Submit Report button. Tap to officially submit your complaint to the government portal.",
-
-        enSub: "Official filing button."
-
-      },
-      kn: {
-
-        display: "Submit Report: Tap to officially file your civic complaint.",
-
-        spoken: "Submit Report button. Tap to officially submit your complaint to the government portal.",
-
-        enSub: "Official filing button."
-
-      },
-      ml: {
-
-        display: "Submit Report: Tap to officially file your civic complaint.",
-
-        spoken: "Submit Report button. Tap to officially submit your complaint to the government portal.",
-
-        enSub: "Official filing button."
-
-      },
-      mr: {
-
-        display: "Submit Report: Tap to officially file your civic complaint.",
-
-        spoken: "Submit Report button. Tap to officially submit your complaint to the government portal.",
-
-        enSub: "Official filing button."
-
-      },
-      gu: {
-
-        display: "Submit Report: Tap to officially file your civic complaint.",
-
-        spoken: "Submit Report button. Tap to officially submit your complaint to the government portal.",
-
-        enSub: "Official filing button."
-
-      },
-      pa: {
-
-        display: "Submit Report: Tap to officially file your civic complaint.",
-
-        spoken: "Submit Report button. Tap to officially submit your complaint to the government portal.",
-
-        enSub: "Official filing button."
-
-      },
-      ur: {
-
-        display: "Submit Report: Tap to officially file your civic complaint.",
-
-        spoken: "Submit Report button. Tap to officially submit your complaint to the government portal.",
-
-        enSub: "Official filing button."
-
-      },
-      as: {
-
-        display: "Submit Report: Tap to officially file your civic complaint.",
-
-        spoken: "Submit Report button. Tap to officially submit your complaint to the government portal.",
-
-        enSub: "Official filing button."
-
-      },
-      mai: {
-
-        display: "Submit Report: Tap to officially file your civic complaint.",
-
-        spoken: "Submit Report button. Tap to officially submit your complaint to the government portal.",
-
-        enSub: "Official filing button."
-
-      },
-      sat: {
-
-        display: "Submit Report: Tap to officially file your civic complaint.",
-
-        spoken: "Submit Report button. Tap to officially submit your complaint to the government portal.",
-
-        enSub: "Official filing button."
-
-      },
-      ks: {
-
-        display: "Submit Report: Tap to officially file your civic complaint.",
-
-        spoken: "Submit Report button. Tap to officially submit your complaint to the government portal.",
-
-        enSub: "Official filing button."
-
-      },
-      sd: {
-
-        display: "Submit Report: Tap to officially file your civic complaint.",
-
-        spoken: "Submit Report button. Tap to officially submit your complaint to the government portal.",
-
-        enSub: "Official filing button."
-
-      },
-      en: {
-        display: "Submit Report: Tap to officially file your civic complaint.",
-        spoken: "Submit Report button. Tap to officially submit your complaint to the government portal.",
-        enSub: "Official filing button."
-      }
+    "bn": {
+      "display": "লোক স্বর পোর্টালে স্বাগতম। স্ক্রিনে যেকোনো স্থানে ক্লিক করলে ভয়েস অ্যাসিস্ট্যান্ট আপনাকে সাহায্য করবে।",
+      "spoken": "লোক স্বর পোর্টালে স্বাগতম। স্ক্রিনে যেকোনো স্থানে ক্লিক করলে ভয়েস অ্যাসিস্ট্যান্ট আপনাকে সাহায্য করবে।",
+      "enSub": "Welcome to Lok Swar. Tap anywhere for speech guidance in Bengali."
     },
-    camera_button: {
-      hi: {
-        display: "कैमरा बटन: समस्या का फोटो या दृश्य साक्ष्य अपलोड करने के लिए यहाँ क्लिक करें।",
-        spoken: "कैमरा बटन। समस्या की फोटो या दृश्य साक्ष्य अपलोड करने के लिए यहाँ क्लिक करें।",
-        enSub: "Upload photographic evidence of the issue."
-      },
-      bho: {
-        display: "कैमरा बटन: समस्या के फोटो अपलोड करे खातिर क्लिक करीं।",
-        spoken: "कैमरा बटन। समस्या के फोटो अपलोड करे खातिर क्लिक करीं।",
-        enSub: "Upload photo in Bhojpuri."
-      },
-      or: {
-        display: "କ୍ୟାମେରା ବଟନ୍: ସମସ୍ୟାର ଫଟୋ କିମ୍ବା ପ୍ରମାଣ ଅପଲୋଡ୍ କରନ୍ତୁ।",
-        spoken: "କ୍ୟାମେରା ବଟନ୍। ସମସ୍ୟାର ଫଟୋ କିମ୍ବା ପ୍ରମାଣ ଅପଲୋଡ୍ କରିବାକୁ ଏଠାରେ କ୍ଲିକ୍ କରନ୍ତୁ।",
-        enSub: "Upload photo in Odia."
-      },
-      bn: {
-        display: "ক্যামেরা বোতাম: সমস্যার ছবি বা প্রমাণ আপলোড করতে এখানে ক্লিক করুন।",
-        spoken: "ক্যামেরা বোতাম। সমস্যার ছবি বা প্রমাণ আপলোড করতে এখানে ক্লিক করুন।",
-        enSub: "Upload photo in Bengali."
-      },
-      ta: {
-
-        display: "Camera Button: Upload photo or evidence of the civic issue.",
-
-        spoken: "Camera button. Click to upload photos or evidence of the civic issue.",
-
-        enSub: "Upload photographic proof."
-
-      },
-      te: {
-
-        display: "Camera Button: Upload photo or evidence of the civic issue.",
-
-        spoken: "Camera button. Click to upload photos or evidence of the civic issue.",
-
-        enSub: "Upload photographic proof."
-
-      },
-      kn: {
-
-        display: "Camera Button: Upload photo or evidence of the civic issue.",
-
-        spoken: "Camera button. Click to upload photos or evidence of the civic issue.",
-
-        enSub: "Upload photographic proof."
-
-      },
-      ml: {
-
-        display: "Camera Button: Upload photo or evidence of the civic issue.",
-
-        spoken: "Camera button. Click to upload photos or evidence of the civic issue.",
-
-        enSub: "Upload photographic proof."
-
-      },
-      mr: {
-
-        display: "Camera Button: Upload photo or evidence of the civic issue.",
-
-        spoken: "Camera button. Click to upload photos or evidence of the civic issue.",
-
-        enSub: "Upload photographic proof."
-
-      },
-      gu: {
-
-        display: "Camera Button: Upload photo or evidence of the civic issue.",
-
-        spoken: "Camera button. Click to upload photos or evidence of the civic issue.",
-
-        enSub: "Upload photographic proof."
-
-      },
-      pa: {
-
-        display: "Camera Button: Upload photo or evidence of the civic issue.",
-
-        spoken: "Camera button. Click to upload photos or evidence of the civic issue.",
-
-        enSub: "Upload photographic proof."
-
-      },
-      ur: {
-
-        display: "Camera Button: Upload photo or evidence of the civic issue.",
-
-        spoken: "Camera button. Click to upload photos or evidence of the civic issue.",
-
-        enSub: "Upload photographic proof."
-
-      },
-      as: {
-
-        display: "Camera Button: Upload photo or evidence of the civic issue.",
-
-        spoken: "Camera button. Click to upload photos or evidence of the civic issue.",
-
-        enSub: "Upload photographic proof."
-
-      },
-      mai: {
-
-        display: "Camera Button: Upload photo or evidence of the civic issue.",
-
-        spoken: "Camera button. Click to upload photos or evidence of the civic issue.",
-
-        enSub: "Upload photographic proof."
-
-      },
-      sat: {
-
-        display: "Camera Button: Upload photo or evidence of the civic issue.",
-
-        spoken: "Camera button. Click to upload photos or evidence of the civic issue.",
-
-        enSub: "Upload photographic proof."
-
-      },
-      ks: {
-
-        display: "Camera Button: Upload photo or evidence of the civic issue.",
-
-        spoken: "Camera button. Click to upload photos or evidence of the civic issue.",
-
-        enSub: "Upload photographic proof."
-
-      },
-      sd: {
-
-        display: "Camera Button: Upload photo or evidence of the civic issue.",
-
-        spoken: "Camera button. Click to upload photos or evidence of the civic issue.",
-
-        enSub: "Upload photographic proof."
-
-      },
-      en: {
-        display: "Camera Button: Upload photo or evidence of the civic issue.",
-        spoken: "Camera button. Click to upload photos or evidence of the civic issue.",
-        enSub: "Upload photographic proof."
-      }
+    "en": {
+      "display": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech.",
+      "spoken": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech.",
+      "enSub": "Voice guidance active. Tap any element to hear its description."
     },
-    translate_chip: {
-      hi: {
-        display: "भाषा अनुवाद: क्षेत्रीय भाषा को अंग्रेज़ी में बदलने के लिए यहाँ क्लिक करें।",
-        spoken: "भाषा अनुवाद बटन। क्षेत्रीय भाषा को अंग्रेज़ी में बदलने के लिए यहाँ क्लिक करें।",
-        enSub: "Translate regional text into English."
-      },
-      ta: {
-
-        display: "Translation Button: Converts regional dialect to English.",
-
-        spoken: "Translation button. Converts your regional language input into English.",
-
-        enSub: "Real-time AI translation."
-
-      },
-      te: {
-
-        display: "Translation Button: Converts regional dialect to English.",
-
-        spoken: "Translation button. Converts your regional language input into English.",
-
-        enSub: "Real-time AI translation."
-
-      },
-      kn: {
-
-        display: "Translation Button: Converts regional dialect to English.",
-
-        spoken: "Translation button. Converts your regional language input into English.",
-
-        enSub: "Real-time AI translation."
-
-      },
-      ml: {
-
-        display: "Translation Button: Converts regional dialect to English.",
-
-        spoken: "Translation button. Converts your regional language input into English.",
-
-        enSub: "Real-time AI translation."
-
-      },
-      mr: {
-
-        display: "Translation Button: Converts regional dialect to English.",
-
-        spoken: "Translation button. Converts your regional language input into English.",
-
-        enSub: "Real-time AI translation."
-
-      },
-      gu: {
-
-        display: "Translation Button: Converts regional dialect to English.",
-
-        spoken: "Translation button. Converts your regional language input into English.",
-
-        enSub: "Real-time AI translation."
-
-      },
-      pa: {
-
-        display: "Translation Button: Converts regional dialect to English.",
-
-        spoken: "Translation button. Converts your regional language input into English.",
-
-        enSub: "Real-time AI translation."
-
-      },
-      ur: {
-
-        display: "Translation Button: Converts regional dialect to English.",
-
-        spoken: "Translation button. Converts your regional language input into English.",
-
-        enSub: "Real-time AI translation."
-
-      },
-      as: {
-
-        display: "Translation Button: Converts regional dialect to English.",
-
-        spoken: "Translation button. Converts your regional language input into English.",
-
-        enSub: "Real-time AI translation."
-
-      },
-      mai: {
-
-        display: "Translation Button: Converts regional dialect to English.",
-
-        spoken: "Translation button. Converts your regional language input into English.",
-
-        enSub: "Real-time AI translation."
-
-      },
-      sat: {
-
-        display: "Translation Button: Converts regional dialect to English.",
-
-        spoken: "Translation button. Converts your regional language input into English.",
-
-        enSub: "Real-time AI translation."
-
-      },
-      ks: {
-
-        display: "Translation Button: Converts regional dialect to English.",
-
-        spoken: "Translation button. Converts your regional language input into English.",
-
-        enSub: "Real-time AI translation."
-
-      },
-      sd: {
-
-        display: "Translation Button: Converts regional dialect to English.",
-
-        spoken: "Translation button. Converts your regional language input into English.",
-
-        enSub: "Real-time AI translation."
-
-      },
-      en: {
-        display: "Translation Button: Converts regional dialect to English.",
-        spoken: "Translation button. Converts your regional language input into English.",
-        enSub: "Real-time AI translation."
-      }
+    "ta": {
+      "display": "லோக் ஸ்வருக்கு வரவேற்கிறோம். பக்கத்தில் எங்கு வேண்டுமானாலும் தட்டவும், குரல் உதவியாளர் உங்களை வழிநடத்துவார்.",
+      "spoken": "லோக் ஸ்வருக்கு வரவேற்கிறோம். பக்கத்தில் எங்கு வேண்டுமானாலும் தட்டவும், குரல் உதவியாளர் உங்களை வழிநடத்துவார்.",
+      "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
     },
-    undo_button: {
-      hi: {
-        display: "पूर्ववत करें: अनुवाद हटाकर मूल क्षेत्रीय शब्दों पर वापस जाने के लिए क्लिक करें।",
-        spoken: "पूर्ववत करें बटन। अनुवाद हटाकर अपने मूल क्षेत्रीय शब्दों पर वापस जाने के लिए क्लिक करें।",
-        enSub: "Revert back to your original regional input."
-      },
-      ta: {
-
-        display: "Undo Translation: Restore your original typed words.",
-
-        spoken: "Undo translation button. Revert back to your original input.",
-
-        enSub: "Reverts to original text."
-
-      },
-      te: {
-
-        display: "Undo Translation: Restore your original typed words.",
-
-        spoken: "Undo translation button. Revert back to your original input.",
-
-        enSub: "Reverts to original text."
-
-      },
-      kn: {
-
-        display: "Undo Translation: Restore your original typed words.",
-
-        spoken: "Undo translation button. Revert back to your original input.",
-
-        enSub: "Reverts to original text."
-
-      },
-      ml: {
-
-        display: "Undo Translation: Restore your original typed words.",
-
-        spoken: "Undo translation button. Revert back to your original input.",
-
-        enSub: "Reverts to original text."
-
-      },
-      mr: {
-
-        display: "Undo Translation: Restore your original typed words.",
-
-        spoken: "Undo translation button. Revert back to your original input.",
-
-        enSub: "Reverts to original text."
-
-      },
-      gu: {
-
-        display: "Undo Translation: Restore your original typed words.",
-
-        spoken: "Undo translation button. Revert back to your original input.",
-
-        enSub: "Reverts to original text."
-
-      },
-      pa: {
-
-        display: "Undo Translation: Restore your original typed words.",
-
-        spoken: "Undo translation button. Revert back to your original input.",
-
-        enSub: "Reverts to original text."
-
-      },
-      ur: {
-
-        display: "Undo Translation: Restore your original typed words.",
-
-        spoken: "Undo translation button. Revert back to your original input.",
-
-        enSub: "Reverts to original text."
-
-      },
-      as: {
-
-        display: "Undo Translation: Restore your original typed words.",
-
-        spoken: "Undo translation button. Revert back to your original input.",
-
-        enSub: "Reverts to original text."
-
-      },
-      mai: {
-
-        display: "Undo Translation: Restore your original typed words.",
-
-        spoken: "Undo translation button. Revert back to your original input.",
-
-        enSub: "Reverts to original text."
-
-      },
-      sat: {
-
-        display: "Undo Translation: Restore your original typed words.",
-
-        spoken: "Undo translation button. Revert back to your original input.",
-
-        enSub: "Reverts to original text."
-
-      },
-      ks: {
-
-        display: "Undo Translation: Restore your original typed words.",
-
-        spoken: "Undo translation button. Revert back to your original input.",
-
-        enSub: "Reverts to original text."
-
-      },
-      sd: {
-
-        display: "Undo Translation: Restore your original typed words.",
-
-        spoken: "Undo translation button. Revert back to your original input.",
-
-        enSub: "Reverts to original text."
-
-      },
-      en: {
-        display: "Undo Translation: Restore your original typed words.",
-        spoken: "Undo translation button. Revert back to your original input.",
-        enSub: "Reverts to original text."
-      }
+    "te": {
+      "display": "లోక్ స్వర్ కు స్వాగతం. పేజీపై ఎక్కడైనా నొక్కండి, వాయిస్ అసిస్టెంట్ మీకు మార్గనిర్దేశం చేస్తుంది.",
+      "spoken": "లోక్ స్వర్ కు స్వాగతం. పేజీపై ఎక్కడైనా నొక్కండి, వాయిస్ అసిస్టెంట్ మీకు మార్గనిర్దేశం చేస్తుంది.",
+      "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
     },
-    card_roads: {
-      hi: {
-        display: "सड़क एवं बुनियादी ढांचा: टूटी सड़कों, गड्ढों, पुलों और जल निकासी की शिकायतें।",
-        spoken: "सड़क एवं बुनियादी ढांचा अनुभाग। टूटी सड़कों, गड्ढों, पुलों और जल निकासी की शिकायतें यहाँ देखें और दर्ज करें।",
-        enSub: "Roads and Infrastructure: Report broken roads, potholes, bridges, and drainage works."
-      },
-      bho: {
-        display: "सड़क आ बुनियादी ढांचा: टूटल सड़क, पुल आ पानी निकासी के समस्या।",
-        spoken: "सड़क आ बुनियादी ढांचा। टूटल सड़क, पुल आ पानी निकासी के समस्या इहवाँ दर्ज करीं।",
-        enSub: "Roads and Infrastructure in Bhojpuri."
-      },
-      or: {
-        display: "ରାସ୍ତା ଏବଂ ଭିତ୍ତିଭୂମି: ଭଙ୍ଗା ରାସ୍ତା, ଖାଲ, ପୋଲ ଏବଂ ଜଳ ନିଷ୍କାସନ ସମସ୍ୟା।",
-        spoken: "ରାସ୍ତା ଏବଂ ଭିତ୍ତିଭୂମି ବିଭାଗ। ଭଙ୍ଗା ରାସ୍ତା, ଖାଲ, ପୋଲ ଏବଂ ଜଳ ନିଷ୍କାସନ ସମସ୍ୟା ଦେଖନ୍ତୁ ଓ ଦାଖଲ କରନ୍ତୁ।",
-        enSub: "Roads and Infrastructure in Odia."
-      },
-      bn: {
-        display: "রাস্তা ও পরিকাঠামো: ভাঙা রাস্তা, গর্ত ও নিকাশী ব্যবস্থার অভিযোগ।",
-        spoken: "রাস্তা ও পরিকাঠামো বিভাগ। ভাঙা রাস্তা, গর্ত ও নিকাশী ব্যবস্থার অভিযোগ এখানে জানান।",
-        enSub: "Roads and Infrastructure in Bengali."
-      },
-      ta: {
-
-        display: "Roads & Infrastructure: PWD, PMGSY, and connectivity works.",
-
-        spoken: "Roads and Infrastructure section. Report broken roads, potholes, bridges, and drainage works.",
-
-        enSub: "Explore civil works and road maintenance."
-
-      },
-      te: {
-
-        display: "Roads & Infrastructure: PWD, PMGSY, and connectivity works.",
-
-        spoken: "Roads and Infrastructure section. Report broken roads, potholes, bridges, and drainage works.",
-
-        enSub: "Explore civil works and road maintenance."
-
-      },
-      kn: {
-
-        display: "Roads & Infrastructure: PWD, PMGSY, and connectivity works.",
-
-        spoken: "Roads and Infrastructure section. Report broken roads, potholes, bridges, and drainage works.",
-
-        enSub: "Explore civil works and road maintenance."
-
-      },
-      ml: {
-
-        display: "Roads & Infrastructure: PWD, PMGSY, and connectivity works.",
-
-        spoken: "Roads and Infrastructure section. Report broken roads, potholes, bridges, and drainage works.",
-
-        enSub: "Explore civil works and road maintenance."
-
-      },
-      mr: {
-
-        display: "Roads & Infrastructure: PWD, PMGSY, and connectivity works.",
-
-        spoken: "Roads and Infrastructure section. Report broken roads, potholes, bridges, and drainage works.",
-
-        enSub: "Explore civil works and road maintenance."
-
-      },
-      gu: {
-
-        display: "Roads & Infrastructure: PWD, PMGSY, and connectivity works.",
-
-        spoken: "Roads and Infrastructure section. Report broken roads, potholes, bridges, and drainage works.",
-
-        enSub: "Explore civil works and road maintenance."
-
-      },
-      pa: {
-
-        display: "Roads & Infrastructure: PWD, PMGSY, and connectivity works.",
-
-        spoken: "Roads and Infrastructure section. Report broken roads, potholes, bridges, and drainage works.",
-
-        enSub: "Explore civil works and road maintenance."
-
-      },
-      ur: {
-
-        display: "Roads & Infrastructure: PWD, PMGSY, and connectivity works.",
-
-        spoken: "Roads and Infrastructure section. Report broken roads, potholes, bridges, and drainage works.",
-
-        enSub: "Explore civil works and road maintenance."
-
-      },
-      as: {
-
-        display: "Roads & Infrastructure: PWD, PMGSY, and connectivity works.",
-
-        spoken: "Roads and Infrastructure section. Report broken roads, potholes, bridges, and drainage works.",
-
-        enSub: "Explore civil works and road maintenance."
-
-      },
-      mai: {
-
-        display: "Roads & Infrastructure: PWD, PMGSY, and connectivity works.",
-
-        spoken: "Roads and Infrastructure section. Report broken roads, potholes, bridges, and drainage works.",
-
-        enSub: "Explore civil works and road maintenance."
-
-      },
-      sat: {
-
-        display: "Roads & Infrastructure: PWD, PMGSY, and connectivity works.",
-
-        spoken: "Roads and Infrastructure section. Report broken roads, potholes, bridges, and drainage works.",
-
-        enSub: "Explore civil works and road maintenance."
-
-      },
-      ks: {
-
-        display: "Roads & Infrastructure: PWD, PMGSY, and connectivity works.",
-
-        spoken: "Roads and Infrastructure section. Report broken roads, potholes, bridges, and drainage works.",
-
-        enSub: "Explore civil works and road maintenance."
-
-      },
-      sd: {
-
-        display: "Roads & Infrastructure: PWD, PMGSY, and connectivity works.",
-
-        spoken: "Roads and Infrastructure section. Report broken roads, potholes, bridges, and drainage works.",
-
-        enSub: "Explore civil works and road maintenance."
-
-      },
-      en: {
-        display: "Roads & Infrastructure: PWD, PMGSY, and connectivity works.",
-        spoken: "Roads and Infrastructure section. Report broken roads, potholes, bridges, and drainage works.",
-        enSub: "Explore civil works and road maintenance."
-      }
+    "kn": {
+      "display": "ಲೋಕ್ ಸ್ವರಗೆ ಸುಸ್ವಾಗತ. ಪುಟದಲ್ಲಿ ಎಲ್ಲಿಯಾದರೂ ಟ್ಯಾಪ್ ಮಾಡಿ ಮತ್ತು ಧ್ವನಿ ಸಹಾಯಕರು ನಿಮಗೆ ಮಾರ್ಗದರ್ಶನ ನೀಡುತ್ತಾರೆ.",
+      "spoken": "ಲೋಕ್ ಸ್ವರಗೆ ಸುಸ್ವಾಗತ. ಪುಟದಲ್ಲಿ ಎಲ್ಲಿಯಾದರೂ ಟ್ಯಾಪ್ ಮಾಡಿ ಮತ್ತು ಧ್ವನಿ ಸಹಾಯಕರು ನಿಮಗೆ ಮಾರ್ಗದರ್ಶನ ನೀಡುತ್ತಾರೆ.",
+      "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
     },
-    card_progress: {
-      hi: {
-        display: "प्रगति एवं जन समर्थन: चालू विकास कार्यों की स्थिति देखें और समर्थन दें।",
-        spoken: "प्रगति एवं जन समर्थन अनुभाग। इलाके के चालू विकास कार्यों की स्थिति देखें और प्राथमिकताओं को वोट दें।",
-        enSub: "Progress & Upvotes: Community priorities and live civic support."
-      },
-      bho: {
-        display: "प्रगति आ जन समर्थन: चालू कामन के स्थिति देखीं आ समर्थन दिहीं।",
-        spoken: "प्रगति आ जन समर्थन। चालू विकास कामन के स्थिति देखीं आ वोट दिहीं।",
-        enSub: "Progress & Upvotes in Bhojpuri."
-      },
-      or: {
-        display: "ପ୍ରଗତି ଏବଂ ଜନ ସମର୍ଥନ: ଚାଲୁଥିବା ବିକାଶ କାର୍ଯ୍ୟ ଦେଖନ୍ତୁ ଏବଂ ସମର୍ଥନ ଦିଅନ୍ତୁ।",
-        spoken: "ପ୍ରଗତି ଏବଂ ଜନ ସମର୍ଥନ। ଚାଲୁଥିବା କାର୍ଯ୍ୟର ସ୍ଥିତି ଦେଖନ୍ତୁ ଏବଂ ସମର୍ଥନ ଦିଅନ୍ତୁ।",
-        enSub: "Progress & Upvotes in Odia."
-      },
-      bn: {
-        display: "অগ্রগতি ও জনসমর্থন: চলমান উন্নয়ন কাজের স্থিতি দেখুন এবং ভোট দিন।",
-        spoken: "অগ্রগতি ও জনসমর্থন। চলমান উন্নয়ন কাজের স্থিতি দেখুন এবং অগ্রাধিকার দিন।",
-        enSub: "Progress & Upvotes in Bengali."
-      },
-      ta: {
-
-        display: "Progress & Upvotes: Community priorities and live civic support.",
-
-        spoken: "Progress and Public Support section. Track active projects and upvote community priorities.",
-
-        enSub: "Citizen upvoting and priority tracking."
-
-      },
-      te: {
-
-        display: "Progress & Upvotes: Community priorities and live civic support.",
-
-        spoken: "Progress and Public Support section. Track active projects and upvote community priorities.",
-
-        enSub: "Citizen upvoting and priority tracking."
-
-      },
-      kn: {
-
-        display: "Progress & Upvotes: Community priorities and live civic support.",
-
-        spoken: "Progress and Public Support section. Track active projects and upvote community priorities.",
-
-        enSub: "Citizen upvoting and priority tracking."
-
-      },
-      ml: {
-
-        display: "Progress & Upvotes: Community priorities and live civic support.",
-
-        spoken: "Progress and Public Support section. Track active projects and upvote community priorities.",
-
-        enSub: "Citizen upvoting and priority tracking."
-
-      },
-      mr: {
-
-        display: "Progress & Upvotes: Community priorities and live civic support.",
-
-        spoken: "Progress and Public Support section. Track active projects and upvote community priorities.",
-
-        enSub: "Citizen upvoting and priority tracking."
-
-      },
-      gu: {
-
-        display: "Progress & Upvotes: Community priorities and live civic support.",
-
-        spoken: "Progress and Public Support section. Track active projects and upvote community priorities.",
-
-        enSub: "Citizen upvoting and priority tracking."
-
-      },
-      pa: {
-
-        display: "Progress & Upvotes: Community priorities and live civic support.",
-
-        spoken: "Progress and Public Support section. Track active projects and upvote community priorities.",
-
-        enSub: "Citizen upvoting and priority tracking."
-
-      },
-      ur: {
-
-        display: "Progress & Upvotes: Community priorities and live civic support.",
-
-        spoken: "Progress and Public Support section. Track active projects and upvote community priorities.",
-
-        enSub: "Citizen upvoting and priority tracking."
-
-      },
-      as: {
-
-        display: "Progress & Upvotes: Community priorities and live civic support.",
-
-        spoken: "Progress and Public Support section. Track active projects and upvote community priorities.",
-
-        enSub: "Citizen upvoting and priority tracking."
-
-      },
-      mai: {
-
-        display: "Progress & Upvotes: Community priorities and live civic support.",
-
-        spoken: "Progress and Public Support section. Track active projects and upvote community priorities.",
-
-        enSub: "Citizen upvoting and priority tracking."
-
-      },
-      sat: {
-
-        display: "Progress & Upvotes: Community priorities and live civic support.",
-
-        spoken: "Progress and Public Support section. Track active projects and upvote community priorities.",
-
-        enSub: "Citizen upvoting and priority tracking."
-
-      },
-      ks: {
-
-        display: "Progress & Upvotes: Community priorities and live civic support.",
-
-        spoken: "Progress and Public Support section. Track active projects and upvote community priorities.",
-
-        enSub: "Citizen upvoting and priority tracking."
-
-      },
-      sd: {
-
-        display: "Progress & Upvotes: Community priorities and live civic support.",
-
-        spoken: "Progress and Public Support section. Track active projects and upvote community priorities.",
-
-        enSub: "Citizen upvoting and priority tracking."
-
-      },
-      en: {
-        display: "Progress & Upvotes: Community priorities and live civic support.",
-        spoken: "Progress and Public Support section. Track active projects and upvote community priorities.",
-        enSub: "Citizen upvoting and priority tracking."
-      }
+    "ml": {
+      "display": "ലോക് സ്വറിലേക്ക് സ്വാഗതം. പേജിൽ എവിടെയെങ്കിലും ടാപ്പ് ചെയ്യുക, വോയ്‌സ് അസിസ്റ്റൻ്റ് നിങ്ങളെ നയിക്കും.",
+      "spoken": "ലോക് സ്വറിലേക്ക് സ്വാഗതം. പേജിൽ എവിടെയെങ്കിലും ടാപ്പ് ചെയ്യുക, വോയ്‌സ് അസിസ്റ്റൻ്റ് നിങ്ങളെ നയിക്കും.",
+      "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
     },
-    card_gis: {
-      hi: {
-        display: "ग्राम जीआईएस हॉटस्पॉट: उपग्रह मानचित्र पर समस्याओं के जीपीएस पिन देखें।",
-        spoken: "ग्राम जीआईएस हॉटस्पॉट मानचित्र। उपग्रह मानचित्र पर अपने इलाके की समस्याओं के जीपीएस लोकेशन पिन देखें।",
-        enSub: "Village GIS Hotspot: View geospatial incident clusters on satellite maps."
-      },
-      bho: {
-        display: "ग्राम जीआईएस हॉटस्पॉट: नक्शा पर इलाका के समस्या के पिन देखीं।",
-        spoken: "ग्राम जीआईएस हॉटस्पॉट। नक्शा पर इलाका के समस्या के जीपीएस पिन देखीं।",
-        enSub: "GIS Hotspot in Bhojpuri."
-      },
-      or: {
-        display: "ଗ୍ରାମ ଜିଆଇଏସ୍ ହଟସ୍ପଟ୍: ମ୍ୟାପ୍ ରେ ଆପଣଙ୍କ ଅଞ୍ଚଳର ସମସ୍ୟାଗୁଡ଼ିକ ଦେଖନ୍ତୁ।",
-        spoken: "ଗ୍ରାମ ଜିଆଇଏସ୍ ହଟସ୍ପଟ୍ ମ୍ୟାପ୍। ମାନଚିତ୍ରରେ ଆପଣଙ୍କ ଅଞ୍ଚଳର ସମସ୍ୟାଗୁଡ଼ିକର ଜିପିଏସ୍ ପିନ୍ ଦେଖନ୍ତୁ।",
-        enSub: "GIS Hotspot in Odia."
-      },
-      bn: {
-        display: "গ্রাম জিআইএস হটস্পট: স্যাটেলাইট মানচিত্রে সমস্যার অবস্থান দেখুন।",
-        spoken: "গ্রাম জিআইএস হটস্পট মানচিত্র। স্যাটেলাইট মানচিত্রে সমস্যার জিপিএস অবস্থান দেখুন।",
-        enSub: "GIS Hotspot in Bengali."
-      },
-      ta: {
-
-        display: "Village GIS Hotspot: Satellite map and verified evidence coordinates.",
-
-        spoken: "Village GIS Hotspot map. View geospatial incident clusters and live telemetry on the map.",
-
-        enSub: "Geographic incident clustering."
-
-      },
-      te: {
-
-        display: "Village GIS Hotspot: Satellite map and verified evidence coordinates.",
-
-        spoken: "Village GIS Hotspot map. View geospatial incident clusters and live telemetry on the map.",
-
-        enSub: "Geographic incident clustering."
-
-      },
-      kn: {
-
-        display: "Village GIS Hotspot: Satellite map and verified evidence coordinates.",
-
-        spoken: "Village GIS Hotspot map. View geospatial incident clusters and live telemetry on the map.",
-
-        enSub: "Geographic incident clustering."
-
-      },
-      ml: {
-
-        display: "Village GIS Hotspot: Satellite map and verified evidence coordinates.",
-
-        spoken: "Village GIS Hotspot map. View geospatial incident clusters and live telemetry on the map.",
-
-        enSub: "Geographic incident clustering."
-
-      },
-      mr: {
-
-        display: "Village GIS Hotspot: Satellite map and verified evidence coordinates.",
-
-        spoken: "Village GIS Hotspot map. View geospatial incident clusters and live telemetry on the map.",
-
-        enSub: "Geographic incident clustering."
-
-      },
-      gu: {
-
-        display: "Village GIS Hotspot: Satellite map and verified evidence coordinates.",
-
-        spoken: "Village GIS Hotspot map. View geospatial incident clusters and live telemetry on the map.",
-
-        enSub: "Geographic incident clustering."
-
-      },
-      pa: {
-
-        display: "Village GIS Hotspot: Satellite map and verified evidence coordinates.",
-
-        spoken: "Village GIS Hotspot map. View geospatial incident clusters and live telemetry on the map.",
-
-        enSub: "Geographic incident clustering."
-
-      },
-      ur: {
-
-        display: "Village GIS Hotspot: Satellite map and verified evidence coordinates.",
-
-        spoken: "Village GIS Hotspot map. View geospatial incident clusters and live telemetry on the map.",
-
-        enSub: "Geographic incident clustering."
-
-      },
-      as: {
-
-        display: "Village GIS Hotspot: Satellite map and verified evidence coordinates.",
-
-        spoken: "Village GIS Hotspot map. View geospatial incident clusters and live telemetry on the map.",
-
-        enSub: "Geographic incident clustering."
-
-      },
-      mai: {
-
-        display: "Village GIS Hotspot: Satellite map and verified evidence coordinates.",
-
-        spoken: "Village GIS Hotspot map. View geospatial incident clusters and live telemetry on the map.",
-
-        enSub: "Geographic incident clustering."
-
-      },
-      sat: {
-
-        display: "Village GIS Hotspot: Satellite map and verified evidence coordinates.",
-
-        spoken: "Village GIS Hotspot map. View geospatial incident clusters and live telemetry on the map.",
-
-        enSub: "Geographic incident clustering."
-
-      },
-      ks: {
-
-        display: "Village GIS Hotspot: Satellite map and verified evidence coordinates.",
-
-        spoken: "Village GIS Hotspot map. View geospatial incident clusters and live telemetry on the map.",
-
-        enSub: "Geographic incident clustering."
-
-      },
-      sd: {
-
-        display: "Village GIS Hotspot: Satellite map and verified evidence coordinates.",
-
-        spoken: "Village GIS Hotspot map. View geospatial incident clusters and live telemetry on the map.",
-
-        enSub: "Geographic incident clustering."
-
-      },
-      en: {
-        display: "Village GIS Hotspot: Satellite map and verified evidence coordinates.",
-        spoken: "Village GIS Hotspot map. View geospatial incident clusters and live telemetry on the map.",
-        enSub: "Geographic incident clustering."
-      }
+    "mr": {
+      "display": "लोक स्वर मध्ये आपले स्वागत आहे. पृष्ठावर कोठेही टॅप करा आणि व्हॉइस असिस्टंट तुम्हाला मार्गदर्शन करेल.",
+      "spoken": "लोक स्वर मध्ये आपले स्वागत आहे. पृष्ठावर कोठेही टॅप करा आणि व्हॉइस असिस्टंट तुम्हाला मार्गदर्शन करेल.",
+      "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
     },
-    card_profile: {
-      hi: {
-        display: "नागरिक सेवाएं व प्रोफ़ाइल: आधार ई-केवाईसी, डिजीलॉकर और पूर्व शिकायतों की स्थिति।",
-        spoken: "नागरिक सेवाएं व प्रोफ़ाइल। अपना आधार ई-केवाईसी, डिजीलॉकर और अपनी पूर्व शिकायतों की स्थिति देखें।",
-        enSub: "Citizen Services & Profile: Aadhaar e-KYC and past complaint tracking."
-      },
-      bho: {
-        display: "नागरिक सेवा आ प्रोफाइल: आधार सत्यापन आ पुरान शिकायतन के स्थिति।",
-        spoken: "नागरिक सेवा आ प्रोफाइल। आधार सत्यापन आ पुरान शिकायतन के स्थिति देखीं।",
-        enSub: "Citizen Profile in Bhojpuri."
-      },
-      or: {
-        display: "ନାଗରିକ ସେବା ଓ ପ୍ରୋଫାଇଲ୍: ଆଧାର ଇ-କେୱାଇସି ଏବଂ ପୂର୍ବ ଅଭିଯୋଗର ସ୍ଥିତି।",
-        spoken: "ନାଗରିକ ସେବା ଓ ପ୍ରୋଫାଇଲ୍। ଆଧାର ଇ-କେୱାଇସି ଏବଂ ପୂର୍ବ ଅଭିଯୋଗର ସ୍ଥିତି ଦେଖନ୍ତୁ।",
-        enSub: "Citizen Profile in Odia."
-      },
-      bn: {
-        display: "নাগরিক পরিষেবা ও প্রোফাইল: আধার ই-কেওয়াইসি এবং পূর্বের অভিযোগের স্থিতি দেখুন।",
-        spoken: "নাগরিক পরিষেবা ও প্রোফাইল। আধার ই-কেওয়াইসি এবং আপনার পূর্বের অভিযোগের স্থিতি দেখুন।",
-        enSub: "Citizen Profile in Bengali."
-      },
-      ta: {
-
-        display: "Citizen Services & Profile: Aadhaar e-KYC and DigiLocker identity verification.",
-
-        spoken: "Citizen Services and Profile. View your Aadhaar e-KYC, DigiLocker, and past grievance history.",
-
-        enSub: "Profile, credentials, and ledger history."
-
-      },
-      te: {
-
-        display: "Citizen Services & Profile: Aadhaar e-KYC and DigiLocker identity verification.",
-
-        spoken: "Citizen Services and Profile. View your Aadhaar e-KYC, DigiLocker, and past grievance history.",
-
-        enSub: "Profile, credentials, and ledger history."
-
-      },
-      kn: {
-
-        display: "Citizen Services & Profile: Aadhaar e-KYC and DigiLocker identity verification.",
-
-        spoken: "Citizen Services and Profile. View your Aadhaar e-KYC, DigiLocker, and past grievance history.",
-
-        enSub: "Profile, credentials, and ledger history."
-
-      },
-      ml: {
-
-        display: "Citizen Services & Profile: Aadhaar e-KYC and DigiLocker identity verification.",
-
-        spoken: "Citizen Services and Profile. View your Aadhaar e-KYC, DigiLocker, and past grievance history.",
-
-        enSub: "Profile, credentials, and ledger history."
-
-      },
-      mr: {
-
-        display: "Citizen Services & Profile: Aadhaar e-KYC and DigiLocker identity verification.",
-
-        spoken: "Citizen Services and Profile. View your Aadhaar e-KYC, DigiLocker, and past grievance history.",
-
-        enSub: "Profile, credentials, and ledger history."
-
-      },
-      gu: {
-
-        display: "Citizen Services & Profile: Aadhaar e-KYC and DigiLocker identity verification.",
-
-        spoken: "Citizen Services and Profile. View your Aadhaar e-KYC, DigiLocker, and past grievance history.",
-
-        enSub: "Profile, credentials, and ledger history."
-
-      },
-      pa: {
-
-        display: "Citizen Services & Profile: Aadhaar e-KYC and DigiLocker identity verification.",
-
-        spoken: "Citizen Services and Profile. View your Aadhaar e-KYC, DigiLocker, and past grievance history.",
-
-        enSub: "Profile, credentials, and ledger history."
-
-      },
-      ur: {
-
-        display: "Citizen Services & Profile: Aadhaar e-KYC and DigiLocker identity verification.",
-
-        spoken: "Citizen Services and Profile. View your Aadhaar e-KYC, DigiLocker, and past grievance history.",
-
-        enSub: "Profile, credentials, and ledger history."
-
-      },
-      as: {
-
-        display: "Citizen Services & Profile: Aadhaar e-KYC and DigiLocker identity verification.",
-
-        spoken: "Citizen Services and Profile. View your Aadhaar e-KYC, DigiLocker, and past grievance history.",
-
-        enSub: "Profile, credentials, and ledger history."
-
-      },
-      mai: {
-
-        display: "Citizen Services & Profile: Aadhaar e-KYC and DigiLocker identity verification.",
-
-        spoken: "Citizen Services and Profile. View your Aadhaar e-KYC, DigiLocker, and past grievance history.",
-
-        enSub: "Profile, credentials, and ledger history."
-
-      },
-      sat: {
-
-        display: "Citizen Services & Profile: Aadhaar e-KYC and DigiLocker identity verification.",
-
-        spoken: "Citizen Services and Profile. View your Aadhaar e-KYC, DigiLocker, and past grievance history.",
-
-        enSub: "Profile, credentials, and ledger history."
-
-      },
-      ks: {
-
-        display: "Citizen Services & Profile: Aadhaar e-KYC and DigiLocker identity verification.",
-
-        spoken: "Citizen Services and Profile. View your Aadhaar e-KYC, DigiLocker, and past grievance history.",
-
-        enSub: "Profile, credentials, and ledger history."
-
-      },
-      sd: {
-
-        display: "Citizen Services & Profile: Aadhaar e-KYC and DigiLocker identity verification.",
-
-        spoken: "Citizen Services and Profile. View your Aadhaar e-KYC, DigiLocker, and past grievance history.",
-
-        enSub: "Profile, credentials, and ledger history."
-
-      },
-      en: {
-        display: "Citizen Services & Profile: Aadhaar e-KYC and DigiLocker identity verification.",
-        spoken: "Citizen Services and Profile. View your Aadhaar e-KYC, DigiLocker, and past grievance history.",
-        enSub: "Profile, credentials, and ledger history."
-      }
+    "gu": {
+      "display": "લોક સ્વરમાં તમારું સ્વાગત છે. પૃષ્ઠ પર ગમે ત્યાં ટેપ કરો અને વૉઇસ સહાયક તમને માર્ગદર્શન આપશે.",
+      "spoken": "લોક સ્વરમાં તમારું સ્વાગત છે. પૃષ્ઠ પર ગમે ત્યાં ટેપ કરો અને વૉઇસ સહાયક તમને માર્ગદર્શન આપશે.",
+      "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
     },
-    location_pill: {
-      hi: {
-        display: "लाइव स्थान: वर्तमान सत्यापित जीपीएस क्षेत्र।",
-        spoken: "लाइव स्थान। यह आपका वर्तमान जीपीएस क्षेत्र प्रदर्शित कर रहा है।",
-        enSub: "Live Location: Displays your verified GPS detected location."
-      },
-      ta: {
-
-        display: "Live Location: Displays your verified GPS detected location.",
-
-        spoken: "Live Location. Displays your verified GPS detected location.",
-
-        enSub: "Verified telemetry zone."
-
-      },
-      te: {
-
-        display: "Live Location: Displays your verified GPS detected location.",
-
-        spoken: "Live Location. Displays your verified GPS detected location.",
-
-        enSub: "Verified telemetry zone."
-
-      },
-      kn: {
-
-        display: "Live Location: Displays your verified GPS detected location.",
-
-        spoken: "Live Location. Displays your verified GPS detected location.",
-
-        enSub: "Verified telemetry zone."
-
-      },
-      ml: {
-
-        display: "Live Location: Displays your verified GPS detected location.",
-
-        spoken: "Live Location. Displays your verified GPS detected location.",
-
-        enSub: "Verified telemetry zone."
-
-      },
-      mr: {
-
-        display: "Live Location: Displays your verified GPS detected location.",
-
-        spoken: "Live Location. Displays your verified GPS detected location.",
-
-        enSub: "Verified telemetry zone."
-
-      },
-      gu: {
-
-        display: "Live Location: Displays your verified GPS detected location.",
-
-        spoken: "Live Location. Displays your verified GPS detected location.",
-
-        enSub: "Verified telemetry zone."
-
-      },
-      pa: {
-
-        display: "Live Location: Displays your verified GPS detected location.",
-
-        spoken: "Live Location. Displays your verified GPS detected location.",
-
-        enSub: "Verified telemetry zone."
-
-      },
-      ur: {
-
-        display: "Live Location: Displays your verified GPS detected location.",
-
-        spoken: "Live Location. Displays your verified GPS detected location.",
-
-        enSub: "Verified telemetry zone."
-
-      },
-      as: {
-
-        display: "Live Location: Displays your verified GPS detected location.",
-
-        spoken: "Live Location. Displays your verified GPS detected location.",
-
-        enSub: "Verified telemetry zone."
-
-      },
-      mai: {
-
-        display: "Live Location: Displays your verified GPS detected location.",
-
-        spoken: "Live Location. Displays your verified GPS detected location.",
-
-        enSub: "Verified telemetry zone."
-
-      },
-      sat: {
-
-        display: "Live Location: Displays your verified GPS detected location.",
-
-        spoken: "Live Location. Displays your verified GPS detected location.",
-
-        enSub: "Verified telemetry zone."
-
-      },
-      ks: {
-
-        display: "Live Location: Displays your verified GPS detected location.",
-
-        spoken: "Live Location. Displays your verified GPS detected location.",
-
-        enSub: "Verified telemetry zone."
-
-      },
-      sd: {
-
-        display: "Live Location: Displays your verified GPS detected location.",
-
-        spoken: "Live Location. Displays your verified GPS detected location.",
-
-        enSub: "Verified telemetry zone."
-
-      },
-      en: {
-        display: "Live Location: Displays your verified GPS detected location.",
-        spoken: "Live Location. Displays your verified GPS detected location.",
-        enSub: "Verified telemetry zone."
-      }
+    "pa": {
+      "display": "ਲੋਕ ਸਵਰ ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ। ਪੰਨੇ 'ਤੇ ਕਿਤੇ ਵੀ ਟੈਪ ਕਰੋ ਅਤੇ ਵੌਇਸ ਅਸਿਸਟੈਂਟ ਤੁਹਾਨੂੰ ਮਾਰਗਦਰਸ਼ਨ ਕਰੇਗਾ।",
+      "spoken": "ਲੋਕ ਸਵਰ ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ। ਪੰਨੇ 'ਤੇ ਕਿਤੇ ਵੀ ਟੈਪ ਕਰੋ ਅਤੇ ਵੌਇਸ ਅਸਿਸਟੈਂਟ ਤੁਹਾਨੂੰ ਮਾਰਗਦਰਸ਼ਨ ਕਰੇਗਾ।",
+      "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
     },
-    refresh_gps: {
-      hi: {
-        display: "जीपीएस रिफ्रेश: उपग्रह जीपीएस निर्देशांक पुनः प्राप्त किए जा रहे हैं।",
-        spoken: "जीपीएस रिफ्रेश बटन। वर्तमान उपग्रह जीपीएस निर्देशांक पुनः प्राप्त करने के लिए क्लिक किया गया।",
-        enSub: "Refreshing live GPS satellite telemetry."
-      },
-      ta: {
-
-        display: "Refresh GPS: Updating live satellite coordinates.",
-
-        spoken: "Refresh GPS button. Updating your live coordinates and area name.",
-
-        enSub: "GPS telemetry refresh."
-
-      },
-      te: {
-
-        display: "Refresh GPS: Updating live satellite coordinates.",
-
-        spoken: "Refresh GPS button. Updating your live coordinates and area name.",
-
-        enSub: "GPS telemetry refresh."
-
-      },
-      kn: {
-
-        display: "Refresh GPS: Updating live satellite coordinates.",
-
-        spoken: "Refresh GPS button. Updating your live coordinates and area name.",
-
-        enSub: "GPS telemetry refresh."
-
-      },
-      ml: {
-
-        display: "Refresh GPS: Updating live satellite coordinates.",
-
-        spoken: "Refresh GPS button. Updating your live coordinates and area name.",
-
-        enSub: "GPS telemetry refresh."
-
-      },
-      mr: {
-
-        display: "Refresh GPS: Updating live satellite coordinates.",
-
-        spoken: "Refresh GPS button. Updating your live coordinates and area name.",
-
-        enSub: "GPS telemetry refresh."
-
-      },
-      gu: {
-
-        display: "Refresh GPS: Updating live satellite coordinates.",
-
-        spoken: "Refresh GPS button. Updating your live coordinates and area name.",
-
-        enSub: "GPS telemetry refresh."
-
-      },
-      pa: {
-
-        display: "Refresh GPS: Updating live satellite coordinates.",
-
-        spoken: "Refresh GPS button. Updating your live coordinates and area name.",
-
-        enSub: "GPS telemetry refresh."
-
-      },
-      ur: {
-
-        display: "Refresh GPS: Updating live satellite coordinates.",
-
-        spoken: "Refresh GPS button. Updating your live coordinates and area name.",
-
-        enSub: "GPS telemetry refresh."
-
-      },
-      as: {
-
-        display: "Refresh GPS: Updating live satellite coordinates.",
-
-        spoken: "Refresh GPS button. Updating your live coordinates and area name.",
-
-        enSub: "GPS telemetry refresh."
-
-      },
-      mai: {
-
-        display: "Refresh GPS: Updating live satellite coordinates.",
-
-        spoken: "Refresh GPS button. Updating your live coordinates and area name.",
-
-        enSub: "GPS telemetry refresh."
-
-      },
-      sat: {
-
-        display: "Refresh GPS: Updating live satellite coordinates.",
-
-        spoken: "Refresh GPS button. Updating your live coordinates and area name.",
-
-        enSub: "GPS telemetry refresh."
-
-      },
-      ks: {
-
-        display: "Refresh GPS: Updating live satellite coordinates.",
-
-        spoken: "Refresh GPS button. Updating your live coordinates and area name.",
-
-        enSub: "GPS telemetry refresh."
-
-      },
-      sd: {
-
-        display: "Refresh GPS: Updating live satellite coordinates.",
-
-        spoken: "Refresh GPS button. Updating your live coordinates and area name.",
-
-        enSub: "GPS telemetry refresh."
-
-      },
-      en: {
-        display: "Refresh GPS: Updating live satellite coordinates.",
-        spoken: "Refresh GPS button. Updating your live coordinates and area name.",
-        enSub: "GPS telemetry refresh."
-      }
+    "ur": {
+      "display": "لوک سور میں خوش آمدید۔ صفحہ پر کہیں بھی تھپتھپائیں اور وائس اسسٹنٹ آپ کی رہنمائی کرے گا۔",
+      "spoken": "لوک سور میں خوش آمدید۔ صفحہ پر کہیں بھی تھپتھپائیں اور وائس اسسٹنٹ آپ کی رہنمائی کرے گا۔",
+      "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
     },
-    change_location: {
-      hi: {
-        display: "स्थान बदलें: अपनी ग्राम पंचायत, वार्ड या जिला मैन्युअल रूप से चुनें।",
-        spoken: "स्थान बदलने का विकल्प। अपनी ग्राम पंचायत, वार्ड या जिला मैन्युअल रूप से चुनने के लिए क्लिक करें।",
-        enSub: "Change Location: Select your Gram Panchayat or Ward manually."
-      },
-      ta: {
-
-        display: "Change Location: Select your Gram Panchayat, Ward, or District.",
-
-        spoken: "Change Location. Select your Gram Panchayat, Ward, or District manually.",
-
-        enSub: "Manual administrative zone selector."
-
-      },
-      te: {
-
-        display: "Change Location: Select your Gram Panchayat, Ward, or District.",
-
-        spoken: "Change Location. Select your Gram Panchayat, Ward, or District manually.",
-
-        enSub: "Manual administrative zone selector."
-
-      },
-      kn: {
-
-        display: "Change Location: Select your Gram Panchayat, Ward, or District.",
-
-        spoken: "Change Location. Select your Gram Panchayat, Ward, or District manually.",
-
-        enSub: "Manual administrative zone selector."
-
-      },
-      ml: {
-
-        display: "Change Location: Select your Gram Panchayat, Ward, or District.",
-
-        spoken: "Change Location. Select your Gram Panchayat, Ward, or District manually.",
-
-        enSub: "Manual administrative zone selector."
-
-      },
-      mr: {
-
-        display: "Change Location: Select your Gram Panchayat, Ward, or District.",
-
-        spoken: "Change Location. Select your Gram Panchayat, Ward, or District manually.",
-
-        enSub: "Manual administrative zone selector."
-
-      },
-      gu: {
-
-        display: "Change Location: Select your Gram Panchayat, Ward, or District.",
-
-        spoken: "Change Location. Select your Gram Panchayat, Ward, or District manually.",
-
-        enSub: "Manual administrative zone selector."
-
-      },
-      pa: {
-
-        display: "Change Location: Select your Gram Panchayat, Ward, or District.",
-
-        spoken: "Change Location. Select your Gram Panchayat, Ward, or District manually.",
-
-        enSub: "Manual administrative zone selector."
-
-      },
-      ur: {
-
-        display: "Change Location: Select your Gram Panchayat, Ward, or District.",
-
-        spoken: "Change Location. Select your Gram Panchayat, Ward, or District manually.",
-
-        enSub: "Manual administrative zone selector."
-
-      },
-      as: {
-
-        display: "Change Location: Select your Gram Panchayat, Ward, or District.",
-
-        spoken: "Change Location. Select your Gram Panchayat, Ward, or District manually.",
-
-        enSub: "Manual administrative zone selector."
-
-      },
-      mai: {
-
-        display: "Change Location: Select your Gram Panchayat, Ward, or District.",
-
-        spoken: "Change Location. Select your Gram Panchayat, Ward, or District manually.",
-
-        enSub: "Manual administrative zone selector."
-
-      },
-      sat: {
-
-        display: "Change Location: Select your Gram Panchayat, Ward, or District.",
-
-        spoken: "Change Location. Select your Gram Panchayat, Ward, or District manually.",
-
-        enSub: "Manual administrative zone selector."
-
-      },
-      ks: {
-
-        display: "Change Location: Select your Gram Panchayat, Ward, or District.",
-
-        spoken: "Change Location. Select your Gram Panchayat, Ward, or District manually.",
-
-        enSub: "Manual administrative zone selector."
-
-      },
-      sd: {
-
-        display: "Change Location: Select your Gram Panchayat, Ward, or District.",
-
-        spoken: "Change Location. Select your Gram Panchayat, Ward, or District manually.",
-
-        enSub: "Manual administrative zone selector."
-
-      },
-      en: {
-        display: "Change Location: Select your Gram Panchayat, Ward, or District.",
-        spoken: "Change Location. Select your Gram Panchayat, Ward, or District manually.",
-        enSub: "Manual administrative zone selector."
-      }
+    "sd": {
+      "display": "لوڪ سور ۾ ڀليڪار. صفحي تي ڪٿي به ٽيپ ڪريو ۽ وائس اسسٽنٽ توهان جي رهنمائي ڪندو.",
+      "spoken": "لوڪ سور ۾ ڀليڪار. صفحي تي ڪٿي به ٽيپ ڪريو ۽ وائس اسسٽنٽ توهان جي رهنمائي ڪندو.",
+      "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
     },
-    lang_selector: {
-      hi: {
-        display: "भाषा चयन: अपनी पसंदीदा भाषा हिन्दी, ओडिया, भोजपुरी, बांग्ला या अंग्रेजी चुनें।",
-        spoken: "भाषा बदलने का मेनू। हिन्दी, ओडिया, भोजपुरी, बांग्ला या अंग्रेजी का चयन करें।",
-        enSub: "Language selector: Choose Hindi, Odia, Bhojpuri, Bengali, or English."
-      },
-      ta: {
-
-        display: "Language Selector: Choose Hindi, Odia, Bhojpuri, Bengali, or English.",
-
-        spoken: "Language selector. Choose your preferred language.",
-
-        enSub: "Select portal interface language."
-
-      },
-      te: {
-
-        display: "Language Selector: Choose Hindi, Odia, Bhojpuri, Bengali, or English.",
-
-        spoken: "Language selector. Choose your preferred language.",
-
-        enSub: "Select portal interface language."
-
-      },
-      kn: {
-
-        display: "Language Selector: Choose Hindi, Odia, Bhojpuri, Bengali, or English.",
-
-        spoken: "Language selector. Choose your preferred language.",
-
-        enSub: "Select portal interface language."
-
-      },
-      ml: {
-
-        display: "Language Selector: Choose Hindi, Odia, Bhojpuri, Bengali, or English.",
-
-        spoken: "Language selector. Choose your preferred language.",
-
-        enSub: "Select portal interface language."
-
-      },
-      mr: {
-
-        display: "Language Selector: Choose Hindi, Odia, Bhojpuri, Bengali, or English.",
-
-        spoken: "Language selector. Choose your preferred language.",
-
-        enSub: "Select portal interface language."
-
-      },
-      gu: {
-
-        display: "Language Selector: Choose Hindi, Odia, Bhojpuri, Bengali, or English.",
-
-        spoken: "Language selector. Choose your preferred language.",
-
-        enSub: "Select portal interface language."
-
-      },
-      pa: {
-
-        display: "Language Selector: Choose Hindi, Odia, Bhojpuri, Bengali, or English.",
-
-        spoken: "Language selector. Choose your preferred language.",
-
-        enSub: "Select portal interface language."
-
-      },
-      ur: {
-
-        display: "Language Selector: Choose Hindi, Odia, Bhojpuri, Bengali, or English.",
-
-        spoken: "Language selector. Choose your preferred language.",
-
-        enSub: "Select portal interface language."
-
-      },
-      as: {
-
-        display: "Language Selector: Choose Hindi, Odia, Bhojpuri, Bengali, or English.",
-
-        spoken: "Language selector. Choose your preferred language.",
-
-        enSub: "Select portal interface language."
-
-      },
-      mai: {
-
-        display: "Language Selector: Choose Hindi, Odia, Bhojpuri, Bengali, or English.",
-
-        spoken: "Language selector. Choose your preferred language.",
-
-        enSub: "Select portal interface language."
-
-      },
-      sat: {
-
-        display: "Language Selector: Choose Hindi, Odia, Bhojpuri, Bengali, or English.",
-
-        spoken: "Language selector. Choose your preferred language.",
-
-        enSub: "Select portal interface language."
-
-      },
-      ks: {
-
-        display: "Language Selector: Choose Hindi, Odia, Bhojpuri, Bengali, or English.",
-
-        spoken: "Language selector. Choose your preferred language.",
-
-        enSub: "Select portal interface language."
-
-      },
-      sd: {
-
-        display: "Language Selector: Choose Hindi, Odia, Bhojpuri, Bengali, or English.",
-
-        spoken: "Language selector. Choose your preferred language.",
-
-        enSub: "Select portal interface language."
-
-      },
-      en: {
-        display: "Language Selector: Choose Hindi, Odia, Bhojpuri, Bengali, or English.",
-        spoken: "Language selector. Choose your preferred language.",
-        enSub: "Select portal interface language."
-      }
+    "as": {
+      "display": "লোক স্বৰলৈ স্বাগতম। পৃষ্ঠাটোত যিকোনো ঠাইতে টিপক আৰু ভয়েচ এচিষ্টেণ্টে আপোনাক পথ প্ৰদৰ্শন কৰিব।",
+      "spoken": "লোক স্বৰলৈ স্বাগতম। পৃষ্ঠাটোত যিকোনো ঠাইতে টিপক আৰু ভয়েচ এচিষ্টেণ্টে আপোনাক পথ প্ৰদৰ্শন কৰিব।",
+      "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
     },
-    theme_toggle: {
-      hi: {
-        display: "थीम बटन: डार्क मोड या लाइट मोड पर स्विच करें।",
-        spoken: "थीम बदलने का बटन। डार्क मोड या लाइट मोड पर स्विच करें।",
-        enSub: "Theme toggle: Switch between dark mode and light mode."
-      },
-      ta: {
-
-        display: "Theme Toggle: Switch between dark mode and light mode.",
-
-        spoken: "Theme toggle. Switch between dark mode and light mode.",
-
-        enSub: "Color appearance mode switch."
-
-      },
-      te: {
-
-        display: "Theme Toggle: Switch between dark mode and light mode.",
-
-        spoken: "Theme toggle. Switch between dark mode and light mode.",
-
-        enSub: "Color appearance mode switch."
-
-      },
-      kn: {
-
-        display: "Theme Toggle: Switch between dark mode and light mode.",
-
-        spoken: "Theme toggle. Switch between dark mode and light mode.",
-
-        enSub: "Color appearance mode switch."
-
-      },
-      ml: {
-
-        display: "Theme Toggle: Switch between dark mode and light mode.",
-
-        spoken: "Theme toggle. Switch between dark mode and light mode.",
-
-        enSub: "Color appearance mode switch."
-
-      },
-      mr: {
-
-        display: "Theme Toggle: Switch between dark mode and light mode.",
-
-        spoken: "Theme toggle. Switch between dark mode and light mode.",
-
-        enSub: "Color appearance mode switch."
-
-      },
-      gu: {
-
-        display: "Theme Toggle: Switch between dark mode and light mode.",
-
-        spoken: "Theme toggle. Switch between dark mode and light mode.",
-
-        enSub: "Color appearance mode switch."
-
-      },
-      pa: {
-
-        display: "Theme Toggle: Switch between dark mode and light mode.",
-
-        spoken: "Theme toggle. Switch between dark mode and light mode.",
-
-        enSub: "Color appearance mode switch."
-
-      },
-      ur: {
-
-        display: "Theme Toggle: Switch between dark mode and light mode.",
-
-        spoken: "Theme toggle. Switch between dark mode and light mode.",
-
-        enSub: "Color appearance mode switch."
-
-      },
-      as: {
-
-        display: "Theme Toggle: Switch between dark mode and light mode.",
-
-        spoken: "Theme toggle. Switch between dark mode and light mode.",
-
-        enSub: "Color appearance mode switch."
-
-      },
-      mai: {
-
-        display: "Theme Toggle: Switch between dark mode and light mode.",
-
-        spoken: "Theme toggle. Switch between dark mode and light mode.",
-
-        enSub: "Color appearance mode switch."
-
-      },
-      sat: {
-
-        display: "Theme Toggle: Switch between dark mode and light mode.",
-
-        spoken: "Theme toggle. Switch between dark mode and light mode.",
-
-        enSub: "Color appearance mode switch."
-
-      },
-      ks: {
-
-        display: "Theme Toggle: Switch between dark mode and light mode.",
-
-        spoken: "Theme toggle. Switch between dark mode and light mode.",
-
-        enSub: "Color appearance mode switch."
-
-      },
-      sd: {
-
-        display: "Theme Toggle: Switch between dark mode and light mode.",
-
-        spoken: "Theme toggle. Switch between dark mode and light mode.",
-
-        enSub: "Color appearance mode switch."
-
-      },
-      en: {
-        display: "Theme Toggle: Switch between dark mode and light mode.",
-        spoken: "Theme toggle. Switch between dark mode and light mode.",
-        enSub: "Color appearance mode switch."
-      }
+    "mai": {
+      "display": "लोक स्वर मे अहाँक स्वागत अछि। पन्ना पर कतौ टैप करू आ वॉयस असिस्टेंट अहाँक मार्गदर्शन करत।",
+      "spoken": "लोक स्वर मे अहाँक स्वागत अछि। पन्ना पर कतौ टैप करू आ वॉयस असिस्टेंट अहाँक मार्गदर्शन करत।",
+      "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
     },
-    notifications: {
-      hi: {
-        display: "सूचनाएं: आपकी शिकायतों पर हुई प्रशासनिक कार्रवाई की ताज़ा सूचनाएं।",
-        spoken: "सूचनाएं। आपकी शिकायतों पर हुई ताज़ा प्रशासनिक कार्रवाई की सूचनाएं यहाँ देखें।",
-        enSub: "Notifications: Real-time action alerts on your complaints."
-      },
-      ta: {
-
-        display: "Notifications: Real-time action alerts on your complaints.",
-
-        spoken: "Notifications. Check status updates and actions on your grievances.",
-
-        enSub: "Official status alerts."
-
-      },
-      te: {
-
-        display: "Notifications: Real-time action alerts on your complaints.",
-
-        spoken: "Notifications. Check status updates and actions on your grievances.",
-
-        enSub: "Official status alerts."
-
-      },
-      kn: {
-
-        display: "Notifications: Real-time action alerts on your complaints.",
-
-        spoken: "Notifications. Check status updates and actions on your grievances.",
-
-        enSub: "Official status alerts."
-
-      },
-      ml: {
-
-        display: "Notifications: Real-time action alerts on your complaints.",
-
-        spoken: "Notifications. Check status updates and actions on your grievances.",
-
-        enSub: "Official status alerts."
-
-      },
-      mr: {
-
-        display: "Notifications: Real-time action alerts on your complaints.",
-
-        spoken: "Notifications. Check status updates and actions on your grievances.",
-
-        enSub: "Official status alerts."
-
-      },
-      gu: {
-
-        display: "Notifications: Real-time action alerts on your complaints.",
-
-        spoken: "Notifications. Check status updates and actions on your grievances.",
-
-        enSub: "Official status alerts."
-
-      },
-      pa: {
-
-        display: "Notifications: Real-time action alerts on your complaints.",
-
-        spoken: "Notifications. Check status updates and actions on your grievances.",
-
-        enSub: "Official status alerts."
-
-      },
-      ur: {
-
-        display: "Notifications: Real-time action alerts on your complaints.",
-
-        spoken: "Notifications. Check status updates and actions on your grievances.",
-
-        enSub: "Official status alerts."
-
-      },
-      as: {
-
-        display: "Notifications: Real-time action alerts on your complaints.",
-
-        spoken: "Notifications. Check status updates and actions on your grievances.",
-
-        enSub: "Official status alerts."
-
-      },
-      mai: {
-
-        display: "Notifications: Real-time action alerts on your complaints.",
-
-        spoken: "Notifications. Check status updates and actions on your grievances.",
-
-        enSub: "Official status alerts."
-
-      },
-      sat: {
-
-        display: "Notifications: Real-time action alerts on your complaints.",
-
-        spoken: "Notifications. Check status updates and actions on your grievances.",
-
-        enSub: "Official status alerts."
-
-      },
-      ks: {
-
-        display: "Notifications: Real-time action alerts on your complaints.",
-
-        spoken: "Notifications. Check status updates and actions on your grievances.",
-
-        enSub: "Official status alerts."
-
-      },
-      sd: {
-
-        display: "Notifications: Real-time action alerts on your complaints.",
-
-        spoken: "Notifications. Check status updates and actions on your grievances.",
-
-        enSub: "Official status alerts."
-
-      },
-      en: {
-        display: "Notifications: Real-time action alerts on your complaints.",
-        spoken: "Notifications. Check status updates and actions on your grievances.",
-        enSub: "Official status alerts."
-      }
+    "sat": {
+      "display": "ᱞᱚᱠ ᱥᱣᱚᱨ ᱨᱮ ᱟᱢᱟᱜ ᱥᱟᱹᱜᱩᱱ ᱫᱟᱨᱟᱢ᱾ ᱯᱮᱡᱽ ᱨᱮ ᱡᱟᱦᱟᱸ ᱨᱮᱜᱮ ᱴᱮᱯ ᱢᱮ ᱟᱨ ᱵᱷᱚᱭᱮᱥ ᱟᱥᱤᱥᱴᱮᱱᱴ ᱟᱢᱮ ᱜᱟᱭᱤᱰ ᱢᱮᱭᱟ᱾",
+      "spoken": "ᱞᱚᱠ ᱥᱣᱚᱨ ᱨᱮ ᱟᱢᱟᱜ ᱥᱟᱹᱜᱩᱱ ᱫᱟᱨᱟᱢ᱾ ᱯᱮᱡᱽ ᱨᱮ ᱡᱟᱦᱟᱸ ᱨᱮᱜᱮ ᱴᱮᱯ ᱢᱮ ᱟᱨ ᱵᱷᱚᱭᱮᱥ ᱟᱥᱤᱥᱴᱮᱱᱴ ᱟᱢᱮ ᱜᱟᱭᱤᱰ ᱢᱮᱭᱟ᱾",
+      "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
     },
-    profile_nav: {
-      hi: {
-        display: "नागरिक प्रोफ़ाइल: आपकी व्यक्तिगत जानकारी और डिजीलॉकर खाता।",
-        spoken: "नागरिक प्रोफ़ाइल। आपकी व्यक्तिगत जानकारी और डिजीलॉकर सत्यापन रिकॉर्ड।",
-        enSub: "Citizen Profile: Account credentials and DigiLocker credentials."
-      },
-      ta: {
-
-        display: "Citizen Profile: Account credentials and DigiLocker credentials.",
-
-        spoken: "Citizen Profile. Access your personal account and DigiLocker records.",
-
-        enSub: "View profile details."
-
-      },
-      te: {
-
-        display: "Citizen Profile: Account credentials and DigiLocker credentials.",
-
-        spoken: "Citizen Profile. Access your personal account and DigiLocker records.",
-
-        enSub: "View profile details."
-
-      },
-      kn: {
-
-        display: "Citizen Profile: Account credentials and DigiLocker credentials.",
-
-        spoken: "Citizen Profile. Access your personal account and DigiLocker records.",
-
-        enSub: "View profile details."
-
-      },
-      ml: {
-
-        display: "Citizen Profile: Account credentials and DigiLocker credentials.",
-
-        spoken: "Citizen Profile. Access your personal account and DigiLocker records.",
-
-        enSub: "View profile details."
-
-      },
-      mr: {
-
-        display: "Citizen Profile: Account credentials and DigiLocker credentials.",
-
-        spoken: "Citizen Profile. Access your personal account and DigiLocker records.",
-
-        enSub: "View profile details."
-
-      },
-      gu: {
-
-        display: "Citizen Profile: Account credentials and DigiLocker credentials.",
-
-        spoken: "Citizen Profile. Access your personal account and DigiLocker records.",
-
-        enSub: "View profile details."
-
-      },
-      pa: {
-
-        display: "Citizen Profile: Account credentials and DigiLocker credentials.",
-
-        spoken: "Citizen Profile. Access your personal account and DigiLocker records.",
-
-        enSub: "View profile details."
-
-      },
-      ur: {
-
-        display: "Citizen Profile: Account credentials and DigiLocker credentials.",
-
-        spoken: "Citizen Profile. Access your personal account and DigiLocker records.",
-
-        enSub: "View profile details."
-
-      },
-      as: {
-
-        display: "Citizen Profile: Account credentials and DigiLocker credentials.",
-
-        spoken: "Citizen Profile. Access your personal account and DigiLocker records.",
-
-        enSub: "View profile details."
-
-      },
-      mai: {
-
-        display: "Citizen Profile: Account credentials and DigiLocker credentials.",
-
-        spoken: "Citizen Profile. Access your personal account and DigiLocker records.",
-
-        enSub: "View profile details."
-
-      },
-      sat: {
-
-        display: "Citizen Profile: Account credentials and DigiLocker credentials.",
-
-        spoken: "Citizen Profile. Access your personal account and DigiLocker records.",
-
-        enSub: "View profile details."
-
-      },
-      ks: {
-
-        display: "Citizen Profile: Account credentials and DigiLocker credentials.",
-
-        spoken: "Citizen Profile. Access your personal account and DigiLocker records.",
-
-        enSub: "View profile details."
-
-      },
-      sd: {
-
-        display: "Citizen Profile: Account credentials and DigiLocker credentials.",
-
-        spoken: "Citizen Profile. Access your personal account and DigiLocker records.",
-
-        enSub: "View profile details."
-
-      },
-      en: {
-        display: "Citizen Profile: Account credentials and DigiLocker credentials.",
-        spoken: "Citizen Profile. Access your personal account and DigiLocker records.",
-        enSub: "View profile details."
-      }
-    },
-    helpline: {
-      hi: {
-        display: "हेल्पलाइन: राष्ट्रीय सेवा 1947 या जिला सेवा पर सीधे संपर्क करें।",
-        spoken: "सरकारी आपातकालीन हेल्पलाइन नंबर। राष्ट्रीय सेवा 1947 या जिला सेवा पर सीधे संपर्क करें।",
-        enSub: "Official emergency helplines: National 1947 & District support."
-      },
-      ta: {
-
-        display: "Official Helplines: National 1947 and district support.",
-
-        spoken: "Official emergency helplines. National helpline 1947 and district support.",
-
-        enSub: "Direct emergency assistance."
-
-      },
-      te: {
-
-        display: "Official Helplines: National 1947 and district support.",
-
-        spoken: "Official emergency helplines. National helpline 1947 and district support.",
-
-        enSub: "Direct emergency assistance."
-
-      },
-      kn: {
-
-        display: "Official Helplines: National 1947 and district support.",
-
-        spoken: "Official emergency helplines. National helpline 1947 and district support.",
-
-        enSub: "Direct emergency assistance."
-
-      },
-      ml: {
-
-        display: "Official Helplines: National 1947 and district support.",
-
-        spoken: "Official emergency helplines. National helpline 1947 and district support.",
-
-        enSub: "Direct emergency assistance."
-
-      },
-      mr: {
-
-        display: "Official Helplines: National 1947 and district support.",
-
-        spoken: "Official emergency helplines. National helpline 1947 and district support.",
-
-        enSub: "Direct emergency assistance."
-
-      },
-      gu: {
-
-        display: "Official Helplines: National 1947 and district support.",
-
-        spoken: "Official emergency helplines. National helpline 1947 and district support.",
-
-        enSub: "Direct emergency assistance."
-
-      },
-      pa: {
-
-        display: "Official Helplines: National 1947 and district support.",
-
-        spoken: "Official emergency helplines. National helpline 1947 and district support.",
-
-        enSub: "Direct emergency assistance."
-
-      },
-      ur: {
-
-        display: "Official Helplines: National 1947 and district support.",
-
-        spoken: "Official emergency helplines. National helpline 1947 and district support.",
-
-        enSub: "Direct emergency assistance."
-
-      },
-      as: {
-
-        display: "Official Helplines: National 1947 and district support.",
-
-        spoken: "Official emergency helplines. National helpline 1947 and district support.",
-
-        enSub: "Direct emergency assistance."
-
-      },
-      mai: {
-
-        display: "Official Helplines: National 1947 and district support.",
-
-        spoken: "Official emergency helplines. National helpline 1947 and district support.",
-
-        enSub: "Direct emergency assistance."
-
-      },
-      sat: {
-
-        display: "Official Helplines: National 1947 and district support.",
-
-        spoken: "Official emergency helplines. National helpline 1947 and district support.",
-
-        enSub: "Direct emergency assistance."
-
-      },
-      ks: {
-
-        display: "Official Helplines: National 1947 and district support.",
-
-        spoken: "Official emergency helplines. National helpline 1947 and district support.",
-
-        enSub: "Direct emergency assistance."
-
-      },
-      sd: {
-
-        display: "Official Helplines: National 1947 and district support.",
-
-        spoken: "Official emergency helplines. National helpline 1947 and district support.",
-
-        enSub: "Direct emergency assistance."
-
-      },
-      en: {
-        display: "Official Helplines: National 1947 and district support.",
-        spoken: "Official emergency helplines. National helpline 1947 and district support.",
-        enSub: "Direct emergency assistance."
-      }
-    },
-    font_zoom: {
-      hi: {
-        display: "फ़ॉन्ट आकार: स्क्रीन के अक्षरों को बड़ा या छोटा करें।",
-        spoken: "फ़ॉन्ट आकार विकल्प। स्क्रीन के अक्षरों को बड़ा या छोटा करें।",
-        enSub: "Font size adjustment for comfortable reading."
-      },
-      ta: {
-
-        display: "Font Size: Adjust text size for comfortable reading.",
-
-        spoken: "Font size controls. Adjust text size for comfortable reading.",
-
-        enSub: "Accessibility zoom controls."
-
-      },
-      te: {
-
-        display: "Font Size: Adjust text size for comfortable reading.",
-
-        spoken: "Font size controls. Adjust text size for comfortable reading.",
-
-        enSub: "Accessibility zoom controls."
-
-      },
-      kn: {
-
-        display: "Font Size: Adjust text size for comfortable reading.",
-
-        spoken: "Font size controls. Adjust text size for comfortable reading.",
-
-        enSub: "Accessibility zoom controls."
-
-      },
-      ml: {
-
-        display: "Font Size: Adjust text size for comfortable reading.",
-
-        spoken: "Font size controls. Adjust text size for comfortable reading.",
-
-        enSub: "Accessibility zoom controls."
-
-      },
-      mr: {
-
-        display: "Font Size: Adjust text size for comfortable reading.",
-
-        spoken: "Font size controls. Adjust text size for comfortable reading.",
-
-        enSub: "Accessibility zoom controls."
-
-      },
-      gu: {
-
-        display: "Font Size: Adjust text size for comfortable reading.",
-
-        spoken: "Font size controls. Adjust text size for comfortable reading.",
-
-        enSub: "Accessibility zoom controls."
-
-      },
-      pa: {
-
-        display: "Font Size: Adjust text size for comfortable reading.",
-
-        spoken: "Font size controls. Adjust text size for comfortable reading.",
-
-        enSub: "Accessibility zoom controls."
-
-      },
-      ur: {
-
-        display: "Font Size: Adjust text size for comfortable reading.",
-
-        spoken: "Font size controls. Adjust text size for comfortable reading.",
-
-        enSub: "Accessibility zoom controls."
-
-      },
-      as: {
-
-        display: "Font Size: Adjust text size for comfortable reading.",
-
-        spoken: "Font size controls. Adjust text size for comfortable reading.",
-
-        enSub: "Accessibility zoom controls."
-
-      },
-      mai: {
-
-        display: "Font Size: Adjust text size for comfortable reading.",
-
-        spoken: "Font size controls. Adjust text size for comfortable reading.",
-
-        enSub: "Accessibility zoom controls."
-
-      },
-      sat: {
-
-        display: "Font Size: Adjust text size for comfortable reading.",
-
-        spoken: "Font size controls. Adjust text size for comfortable reading.",
-
-        enSub: "Accessibility zoom controls."
-
-      },
-      ks: {
-
-        display: "Font Size: Adjust text size for comfortable reading.",
-
-        spoken: "Font size controls. Adjust text size for comfortable reading.",
-
-        enSub: "Accessibility zoom controls."
-
-      },
-      sd: {
-
-        display: "Font Size: Adjust text size for comfortable reading.",
-
-        spoken: "Font size controls. Adjust text size for comfortable reading.",
-
-        enSub: "Accessibility zoom controls."
-
-      },
-      en: {
-        display: "Font Size: Adjust text size for comfortable reading.",
-        spoken: "Font size controls. Adjust text size for comfortable reading.",
-        enSub: "Accessibility zoom controls."
-      }
-    },
-    radar_filter: {
-      hi: {
-        display: "दूरी दायरा: अपने आस-पास के 2 किमी, 5 किमी या 10 किमी की समस्याएं देखें।",
-        spoken: "दूरी दायरा। अपने आस-पास के चुने हुए दायरे की समस्याएं देखें।",
-        enSub: "Distance radar filter: View issues within your selected radius."
-      },
-      ta: {
-
-        display: "Distance Radar: Filter complaints by geographic radius.",
-
-        spoken: "Distance radar filter. View issues within your selected radius.",
-
-        enSub: "Spatial distance scope."
-
-      },
-      te: {
-
-        display: "Distance Radar: Filter complaints by geographic radius.",
-
-        spoken: "Distance radar filter. View issues within your selected radius.",
-
-        enSub: "Spatial distance scope."
-
-      },
-      kn: {
-
-        display: "Distance Radar: Filter complaints by geographic radius.",
-
-        spoken: "Distance radar filter. View issues within your selected radius.",
-
-        enSub: "Spatial distance scope."
-
-      },
-      ml: {
-
-        display: "Distance Radar: Filter complaints by geographic radius.",
-
-        spoken: "Distance radar filter. View issues within your selected radius.",
-
-        enSub: "Spatial distance scope."
-
-      },
-      mr: {
-
-        display: "Distance Radar: Filter complaints by geographic radius.",
-
-        spoken: "Distance radar filter. View issues within your selected radius.",
-
-        enSub: "Spatial distance scope."
-
-      },
-      gu: {
-
-        display: "Distance Radar: Filter complaints by geographic radius.",
-
-        spoken: "Distance radar filter. View issues within your selected radius.",
-
-        enSub: "Spatial distance scope."
-
-      },
-      pa: {
-
-        display: "Distance Radar: Filter complaints by geographic radius.",
-
-        spoken: "Distance radar filter. View issues within your selected radius.",
-
-        enSub: "Spatial distance scope."
-
-      },
-      ur: {
-
-        display: "Distance Radar: Filter complaints by geographic radius.",
-
-        spoken: "Distance radar filter. View issues within your selected radius.",
-
-        enSub: "Spatial distance scope."
-
-      },
-      as: {
-
-        display: "Distance Radar: Filter complaints by geographic radius.",
-
-        spoken: "Distance radar filter. View issues within your selected radius.",
-
-        enSub: "Spatial distance scope."
-
-      },
-      mai: {
-
-        display: "Distance Radar: Filter complaints by geographic radius.",
-
-        spoken: "Distance radar filter. View issues within your selected radius.",
-
-        enSub: "Spatial distance scope."
-
-      },
-      sat: {
-
-        display: "Distance Radar: Filter complaints by geographic radius.",
-
-        spoken: "Distance radar filter. View issues within your selected radius.",
-
-        enSub: "Spatial distance scope."
-
-      },
-      ks: {
-
-        display: "Distance Radar: Filter complaints by geographic radius.",
-
-        spoken: "Distance radar filter. View issues within your selected radius.",
-
-        enSub: "Spatial distance scope."
-
-      },
-      sd: {
-
-        display: "Distance Radar: Filter complaints by geographic radius.",
-
-        spoken: "Distance radar filter. View issues within your selected radius.",
-
-        enSub: "Spatial distance scope."
-
-      },
-      en: {
-        display: "Distance Radar: Filter complaints by geographic radius.",
-        spoken: "Distance radar filter. View issues within your selected radius.",
-        enSub: "Spatial distance scope."
-      }
-    },
-    data_fusion: {
-      hi: {
-        display: "डेटा संलयन: उपग्रह चित्रों और जमीनी साक्ष्यों का एआई मिलान।",
-        spoken: "डेटा संलयन विश्लेषण। उपग्रह चित्रों और जमीनी साक्ष्यों का एआई मिलान।",
-        enSub: "Multi-Source Ground Truth Data Fusion Suite."
-      },
-      ta: {
-
-        display: "Data Fusion: Multi-sensor satellite and drone verification.",
-
-        spoken: "Data Fusion analysis. AI verification across satellite, field, and citizen data.",
-
-        enSub: "Multimodal truth engine."
-
-      },
-      te: {
-
-        display: "Data Fusion: Multi-sensor satellite and drone verification.",
-
-        spoken: "Data Fusion analysis. AI verification across satellite, field, and citizen data.",
-
-        enSub: "Multimodal truth engine."
-
-      },
-      kn: {
-
-        display: "Data Fusion: Multi-sensor satellite and drone verification.",
-
-        spoken: "Data Fusion analysis. AI verification across satellite, field, and citizen data.",
-
-        enSub: "Multimodal truth engine."
-
-      },
-      ml: {
-
-        display: "Data Fusion: Multi-sensor satellite and drone verification.",
-
-        spoken: "Data Fusion analysis. AI verification across satellite, field, and citizen data.",
-
-        enSub: "Multimodal truth engine."
-
-      },
-      mr: {
-
-        display: "Data Fusion: Multi-sensor satellite and drone verification.",
-
-        spoken: "Data Fusion analysis. AI verification across satellite, field, and citizen data.",
-
-        enSub: "Multimodal truth engine."
-
-      },
-      gu: {
-
-        display: "Data Fusion: Multi-sensor satellite and drone verification.",
-
-        spoken: "Data Fusion analysis. AI verification across satellite, field, and citizen data.",
-
-        enSub: "Multimodal truth engine."
-
-      },
-      pa: {
-
-        display: "Data Fusion: Multi-sensor satellite and drone verification.",
-
-        spoken: "Data Fusion analysis. AI verification across satellite, field, and citizen data.",
-
-        enSub: "Multimodal truth engine."
-
-      },
-      ur: {
-
-        display: "Data Fusion: Multi-sensor satellite and drone verification.",
-
-        spoken: "Data Fusion analysis. AI verification across satellite, field, and citizen data.",
-
-        enSub: "Multimodal truth engine."
-
-      },
-      as: {
-
-        display: "Data Fusion: Multi-sensor satellite and drone verification.",
-
-        spoken: "Data Fusion analysis. AI verification across satellite, field, and citizen data.",
-
-        enSub: "Multimodal truth engine."
-
-      },
-      mai: {
-
-        display: "Data Fusion: Multi-sensor satellite and drone verification.",
-
-        spoken: "Data Fusion analysis. AI verification across satellite, field, and citizen data.",
-
-        enSub: "Multimodal truth engine."
-
-      },
-      sat: {
-
-        display: "Data Fusion: Multi-sensor satellite and drone verification.",
-
-        spoken: "Data Fusion analysis. AI verification across satellite, field, and citizen data.",
-
-        enSub: "Multimodal truth engine."
-
-      },
-      ks: {
-
-        display: "Data Fusion: Multi-sensor satellite and drone verification.",
-
-        spoken: "Data Fusion analysis. AI verification across satellite, field, and citizen data.",
-
-        enSub: "Multimodal truth engine."
-
-      },
-      sd: {
-
-        display: "Data Fusion: Multi-sensor satellite and drone verification.",
-
-        spoken: "Data Fusion analysis. AI verification across satellite, field, and citizen data.",
-
-        enSub: "Multimodal truth engine."
-
-      },
-      en: {
-        display: "Data Fusion: Multi-sensor satellite and drone verification.",
-        spoken: "Data Fusion analysis. AI verification across satellite, field, and citizen data.",
-        enSub: "Multimodal truth engine."
-      }
-    },
-    page_guide: {
-      hi: {
-        display: "लोक स्वर गाइड: बोलकर या लिखकर शिकायत दर्ज करें, नक्शा देखें और जन प्राथमिकताओं को समर्थन दें।",
-        spoken: "लोक स्वर मुख्य पृष्ठ पर आपका स्वागत है। यहाँ आप अपनी समस्या बोलकर या लिखकर दर्ज कर सकते हैं, वास्तविक समय में अनुवाद प्राप्त कर सकते हैं, अपने क्षेत्र के नक्शे पर समस्याएं देख सकते हैं और चल रहे कार्यों को समर्थन दे सकते हैं।",
-        enSub: "Lok Swar Portal Tour: Voice or text grievance intake, GIS maps, and community progress."
-      },
-      bho: {
-        display: "लोक स्वर गाइड: बोल के भा लिख के शिकायत दर्ज करीं, नक्शा देखीं आ समर्थन दिहीं।",
-        spoken: "लोक स्वर मुख्य पृष्ठ पर स्वागत बा। इहवाँ रउआ आपन समस्या बोल के चाहे लिख के दर्ज कर सकत बानी। नक्शा पर आपन क्षेत्र देखीं।",
-        enSub: "Portal tour in Bhojpuri."
-      },
-      or: {
-        display: "ଲୋକ ସ୍ୱର ଗାଇଡ୍: ସମସ୍ୟା କହି କିମ୍ବା ଲେଖି ଦାଖଲ କରନ୍ତୁ, ମ୍ୟାପ୍ ଦେଖନ୍ତୁ ଓ ସମର୍ଥନ ଦିଅନ୍ତୁ।",
-        spoken: "ଲୋକ ସ୍ୱର ମୁଖ୍ୟ ପୃଷ୍ଠାକୁ ସ୍ୱାଗତ। ଏଠାରେ ଆପଣ ସମସ୍ୟା କହି କିମ୍ବା ଲେଖି ଦାଖଲ କରିପାରିବେ ଏବଂ ମ୍ୟାପ୍ ରେ ଦେଖିପାରିବେ।",
-        enSub: "Portal tour in Odia."
-      },
-      bn: {
-        display: "লোক স্বর গাইড: সমস্যা বলে বা লিখে নথিভুক্ত করুন, মানচিত্র দেখুন ও ভোট দিন।",
-        spoken: "লোক স্বর প্রধান পৃষ্ঠায় স্বাগতম। এখানে আপনি समस्या বলে বা লিখে নথিভুক্ত করতে পারেন மற்றும் মানচিত্রে দেখতে পারেন।",
-        enSub: "Portal tour in Bengali."
-      },
-      ta: {
-
-        display: "Lok Swar Tour: Voice or text complaints, GIS maps, and community progress.",
-
-        spoken: "Welcome to the Lok Swar main portal. Here you can voice or write your civic issues with instant translation, view geographic hotspots, and track community progress.",
-
-        enSub: "Audio guided tour of portal capabilities."
-
-      },
-      te: {
-
-        display: "Lok Swar Tour: Voice or text complaints, GIS maps, and community progress.",
-
-        spoken: "Welcome to the Lok Swar main portal. Here you can voice or write your civic issues with instant translation, view geographic hotspots, and track community progress.",
-
-        enSub: "Audio guided tour of portal capabilities."
-
-      },
-      kn: {
-
-        display: "Lok Swar Tour: Voice or text complaints, GIS maps, and community progress.",
-
-        spoken: "Welcome to the Lok Swar main portal. Here you can voice or write your civic issues with instant translation, view geographic hotspots, and track community progress.",
-
-        enSub: "Audio guided tour of portal capabilities."
-
-      },
-      ml: {
-
-        display: "Lok Swar Tour: Voice or text complaints, GIS maps, and community progress.",
-
-        spoken: "Welcome to the Lok Swar main portal. Here you can voice or write your civic issues with instant translation, view geographic hotspots, and track community progress.",
-
-        enSub: "Audio guided tour of portal capabilities."
-
-      },
-      mr: {
-
-        display: "Lok Swar Tour: Voice or text complaints, GIS maps, and community progress.",
-
-        spoken: "Welcome to the Lok Swar main portal. Here you can voice or write your civic issues with instant translation, view geographic hotspots, and track community progress.",
-
-        enSub: "Audio guided tour of portal capabilities."
-
-      },
-      gu: {
-
-        display: "Lok Swar Tour: Voice or text complaints, GIS maps, and community progress.",
-
-        spoken: "Welcome to the Lok Swar main portal. Here you can voice or write your civic issues with instant translation, view geographic hotspots, and track community progress.",
-
-        enSub: "Audio guided tour of portal capabilities."
-
-      },
-      pa: {
-
-        display: "Lok Swar Tour: Voice or text complaints, GIS maps, and community progress.",
-
-        spoken: "Welcome to the Lok Swar main portal. Here you can voice or write your civic issues with instant translation, view geographic hotspots, and track community progress.",
-
-        enSub: "Audio guided tour of portal capabilities."
-
-      },
-      ur: {
-
-        display: "Lok Swar Tour: Voice or text complaints, GIS maps, and community progress.",
-
-        spoken: "Welcome to the Lok Swar main portal. Here you can voice or write your civic issues with instant translation, view geographic hotspots, and track community progress.",
-
-        enSub: "Audio guided tour of portal capabilities."
-
-      },
-      as: {
-
-        display: "Lok Swar Tour: Voice or text complaints, GIS maps, and community progress.",
-
-        spoken: "Welcome to the Lok Swar main portal. Here you can voice or write your civic issues with instant translation, view geographic hotspots, and track community progress.",
-
-        enSub: "Audio guided tour of portal capabilities."
-
-      },
-      mai: {
-
-        display: "Lok Swar Tour: Voice or text complaints, GIS maps, and community progress.",
-
-        spoken: "Welcome to the Lok Swar main portal. Here you can voice or write your civic issues with instant translation, view geographic hotspots, and track community progress.",
-
-        enSub: "Audio guided tour of portal capabilities."
-
-      },
-      sat: {
-
-        display: "Lok Swar Tour: Voice or text complaints, GIS maps, and community progress.",
-
-        spoken: "Welcome to the Lok Swar main portal. Here you can voice or write your civic issues with instant translation, view geographic hotspots, and track community progress.",
-
-        enSub: "Audio guided tour of portal capabilities."
-
-      },
-      ks: {
-
-        display: "Lok Swar Tour: Voice or text complaints, GIS maps, and community progress.",
-
-        spoken: "Welcome to the Lok Swar main portal. Here you can voice or write your civic issues with instant translation, view geographic hotspots, and track community progress.",
-
-        enSub: "Audio guided tour of portal capabilities."
-
-      },
-      sd: {
-
-        display: "Lok Swar Tour: Voice or text complaints, GIS maps, and community progress.",
-
-        spoken: "Welcome to the Lok Swar main portal. Here you can voice or write your civic issues with instant translation, view geographic hotspots, and track community progress.",
-
-        enSub: "Audio guided tour of portal capabilities."
-
-      },
-      en: {
-        display: "Lok Swar Tour: Voice or text complaints, GIS maps, and community progress.",
-        spoken: "Welcome to the Lok Swar main portal. Here you can voice or write your civic issues with instant translation, view geographic hotspots, and track community progress.",
-        enSub: "Audio guided tour of portal capabilities."
-      }
-    },
-    voice_toggle_on: {
-      hi: {
-        display: "आवाज सहायक चालू है। स्क्रीन पर कहीं भी क्लिक करें, मैं आपको बोलकर मार्गदर्शन दूंगा।",
-        spoken: "आवाज सहायक चालू है। अब आप स्क्रीन पर जहाँ भी क्लिक करेंगे, मैं आपको बोलकर मार्गदर्शन दूंगा।",
-        enSub: "Voice Assistant active. Spoken guidance enabled on every click."
-      },
-      bho: {
-        display: "आवाज सहायक चालू बा। स्क्रीन पर कहीं भी क्लिक करब, हम बोल के बताएम।",
-        spoken: "आवाज सहायक चालू बा। अब स्क्रीन पर जहाँ भी क्लिक करब, हम बोल के बताएम।",
-        enSub: "Voice Assistant active in Bhojpuri."
-      },
-      or: {
-        display: "ଭଏସ୍ ଆସିଷ୍ଟାଣ୍ଟ ସକ୍ରିୟ ଅଛି। ଆପଣ ସ୍କ୍ରିନରେ ଯେଉଁଠି ବି କ୍ଲିକ୍ କରିବେ, ମୁଁ କହିକି ସାହାଯ୍ୟ କରିବି।",
-        spoken: "ଭଏସ୍ ଆସିଷ୍ଟାଣ୍ଟ ସକ୍ରିୟ ଅଛି। ଆପଣ ସ୍କ୍ରିନରେ ଯେଉଁଠି ବି କ୍ଲିକ୍ କରିବେ, ମୁଁ କହିକି ସାହାଯ୍ୟ କରିବି।",
-        enSub: "Voice Assistant active in Odia."
-      },
-      bn: {
-        display: "ভয়েস অ্যাসিস্ট্যান্ট সক্রিয় হয়েছে। আপনি স্ক্রিনে যেখানেই ক্লিক করবেন, আমি বলে পথ দেখাব।",
-        spoken: "ভয়েস অ্যাসিস্ট্যান্ট সক্রিয় হয়েছে। আপনি স্ক্রিনে যেখানেই ক্লিক করবেন, আমি বলে পথ দেখাব।",
-        enSub: "Voice Assistant active in Bengali."
-      },
-      ta: {
-
-        display: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        spoken: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        enSub: "Spoken guidance active on every click."
-
-      },
-      te: {
-
-        display: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        spoken: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        enSub: "Spoken guidance active on every click."
-
-      },
-      kn: {
-
-        display: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        spoken: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        enSub: "Spoken guidance active on every click."
-
-      },
-      ml: {
-
-        display: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        spoken: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        enSub: "Spoken guidance active on every click."
-
-      },
-      mr: {
-
-        display: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        spoken: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        enSub: "Spoken guidance active on every click."
-
-      },
-      gu: {
-
-        display: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        spoken: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        enSub: "Spoken guidance active on every click."
-
-      },
-      pa: {
-
-        display: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        spoken: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        enSub: "Spoken guidance active on every click."
-
-      },
-      ur: {
-
-        display: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        spoken: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        enSub: "Spoken guidance active on every click."
-
-      },
-      as: {
-
-        display: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        spoken: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        enSub: "Spoken guidance active on every click."
-
-      },
-      mai: {
-
-        display: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        spoken: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        enSub: "Spoken guidance active on every click."
-
-      },
-      sat: {
-
-        display: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        spoken: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        enSub: "Spoken guidance active on every click."
-
-      },
-      ks: {
-
-        display: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        spoken: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        enSub: "Spoken guidance active on every click."
-
-      },
-      sd: {
-
-        display: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        spoken: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-
-        enSub: "Spoken guidance active on every click."
-
-      },
-      en: {
-        display: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-        spoken: "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
-        enSub: "Spoken guidance active on every click."
-      }
-    },
-    voice_toggle_off: {
-      hi: {
-        display: "आवाज सहायक म्यूट कर दिया गया है।",
-        spoken: "आवाज सहायक म्यूट कर दिया गया है। पुनः चालू करने के लिए आवाज गाइड पर क्लिक करें।",
-        enSub: "Voice Assistant muted."
-      },
-      bho: {
-        display: "आवाज सहायक म्यूट कइल गइल बा।",
-        spoken: "आवाज सहायक म्यूट कइल गइल बा।",
-        enSub: "Voice Assistant muted in Bhojpuri."
-      },
-      or: {
-        display: "ଭଏସ୍ ଆସିଷ୍ଟାଣ୍ଟ ମ୍ୟୁଟ୍ ହୋଇଛି।",
-        spoken: "ଭଏସ୍ ଆସିଷ୍ଟାଣ୍ଟ ମ୍ୟୁଟ୍ ହୋଇଛି।",
-        enSub: "Voice Assistant muted in Odia."
-      },
-      bn: {
-        display: "ভয়েস অ্যাসিস্ট্যান্ট মিউট করা হয়েছে।",
-        spoken: "ভয়েস অ্যাসিস্ট্যান্ট মিউট করা হয়েছে।",
-        enSub: "Voice Assistant muted in Bengali."
-      },
-      ta: {
-
-        display: "Voice Assistant is now muted.",
-
-        spoken: "Voice Assistant is now muted. Click Voice Guide to turn back on.",
-
-        enSub: "Voice guidance muted."
-
-      },
-      te: {
-
-        display: "Voice Assistant is now muted.",
-
-        spoken: "Voice Assistant is now muted. Click Voice Guide to turn back on.",
-
-        enSub: "Voice guidance muted."
-
-      },
-      kn: {
-
-        display: "Voice Assistant is now muted.",
-
-        spoken: "Voice Assistant is now muted. Click Voice Guide to turn back on.",
-
-        enSub: "Voice guidance muted."
-
-      },
-      ml: {
-
-        display: "Voice Assistant is now muted.",
-
-        spoken: "Voice Assistant is now muted. Click Voice Guide to turn back on.",
-
-        enSub: "Voice guidance muted."
-
-      },
-      mr: {
-
-        display: "Voice Assistant is now muted.",
-
-        spoken: "Voice Assistant is now muted. Click Voice Guide to turn back on.",
-
-        enSub: "Voice guidance muted."
-
-      },
-      gu: {
-
-        display: "Voice Assistant is now muted.",
-
-        spoken: "Voice Assistant is now muted. Click Voice Guide to turn back on.",
-
-        enSub: "Voice guidance muted."
-
-      },
-      pa: {
-
-        display: "Voice Assistant is now muted.",
-
-        spoken: "Voice Assistant is now muted. Click Voice Guide to turn back on.",
-
-        enSub: "Voice guidance muted."
-
-      },
-      ur: {
-
-        display: "Voice Assistant is now muted.",
-
-        spoken: "Voice Assistant is now muted. Click Voice Guide to turn back on.",
-
-        enSub: "Voice guidance muted."
-
-      },
-      as: {
-
-        display: "Voice Assistant is now muted.",
-
-        spoken: "Voice Assistant is now muted. Click Voice Guide to turn back on.",
-
-        enSub: "Voice guidance muted."
-
-      },
-      mai: {
-
-        display: "Voice Assistant is now muted.",
-
-        spoken: "Voice Assistant is now muted. Click Voice Guide to turn back on.",
-
-        enSub: "Voice guidance muted."
-
-      },
-      sat: {
-
-        display: "Voice Assistant is now muted.",
-
-        spoken: "Voice Assistant is now muted. Click Voice Guide to turn back on.",
-
-        enSub: "Voice guidance muted."
-
-      },
-      ks: {
-
-        display: "Voice Assistant is now muted.",
-
-        spoken: "Voice Assistant is now muted. Click Voice Guide to turn back on.",
-
-        enSub: "Voice guidance muted."
-
-      },
-      sd: {
-
-        display: "Voice Assistant is now muted.",
-
-        spoken: "Voice Assistant is now muted. Click Voice Guide to turn back on.",
-
-        enSub: "Voice guidance muted."
-
-      },
-      en: {
-        display: "Voice Assistant is now muted.",
-        spoken: "Voice Assistant is now muted. Click Voice Guide to turn back on.",
-        enSub: "Voice guidance muted."
-      }
-    },
-    empty_submit: {
-      hi: {
-        display: "कृपया अपनी समस्या रिकॉर्ड करने के लिए माइक बटन दबाएं, या सर्च बार में लिखें।",
-        spoken: "कृपया अपनी समस्या रिकॉर्ड करने के लिए माइक बटन दबाएं, या सर्च बार में लिखें।",
-        enSub: "Please tap the microphone button to record your issue, or type in the search bar."
-      },
-      ta: {
-
-        display: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        spoken: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        enSub: "Voice or text input is required before submitting."
-
-      },
-      te: {
-
-        display: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        spoken: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        enSub: "Voice or text input is required before submitting."
-
-      },
-      kn: {
-
-        display: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        spoken: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        enSub: "Voice or text input is required before submitting."
-
-      },
-      ml: {
-
-        display: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        spoken: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        enSub: "Voice or text input is required before submitting."
-
-      },
-      mr: {
-
-        display: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        spoken: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        enSub: "Voice or text input is required before submitting."
-
-      },
-      gu: {
-
-        display: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        spoken: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        enSub: "Voice or text input is required before submitting."
-
-      },
-      pa: {
-
-        display: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        spoken: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        enSub: "Voice or text input is required before submitting."
-
-      },
-      ur: {
-
-        display: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        spoken: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        enSub: "Voice or text input is required before submitting."
-
-      },
-      as: {
-
-        display: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        spoken: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        enSub: "Voice or text input is required before submitting."
-
-      },
-      mai: {
-
-        display: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        spoken: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        enSub: "Voice or text input is required before submitting."
-
-      },
-      sat: {
-
-        display: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        spoken: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        enSub: "Voice or text input is required before submitting."
-
-      },
-      ks: {
-
-        display: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        spoken: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        enSub: "Voice or text input is required before submitting."
-
-      },
-      sd: {
-
-        display: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        spoken: "Please tap the microphone button to record your issue, or type in the search bar.",
-
-        enSub: "Voice or text input is required before submitting."
-
-      },
-      en: {
-        display: "Please tap the microphone button to record your issue, or type in the search bar.",
-        spoken: "Please tap the microphone button to record your issue, or type in the search bar.",
-        enSub: "Voice or text input is required before submitting."
-      }
+    "ks": {
+      "display": "لوک سورَس مَنٛز خۄش آمدید۔ پیجَس پؠٹھ کُنہِ تِہ جاۓ دَبٲوِو تہٕ وائس اَسِسٹنٹ کَرِ تُہٕنٛز رَہنُمٲیی۔",
+      "spoken": "لوک سورَس مَنٛز خۄش آمدید۔ پیجَس پؠٹھ کُنہِ تِہ جاۓ دَبٲوِو تہٕ وائس اَسِسٹنٹ کَرِ تُہٕنٛز رَہنُمٲیی۔",
+      "enSub": "Welcome to Lok Swar. Tap anywhere on the page and the voice assistant will guide you through speech."
     }
+  },
+  "search_input": {
+    "hi": {
+      "display": "शिकायत इनपुट बॉक्स: अपनी समस्या लिखें या माइक बटन दबाकर बोलें।",
+      "spoken": "यह शिकायत लिखने का मुख्य बॉक्स है। अपनी समस्या टाइप करें या माइक बटन दबाकर बोलें।",
+      "enSub": "Grievance input box: Type or speak your civic problem here."
+    },
+    "bho": {
+      "display": "समस्या इनपुट बॉक्स: आपन समस्या लिखीं भा माइक दबा के बोलीं।",
+      "spoken": "ई समस्या लिखे के मुख्य बॉक्स बा। आपन समस्या लिखीं भा माइक दबा के बोलीं।",
+      "enSub": "Grievance input box in Bhojpuri."
+    },
+    "or": {
+      "display": "ଅଭିଯୋଗ ଇନପୁଟ୍ ବକ୍ସ: ଆପଣଙ୍କ ସମସ୍ୟା ଟାଇପ୍ କରନ୍ତୁ କିମ୍ବା ମାଇକ୍ ଦବାଇ କୁହନ୍ତୁ।",
+      "spoken": "ଏହା ଅଭିଯୋଗ ଲେଖିବା ପାଇଁ ମୁଖ୍ୟ ବକ୍ସ। ଆପଣଙ୍କ ସମସ୍ୟା ଟାଇପ୍ କରନ୍ତୁ କିମ୍ବା ମାଇକ୍ ଦବାଇ କୁହନ୍ତୁ।",
+      "enSub": "Grievance input box in Odia."
+    },
+    "bn": {
+      "display": "অভিযোগ লেখার বাক্স: আপনার समस्या टाइप করুন বা মাইক চেপে বলুন।",
+      "spoken": "এটি অভিযোগ লেখার মূল বাক্স। আপনার समस्या टाइप করুন বা মাইক চেপে বলুন।",
+      "enSub": "Grievance input box in Bengali."
+    },
+    "ta": {
+      "display": "குறை உள்ளீட்டுப் பெட்டி: உங்கள் சிக்கலை தட்டச்சு செய்யவும் அல்லது மைக் பொத்தானை அழுத்தி பேசவும்.",
+      "spoken": "இது முக்கிய புகார் பெட்டி. உங்கள் சிக்கலை தட்டச்சு செய்யவும் அல்லது மைக் பொத்தானை அழுத்தி பேசவும்.",
+      "enSub": "Primary input bar for civic grievances."
+    },
+    "te": {
+      "display": "ఫిర్యాదు ఇన్‌పుట్ బాక్స్: మీ సమస్యను టైప్ చేయండి లేదా మైక్ బటన్ నొక్కి మాట్లాడండి.",
+      "spoken": "ఇది ప్రధాన ఫిర్యాదు బాక్స్. మీ సమస్యను టైప్ చేయండి లేదా మైక్ బటన్ నొక్కి మాట్లాడండి.",
+      "enSub": "Primary input bar for civic grievances."
+    },
+    "kn": {
+      "display": "ದೂರು ಇನ್‌ಪುಟ್ ಬಾಕ್ಸ್: ನಿಮ್ಮ ಸಮಸ್ಯೆಯನ್ನು ಬರೆಯಿರಿ ಅಥವಾ ಮೈಕ್ ಬಟನ್ ಒತ್ತಿ ಮಾತನಾಡಿ.",
+      "spoken": "ಇದು ಮುಖ್ಯ ದೂರು ಪೆಟ್ಟಿಗೆ. ನಿಮ್ಮ ಸಮಸ್ಯೆಯನ್ನು ಟೈಪ್ ಮಾಡಿ ಅಥವಾ ಮೈಕ್ ಬಟನ್ ಒತ್ತಿ ಮಾತನಾಡಿ.",
+      "enSub": "Primary input bar for civic grievances."
+    },
+    "ml": {
+      "display": "പരാതി ഇൻപുട്ട് ബോക്സ്: നിങ്ങളുടെ പ്രശ്നം ടൈപ്പ് ചെയ്യുക അല്ലെങ്കിൽ മൈക്ക് അമർത്തി സംസാരിക്കുക.",
+      "spoken": "ഇതാണ് പ്രധാന പരാതി ബോക്സ്. നിങ്ങളുടെ പ്രശ്നം ടൈപ്പ് ചെയ്യുക അല്ലെങ്കിൽ മൈക്ക് അമർത്തി സംസാരിക്കുക.",
+      "enSub": "Primary input bar for civic grievances."
+    },
+    "mr": {
+      "display": "तक्रार इनपुट बॉक्स: तुमची समस्या लिहा किंवा माइक बटण दाबून बोला.",
+      "spoken": "हे तक्रार नोंदवण्याचे मुख्य बॉक्स आहे. तुमची समस्या टाइप करा किंवा माइक बटण दाबून बोला.",
+      "enSub": "Primary input bar for civic grievances."
+    },
+    "gu": {
+      "display": "ફરિયાદ ઇનપુટ બોક્સ: તમારી સમસ્યા લખો અથવા માઇક બટન દબાવીને બોલો.",
+      "spoken": "આ ફરિયાદ લખવાનું મુખ્ય બોક્સ છે. તમારી સમસ્યા લખો અથવા માઇક બટન દબાવીને બોલો.",
+      "enSub": "Primary input bar for civic grievances."
+    },
+    "pa": {
+      "display": "ਸ਼ਿਕਾਇਤ ਇਨਪੁਟ ਬਾਕਸ: ਆਪਣੀ ਸਮੱਸਿਆ ਲਿਖੋ ਜਾਂ ਮਾਈਕ ਬਟਨ ਦਬਾ ਕੇ ਬੋਲੋ।",
+      "spoken": "ਇਹ ਸ਼ਿਕਾਇਤ ਲਿਖਣ ਦਾ ਮੁੱਖ ਬਾਕਸ ਹੈ। ਆਪਣੀ ਸਮੱਸਿਆ ਟਾਈਪ ਕਰੋ ਜਾਂ ਮਾਈਕ ਬਟਨ ਦਬਾ ਕੇ ਬੋਲੋ।",
+      "enSub": "Primary input bar for civic grievances."
+    },
+    "ur": {
+      "display": "شکایت ان پٹ باکس: اپنی شکایت ٹائپ کریں یا مائیک بٹن دبا کر بولیں۔",
+      "spoken": "یہ شکایت درج کرنے کا مرکزی باکس ہے۔ اپنی شکایت لکھیں یا مائیک بٹن دبا کر بولیں۔",
+      "enSub": "Primary input bar for civic grievances."
+    },
+    "as": {
+      "display": "অভিযোগ ইনপুট বক্স: আপোনাৰ সমস্যা লিখক বা মাইক বুটাম টিপি কওক।",
+      "spoken": "এইটো মূল অভিযোগ বক্স। আপোনাৰ সমস্যা টাইপ কৰক বা মাইক বুটাম টিপি কওক।",
+      "enSub": "Primary input bar for civic grievances."
+    },
+    "mai": {
+      "display": "समस्या इनपुट बॉक्स: अपन समस्या लिखू या माइक बटन दबा कऽ बाजू।",
+      "spoken": "ई समस्या लिखबाक मुख्य बॉक्स अछि। अपन समस्या टाइप करू या माइक बटन दबा कऽ बाजू।",
+      "enSub": "Primary input bar for civic grievances."
+    },
+    "sat": {
+      "display": "ᱟᱱᱟᱴ ᱤᱱᱯᱩᱴ ᱵᱟᱠᱥ: ᱟᱢᱟᱜ ᱟᱱᱟᱴ ᱚᱞ ᱢᱮ ᱥᱮ ᱢᱟᱭᱤᱠ ᱴᱮᱯ ᱠᱟᱛᱮ ᱨᱚᱲ ᱢᱮ᱾",
+      "spoken": "ᱱᱚᱶᱟ ᱫᱚ ᱢᱩᱬ ᱟᱱᱟᱴ ᱚᱞ ᱵᱟᱠᱥ ᱠᱟᱱᱟ᱾ ᱟᱢᱟᱜ ᱟᱱᱟᱴ ᱚᱞ ᱢᱮ ᱥᱮ ᱢᱟᱭᱤᱠ ᱴᱮᱯ ᱠᱟᱛᱮ ᱨᱚᱲ ᱢᱮ᱾",
+      "enSub": "Primary input bar for civic grievances."
+    },
+    "ks": {
+      "display": "شِکایتھ اِنپُٹ باکس: پَنٕنؠ شِکایتھ لؠکِھو یا مائیک دَبٲوِتھ کٔریو کَتھ۔",
+      "spoken": "یہِ چھُ شِکایتھ دَرٕج کَرنُک بَڑا باکس۔ پَنٕنؠ شِکایتھ ٹائپ کٔریو یا مائیک دَبٲوِتھ کٔریو کَتھ۔",
+      "enSub": "Primary input bar for civic grievances."
+    },
+    "sd": {
+      "display": "شڪايت ان پٽ باڪس: پنهنجو مسئلو لکو يا مائيڪ بٽڻ دٻائي ڳالهايو.",
+      "spoken": "هي شڪايت داخل ڪرڻ جو مکيه باڪس آهي. پنهنجو مسئلو لکو يا مائيڪ دٻائي ڳالهايو.",
+      "enSub": "Primary input bar for civic grievances."
+    },
+    "en": {
+      "display": "Grievance Input Box: Type your issue or tap the microphone to speak.",
+      "spoken": "This is the main complaint box. Type your issue or tap the microphone to speak.",
+      "enSub": "Primary input bar for civic grievances."
+    }
+  },
+  "mic_button": {
+    "hi": {
+      "display": "माइक रिकॉर्डिंग: अपनी क्षेत्रीय भाषा में समस्या बोलने के लिए यहाँ क्लिक करें।",
+      "spoken": "माइक रिकॉर्डिंग बटन। अपनी क्षेत्रीय भाषा में समस्या बोलने के लिए यहाँ क्लिक करें।",
+      "enSub": "Microphone recording: Speak your issue in your local dialect."
+    },
+    "bho": {
+      "display": "माइक बटन: आपन भाषा में समस्या बोले खातिर क्लिक करीं।",
+      "spoken": "माइक बटन। आपन भाषा में समस्या बोले खातिर क्लिक करीं।",
+      "enSub": "Tap to record voice in Bhojpuri."
+    },
+    "or": {
+      "display": "ମାଇକ୍ ରେକର୍ଡିଂ: ନିଜ ଭାଷାରେ ସମସ୍ୟା କହିବା ପାଇଁ ଏଠାରେ କ୍ଲିକ୍ କରନ୍ତୁ।",
+      "spoken": "ମାଇକ୍ ରେକର୍ଡିଂ ବଟନ୍। ନିଜ ଭାଷାରେ ସମସ୍ୟା କହିବା ପାଇଁ ଏଠାରେ କ୍ଲିକ୍ କରନ୍ତୁ।",
+      "enSub": "Tap to record voice in Odia."
+    },
+    "bn": {
+      "display": "মাইক রেকর্ডিং: নিজের ভাষায় समस्या বলতে এখানে ক্লিক করুন।",
+      "spoken": "মাইক রেকর্ডিং বোতাম। নিজের ভাষায় সমস্যা বলতে এখানে ক্লিক করুন।",
+      "enSub": "Tap to record voice in Bengali."
+    },
+    "ta": {
+      "display": "மைக் பதிவு: உங்கள் மொழியில் குறையை பேச இங்கே கிளிக் செய்யவும்.",
+      "spoken": "மைக் பதிவு பொத்தான். உங்கள் தாய்மொழியில் குறையை பேச இங்கே கிளிக் செய்யவும்.",
+      "enSub": "Click to record voice grievance."
+    },
+    "te": {
+      "display": "మైక్ రికార్డింగ్: మీ ప్రాంతీయ భాషలో సమస్యను మాట్లాడటానికి ఇక్కడ క్లిక్ చేయండి.",
+      "spoken": "మైక్ రికార్డింగ్ బటన్. మీ ప్రాంతీయ భాషలో సమస్యను మాట్లాడటానికి ఇక్కడ క్లిక్ చేయండి.",
+      "enSub": "Click to record voice grievance."
+    },
+    "kn": {
+      "display": "ಮೈಕ್ ರೆಕಾರ್ಡಿಂಗ್: ನಿಮ್ಮ ಪ್ರಾದೇಶಿಕ ಭಾಷೆಯಲ್ಲಿ ಸಮಸ್ಯೆಯನ್ನು ಮಾತನಾಡಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ.",
+      "spoken": "ಮೈಕ್ ರೆಕಾರ್ಡಿಂಗ್ ಬಟನ್. ನಿಮ್ಮ ಪ್ರಾದೇಶಿಕ ಭಾಷೆಯಲ್ಲಿ ಸಮಸ್ಯೆಯನ್ನು ಮಾತನಾಡಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ.",
+      "enSub": "Click to record voice grievance."
+    },
+    "ml": {
+      "display": "മൈക്ക് റെക്കോർഡിംഗ്: നിങ്ങളുടെ പ്രാദേശിക ഭാഷയിൽ പ്രശ്നം പറയാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക.",
+      "spoken": "മൈക്ക് റെക്കോർഡിംഗ് ബട്ടൺ. നിങ്ങളുടെ പ്രാദേശിക ഭാഷയിൽ പ്രശ്നം പറയാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക.",
+      "enSub": "Click to record voice grievance."
+    },
+    "mr": {
+      "display": "माइक रेकॉर्डिंग: आपल्या भाषेत समस्या बोलण्यासाठी येथे क्लिक करा.",
+      "spoken": "माइक रेकॉर्डिंग बटण. आपल्या प्रादेशिक भाषेत समस्या बोलण्यासाठी येथे क्लिक करा.",
+      "enSub": "Click to record voice grievance."
+    },
+    "gu": {
+      "display": "માઇક રેકોર્ડિંગ: સ્થાનિક ભાષામાં સમસ્યા બોલવા માટે અહીં ક્લિક કરો.",
+      "spoken": "માઇક રેકોર્ડિંગ બટન. સ્થાનિક ભાષામાં સમસ્યા બોલવા માટે અહીં ક્લિક કરો.",
+      "enSub": "Click to record voice grievance."
+    },
+    "pa": {
+      "display": "ਮਾਈਕ ਰਿਕਾਰਡਿੰਗ: ਆਪਣੀ ਬੋਲੀ ਵਿੱਚ ਸਮੱਸਿਆ ਬੋਲਣ ਲਈ ਇੱਥੇ ਕਲਿੱਕ ਕਰੋ।",
+      "spoken": "ਮਾਈਕ ਰਿਕਾਰਡਿੰਗ ਬਟਨ। ਆਪਣੀ ਬੋਲੀ ਵਿੱਚ ਸਮੱਸਿਆ ਬੋਲਣ ਲਈ ਇੱਥੇ ਕਲਿੱਕ ਕਰੋ।",
+      "enSub": "Click to record voice grievance."
+    },
+    "ur": {
+      "display": "مائیک ریکارڈنگ: اپنی علاقائی زبان میں مسئلہ بولنے کے لیے یہاں کلک کریں۔",
+      "spoken": "مائیک ریکارڈنگ بٹن۔ اپنی علاقائی زبان میں مسئلہ بولنے کے لیے یہاں کلک کریں۔",
+      "enSub": "Click to record voice grievance."
+    },
+    "as": {
+      "display": "মাইক ৰেকৰ্ডিং: নিজৰ ভাষাত সমস্যা ক'বলৈ ইয়াত ক্লিক কৰক।",
+      "spoken": "মাইক ৰেকৰ্ডিং বুটাম। নিজৰ আঞ্চলিক ভাষাত সমস্যা ক'বলৈ ইয়াত ক্লিক কৰক।",
+      "enSub": "Click to record voice grievance."
+    },
+    "mai": {
+      "display": "माइक रिकॉर्डिंग: अपन मातृभाषा मे समस्या बोलय लेल एतय क्लिक करू।",
+      "spoken": "माइक रिकॉर्डिंग बटन। अपन मातृभाषा मे समस्या बोलय लेल एतय क्लिक करू।",
+      "enSub": "Click to record voice grievance."
+    },
+    "sat": {
+      "display": "ᱢᱟᱭᱤᱠ ᱨᱮᱠᱚᱨᱰᱤᱝ: ᱟᱯᱱᱟᱨ ᱟᱲᱟᱝ ᱛᱮ ᱟᱱᱟᱴ ᱨᱚᱲ ᱞᱟᱹᱜᱤᱫ ᱱᱚᱸᱰᱮ ᱴᱮᱯ ᱢᱮ᱾",
+      "spoken": "ᱢᱟᱭᱤᱠ ᱨᱮᱠᱚᱨᱰᱤᱝ ᱵᱟᱴᱚᱱ᱾ ᱟᱯᱱᱟᱨ ᱴᱚᱴᱷᱟᱠᱤᱭᱟᱹ ᱟᱲᱟᱝ ᱛᱮ ᱟᱱᱟᱴ ᱨᱚᱲ ᱞᱟᱹᱜᱤᱫ ᱱᱚᱸᱰᱮ ᱴᱮᱯ ᱢᱮ᱾",
+      "enSub": "Click to record voice grievance."
+    },
+    "ks": {
+      "display": "مائیک ریکارڈنگ: پَنٕنِہ زَبانِ مَنٛز شِکایتھ وننہٕ خٲطرٕ کٔریو اَتھ پؠٹھ کِلک۔",
+      "spoken": "مائیک ریکارڈنگ بٹن۔ پَنٕنِہ عِلاقٲیی زَبانِ مَنٛز شِکایتھ وننہٕ خٲطرٕ کٔریو اَتھ پؠٹھ کِلک۔",
+      "enSub": "Click to record voice grievance."
+    },
+    "sd": {
+      "display": "مائيڪ رڪارڊنگ: پنهنجي ٻوليءَ ۾ مسئلو ڳالهائڻ لاءِ هتي ڪلڪ ڪريو.",
+      "spoken": "مائيڪ رڪارڊنگ بٽڻ. پنهنجي علائقائي ٻوليءَ ۾ مسئلو ڳالهائڻ لاءِ هتي ڪلڪ ڪريو.",
+      "enSub": "Click to record voice grievance."
+    },
+    "en": {
+      "display": "Microphone Recording: Click to speak your civic issue.",
+      "spoken": "Microphone recording button. Click to record your issue in your spoken language.",
+      "enSub": "Click to record voice grievance."
+    }
+  },
+  "submit_button": {
+    "hi": {
+      "display": "रिपोर्ट जमा करें: अपनी नागरिक शिकायत आधिकारिक पोर्टल पर दर्ज करने के लिए यहाँ दबाएं।",
+      "spoken": "रिपोर्ट जमा करने का बटन। अपनी शिकायत आधिकारिक सरकारी पोर्टल पर दर्ज करने के लिए यहाँ दबाएं।",
+      "enSub": "Submit grievance report to official public ledger."
+    },
+    "bho": {
+      "display": "रिपोर्ट जमा करीं: पोर्टल पर शिकायत दर्ज करे खातिर दबाईं।",
+      "spoken": "रिपोर्ट जमा करे के बटन। सरकारी पोर्टल पर शिकायत दर्ज करे खातिर दबाईं।",
+      "enSub": "Submit report in Bhojpuri."
+    },
+    "or": {
+      "display": "ରିପୋର୍ଟ ଦାଖଲ: ସରକାରୀ ପୋର୍ଟାଲରେ ଅଭିଯୋଗ ଦାଖଲ କରିବାକୁ ଏଠାରେ ଦବାନ୍ତୁ।",
+      "spoken": "ରିପୋର୍ଟ ଦାଖଲ ବଟନ୍। ସରକାରୀ ପୋର୍ଟାଲରେ ଅଭିଯୋଗ ଦାଖଲ କରିବାକୁ ଏଠାରେ ଦବାନ୍ତୁ।",
+      "enSub": "Submit report in Odia."
+    },
+    "bn": {
+      "display": "রিপোর্ট জমা দিন: পোর্টালে আপনার অভিযোগ দায়ের করতে এখানে চাপুন।",
+      "spoken": "রিপোর্ট জমা দিন বোতাম। সরকারি পোর্টালে আপনার অভিযোগ দায়ের করতে এখানে চাপুন।",
+      "enSub": "Submit report in Bengali."
+    },
+    "ta": {
+      "display": "அறிக்கையைச் சமர்ப்பிக்கவும்: உங்கள் புகாரை அதிகாரப்பூர்வ போர்ட்டலில் பதிவு செய்ய இங்கே தட்டவும்.",
+      "spoken": "அறிக்கையைச் சமர்ப்பிக்கும் பொத்தான். உங்கள் புகாரை அரசு போர்ட்டலில் பதிவு செய்ய இங்கே தட்டவும்.",
+      "enSub": "Official filing button."
+    },
+    "te": {
+      "display": "నివేదికను సమర్పించండి: మీ పౌర ఫిర్యాదును అధికారిక పోర్టల్‌లో దాఖలు చేయడానికి ఇక్కడ నొక్కండి.",
+      "spoken": "నివేదిక సమర్పించే బటన్. మీ ఫిర్యాదును ప్రభుత్వ పోర్టల్‌లో దాఖలు చేయడానికి ఇక్కడ నొక్కండి.",
+      "enSub": "Official filing button."
+    },
+    "kn": {
+      "display": "ವರದಿ ಸಲ್ಲಿಸಿ: ನಿಮ್ಮ ನಾಗರಿಕ ದೂರನ್ನು ಅಧಿಕೃತ ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ದಾಖಲಿಸಲು ಇಲ್ಲಿ ಟ್ಯಾಪ್ ಮಾಡಿ.",
+      "spoken": "ವರದಿ ಸಲ್ಲಿಸುವ ಬಟನ್. ನಿಮ್ಮ ದೂರನ್ನು ಸರ್ಕಾರಿ ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ದಾಖಲಿಸಲು ಇಲ್ಲಿ ಟ್ಯಾಪ್ ಮಾಡಿ.",
+      "enSub": "Official filing button."
+    },
+    "ml": {
+      "display": "റിപ്പോർട്ട് സമർപ്പിക്കുക: നിങ്ങളുടെ പരാതി ഔദ്യോഗിക പോർട്ടലിൽ രേഖപ്പെടുത്താൻ ഇവിടെ ടാപ്പ് ചെയ്യുക.",
+      "spoken": "റിപ്പോർട്ട് സമർപ്പിക്കാനുള്ള ബട്ടൺ. നിങ്ങളുടെ പരാതി സർക്കാർ പോർട്ടലിൽ സമർപ്പിക്കാൻ ഇവിടെ ടാപ്പ് ചെയ്യുക.",
+      "enSub": "Official filing button."
+    },
+    "mr": {
+      "display": "अहवाल सबमिट करा: आपली तक्रार अधिकृत सरकारी पोर्टलवर नोंदवण्यासाठी येथे दाबा.",
+      "spoken": "तक्रार सबमिट करण्याचे बटण. आपली तक्रार अधिकृत सरकारी पोर्टलवर नोंदवण्यासाठी येथे दाबा.",
+      "enSub": "Official filing button."
+    },
+    "gu": {
+      "display": "રિપોર્ટ સબમિટ કરો: તમારી નાગરિક ફરિયાદ સત્તાવાર પોર્ટલ પર નોંધાવવા અહીં ક્લિક કરો.",
+      "spoken": "રિપોર્ટ સબમિટ કરવાનું બટન. તમારી ફરિયાદ સત્તાવાર સરકારી પોર્ટલ પર નોંધાવવા માટે અહીં ક્લિક કરો.",
+      "enSub": "Official filing button."
+    },
+    "pa": {
+      "display": "ਰਿਪੋਰਟ ਦਰਜ ਕਰੋ: ਆਪਣੀ ਸ਼ਿਕਾਇਤ ਅਧਿਕਾਰਤ ਸਰਕਾਰੀ ਪੋਰਟਲ 'ਤੇ ਦਰਜ ਕਰਨ ਲਈ ਇੱਥੇ ਦਬਾਓ।",
+      "spoken": "ਰਿਪੋਰਟ ਦਰਜ ਕਰਨ ਦਾ ਬਟਨ। ਆਪਣੀ ਸ਼ਿਕਾਇਤ ਅਧਿਕਾਰਤ ਪੋਰਟਲ 'ਤੇ ਦਰਜ ਕਰਨ ਲਈ ਇੱਥੇ ਦਬਾਓ।",
+      "enSub": "Official filing button."
+    },
+    "ur": {
+      "display": "رپورٹ جمع کریں: اپنی شہری شکایت سرکاری پورٹل پر درج کرنے کے لیے یہاں دبائیں۔",
+      "spoken": "رپورٹ جمع کرنے کا بٹن۔ اپنی شکایت سرکاری پورٹل پر درج کرنے کے لیے یہاں دبائیں۔",
+      "enSub": "Official filing button."
+    },
+    "as": {
+      "display": "প্ৰতিবেদন দাখিল কৰক: চৰকাৰী পৰ্টেলত আপোনাৰ অভিযোগ পঞ্জীয়ন কৰিবলৈ ইয়াত টিপক।",
+      "spoken": "প্ৰতিবেদন দাখিলৰ বুটাম। চৰকাৰী পৰ্টেলত আপোনাৰ অভিযোগ পঞ্জীয়ন কৰিবলৈ ইয়াত টিপক।",
+      "enSub": "Official filing button."
+    },
+    "mai": {
+      "display": "रिपोर्ट जमा करू: अपन समस्या सरकारी पोर्टल पर दर्ज करवाक लेल एतय दबाऊ।",
+      "spoken": "रिपोर्ट जमा करबाक बटन। अपन समस्या आधिकारिक सरकारी पोर्टल पर दर्ज करवाक लेल एतय दबाऊ।",
+      "enSub": "Official filing button."
+    },
+    "sat": {
+      "display": "ᱨᱤᱯᱚᱴ ᱫᱟᱨᱡᱽ ᱢᱮ: ᱥᱚᱨᱠᱟᱨᱤ ᱯᱳᱨᱴᱟᱞ ᱨᱮ ᱟᱢᱟᱜ ᱟᱱᱟᱴ ᱫᱟᱨᱡᱽ ᱞᱟᱹᱜᱤᱫ ᱱᱚᱸᱰᱮ ᱴᱮᱯ ᱢᱮ᱾",
+      "spoken": "ᱨᱤᱯᱚᱴ ᱫᱟᱨᱡᱽ ᱵᱟᱴᱚᱱ᱾ ᱥᱚᱨᱠᱟᱨᱤ ᱯᱳᱨᱴᱟᱞ ᱨᱮ ᱟᱢᱟᱜ ᱟᱱᱟᱴ ᱫᱟᱨᱡᱽ ᱞᱟᱹᱜᱤᱫ ᱱᱚᱸᱰᱮ ᱴᱮᱯ ᱢᱮ᱾",
+      "enSub": "Official filing button."
+    },
+    "ks": {
+      "display": "رِپورٹ کٔریو دَرٕج: پَنٕنؠ شِکایتھ سَرکٲری پورٹَلَس پؠٹھ دَرٕج کَرنہٕ خٲطرٕ دَبٲوِو اَتھ پؠٹھ۔",
+      "spoken": "رپورٹ دَرٕج کَرنُک بَٹَن۔ پَنٕنؠ شِکایتھ سَرکٲری پورٹَلَس پؠٹھ دَرٕج کَرنہٕ خٲطرٕ دَبٲوِو اَتھ پؠٹھ۔",
+      "enSub": "Official filing button."
+    },
+    "sd": {
+      "display": "رپورٽ داخل ڪريو: سرڪاري پورٽل تي پنهنجي شڪايت داخل ڪرڻ لاءِ هتي ٽيپ ڪريو.",
+      "spoken": "رپورٽ داخل ڪرڻ جو بٽڻ. پنهنجي شڪايت سرڪاري پورٽل تي داخل ڪرڻ لاءِ هتي ٽيپ ڪريو.",
+      "enSub": "Official filing button."
+    },
+    "en": {
+      "display": "Submit Report: Tap to officially file your civic complaint.",
+      "spoken": "Submit Report button. Tap to officially submit your complaint to the government portal.",
+      "enSub": "Official filing button."
+    }
+  },
+  "camera_button": {
+    "hi": {
+      "display": "कैमरा बटन: समस्या का फोटो या दृश्य साक्ष्य अपलोड करने के लिए यहाँ क्लिक करें।",
+      "spoken": "कैमरा बटन। समस्या की फोटो या दृश्य साक्ष्य अपलोड करने के लिए यहाँ क्लिक करें।",
+      "enSub": "Upload photographic evidence of the issue."
+    },
+    "bho": {
+      "display": "कैमरा बटन: समस्या के फोटो अपलोड करे खातिर क्लिक करीं।",
+      "spoken": "कैमरा बटन। समस्या के फोटो अपलोड करे खातिर क्लिक करीं।",
+      "enSub": "Upload photo in Bhojpuri."
+    },
+    "or": {
+      "display": "କ୍ୟାମେରା ବଟନ୍: ସମସ୍ୟାର ଫଟୋ କିମ୍ବା ପ୍ରମାଣ ଅପଲୋଡ୍ କରନ୍ତୁ।",
+      "spoken": "କ୍ୟାମେରା ବଟନ୍। ସମସ୍ୟାର ଫଟୋ କିମ୍ବା ପ୍ରମାଣ ଅପଲୋଡ୍ କରିବାକୁ ଏଠାରେ କ୍ଲିକ୍ କରନ୍ତୁ।",
+      "enSub": "Upload photo in Odia."
+    },
+    "bn": {
+      "display": "ক্যামেরা বোতাম: সমস্যার ছবি বা প্রমাণ আপলোড করতে এখানে ক্লিক করুন।",
+      "spoken": "ক্যামেরা বোতাম। সমস্যার ছবি বা প্রমাণ আপলোড করতে এখানে ক্লিক করুন।",
+      "enSub": "Upload photo in Bengali."
+    },
+    "ta": {
+      "display": "கேமரா பொத்தான்: புகாரின் புகைப்படம் அல்லது ஆதாரத்தைப் பதிவேற்ற இங்கே கிளிக் செய்யவும்.",
+      "spoken": "கேமரா பொத்தான். புகாரின் புகைப்படம் அல்லது காட்சி ஆதாரத்தைப் பதிவேற்ற இங்கே கிளிக் செய்யவும்.",
+      "enSub": "Upload photographic proof."
+    },
+    "te": {
+      "display": "కెమెరా బటన్: సమస్య ఫోటో లేదా సాక్ష్యాన్ని అప్‌లోడ్ చేయడానికి ఇక్కడ క్లిక్ చేయండి.",
+      "spoken": "కెమెరా బటన్. సమస్య ఫోటో లేదా దృశ్య సాక్ష్యాన్ని అప్‌లోడ్ చేయడానికి ఇక్కడ క్లిక్ చేయండి.",
+      "enSub": "Upload photographic proof."
+    },
+    "kn": {
+      "display": "ಕ್ಯಾಮೆರಾ ಬಟನ್: ಸಮಸ್ಯೆಯ ಫೋಟೋ ಅಥವಾ ಪುರಾವೆಯನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ.",
+      "spoken": "ಕ್ಯಾಮೆರಾ ಬಟನ್. ಸಮಸ್ಯೆಯ ಫೋಟೋ ಅಥವಾ ದೃಶ್ಯ ಪುರಾವೆಯನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ.",
+      "enSub": "Upload photographic proof."
+    },
+    "ml": {
+      "display": "ക്യാമറ ബട്ടൺ: പ്രശ്നത്തിന്റെ ഫോട്ടോയോ തെളിവോ അപ്‌ലോഡ് ചെയ്യാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക.",
+      "spoken": "ക്യാമറ ബട്ടൺ. പ്രശ്നത്തിന്റെ ഫോട്ടോയോ തെളിവോ അപ്‌ലോഡ് ചെയ്യാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക.",
+      "enSub": "Upload photographic proof."
+    },
+    "mr": {
+      "display": "कॅमेरा बटण: समस्येचा फोटो किंवा दृश्य पुरावा अपलोड करण्यासाठी येथे क्लिक करा.",
+      "spoken": "कॅमेरा बटण. समस्येचा फोटो किंवा दृश्य पुरावा अपलोड करण्यासाठी येथे क्लिक करा.",
+      "enSub": "Upload photographic proof."
+    },
+    "gu": {
+      "display": "કેમેરા બટન: સમસ્યાનો ફોટો અથવા પુરાવો અપલોડ કરવા માટે અહીં ક્લિક કરો.",
+      "spoken": "કેમેરા બટન. સમસ્યાનો ફોટો અથવા દ્રશ્ય પુરાવો અપલોડ કરવા માટે અહીં ક્લિક કરો.",
+      "enSub": "Upload photographic proof."
+    },
+    "pa": {
+      "display": "ਕੈਮਰਾ ਬਟਨ: ਸਮੱਸਿਆ ਦੀ ਫੋਟੋ ਜਾਂ ਸਬੂਤ ਅੱਪਲੋਡ ਕਰਨ ਲਈ ਇੱਥੇ ਕਲਿੱਕ ਕਰੋ।",
+      "spoken": "ਕੈਮਰਾ ਬਟਨ। ਸਮੱਸਿਆ ਦੀ ਫੋਟੋ ਜਾਂ ਵਿਜ਼ੂਅਲ ਸਬੂਤ ਅੱਪਲੋਡ ਕਰਨ ਲਈ ਇੱਥੇ ਕਲਿੱਕ ਕਰੋ।",
+      "enSub": "Upload photographic proof."
+    },
+    "ur": {
+      "display": "کیمرہ بٹن: مسئلے کی تصویر یا تصویری ثبوت اپ لوڈ کرنے کے لیے یہاں کلک کریں۔",
+      "spoken": "کیمرہ بٹن۔ مسئلے کی تصویر یا تصویری ثبوت اپ لوڈ کرنے کے لیے یہاں کلک کریں۔",
+      "enSub": "Upload photographic proof."
+    },
+    "as": {
+      "display": "কেমেৰা বুটাম: সমস্যাটোৰ ফটো বা দৃশ্যমান প্ৰমাণ আপলোড কৰিবলৈ ইয়াত ক্লিক কৰক।",
+      "spoken": "কেমেৰা বুটাম। সমস্যাটোৰ ফটো বা দৃশ্যমান প্ৰমাণ আপলোড কৰিবলৈ ইয়াত ক্লিক কৰক।",
+      "enSub": "Upload photographic proof."
+    },
+    "mai": {
+      "display": "कैमरा बटन: समस्याक फोटो या दृश्य साक्ष्य अपलोड करय लेल एतय क्लिक करू।",
+      "spoken": "कैमरा बटन। समस्याक फोटो या दृश्य साक्ष्य अपलोड करय लेल एतय क्लिक करू।",
+      "enSub": "Upload photographic proof."
+    },
+    "sat": {
+      "display": "ᱠᱮᱢᱨᱟ ᱵᱟᱴᱚᱱ: ᱟᱱᱟᱴ ᱨᱮᱱᱟᱜ ᱪᱤᱛᱟᱹᱨ ᱥᱮ ᱥᱟᱹᱵᱩᱫᱽ ᱟᱯᱞᱳᱰ ᱞᱟᱹᱜᱤᱫ ᱱᱚᱸᱰᱮ ᱴᱮᱯ ᱢᱮ᱾",
+      "spoken": "ᱠᱮᱢᱨᱟ ᱵᱟᱴᱚᱱ᱾ ᱟᱱᱟᱴ ᱨᱮᱱᱟᱜ ᱪᱤᱛᱟᱹᱨ ᱥᱮ ᱥᱟᱹᱵᱩᱫᱽ ᱟᱯᱞᱳᱰ ᱞᱟᱹᱜᱤᱫ ᱱᱚᱸᱰᱮ ᱴᱮᱯ ᱢᱮ᱾",
+      "enSub": "Upload photographic proof."
+    },
+    "ks": {
+      "display": "کیمرہ بَٹَن: مَسلہٕ کِس فوٹو یا ثَبوت اپلوڈ کَرنہٕ خٲطرٕ کٔریو اَتھ پؠٹھ کِلک۔",
+      "spoken": "کیمرہ بَٹَن۔ مَسلہٕ کِس فوٹو یا ثَبوت اپلوڈ کَرنہٕ خٲطرٕ کٔریو اَتھ پؠٹھ کِلک۔",
+      "enSub": "Upload photographic proof."
+    },
+    "sd": {
+      "display": "ڪيمرا بٽڻ: مسئلي جو فوٽو يا ثبوت اپ لوڊ ڪرڻ لاءِ هتي ڪلڪ ڪريو.",
+      "spoken": "ڪيمرا بٽڻ. مسئلي جو فوٽو يا ثبوت اپ لوڊ ڪرڻ لاءِ هتي ڪلڪ ڪريو.",
+      "enSub": "Upload photographic proof."
+    },
+    "en": {
+      "display": "Camera Button: Upload photo or evidence of the civic issue.",
+      "spoken": "Camera button. Click to upload photos or evidence of the civic issue.",
+      "enSub": "Upload photographic proof."
+    }
+  },
+  "translate_chip": {
+    "hi": {
+      "display": "भाषा अनुवाद: क्षेत्रीय भाषा को अंग्रेज़ी में बदलने के लिए यहाँ क्लिक करें।",
+      "spoken": "भाषा अनुवाद बटन। क्षेत्रीय भाषा को अंग्रेज़ी में बदलने के लिए यहाँ क्लिक करें।",
+      "enSub": "Translate regional text into English."
+    },
+    "ta": {
+      "display": "மொழிபெயர்ப்பு: பிராந்திய மொழியை ஆங்கிலத்தில் மாற்ற இங்கே கிளிக் செய்யவும்.",
+      "spoken": "மொழிபெயர்ப்பு பொத்தான். பிராந்திய மொழியை ஆங்கிலத்தில் மாற்ற இங்கே கிளிக் செய்யவும்.",
+      "enSub": "Real-time AI translation."
+    },
+    "te": {
+      "display": "భాషా అనువాదం: ప్రాంతీయ భాషను ఇంగ్లీషులోకి అనువదించడానికి ఇక్కడ క్లిక్ చేయండి.",
+      "spoken": "భాషా అనువాదం బటన్. ప్రాంతీయ భాషను ఇంగ్లీషులోకి అనువదించడానికి ఇక్కడ క్లిక్ చేయండి.",
+      "enSub": "Real-time AI translation."
+    },
+    "kn": {
+      "display": "ಭಾಷಾ ಅನುವಾದ: ಪ್ರಾದೇಶಿಕ ಭಾಷೆಯನ್ನು ಇಂಗ್ಲಿಷ್‌ಗೆ ಭಾಷಾಂತರಿಸಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ.",
+      "spoken": "ಭಾಷಾ ಅನುವಾದ ಬಟನ್. ಪ್ರಾದೇಶಿಕ ಭಾಷೆಯನ್ನು ಇಂಗ್ಲಿಷ್‌ಗೆ ಭಾಷಾಂತರಿಸಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ.",
+      "enSub": "Real-time AI translation."
+    },
+    "ml": {
+      "display": "ഭാഷാ വിവർത്തനം: പ്രാദേശിക ഭാഷ ഇംഗ്ലീഷിലേക്ക് മാറ്റാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക.",
+      "spoken": "ഭാഷാ വിവർത്തന ബട്ടൺ. പ്രാദേശിക ഭാഷ ഇംഗ്ലീഷിലേക്ക് മാറ്റാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക.",
+      "enSub": "Real-time AI translation."
+    },
+    "mr": {
+      "display": "भाषा भाषांतर: प्रादेशिक भाषेचे इंग्रजीत रूपांतर करण्यासाठी येथे क्लिक करा.",
+      "spoken": "भाषा भाषांतर बटण. प्रादेशिक भाषेचे इंग्रजीत रूपांतर करण्यासाठी येथे क्लिक करा.",
+      "enSub": "Real-time AI translation."
+    },
+    "gu": {
+      "display": "ભાષા અનુવાદ: પ્રાદેશિક ભાષાને અંગ્રેજીમાં ફેરવવા અહીં ક્લિક કરો.",
+      "spoken": "ભાષા અનુવાદ બટન. પ્રાદેશિક ભાષાને અંગ્રેજીમાં ફેરવવા અહીં ક્લિક કરો.",
+      "enSub": "Real-time AI translation."
+    },
+    "pa": {
+      "display": "ਭਾਸ਼ਾ ਅਨੁਵਾਦ: ਖੇਤਰੀ ਬੋਲੀ ਨੂੰ ਅੰਗਰੇਜ਼ੀ ਵਿੱਚ ਅਨੁਵਾਦ ਕਰਨ ਲਈ ਇੱਥੇ ਕਲਿੱਕ ਕਰੋ।",
+      "spoken": "ਭਾਸ਼ਾ ਅਨੁਵਾਦ ਬਟਨ। ਖੇਤਰੀ ਬੋਲੀ ਨੂੰ ਅੰਗਰੇਜ਼ੀ ਵਿੱਚ ਬਦਲਣ ਲਈ ਇੱਥੇ ਕਲਿੱਕ ਕਰੋ।",
+      "enSub": "Real-time AI translation."
+    },
+    "ur": {
+      "display": "زبان کا ترجمہ: علاقائی زبان کو انگریزی میں تبدیل کرنے کے لیے یہاں کلک کریں۔",
+      "spoken": "زبان کا ترجمہ بٹن۔ علاقائی زبان کو انگریزی میں تبدیل کرنے کے لیے یہاں کلک کریں۔",
+      "enSub": "Real-time AI translation."
+    },
+    "as": {
+      "display": "ভাষা অনুবাদ: আঞ্চলিক ভাষা ইংৰাজীলৈ সলনি কৰিবলৈ ইয়াত ক্লিক কৰক।",
+      "spoken": "ভাষা অনুবাদ বুটাম। আঞ্চলিক ভাষা ইংৰাজীলৈ সলনি কৰিবলৈ ইয়াত ক্লিক কৰক।",
+      "enSub": "Real-time AI translation."
+    },
+    "mai": {
+      "display": "भाषा अनुवाद: क्षेत्रीय भाषा केँ अंग्रेजी मे बदलबाक लेल एतय क्लिक करू।",
+      "spoken": "भाषा अनुवाद बटन। क्षेत्रीय भाषा केँ अंग्रेजी मे बदलबाक लेल एतय क्लिक करू।",
+      "enSub": "Real-time AI translation."
+    },
+    "sat": {
+      "display": "ᱯᱟᱹᱨᱥᱤ ᱛᱚᱨᱡᱚᱢᱟ: ᱴᱚᱴᱷᱟᱠᱤᱭᱟᱹ ᱯᱟᱹᱨᱥᱤ ᱤᱝᱞᱤᱥ ᱨᱮ ᱵᱚᱫᱚᱞ ᱞᱟᱹᱜᱤᱫ ᱱᱚᱸᱰᱮ ᱴᱮᱯ ᱢᱮ᱾",
+      "spoken": "ᱯᱟᱹᱨᱥᱤ ᱛᱚᱨᱡᱚᱢᱟ ᱵᱟᱴᱚᱱ᱾ ᱴᱚᱴᱷᱟᱠᱤᱭᱟᱹ ᱯᱟᱹᱨᱥᱤ ᱤᱝᱞᱤᱥ ᱨᱮ ᱵᱚᱫᱚᱞ ᱞᱟᱹᱜᱤᱫ ᱱᱚᱸᱰᱮ ᱴᱮᱯ ᱢᱮ᱾",
+      "enSub": "Real-time AI translation."
+    },
+    "ks": {
+      "display": "زَبانُک تَرجَمہٕ: عِلاقٲیی زَبان اَنٛگریٖزی مَنٛز بَدلاونہٕ خٲطرٕ کٔریو اَتھ پؠٹھ کِلک۔",
+      "spoken": "زَبانُک تَرجَمہٕ بَٹَن۔ عِلاقٲیی زَبان اَنٛگریٖزی مَنٛز بَدلاونہٕ خٲطرٕ کٔریو اَتھ پؠٹھ کِلک۔",
+      "enSub": "Real-time AI translation."
+    },
+    "sd": {
+      "display": "ٻولي ترجمو: علائقائي ٻوليءَ کي انگريزي ۾ تبديل ڪرڻ لاءِ هتي ڪلڪ ڪريو.",
+      "spoken": "ٻولي ترجمو بٽڻ. علائقائي ٻوليءَ کي انگريزي ۾ تبديل ڪرڻ لاءِ هتي ڪلڪ ڪريو.",
+      "enSub": "Real-time AI translation."
+    },
+    "en": {
+      "display": "Translation Button: Converts regional dialect to English.",
+      "spoken": "Translation button. Converts your regional language input into English.",
+      "enSub": "Real-time AI translation."
+    }
+  },
+  "undo_button": {
+    "hi": {
+      "display": "पूर्ववत करें: अनुवाद हटाकर मूल क्षेत्रीय शब्दों पर वापस जाने के लिए क्लिक करें।",
+      "spoken": "पूर्ववत करें बटन। अनुवाद हटाकर अपने मूल क्षेत्रीय शब्दों पर वापस जाने के लिए क्लिक करें।",
+      "enSub": "Revert back to your original regional input."
+    },
+    "ta": {
+      "display": "செயல்தவிர்: உங்கள் அசல் பிராந்திய உரைக்குத் திரும்ப இங்கே கிளிக் செய்யவும்.",
+      "spoken": "செயல்தவிர் பொத்தான். மொழிபெயர்ப்பை நீக்கி அசல் உரைக்குத் திரும்ப இங்கே கிளிக் செய்யவும்.",
+      "enSub": "Reverts to original text."
+    },
+    "te": {
+      "display": "రద్దు చేయి: అసలు ప్రాంతీయ పదాలకు తిరిగి వెళ్ళడానికి ఇక్కడ క్లిక్ చేయండి.",
+      "spoken": "రద్దు చేయి బటన్. అనువాదం తీసివేసి మీ అసలు పదాలకు తిరిగి వెళ్ళడానికి ఇక్కడ క్లిక్ చేయండి.",
+      "enSub": "Reverts to original text."
+    },
+    "kn": {
+      "display": "ರದ್ದುಮಾಡಿ: ಮೂಲ ಪ್ರಾದೇಶಿಕ ಪದಗಳಿಗೆ ಹಿಂತಿರುಗಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ.",
+      "spoken": "ರದ್ದುಮಾಡಿ ಬಟನ್. ಅನುವಾದ ತೆಗೆದುಹಾಕಿ ಮೂಲ ಪದಗಳಿಗೆ ಹಿಂತಿರುಗಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ.",
+      "enSub": "Reverts to original text."
+    },
+    "ml": {
+      "display": "പൂർവ്വസ്ഥിതിയിലാക്കുക: നിങ്ങളുടെ യഥാർത്ഥ വാക്കുകളിലേക്ക് മടങ്ങാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക.",
+      "spoken": "പൂർവ്വസ്ഥിതിയിലാക്കൽ ബട്ടൺ. വിവർത്തനം മാറ്റി യഥാർത്ഥ വാക്കുകളിലേക്ക് മടങ്ങാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക.",
+      "enSub": "Reverts to original text."
+    },
+    "mr": {
+      "display": "पूर्ववत करा: मूळ प्रादेशिक शब्दांवर परत जाण्यासाठी येथे क्लिक करा.",
+      "spoken": "पूर्ववत करा बटण. भाषांतर काढून मूळ शब्दांवर परत जाण्यासाठी येथे क्लिक करा.",
+      "enSub": "Reverts to original text."
+    },
+    "gu": {
+      "display": "પૂર્વવત કરો: મૂળ પ્રાદેશિક લખાણ પર પાછા જવા માટે ક્લિક કરો.",
+      "spoken": "પૂર્વવત કરો બટન. અનુવાદ હટાવી મૂળ પ્રાદેશિક શબ્દો પર પાછા જવા અહીં ક્લિક કરો.",
+      "enSub": "Reverts to original text."
+    },
+    "pa": {
+      "display": "ਅਨਡੂ ਕਰੋ: ਮੂਲ ਖੇਤਰੀ ਸ਼ਬਦਾਂ 'ਤੇ ਵਾਪਸ ਜਾਣ ਲਈ ਇੱਥੇ ਕਲਿੱਕ ਕਰੋ।",
+      "spoken": "ਅਨਡੂ ਬਟਨ। ਅਨੁਵਾਦ ਹਟਾ ਕੇ ਆਪਣੇ ਅਸਲ ਸ਼ਬਦਾਂ 'ਤੇ ਵਾਪਸ ਜਾਣ ਲਈ ਇੱਥੇ ਕਲਿੱਕ ਕਰੋ।",
+      "enSub": "Reverts to original text."
+    },
+    "ur": {
+      "display": "پہلے جیسا کریں: اپنے اصل علاقائی الفاظ پر واپس جانے کے لیے یہاں کلک کریں۔",
+      "spoken": "پہلے جیسا کریں بٹن۔ ترجمہ ہٹا کر اپنے اصل الفاظ پر واپس جانے کے لیے یہاں کلک کریں۔",
+      "enSub": "Reverts to original text."
+    },
+    "as": {
+      "display": "পূৰ্বৱত কৰক: মূল আঞ্চলিক শব্দলৈ ঘূৰি যাবলৈ ইয়াত ক্লিক কৰক।",
+      "spoken": "পূৰ্বৱত কৰক বুটাম। অনুবাদ আঁতৰাই মূল আঞ্চলিক শব্দলৈ ঘূৰি যাবলৈ ইয়াত ক্লিক কৰক।",
+      "enSub": "Reverts to original text."
+    },
+    "mai": {
+      "display": "पूर्ववत करू: अनुवाद हटा कऽ मूल क्षेत्रीय शब्द पर वापस जयबाक लेल क्लिक करू।",
+      "spoken": "पूर्ववत करू बटन। अनुवाद हटा कऽ मूल क्षेत्रीय शब्द पर वापस जयबाक लेल क्लिक करू।",
+      "enSub": "Reverts to original text."
+    },
+    "sat": {
+      "display": "ᱨᱩᱣᱟᱹᱲ ᱢᱮ: ᱢᱩᱬ ᱴᱚᱴᱷᱟᱠᱤᱭᱟᱹ ᱟᱹᱲᱟᱹ ᱨᱮ ᱨᱩᱣᱟᱹᱲ ᱞᱟᱹᱜᱤᱫ ᱴᱮᱯ ᱢᱮ᱾",
+      "spoken": "ᱨᱩᱣᱟᱹᱲ ᱵᱟᱴᱚᱱ᱾ ᱛᱚᱨᱡᱚᱢᱟ ᱚᱪᱚᱜ ᱠᱟᱛᱮ ᱢᱩᱬ ᱟᱹᱲᱟᱹ ᱨᱮ ᱨᱩᱣᱟᱹᱲ ᱞᱟᱹᱜᱤᱫ ᱴᱮᱯ ᱢᱮ᱾",
+      "enSub": "Reverts to original text."
+    },
+    "ks": {
+      "display": "پٔتِم پٲٹھۍ: اصل عِلاقٲیی اَلفاظَن پؠٹھ واپَس گَژھنہٕ خٲطرٕ کٔریو کِلک۔",
+      "spoken": "پٔتِم پٲٹھۍ بَٹَن۔ تَرجَمہٕ ہَٹٲوِتھ اصل اَلفاظَن پؠٹھ واپَس گَژھنہٕ خٲطرٕ کٔریو کِلک۔",
+      "enSub": "Reverts to original text."
+    },
+    "sd": {
+      "display": "پوئتي موٽيو: اصل علائقائي لفظن تي واپس وڃڻ لاءِ هتي ڪلڪ ڪريو.",
+      "spoken": "پوئتي موٽيو بٽڻ. ترجمو هٽائي پنهنجي اصل لفظن تي واپس وڃڻ لاءِ هتي ڪلڪ ڪريو.",
+      "enSub": "Reverts to original text."
+    },
+    "en": {
+      "display": "Undo Translation: Restore your original typed words.",
+      "spoken": "Undo translation button. Revert back to your original input.",
+      "enSub": "Reverts to original text."
+    }
+  },
+  "card_roads": {
+    "hi": {
+      "display": "सड़क एवं बुनियादी ढांचा: टूटी सड़कों, गड्ढों, पुलों और जल निकासी की शिकायतें।",
+      "spoken": "सड़क एवं बुनियादी ढांचा अनुभाग। टूटी सड़कों, गड्ढों, पुलों और जल निकासी की शिकायतें यहाँ देखें और दर्ज करें।",
+      "enSub": "Roads and Infrastructure: Report broken roads, potholes, bridges, and drainage works."
+    },
+    "bho": {
+      "display": "सड़क आ बुनियादी ढांचा: टूटल सड़क, पुल आ पानी निकासी के समस्या।",
+      "spoken": "सड़क आ बुनियादी ढांचा। टूटल सड़क, पुल आ पानी निकासी के समस्या इहवाँ दर्ज करीं।",
+      "enSub": "Roads and Infrastructure in Bhojpuri."
+    },
+    "or": {
+      "display": "ରାସ୍ତା ଏବଂ ଭିତ୍ତିଭୂମି: ଭଙ୍ଗା ରାସ୍ତା, ଖାଲ, ପୋଲ ଏବଂ ଜଳ ନିଷ୍କାସନ ସମସ୍ୟା।",
+      "spoken": "ରାସ୍ତା ଏବଂ ଭିତ୍ତିଭୂମି ବିଭାଗ। ଭଙ୍ଗା ରାସ୍ତା, ଖାଲ, ପୋଲ ଏବଂ ଜଳ ନିଷ୍କାସନ ସମସ୍ୟା ଦେଖନ୍ତୁ ଓ ଦାଖଲ କରନ୍ତୁ।",
+      "enSub": "Roads and Infrastructure in Odia."
+    },
+    "bn": {
+      "display": "রাস্তা ও পরিকাঠামো: ভাঙা রাস্তা, গর্ত ও নিকাশী ব্যবস্থার অভিযোগ।",
+      "spoken": "রাস্তা ও পরিকাঠামো বিভাগ। ভাঙা রাস্তা, গর্ত ও নিকাশী ব্যবস্থার অভিযোগ এখানে জানান।",
+      "enSub": "Roads and Infrastructure in Bengali."
+    },
+    "ta": {
+      "display": "சாலைகள் மற்றும் உள்கட்டமைப்பு: சேதமடைந்த சாலைகள், பாலங்கள் மற்றும் வடிகால் புகார்கள்.",
+      "spoken": "சாலைகள் மற்றும் உள்கட்டமைப்பு பிரிவு. உடைந்த சாலைகள் மற்றும் பாலங்கள் குறித்த புகார்களை இங்கே பதிவு செய்யவும்.",
+      "enSub": "Explore civil works and road maintenance."
+    },
+    "te": {
+      "display": "రోడ్లు & మౌలిక సదుపాయాలు: దెబ్బతిన్న రోడ్లు, గుంతలు, వంతెనలు మరియు డ్రైనేజీ ఫిర్యాదులు.",
+      "spoken": "రోడ్లు మరియు మౌలిక సదుపాయాల విభాగం. దెబ్బతిన్న రోడ్లు, గుంతల ఫిర్యాదులను ఇక్కడ నమోదు చేయండి.",
+      "enSub": "Explore civil works and road maintenance."
+    },
+    "kn": {
+      "display": "ರಸ್ತೆಗಳು ಮತ್ತು ಮೂಲಸೌಕರ್ಯ: ಹಾಳಾದ ರಸ್ತೆಗಳು, ಗುಂಡಿಗಳು, ಸೇತುವೆಗಳ ದೂರುಗಳು.",
+      "spoken": "ರಸ್ತೆಗಳು ಮತ್ತು ಮೂಲಸೌಕರ್ಯ ವಿಭಾಗ. ಹಾಳಾದ ರಸ್ತೆಗಳು ಮತ್ತು ಗುಂಡಿಗಳ ಬಗ್ಗೆ ಇಲ್ಲಿ ದೂರು ದಾಖಲಿಸಿ.",
+      "enSub": "Explore civil works and road maintenance."
+    },
+    "ml": {
+      "display": "റോഡുകളും അടിസ്ഥാന സൗകര്യങ്ങളും: തകർന്ന റോഡുകൾ, കുഴികൾ, പാലങ്ങൾ എന്നിവയെക്കുറിച്ചുള്ള പരാതികൾ.",
+      "spoken": "റോഡുകളും അടിസ്ഥാന സൗകര്യങ്ങളും വിഭാഗം. തകർന്ന റോഡുകളെക്കുറിച്ചുള്ള പരാതികൾ ഇവിടെ നൽകുക.",
+      "enSub": "Explore civil works and road maintenance."
+    },
+    "mr": {
+      "display": "रस्ते आणि पायाभूत सुविधा: खड्डे, रस्ते, पूल आणि सांडपाणी समस्यांची तक्रार करा.",
+      "spoken": "रस्ते आणि पायाभूत सुविधा विभाग. खड्डे, रस्ते आणि पुलांची तक्रार येथे नोंदवा.",
+      "enSub": "Explore civil works and road maintenance."
+    },
+    "gu": {
+      "display": "રસ્તા અને માળખાગત સુવિધા: તૂટેલા રસ્તા, ખાડા, પુલ અને ગટરની ફરિયાદો.",
+      "spoken": "રસ્તા અને માળખાગત સુવિધા વિભાગ. તૂટેલા રસ્તા, ખાડા અને પુલોની ફરિયાદો અહીં નોંધાવો.",
+      "enSub": "Explore civil works and road maintenance."
+    },
+    "pa": {
+      "display": "ਸੜਕਾਂ ਅਤੇ ਬੁਨਿਆਦੀ ਢਾਂਚਾ: ਟੁੱਟੀਆਂ ਸੜਕਾਂ, ਟੋਏ, ਪੁਲ ਅਤੇ ਨਿਕਾਸੀ ਦੀਆਂ ਸ਼ਿਕਾਇਤਾਂ।",
+      "spoken": "ਸੜਕਾਂ ਅਤੇ ਬੁਨਿਆਦੀ ਢਾਂਚਾ ਭਾਗ। ਟੁੱਟੀਆਂ ਸੜਕਾਂ, ਟੋਇਆਂ ਅਤੇ ਪੁਲਾਂ ਦੀਆਂ ਸ਼ਿਕਾਇਤਾਂ ਇੱਥੇ ਦਰਜ ਕਰੋ।",
+      "enSub": "Explore civil works and road maintenance."
+    },
+    "ur": {
+      "display": "سڑکیں اور بنیادی ڈھانچہ: ٹوٹی سڑکیں، گڑھے، پل اور نکاسی آب کی شکایات۔",
+      "spoken": "سڑکیں اور بنیادی ڈھانچہ سیکشن۔ ٹوٹی سڑکوں، گڑھوں اور پلوں کی شکایات یہاں درج کریں۔",
+      "enSub": "Explore civil works and road maintenance."
+    },
+    "as": {
+      "display": "পথ আৰু আন্তঃগাঁথনি: ভঙা পথ, গাঁত, দলং আৰু পানী নিষ্কাষণৰ অভিযোগ।",
+      "spoken": "পথ আৰু আন্তঃগাঁথনি বিভাগ। ভঙা বাট-পথ আৰু দলঙৰ অভিযোগ ইয়াত দাখিল কৰক।",
+      "enSub": "Explore civil works and road maintenance."
+    },
+    "mai": {
+      "display": "सड़क एवं बुनियादी ढांचा: टूटल सड़क, गड्ढा, पुल आ जल निकासीक शिकायत।",
+      "spoken": "सड़क एवं बुनियादी ढांचा अनुभाग। टूटल सड़क, गड्ढा आ पुलक शिकायत एतय दर्ज करू।",
+      "enSub": "Explore civil works and road maintenance."
+    },
+    "sat": {
+      "display": "ᱰᱟᱦᱟᱨ ᱟᱨ ᱵᱩᱱᱤᱭᱟᱹᱫᱽ: ᱨᱟᱹᱯᱩᱫ ᱰᱟᱦᱟᱨ, ᱠᱷᱟᱫᱟᱱ, ᱥᱟᱠᱷᱳ ᱟᱨ ᱫᱟᱜ ᱰᱟᱦᱟᱨ ᱨᱮᱱᱟᱜ ᱟᱱᱟᱴ ᱠᱚ᱾",
+      "spoken": "ᱰᱟᱦᱟᱨ ᱟᱨ ᱵᱩᱱᱤᱭᱟᱹᱫᱽ ᱦᱟᱹᱴᱤᱧ᱾ ᱨᱟᱹᱯᱩᱫ ᱰᱟᱦᱟᱨ ᱟᱨ ᱥᱟᱠᱷᱳ ᱨᱮᱱᱟᱜ ᱟᱱᱟᱴ ᱱᱚᱸᱰᱮ ᱫᱟᱨᱡᱽ ᱢᱮ᱾",
+      "enSub": "Explore civil works and road maintenance."
+    },
+    "ks": {
+      "display": "سَڑکَن تہِ بُنیٲدی ڈِھانٛچہٕ: پُھٹِمٕژ سَڑکہٕ، کھَڈٕ، پُلَن تہِ ڈرینیج نِظامٕچ شِکایتہٕ۔",
+      "spoken": "سَڑکَن تہِ بُنیٲدی ڈِھانٛچہٕ سؠکشَن۔ پُھٹِمٕژ سَڑکَن تہِ پُلَن ہٕنٛز شِکایتہٕ کٔریو ییٚتہِ دَرٕج۔",
+      "enSub": "Explore civil works and road maintenance."
+    },
+    "sd": {
+      "display": "روڊ ۽ بنيادي ڍانچو: ٽٽل روڊ، کڏا، پل ۽ پاڻي نيڪال جون شڪايتون.",
+      "spoken": "روڊ ۽ بنيادي ڍانچو سيڪشن. ٽٽل روڊن، کڏن ۽ پلن جون شڪايتون هتي داخل ڪريو.",
+      "enSub": "Explore civil works and road maintenance."
+    },
+    "en": {
+      "display": "Roads & Infrastructure: PWD, PMGSY, and connectivity works.",
+      "spoken": "Roads and Infrastructure section. Report broken roads, potholes, bridges, and drainage works.",
+      "enSub": "Explore civil works and road maintenance."
+    }
+  },
+  "card_progress": {
+    "hi": {
+      "display": "प्रगति एवं जन समर्थन: चालू विकास कार्यों की स्थिति देखें और समर्थन दें।",
+      "spoken": "प्रगति एवं जन समर्थन अनुभाग। इलाके के चालू विकास कार्यों की स्थिति देखें और प्राथमिकताओं को वोट दें।",
+      "enSub": "Progress & Upvotes: Community priorities and live civic support."
+    },
+    "bho": {
+      "display": "प्रगति आ जन समर्थन: चालू कामन के स्थिति देखीं आ समर्थन दिहीं।",
+      "spoken": "प्रगति आ जन समर्थन। चालू विकास कामन के स्थिति देखीं आ वोट दिहीं।",
+      "enSub": "Progress & Upvotes in Bhojpuri."
+    },
+    "or": {
+      "display": "ପ୍ରଗତି ଏବଂ ଜନ ସମର୍ଥନ: ଚାଲୁଥିବା ବିକାଶ କାର୍ଯ୍ୟ ଦେଖନ୍ତୁ ଏବଂ ସମର୍ଥନ ଦିଅନ୍ତୁ।",
+      "spoken": "ପ୍ରଗତି ଏବଂ ଜନ ସମର୍ଥନ। ଚାଲୁଥିବା କାର୍ଯ୍ୟର ସ୍ଥିତି ଦେଖନ୍ତୁ ଏବଂ ସମର୍ଥନ ଦିଅନ୍ତୁ।",
+      "enSub": "Progress & Upvotes in Odia."
+    },
+    "bn": {
+      "display": "অগ্রগতি ও জনসমর্থন: চলমান উন্নয়ন কাজের স্থিতি দেখুন এবং ভোট দিন।",
+      "spoken": "অগ্রগতি ও জনসমর্থন। চলমান উন্নয়ন কাজের স্থিতি দেখুন এবং অগ্রাধিকার দিন।",
+      "enSub": "Progress & Upvotes in Bengali."
+    },
+    "ta": {
+      "display": "முன்னேற்றம் மற்றும் ஆதரவு: நடந்துகொண்டிருக்கும் திட்டங்களின் நிலையைப் பார்த்து வாக்களிக்கவும்.",
+      "spoken": "முன்னேற்றம் மற்றும் பொது ஆதரவு பிரிவு. திட்டங்களின் நிலையைப் பார்த்து முன்னுரிமைகளுக்கு ஆதரவு அளியுங்கள்.",
+      "enSub": "Citizen upvoting and priority tracking."
+    },
+    "te": {
+      "display": "పురోగతి & ప్రజా మద్దతు: కొనసాగుతున్న అభివృద్ధి పనుల స్థితిని చూసి మద్దతు ఇవ్వండి.",
+      "spoken": "పురోగతి మరియు ప్రజా మద్దతు విభాగం. కొనసాగుతున్న పనుల స్థితిని చూసి ప్రాధాన్యతలకు మద్దతు తెలపండి.",
+      "enSub": "Citizen upvoting and priority tracking."
+    },
+    "kn": {
+      "display": "ಪ್ರಗತಿ ಮತ್ತು ಸಾರ್ವಜನಿಕ ಬೆಂಬಲ: ನಡೆಯುತ್ತಿರುವ ಅಭಿವೃದ್ಧಿ ಕಾಮಗಾರಿಗಳನ್ನು ವೀಕ್ಷಿಸಿ ಬೆಂಬಲಿಸಿ.",
+      "spoken": "ಪ್ರಗತಿ ಮತ್ತು ಸಾರ್ವಜನಿಕ ಬೆಂಬಲ ವಿಭಾಗ. ನಡೆಯುತ್ತಿರುವ ಕಾಮಗಾರಿಗಳ ಸ್ಥಿತಿಯನ್ನು ವೀಕ್ಷಿಸಿ ಆದ್ಯತೆಗಳಿಗೆ ಮತ ನೀಡಿ.",
+      "enSub": "Citizen upvoting and priority tracking."
+    },
+    "ml": {
+      "display": "പുരോഗതിയും പൊതുപിന്തുണയും: നിലവിലെ വികസന പ്രവർത്തനങ്ങളുടെ അവസ്ഥ കണ്ട് പിന്തുണയ്ക്കുക.",
+      "spoken": "പുരോഗതിയും പൊതുപിന്തുണയും വിഭാഗം. പദ്ധതികളുടെ സ്ഥിതി കണ്ട് മുൻഗണനകൾക്ക് പിന്തുണ നൽകുക.",
+      "enSub": "Citizen upvoting and priority tracking."
+    },
+    "mr": {
+      "display": "प्रगती आणि जनसमर्थन: चालू विकास कामांची स्थिती पहा आणि समर्थन द्या.",
+      "spoken": "प्रगती आणि जनसमर्थन विभाग. भागातील चालू विकास कामांची स्थिती पहा आणि प्राधान्यांना पाठिंबा द्या.",
+      "enSub": "Citizen upvoting and priority tracking."
+    },
+    "gu": {
+      "display": "પ્રગતિ અને જનસમર્થન: ચાલુ વિકાસ કાર્યોની સ્થિતિ જુઓ અને સમર્થન આપો.",
+      "spoken": "પ્રગતિ અને જનસમર્થન વિભાગ. તમારા વિસ્તારના વિકાસ કાર્યો જુઓ અને અગ્રતાઓને સમર્થન આપો.",
+      "enSub": "Citizen upvoting and priority tracking."
+    },
+    "pa": {
+      "display": "ਤਰੱਕੀ ਅਤੇ ਜਨਤਕ ਸਮਰਥਨ: ਚੱਲ ਰਹੇ ਵਿਕਾਸ ਕਾਰਜਾਂ ਦੀ ਸਥਿਤੀ ਵੇਖੋ ਅਤੇ ਵੋਟ ਦਿਓ।",
+      "spoken": "ਤਰੱਕੀ ਅਤੇ ਜਨਤਕ ਸਮਰਥਨ ਭਾਗ। ਚੱਲ ਰਹੇ ਵਿਕਾਸ ਕਾਰਜਾਂ ਦੀ ਸਥਿਤੀ ਵੇਖੋ ਅਤੇ ਤਰਜੀਹਾਂ ਨੂੰ ਸਮਰਥਨ ਦਿਓ।",
+      "enSub": "Citizen upvoting and priority tracking."
+    },
+    "ur": {
+      "display": "ترقی اور عوامی حمایت: جاری ترقیاتی کاموں کی صورتحال دیکھیں اور ووٹ دیں۔",
+      "spoken": "ترقی اور عوامی حمایت سیکشن۔ جاری ترقیاتی کاموں کی صورتحال دیکھیں اور ترجیحات کی حمایت کریں۔",
+      "enSub": "Citizen upvoting and priority tracking."
+    },
+    "as": {
+      "display": "অগ্ৰগতি আৰু ৰাজহুৱা সমৰ্থন: চলি থকা উন্নয়নমূলক কামৰ স্থিতি চাওক আৰু সমৰ্থন কৰক।",
+      "spoken": "অগ্ৰগতি আৰু ৰাজহুৱা সমৰ্থন বিভাগ। উন্নয়নমূলক কামৰ স্থিতি চাওক আৰু অগ্ৰাধিকাৰসমূহক সমৰ্থন জনাওক।",
+      "enSub": "Citizen upvoting and priority tracking."
+    },
+    "mai": {
+      "display": "प्रगति एवं जनसमर्थन: चालू विकास काजक स्थिति देखू आ समर्थन दिअ।",
+      "spoken": "प्रगति एवं जनसमर्थन अनुभाग। इलाकाक चालू विकास काजक स्थिति देखू आ समर्थन दिअ।",
+      "enSub": "Citizen upvoting and priority tracking."
+    },
+    "sat": {
+      "display": "ᱞᱟᱦᱟᱱᱛᱤ ᱟᱨ ᱦᱚᱲ ᱜᱚᱲᱚ: ᱪᱟᱹᱞᱩ ᱢᱮᱱᱟᱜ ᱠᱟᱹᱢᱤ ᱧᱮᱞ ᱢᱮ ᱟᱨ ᱜᱚᱲᱚ ᱮᱢ ᱢᱮ᱾",
+      "spoken": "ᱞᱟᱦᱟᱱᱛᱤ ᱟᱨ ᱦᱚᱲ ᱜᱚᱲᱚ ᱦᱟᱹᱴᱤᱧ᱾ ᱴᱚᱴᱷᱟ ᱨᱮᱱᱟᱜ ᱠᱟᱹᱢᱤ ᱧᱮᱞ ᱢᱮ ᱟᱨ ᱜᱚᱲᱚ ᱮᱢ ᱢᱮ᱾",
+      "enSub": "Citizen upvoting and priority tracking."
+    },
+    "ks": {
+      "display": "ترقی تہِ عوٲمی حِمایَتھ: چالو تَرقیٲتی کٲمَن ہٕنٛز صوٗرتِحال وُچِھو تہِ دِیو حِمایَتھ۔",
+      "spoken": "ترقی تہِ عوٲمی حِمایَتھ سؠکشَن۔ عِلاقٕکؠن ترقیٲتی کٲمَن ہٕنٛز صوٗرتِحال وُچِھو تہِ دِیو ووٹ۔",
+      "enSub": "Citizen upvoting and priority tracking."
+    },
+    "sd": {
+      "display": "ترقي ۽ عوامي حمايت: هلندڙ ترقياتي ڪمن جي صورتحال ڏسو ۽ حمايت ڪريو.",
+      "spoken": "ترقي ۽ عوامي حمايت سيڪشن. ترقياتي ڪمن جي صورتحال ڏسو ۽ ترجيحن کي ووٽ ڏيو.",
+      "enSub": "Citizen upvoting and priority tracking."
+    },
+    "en": {
+      "display": "Progress & Upvotes: Community priorities and live civic support.",
+      "spoken": "Progress and Public Support section. Track active projects and upvote community priorities.",
+      "enSub": "Citizen upvoting and priority tracking."
+    }
+  },
+  "card_gis": {
+    "hi": {
+      "display": "ग्राम जीआईएस हॉटस्पॉट: उपग्रह मानचित्र पर समस्याओं के जीपीएस पिन देखें।",
+      "spoken": "ग्राम जीआईएस हॉटस्पॉट मानचित्र। उपग्रह मानचित्र पर अपने इलाके की समस्याओं के जीपीएस लोकेशन पिन देखें।",
+      "enSub": "Village GIS Hotspot: View geospatial incident clusters on satellite maps."
+    },
+    "bho": {
+      "display": "ग्राम जीआईएस हॉटस्पॉट: नक्शा पर इलाका के समस्या के पिन देखीं।",
+      "spoken": "ग्राम जीआईएस हॉटस्पॉट। नक्शा पर इलाका के समस्या के जीपीएस पिन देखीं।",
+      "enSub": "GIS Hotspot in Bhojpuri."
+    },
+    "or": {
+      "display": "ଗ୍ରାମ ଜିଆଇଏସ୍ ହଟସ୍ପଟ୍: ମ୍ୟାପ୍ ରେ ଆପଣଙ୍କ ଅଞ୍ଚଳର ସମସ୍ୟାଗୁଡ଼ିକ ଦେଖନ୍ତୁ।",
+      "spoken": "ଗ୍ରାମ ଜିଆଇଏସ୍ ହଟସ୍ପଟ୍ ମ୍ୟାପ୍। ମାନଚିତ୍ରରେ ଆପଣଙ୍କ ଅଞ୍ଚଳର ସମସ୍ୟାଗୁଡ଼ିକର ଜିପିଏସ୍ ପିନ୍ ଦେଖନ୍ତୁ।",
+      "enSub": "GIS Hotspot in Odia."
+    },
+    "bn": {
+      "display": "গ্রাম জিআইএস হটস্পট: স্যাটেলাইট মানচিত্রে সমস্যার অবস্থান দেখুন।",
+      "spoken": "গ্রাম জিআইএস হটস্পট মানচিত্র। স্যাটেলাইট মানচিত্রে সমস্যার জিপিএস অবস্থান দেখুন।",
+      "enSub": "GIS Hotspot in Bengali."
+    },
+    "ta": {
+      "display": "கிராம ஜிஐஎஸ் வரைபடம்: செயற்கைக்கோள் வரைபடத்தில் ஜிபிஎஸ் இருப்பிடங்களைக் காண்க.",
+      "spoken": "கிராம ஜிஐஎஸ் வரைபடம். செயற்கைக்கோள் வரைபடத்தில் உங்கள் பகுதியின் புகார்களைக் காண்க.",
+      "enSub": "Geographic incident clustering."
+    },
+    "te": {
+      "display": "గ్రామ GIS హాట్‌స్పాట్: ఉపగ్రహ మ్యాప్‌లో సమస్యల GPS స్థానాలను చూడండి.",
+      "spoken": "గ్రామ GIS హాట్‌స్పాట్ మ్యాప్. ఉపగ్రహ మ్యాప్‌లో మీ ప్రాంత సమస్యల జీపీఎస్ పిన్‌లను చూడండి.",
+      "enSub": "Geographic incident clustering."
+    },
+    "kn": {
+      "display": "ಗ್ರಾಮ GIS ಹಾಟ್‌ಸ್ಪಾಟ್: ಉಪಗ್ರಹ ನಕ್ಷೆಯಲ್ಲಿ ಸಮಸ್ಯೆಗಳ GPS ಪಿನ್‌ಗಳನ್ನು ವೀಕ್ಷಿಸಿ.",
+      "spoken": "ಗ್ರಾಮ GIS ಹಾಟ್‌ಸ್ಪಾಟ್ ನಕ್ಷೆ. ಉಪಗ್ರಹ ನಕ್ಷೆಯಲ್ಲಿ ನಿಮ್ಮ ಪ್ರದೇಶದ ಸಮಸ್ಯೆಗಳ ಜಿಪಿಎಸ್ ಪಿನ್‌ಗಳನ್ನು ವೀಕ್ಷಿಸಿ.",
+      "enSub": "Geographic incident clustering."
+    },
+    "ml": {
+      "display": "ഗ്രാമ GIS ഹോട്ട്‌സ്‌പോട്ട്: ഉപഗ്രഹ ഭൂപടത്തിൽ പ്രശ്നങ്ങളുടെ ജിപിഎസ് ലൊക്കേഷൻ കാണുക.",
+      "spoken": "ഗ്രാമ GIS ഹോട്ട്‌സ്‌പോട്ട് ഭൂപടം. ഉപഗ്രഹ ഭൂപടത്തിൽ നിങ്ങളുടെ പ്രദേശത്തെ പ്രശ്നങ്ങൾ കാണുക.",
+      "enSub": "Geographic incident clustering."
+    },
+    "mr": {
+      "display": "ग्राम GIS हॉटस्पॉट: उपग्रह नकाशावर समस्यांचे GPS पिन पहा.",
+      "spoken": "ग्राम GIS हॉटस्पॉट नकाशा. उपग्रह नकाशावर आपल्या परिसरातील समस्यांचे स्थान पहा.",
+      "enSub": "Geographic incident clustering."
+    },
+    "gu": {
+      "display": "ગ્રામ GIS હોટસ્પોટ: ઉપગ્રહ નકશા પર સમસ્યાઓના GPS પિન જુઓ.",
+      "spoken": "ગ્રામ GIS હોટસ્પોટ નકશો. ઉપગ્રહ નકશા પર તમારા વિસ્તારની સમસ્યાઓના જીપીએસ પિન જુઓ.",
+      "enSub": "Geographic incident clustering."
+    },
+    "pa": {
+      "display": "ਪਿੰਡ GIS ਹਾਟਸਪੌਟ: ਸੈਟੇਲਾਈਟ ਨਕਸ਼ੇ 'ਤੇ ਸਮੱਸਿਆਵਾਂ ਦੇ GPS ਪਿੰਨ ਵੇਖੋ।",
+      "spoken": "ਪਿੰਡ GIS ਹਾਟਸਪੌਟ ਨਕਸ਼ਾ। ਸੈਟੇਲਾਈਟ ਨਕਸ਼ੇ 'ਤੇ ਆਪਣੇ ਖੇਤਰ ਦੀਆਂ ਸਮੱਸਿਆਵਾਂ ਦੇ ਜੀਪੀਐਸ ਪਿੰਨ ਵੇਖੋ।",
+      "enSub": "Geographic incident clustering."
+    },
+    "ur": {
+      "display": "دیہی GIS ہاٹ اسپاٹ: سیٹلائٹ نقشے پر مسائل کے GPS پن دیکھیں۔",
+      "spoken": "دیہی GIS ہاٹ اسپاٹ نقشہ۔ سیٹلائٹ نقشے پر اپنے علاقے کے مسائل کے جی پی ایس پن دیکھیں۔",
+      "enSub": "Geographic incident clustering."
+    },
+    "as": {
+      "display": "গাঁও GIS হটস্পট: উপগ্ৰহ মানচিত্ৰত সমস্যাৰ GPS পিন চাওক।",
+      "spoken": "গাঁও GIS হটস্পট মানচিত্ৰ। উপগ্ৰহ মানচিত্ৰত নিজৰ এলেকাৰ সমস্যাসমূহৰ অৱস্থান চাওক।",
+      "enSub": "Geographic incident clustering."
+    },
+    "mai": {
+      "display": "ग्राम जीआईएस हॉटस्पॉट: उपग्रह नक्शा पर समस्याक जीपीएस पिन देखू।",
+      "spoken": "ग्राम जीआईएस हॉटस्पॉट नक्शा। उपग्रह नक्शा पर अपन इलाकाक समस्याक लोकेशन देखू।",
+      "enSub": "Geographic incident clustering."
+    },
+    "sat": {
+      "display": "ᱟᱹᱛᱩ GIS ᱦᱚᱴᱥᱯᱚᱴ: ᱥᱮᱴᱮᱞᱟᱭᱤᱴ ᱢᱮᱯ ᱨᱮ ᱟᱱᱟᱴ ᱠᱚᱨᱮᱱᱟᱜ GPS ᱴᱩᱰᱟᱹᱜ ᱧᱮᱞ ᱢᱮ᱾",
+      "spoken": "ᱟᱹᱛᱩ GIS ᱦᱚᱴᱥᱯᱚᱴ ᱢᱮᱯ᱾ ᱥᱮᱴᱮᱞᱟᱭᱤᱴ ᱢᱮᱯ ᱨᱮ ᱟᱢᱟᱜ ᱴᱚᱴᱷᱟ ᱨᱮᱱᱟᱜ ᱟᱱᱟᱴ ᱠᱚ ᱧᱮᱞ ᱢᱮ᱾",
+      "enSub": "Geographic incident clustering."
+    },
+    "ks": {
+      "display": "دیہی GIS ہاٹ اسپاٹ: سیٹلائٹ نقشَس پؠٹھ مَسئلَن ہٕنٛدی GPS پِن وُچِھو۔",
+      "spoken": "دیہی GIS ہاٹ اسپاٹ نقشہٕ۔ سیٹلائٹ نقشَس پؠٹھ پَننِس علاقَس مَنٛز مَسئلَن ہٕنٛدی لوکیشن پِن وُچِھو۔",
+      "enSub": "Geographic incident clustering."
+    },
+    "sd": {
+      "display": "ڳوٺ GIS هاٽ اسپاٽ: سيٽلائيٽ نقشي تي مسئلن جا GPS پن ڏسو.",
+      "spoken": "ڳوٺ GIS هاٽ اسپاٽ نقشو. سيٽلائيٽ نقشي تي پنهنجي علائقي جي مسئلن جا جي پي ايس پن ڏسو.",
+      "enSub": "Geographic incident clustering."
+    },
+    "en": {
+      "display": "Village GIS Hotspot: Satellite map and verified evidence coordinates.",
+      "spoken": "Village GIS Hotspot map. View geospatial incident clusters and live telemetry on the map.",
+      "enSub": "Geographic incident clustering."
+    }
+  },
+  "card_profile": {
+    "hi": {
+      "display": "नागरिक सेवाएं व प्रोफ़ाइल: आधार ई-केवाईसी, डिजीलॉकर और पूर्व शिकायतों की स्थिति।",
+      "spoken": "नागरिक सेवाएं व प्रोफ़ाइल। अपना आधार ई-केवाईसी, डिजीलॉकर और अपनी पूर्व शिकायतों की स्थिति देखें।",
+      "enSub": "Citizen Services & Profile: Aadhaar e-KYC and past complaint tracking."
+    },
+    "bho": {
+      "display": "नागरिक सेवा आ प्रोफाइल: आधार सत्यापन आ पुरान शिकायतन के स्थिति।",
+      "spoken": "नागरिक सेवा आ प्रोफाइल। आधार सत्यापन आ पुरान शिकायतन के स्थिति देखीं।",
+      "enSub": "Citizen Profile in Bhojpuri."
+    },
+    "or": {
+      "display": "ନାଗରିକ ସେବା ଓ ପ୍ରୋଫାଇଲ୍: ଆଧାର ଇ-କେୱାଇସି ଏବଂ ପୂର୍ବ ଅଭିଯୋଗର ସ୍ଥିତି।",
+      "spoken": "ନାଗରିକ ସେବା ଓ ପ୍ରୋଫାଇଲ୍। ଆଧାର ଇ-କେୱାଇସି ଏବଂ ପୂର୍ବ ଅଭିଯୋଗର ସ୍ଥିତି ଦେଖନ୍ତୁ।",
+      "enSub": "Citizen Profile in Odia."
+    },
+    "bn": {
+      "display": "নাগরিক পরিষেবা ও প্রোফাইল: আধার ই-কেওয়াইসি এবং পূর্বের অভিযোগের স্থিতি দেখুন।",
+      "spoken": "নাগরিক পরিষেবা ও প্রোফাইল। আধার ই-কেওয়াইসি এবং আপনার পূর্বের অভিযোগের স্থিতি দেখুন।",
+      "enSub": "Citizen Profile in Bengali."
+    },
+    "ta": {
+      "display": "குடிமக்கள் சேவைகள் & சுயவிவரம்: ஆதார் e-KYC மற்றும் டிஜிலாக்கர் சரிபார்ப்பு நிலை.",
+      "spoken": "குடிமக்கள் சேவைகள் மற்றும் சுயவிவரம். உங்கள் ஆதார் e-KYC, டிஜிலாக்கர் மற்றும் கடந்த கால புகார்களைப் பாருங்கள்.",
+      "enSub": "Profile, credentials, and ledger history."
+    },
+    "te": {
+      "display": "పౌర సేవలు & ప్రొఫైల్: ఆధార్ e-KYC మరియు డిజిలాకర్ ధృవీకరణ స్థితి.",
+      "spoken": "పౌర సేవలు మరియు ప్రొఫైల్. మీ ఆధార్ e-KYC, డిజిలాకర్ మరియు మునుపటి ఫిర్యాదుల స్థితిని చూడండి.",
+      "enSub": "Profile, credentials, and ledger history."
+    },
+    "kn": {
+      "display": "ನಾಗರಿಕ ಸೇವೆಗಳು ಮತ್ತು ಪ್ರೊಫೈಲ್: ಆಧಾರ್ e-KYC ಮತ್ತು ಡಿಜಿಲಾಕರ್ ಪರಿಶೀಲನಾ ಸ್ಥಿತಿ.",
+      "spoken": "ನಾಗರಿಕ ಸೇವೆಗಳು ಮತ್ತು ಪ್ರೊಫೈಲ್. ನಿಮ್ಮ ಆಧಾರ್ e-KYC, ಡಿಜಿಲಾಕರ್ ಮತ್ತು ಹಿಂದಿನ ದೂರುಗಳ ಸ್ಥಿತಿಯನ್ನು ನೋಡಿ.",
+      "enSub": "Profile, credentials, and ledger history."
+    },
+    "ml": {
+      "display": "പൗര സേവനങ്ങളും പ്രൊഫൈലും: ആധാർ e-KYC, ഡിജിലോക്കർ പരിശോധനാ നില.",
+      "spoken": "പൗര സേവനങ്ങളും പ്രൊഫൈലും. നിങ്ങളുടെ ആധാർ e-KYC, ഡിജിലോക്കർ, മുൻ പരാതികൾ എന്നിവ കാണുക.",
+      "enSub": "Profile, credentials, and ledger history."
+    },
+    "mr": {
+      "display": "नागरिक सेवा आणि प्रोफाइल: आधार e-KYC आणि डिजिलॉकर पडताळणी स्थिती.",
+      "spoken": "नागरिक सेवा आणि प्रोफाइल. आपले आधार e-KYC, डिजिलॉकर आणि मागील तक्रारींची स्थिती पहा.",
+      "enSub": "Profile, credentials, and ledger history."
+    },
+    "gu": {
+      "display": "નાગરિક સેવાઓ અને પ્રોફાઇલ: આધાર e-KYC અને ડિજીલોકર ચકાસણી સ્થિતિ.",
+      "spoken": "નાગરિક સેવાઓ અને પ્રોફાઇલ. તમારું આધાર e-KYC, ડિજીલોકર અને અગાઉની ફરિયાદો જુઓ.",
+      "enSub": "Profile, credentials, and ledger history."
+    },
+    "pa": {
+      "display": "ਨਾਗਰਿਕ ਸੇਵਾਵਾਂ ਅਤੇ ਪ੍ਰੋਫਾਈਲ: ਆਧਾਰ e-KYC ਅਤੇ ਡਿਜੀਲੌਕਰ ਤਸਦੀਕ ਸਥਿਤੀ।",
+      "spoken": "ਨਾਗਰਿਕ ਸੇਵਾਵਾਂ ਅਤੇ ਪ੍ਰੋਫਾਈਲ। ਆਪਣਾ ਆਧਾਰ e-KYC, ਡਿਜੀਲੌਕਰ ਅਤੇ ਪੁਰਾਣੀਆਂ ਸ਼ਿਕਾਇਤਾਂ ਦੀ ਸਥਿਤੀ ਵੇਖੋ।",
+      "enSub": "Profile, credentials, and ledger history."
+    },
+    "ur": {
+      "display": "شہری خدمات اور پروفائل: آدھار e-KYC اور ڈیجی لاکر تصدیقی حیثیت۔",
+      "spoken": "شہری خدمات اور پروفائل۔ اپنا آدھار e-KYC، ڈیجی لاکر اور سابقہ شکایات کی صورتحال دیکھیں۔",
+      "enSub": "Profile, credentials, and ledger history."
+    },
+    "as": {
+      "display": "নাগৰিক সেৱা আৰু প্ৰফাইল: আধাৰ e-KYC আৰু ডিজিলাকাৰ প্ৰমাণীকৰণ স্থিতি।",
+      "spoken": "নাগৰিক সেৱা আৰু প্ৰফাইল। আপোনাৰ আধাৰ e-KYC, ডিজিলাকাৰ আৰু পূৰ্বৰ অভিযোগসমূহ চাওক।",
+      "enSub": "Profile, credentials, and ledger history."
+    },
+    "mai": {
+      "display": "नागरिक सेवा आ प्रोफ़ाइल: आधार e-KYC, डिजीलॉकर आ पूर्व समस्याक स्थिति।",
+      "spoken": "नागरिक सेवा आ प्रोफ़ाइल। अपन आधार e-KYC, डिजीलॉकर आ पूर्व समस्याक स्थिति देखू।",
+      "enSub": "Profile, credentials, and ledger history."
+    },
+    "sat": {
+      "display": "ᱱᱟᱹᱜᱟᱹᱨᱤᱭᱟᱹ ᱥᱮᱵᱟ ᱟᱨ ᱯᱨᱳᱯᱷᱟᱭᱤᱞ: ᱟᱫᱷᱟᱨ e-KYC ᱟᱨ ᱰᱤᱡᱤᱞᱚᱠᱟᱨ ᱴᱷᱟᱹᱣᱠᱟᱹ ᱛᱷᱟᱨ᱾",
+      "spoken": "ᱱᱟᱹᱜᱟᱹᱨᱤᱭᱟᱹ ᱥᱮᱵᱟ ᱟᱨ ᱯᱨᱳᱯᱷᱟᱭᱤᱞ᱾ ᱟᱢᱟᱜ ᱟᱫᱷᱟᱨ e-KYC, ᱰᱤᱡᱤᱞᱚᱠᱟᱨ ᱟᱨ ᱞᱟᱦᱟ ᱨᱮᱱᱟᱜ ᱟᱱᱟᱴ ᱠᱚ ᱧᱮᱞ ᱢᱮ᱾",
+      "enSub": "Profile, credentials, and ledger history."
+    },
+    "ks": {
+      "display": "شَہَری خِدمات تہِ پروفائل: آدھار e-KYC تہِ ڈیجی لاکر تَصدیق صوٗرتِحال۔",
+      "spoken": "شَہَری خِدمات تہِ پروفائل۔ پَنُن آدھار e-KYC، ڈیجی لاکر تہِ پٔتِم شِکایتَن ہٕنٛز صوٗرتِحال وُچِھو۔",
+      "enSub": "Profile, credentials, and ledger history."
+    },
+    "sd": {
+      "display": "شهري خدمتون ۽ پروفائل: آڌار e-KYC ۽ ڊيجي لاڪر تصديق جي صورتحال.",
+      "spoken": "شهري خدمتون ۽ پروفائل. پنهنجو آڌار e-KYC، ڊيجي لاڪر ۽ پوئين شڪايتون ڏسو.",
+      "enSub": "Profile, credentials, and ledger history."
+    },
+    "en": {
+      "display": "Citizen Services & Profile: Aadhaar e-KYC and DigiLocker identity verification.",
+      "spoken": "Citizen Services and Profile. View your Aadhaar e-KYC, DigiLocker, and past grievance history.",
+      "enSub": "Profile, credentials, and ledger history."
+    }
+  },
+  "location_pill": {
+    "hi": {
+      "display": "लाइव स्थान: वर्तमान सत्यापित जीपीएस क्षेत्र।",
+      "spoken": "लाइव स्थान। यह आपका वर्तमान जीपीएस क्षेत्र प्रदर्शित कर रहा है।",
+      "enSub": "Live Location: Displays your verified GPS detected location."
+    },
+    "ta": {
+      "display": "நேரலை இருப்பிடம்: சரிபார்க்கப்பட்ட ஜிபிஎஸ் பகுதியைக் காட்டுகிறது.",
+      "spoken": "நேரலை இருப்பிடம். இது உங்கள் தற்போதைய ஜிபிஎஸ் இருப்பிடத்தைக் காட்டுகிறது.",
+      "enSub": "Verified telemetry zone."
+    },
+    "te": {
+      "display": "లైవ్ లొకేషన్: ధృవీకరించబడిన జీపీఎస్ ప్రాంతాన్ని ప్రదర్శిస్తుంది.",
+      "spoken": "లైవ్ లొకేషన్. ఇది మీ ప్రస్తుత జీపీఎస్ ప్రాంతాన్ని ప్రదర్శిస్తోంది.",
+      "enSub": "Verified telemetry zone."
+    },
+    "kn": {
+      "display": "ಲೈವ್ ಸ್ಥಳ: ನಿಮ್ಮ ಪರಿಶೀಲಿಸಿದ ಜಿಪಿಎಸ್ ಪ್ರದೇಶವನ್ನು ತೋರಿಸುತ್ತದೆ.",
+      "spoken": "ಲೈವ್ ಸ್ಥಳ. ಇದು ನಿಮ್ಮ ಪ್ರಸ್ತುತ ಪರಿಶೀಲಿಸಿದ ಜಿಪಿಎಸ್ ಪ್ರದೇಶವನ್ನು ಪ್ರದರ್ಶಿಸುತ್ತಿದೆ.",
+      "enSub": "Verified telemetry zone."
+    },
+    "ml": {
+      "display": "ലൈവ് ലൊക്കേഷൻ: പരിശോധിച്ച ജിപിഎസ് പ്രദേശം കാണിക്കുന്നു.",
+      "spoken": "ലൈവ് ലൊക്കേഷൻ. ഇത് നിങ്ങളുടെ നിലവിലെ ജിപിഎസ് പ്രദേശം കാണിക്കുന്നു.",
+      "enSub": "Verified telemetry zone."
+    },
+    "mr": {
+      "display": "थेट स्थान: आपले सत्यापित जीपीएस क्षेत्र दर्शविते.",
+      "spoken": "थेट स्थान. हे आपले वर्तमान सत्यापित जीपीएस क्षेत्र दर्शवित आहे.",
+      "enSub": "Verified telemetry zone."
+    },
+    "gu": {
+      "display": "લાઈવ સ્થાન: તમારું ચકાસાયેલ જીપીએસ વિસ્તાર દર્શાવે છે.",
+      "spoken": "લાઈવ સ્થાન. આ તમારો વર્તમાન ચકાસાયેલ જીપીએસ વિસ્તાર દર્શાવે છે.",
+      "enSub": "Verified telemetry zone."
+    },
+    "pa": {
+      "display": "ਲਾਈਵ ਟਿਕਾਣਾ: ਤੁਹਾਡਾ ਤਸਦੀਕਸ਼ੁਦਾ ਜੀਪੀਐਸ ਖੇਤਰ ਦਰਸਾਉਂਦਾ ਹੈ।",
+      "spoken": "ਲਾਈਵ ਟਿਕਾਣਾ। ਇਹ ਤੁਹਾਡਾ ਮੌਜੂਦਾ ਤਸਦੀਕਸ਼ੁਦਾ ਜੀਪੀਐਸ ਖੇਤਰ ਵਿਖਾ ਰਿਹਾ ਹੈ।",
+      "enSub": "Verified telemetry zone."
+    },
+    "ur": {
+      "display": "لائیو مقام: آپ کا تصدیق شدہ جی پی ایس علاقہ ظاہر کرتا ہے۔",
+      "spoken": "لائیو مقام۔ یہ آپ کا موجودہ تصدیق شدہ جی پی ایس علاقہ ظاہر کر رہا ہے۔",
+      "enSub": "Verified telemetry zone."
+    },
+    "as": {
+      "display": "লাইভ স্থান: আপোনাৰ প্ৰমাণিত জি.পি.এছ. এলেকা দেখুৱায়।",
+      "spoken": "লাইভ স্থান। এইটো আপোনাৰ বৰ্তমানৰ জি.পি.এছ. এলেকা প্ৰদৰ্শন কৰিছে।",
+      "enSub": "Verified telemetry zone."
+    },
+    "mai": {
+      "display": "लाइव स्थान: अहाँक सत्यापित जीपीएस क्षेत्र प्रदर्शित करैत अछि।",
+      "spoken": "लाइव स्थान। ई अहाँक वर्तमान जीपीएस क्षेत्र प्रदर्शित कऽ रहल अछि।",
+      "enSub": "Verified telemetry zone."
+    },
+    "sat": {
+      "display": "ᱞᱟᱭᱤᱵᱽ ᱡᱟᱭᱜᱟ: ᱟᱢᱟᱜ ᱴᱷᱟᱹᱣᱠᱟᱹ ᱡᱤᱯᱤᱮᱥ ᱡᱟᱭᱜᱟ ᱩᱫᱩᱜᱮᱫᱟᱭ᱾",
+      "spoken": "ᱞᱟᱭᱤᱵᱽ ᱡᱟᱭᱜᱟ᱾ ᱱᱚᱶᱟ ᱫᱚ ᱟᱢᱟᱜ ᱱᱤᱛᱚᱜᱟᱜ ᱡᱤᱯᱤᱮᱥ ᱡᱟᱭᱜᱟ ᱩᱫᱩᱜᱮᱫᱟᱭ᱾",
+      "enSub": "Verified telemetry zone."
+    },
+    "ks": {
+      "display": "لائیو لوکیشن: تُہُنٛد تَصدیق شُدہ جی پی ایس علاقہٕ چھُ ہاوَن۔",
+      "spoken": "لائیو لوکیشن۔ یہِ چھُ تُہُنٛد سَتیاپِت جی پی ایس علاقہٕ ہاوَن۔",
+      "enSub": "Verified telemetry zone."
+    },
+    "sd": {
+      "display": "لائيو لوڪيشن: تصديق ٿيل جي پي ايس علائقو ڏيکاري ٿو.",
+      "spoken": "لائيو لوڪيشن. هي توهان جو موجوده جي پي ايس علائقو ڏيکاري رهيو آهي.",
+      "enSub": "Verified telemetry zone."
+    },
+    "en": {
+      "display": "Live Location: Displays your verified GPS detected location.",
+      "spoken": "Live Location. Displays your verified GPS detected location.",
+      "enSub": "Verified telemetry zone."
+    }
+  },
+  "refresh_gps": {
+    "hi": {
+      "display": "जीपीएस रिफ्रेश: उपग्रह जीपीएस निर्देशांक पुनः प्राप्त किए जा रहे हैं।",
+      "spoken": "जीपीएस रिफ्रेश बटन। वर्तमान उपग्रह जीपीएस निर्देशांक पुनः प्राप्त करने के लिए क्लिक किया गया।",
+      "enSub": "Refreshing live GPS satellite telemetry."
+    },
+    "ta": {
+      "display": "ஜிபிஎஸ் புதுப்பிப்பு: செயற்கைக்கோள் ஜிபிஎஸ் மீண்டும் பெறப்படுகிறது.",
+      "spoken": "ஜிபிஎஸ் புதுப்பிப்பு பொத்தான். நேரலை ஜிபிஎஸ் ஆயங்கள் புதுப்பிக்கப்படுகின்றன.",
+      "enSub": "GPS telemetry refresh."
+    },
+    "te": {
+      "display": "జీపీఎస్ రిఫ్రెష్: ఉపగ్రహ జీపీఎస్ కోఆర్డినేట్లను మళ్లీ పొందుతోంది.",
+      "spoken": "జీపీఎస్ రిఫ్రెష్ బటన్. లైవ్ ఉపగ్రహ జీపీఎస్ వివరాలను అప్‌డేట్ చేస్తోంది.",
+      "enSub": "GPS telemetry refresh."
+    },
+    "kn": {
+      "display": "ಜಿಪಿಎಸ್ ರಿಫ್ರೆಶ್: ಉಪಗ್ರಹ ಜಿಪಿಎಸ್ ನಿರ್ದೇಶಾಂಕಗಳನ್ನು ನವೀಕರಿಸಲಾಗುತ್ತಿದೆ.",
+      "spoken": "ಜಿಪಿಎಸ್ ರಿಫ್ರೆಶ್ ಬಟನ್. ಲೈವ್ ಉಪಗ್ರಹ ಜಿಪಿಎಸ್ ನಿರ್ದೇಶಾಂಕಗಳನ್ನು ನವೀಕರಿಸಲಾಗುತ್ತಿದೆ.",
+      "enSub": "GPS telemetry refresh."
+    },
+    "ml": {
+      "display": "ജിപിഎസ് പുതുക്കുക: ഉപഗ്രഹ ജിപിഎസ് വിവരങ്ങൾ വീണ്ടും നേടുന്നു.",
+      "spoken": "ജിപിഎസ് റിഫ്രഷ് ബട്ടൺ. തത്സമയ ഉപഗ്രഹ ജിപിഎസ് ലൊക്കേഷൻ പുതുക്കുന്നു.",
+      "enSub": "GPS telemetry refresh."
+    },
+    "mr": {
+      "display": "जीपीएस रीफ्रेश: उपग्रह जीपीएस निर्देशांक पुन्हा मिळवले जात आहेत.",
+      "spoken": "जीपीएस रीफ्रेश बटण. थेट उपग्रह जीपीएस निर्देशांक अपडेट केले जात आहेत.",
+      "enSub": "GPS telemetry refresh."
+    },
+    "gu": {
+      "display": "જીપીએસ રિફ્રેશ: ઉપગ્રહ જીપીએસ કોઓર્ડિનેટ્સ ફરીથી મેળવી રહ્યું છે.",
+      "spoken": "જીપીએસ રિફ્રેશ બટન. વર્તમાન સેટેલાઇટ જીપીએસ કોઓર્ડિનેટ્સ ફરીથી મેળવી રહ્યું છે.",
+      "enSub": "GPS telemetry refresh."
+    },
+    "pa": {
+      "display": "ਜੀਪੀਐਸ ਰਿਫ੍ਰੈਸ਼: ਸੈਟੇਲਾਈਟ ਜੀਪੀਐਸ ਕੋਆਰਡੀਨੇਟ ਦੁਬਾਰਾ ਪ੍ਰਾਪਤ ਕੀਤੇ ਜਾ ਰਹੇ ਹਨ।",
+      "spoken": "ਜੀਪੀਐਸ ਰਿਫ੍ਰੈਸ਼ ਬਟਨ। ਲਾਈਵ ਸੈਟੇਲਾਈਟ ਜੀਪੀਐਸ ਕੋਆਰਡੀਨੇਟ ਅੱਪਡੇਟ ਕੀਤੇ ਜਾ ਰਹੇ ਹਨ।",
+      "enSub": "GPS telemetry refresh."
+    },
+    "ur": {
+      "display": "جی پی ایس ریفریش: سیٹلائٹ جی پی ایس کوآرڈینیٹس دوبارہ حاصل کیے جا رہے ہیں۔",
+      "spoken": "جی پی ایس ریفریش بٹن۔ لائیو سیٹلائٹ جی پی ایس کوآرڈینیٹس اپ ڈیٹ کیے جا رہے ہیں۔",
+      "enSub": "GPS telemetry refresh."
+    },
+    "as": {
+      "display": "জি.পি.এছ. সতেজ কৰক: উপগ্ৰহ জি.পি.এছ. স্থানাংক পুনৰ সংগ্ৰহ কৰা হৈছে।",
+      "spoken": "জি.পি.এছ. সতেজ বুটাম। লাইভ উপগ্ৰহ জি.পি.এছ. স্থানাংক আপডেট কৰা হৈছে।",
+      "enSub": "GPS telemetry refresh."
+    },
+    "mai": {
+      "display": "जीपीएस रिफ्रेश: उपग्रह जीपीएस निर्देशांक पुनः प्राप्त कएल जा रहल अछि।",
+      "spoken": "जीपीएस रिफ्रेश बटन। वर्तमान उपग्रह जीपीएस निर्देशांक पुनः प्राप्त कएल जा रहल अछि।",
+      "enSub": "GPS telemetry refresh."
+    },
+    "sat": {
+      "display": "ᱡᱤᱯᱤᱮᱥ ᱱᱟᱣᱟ ᱢᱮ: ᱥᱮᱴᱮᱞᱟᱭᱤᱴ ᱡᱤᱯᱤᱮᱥ ᱡᱟᱭᱜᱟ ᱫᱚᱦᱲᱟ ᱧᱟᱢᱚᱜ ᱠᱟᱱᱟ᱾",
+      "spoken": "ᱡᱤᱯᱤᱮᱥ ᱱᱟᱣᱟ ᱵᱟᱴᱚᱱ᱾ ᱱᱤᱛᱚᱜᱟᱜ ᱥᱮᱴᱮᱞᱟᱭᱤᱴ ᱡᱤᱯᱤᱮᱥ ᱡᱟᱭᱜᱟ ᱱᱟᱣᱟ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ᱾",
+      "enSub": "GPS telemetry refresh."
+    },
+    "ks": {
+      "display": "جی پی ایس ریفریش: سیٹلائٹ جی پی ایس کوآرڈینیٹس چھِ دوبارٕ حٲصِل سپدان۔",
+      "spoken": "جی پی ایس ریفریش بَٹَن۔ لائیو سیٹلائٹ جی پی ایس کوآرڈینیٹس چھِ اپڈیٹ سپدان۔",
+      "enSub": "GPS telemetry refresh."
+    },
+    "sd": {
+      "display": "جي پي ايس ريفريش: سيٽلائيٽ جي پي ايس ٻيهر حاصل ڪئي پئي وڃي.",
+      "spoken": "جي پي ايس ريفريش بٽڻ. موجوده سيٽلائيٽ جي پي ايس تفصيل اپڊيٽ ڪيا پيا وڃن.",
+      "enSub": "GPS telemetry refresh."
+    },
+    "en": {
+      "display": "Refresh GPS: Updating live satellite coordinates.",
+      "spoken": "Refresh GPS button. Updating your live coordinates and area name.",
+      "enSub": "GPS telemetry refresh."
+    }
+  },
+  "change_location": {
+    "hi": {
+      "display": "स्थान बदलें: अपनी ग्राम पंचायत, वार्ड या जिला मैन्युअल रूप से चुनें।",
+      "spoken": "स्थान बदलने का विकल्प। अपनी ग्राम पंचायत, वार्ड या जिला मैन्युअल रूप से चुनने के लिए क्लिक करें।",
+      "enSub": "Change Location: Select your Gram Panchayat or Ward manually."
+    },
+    "ta": {
+      "display": "இருப்பிடத்தை மாற்று: கிராம பஞ்சாயத்து, வார்டு அல்லது மாவட்டத்தை தேர்ந்தெடுக்கவும்.",
+      "spoken": "இருப்பிடத்தை மாற்றும் விருப்பம். உங்கள் பஞ்சாயத்து அல்லது வார்டை கைமுறையாக தேர்ந்தெடுக்க கிளிக் செய்யவும்.",
+      "enSub": "Manual administrative zone selector."
+    },
+    "te": {
+      "display": "స్థానాన్ని మార్చండి: మీ గ్రామ పంచాయతీ, వార్డు లేదా జిల్లాను మాన్యువల్‌గా ఎంచుకోండి.",
+      "spoken": "స్థానాన్ని మార్చే ఎంపిక. మీ గ్రామ పంచాయతీ లేదా వార్డును ఎంచుకోవడానికి క్లిక్ చేయండి.",
+      "enSub": "Manual administrative zone selector."
+    },
+    "kn": {
+      "display": "ಸ್ಥಳವನ್ನು ಬದಲಾಯಿಸಿ: ನಿಮ್ಮ ಗ್ರಾಮ ಪಂಚಾಯತ್, ವಾರ್ಡ್ ಅಥವಾ ಜಿಲ್ಲೆಯನ್ನು ಹಸ್ತಚಾಲಿತವಾಗಿ ಆಯ್ಕೆಮಾಡಿ.",
+      "spoken": "ಸ್ಥಳ ಬದಲಾಯಿಸುವ ಆಯ್ಕೆ. ನಿಮ್ಮ ಗ್ರಾಮ ಪಂಚಾಯತ್ ಅಥವಾ ಜಿಲ್ಲೆಯನ್ನು ಆಯ್ಕೆ ಮಾಡಲು ಕ್ಲಿಕ್ ಮಾಡಿ.",
+      "enSub": "Manual administrative zone selector."
+    },
+    "ml": {
+      "display": "ലൊക്കേഷൻ മാറ്റുക: നിങ്ങളുടെ ഗ്രാമപഞ്ചായത്തോ വാർഡോ തിരഞ്ഞെടുക്കുക.",
+      "spoken": "ലൊക്കേഷൻ മാറ്റാനുള്ള ഓപ്ഷൻ. നിങ്ങളുടെ പഞ്ചായത്തോ വാർഡോ തിരഞ്ഞെടുക്കാൻ ക്ലിക്ക് ചെയ്യുക.",
+      "enSub": "Manual administrative zone selector."
+    },
+    "mr": {
+      "display": "स्थान बदला: आपली ग्रामपंचायत, वॉर्ड किंवा जिल्हा व्यक्तिचलितपणे निवडा.",
+      "spoken": "स्थान बदलण्याचा पर्याय. आपली ग्रामपंचायत किंवा जिल्हा व्यक्तिचलितपणे निवडण्यासाठी क्लिक करा.",
+      "enSub": "Manual administrative zone selector."
+    },
+    "gu": {
+      "display": "સ્થાન બદલો: તમારી ગ્રામ પંચાયત, વોર્ડ અથવા જિલ્લો જાતે પસંદ કરો.",
+      "spoken": "સ્થાન બદલવાનો વિકલ્પ. તમારી ગ્રામ પંચાયત અથવા વોર્ડ જાતે પસંદ કરવા અહીં ક્લિક કરો.",
+      "enSub": "Manual administrative zone selector."
+    },
+    "pa": {
+      "display": "ਟਿਕਾਣਾ ਬਦਲੋ: ਆਪਣੀ ਗ੍ਰਾਮ ਪੰਚਾਇਤ, ਵਾਰਡ ਜਾਂ ਜ਼ਿਲ੍ਹਾ ਖੁਦ ਚੁਣੋ।",
+      "spoken": "ਟਿਕਾਣਾ ਬਦਲਣ ਦਾ ਵਿਕਲਪ। ਆਪਣੀ ਗ੍ਰਾਮ ਪੰਚਾਇਤ ਜਾਂ ਜ਼ਿਲ੍ਹਾ ਮੈਨੂਅਲ ਚੁਣਨ ਲਈ ਇੱਥੇ ਕਲਿੱਕ ਕਰੋ।",
+      "enSub": "Manual administrative zone selector."
+    },
+    "ur": {
+      "display": "مقام تبدیل کریں: اپنی گرام پنچایت، وارڈ یا ضلع دستی طور پر منتخب کریں۔",
+      "spoken": "مقام تبدیل کرنے کا آپشن۔ اپنی گرام پنچایت یا ضلع کا دستی انتخاب کرنے کے لیے کلک کریں۔",
+      "enSub": "Manual administrative zone selector."
+    },
+    "as": {
+      "display": "স্থান সলনি কৰক: আপোনাৰ গাঁও পঞ্চায়ত, ৱাৰ্ড বা জিলা নিজে বাছক।",
+      "spoken": "স্থান সলনি কৰাৰ বিকল্প। আপোনাৰ গাঁও পঞ্চায়ত বা জিলা নিজে বাছনি কৰিবলৈ ক্লিক কৰক।",
+      "enSub": "Manual administrative zone selector."
+    },
+    "mai": {
+      "display": "स्थान बदलू: अपन ग्राम पंचायत, वार्ड या जिला चुनू।",
+      "spoken": "स्थान बदलबाक विकल्प। अपन ग्राम पंचायत या जिला चुनबाक लेल क्लिक करू।",
+      "enSub": "Manual administrative zone selector."
+    },
+    "sat": {
+      "display": "ᱡᱟᱭᱜᱟ ᱵᱚᱫᱚᱞ ᱢᱮ: ᱟᱢᱟᱜ ᱟᱹᱛᱩ ᱯᱚᱧᱪᱟᱭᱚᱛ, ᱣᱟᱨᱰ ᱥᱮ ᱦᱚᱱᱚᱛ ᱵᱟᱪᱷᱟᱣ ᱢᱮ᱾",
+      "spoken": "ᱡᱟᱭᱜᱟ ᱵᱚᱫᱚᱞ ᱚᱯᱥᱚᱱ᱾ ᱟᱢᱟᱜ ᱟᱹᱛᱩ ᱯᱚᱧᱪᱟᱭᱚᱛ ᱥᱮ ᱦᱚᱱᱚᱛ ᱵᱟᱪᱷᱟᱣ ᱞᱟᱹᱜᱤᱫ ᱴᱮᱯ ᱢᱮ᱾",
+      "enSub": "Manual administrative zone selector."
+    },
+    "ks": {
+      "display": "لوکیشن بدلاوِو: پَنٕنؠ گرام پنچایت، وارڈ یا ضِلہٕ کٔریو مؠنول پٲٹھۍ مُنتخٕب۔",
+      "spoken": "لوکیشن بدلاونک آپشن۔ پَنٕنؠ گرام پنچایت یا ضِلہٕ مُنتخٕب کَرنہٕ خٲطرٕ کٔریو کِلک۔",
+      "enSub": "Manual administrative zone selector."
+    },
+    "sd": {
+      "display": "جاءِ تبديل ڪريو: پنهنجي گرام پنچائت يا ضلعو چونڊيو.",
+      "spoken": "جاءِ تبديل ڪرڻ جو آپشن. پنهنجي گرام پنچائت يا وارڊ چونڊڻ لاءِ ڪلڪ ڪريو.",
+      "enSub": "Manual administrative zone selector."
+    },
+    "en": {
+      "display": "Change Location: Select your Gram Panchayat, Ward, or District.",
+      "spoken": "Change Location. Select your Gram Panchayat, Ward, or District manually.",
+      "enSub": "Manual administrative zone selector."
+    }
+  },
+  "lang_selector": {
+    "hi": {
+      "display": "भाषा चयन: अपनी पसंदीदा भाषा हिन्दी, ओडिया, भोजपुरी, बांग्ला या अंग्रेजी चुनें।",
+      "spoken": "भाषा बदलने का मेनू। हिन्दी, ओडिया, भोजपुरी, बांग्ला या अंग्रेजी का चयन करें।",
+      "enSub": "Language selector: Choose Hindi, Odia, Bhojpuri, Bengali, or English."
+    },
+    "ta": {
+      "display": "மொழி தேர்வு: உங்கள் விருப்பமான மொழியைத் தேர்ந்தெடுக்கவும்.",
+      "spoken": "மொழி தேர்வு பட்டியல். உங்கள் விருப்பமான மொழியைத் தேர்ந்தெடுக்கவும்.",
+      "enSub": "Select portal interface language."
+    },
+    "te": {
+      "display": "భాష ఎంపిక: మీ ప్రాధాన్యత గల భాషను ఎంచుకోండి.",
+      "spoken": "భాష ఎంపిక మెనూ. మీకు కావలసిన భాషను ఎంచుకోండి.",
+      "enSub": "Select portal interface language."
+    },
+    "kn": {
+      "display": "ಭಾಷೆ ಆಯ್ಕೆ: ನಿಮ್ಮ ಆದ್ಯತೆಯ ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ.",
+      "spoken": "ಭಾಷೆ ಆಯ್ಕೆ ಮೆನು. ನಿಮ್ಮ ಇಷ್ಟದ ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ.",
+      "enSub": "Select portal interface language."
+    },
+    "ml": {
+      "display": "ഭാഷ തിരഞ്ഞെടുക്കൽ: നിങ്ങളുടെ ഇഷ്ട ഭാഷ തിരഞ്ഞെടുക്കുക.",
+      "spoken": "ഭാഷ തിരഞ്ഞെടുക്കൽ മെനു. നിങ്ങൾക്ക് അനുയോജ്യമായ ഭാഷ തിരഞ്ഞെടുക്കുക.",
+      "enSub": "Select portal interface language."
+    },
+    "mr": {
+      "display": "भाषा निवड: आपली पसंतीची भाषा निवडा.",
+      "spoken": "भाषा निवड मेनू. आपली आवडती प्रादेशिक भाषा निवडा.",
+      "enSub": "Select portal interface language."
+    },
+    "gu": {
+      "display": "ભાષા પસંદગી: તમારી મનપસંદ ભાષા પસંદ કરો.",
+      "spoken": "ભાષા પસંદગી મેનુ. તમારી મનપસંદ પ્રાદેશિક ભાષા પસંદ કરો.",
+      "enSub": "Select portal interface language."
+    },
+    "pa": {
+      "display": "ਭਾਸ਼ਾ ਚੋਣ: ਆਪਣੀ ਪਸੰਦੀਦਾ ਭਾਸ਼ਾ ਚੁਣੋ।",
+      "spoken": "ਭਾਸ਼ਾ ਚੋਣ ਮੇਨੂ। ਆਪਣੀ ਪਸੰਦੀਦਾ ਖੇਤਰੀ ਭਾਸ਼ਾ ਦੀ ਚੋਣ ਕਰੋ।",
+      "enSub": "Select portal interface language."
+    },
+    "ur": {
+      "display": "زبان کا انتخاب: اپنی پسندیدہ زبان منتخب کریں۔",
+      "spoken": "زبان کے انتخاب کا مینو۔ اپنی ترجیحی زبان منتخب کریں۔",
+      "enSub": "Select portal interface language."
+    },
+    "as": {
+      "display": "ভাষা বাছনি: আপোনাৰ পছন্দৰ ভাষা বাছক।",
+      "spoken": "ভাষা বাছনিৰ তালিকা। আপোনাৰ পচন্দৰ ভাষা নিৰ্বাচন কৰক।",
+      "enSub": "Select portal interface language."
+    },
+    "mai": {
+      "display": "भाषा चयन: अपन पसंदीदा भाषा चुनू।",
+      "spoken": "भाषा बदलबाक मेनू। अपन पसंदीदा भाषाक चयन करू।",
+      "enSub": "Select portal interface language."
+    },
+    "sat": {
+      "display": "ᱯᱟᱹᱨᱥᱤ ᱵᱟᱪᱷᱟᱣ: ᱟᱢᱟᱜ ᱠᱩᱥᱤ ᱯᱟᱹᱨᱥᱤ ᱵᱟᱪᱷᱟᱣ ᱢᱮ᱾",
+      "spoken": "ᱯᱟᱹᱨᱥᱤ ᱵᱟᱪᱷᱟᱣ ᱢᱮᱱᱩ᱾ ᱟᱢᱟᱜ ᱠᱩᱥᱤ ᱯᱟᱹᱨᱥᱤ ᱵᱟᱪᱷᱟᱣ ᱢᱮ᱾",
+      "enSub": "Select portal interface language."
+    },
+    "ks": {
+      "display": "زَبانُک اِنتِخاب: پَنٕنؠ پَسَندیدٕ زَبان کٔریو مُنتخٕب۔",
+      "spoken": "زَبان بدلاونک مینو۔ پَنٕنؠ پَسَندیدٕ زَبان کٔریو اِنتِخاب۔",
+      "enSub": "Select portal interface language."
+    },
+    "sd": {
+      "display": "ٻولي جي چونڊ: پنهنجي پسند جي ٻولي چونڊيو.",
+      "spoken": "ٻولي چونڊڻ جو مينيو. پنهنجي پسند جي علائقائي ٻولي چونڊيو.",
+      "enSub": "Select portal interface language."
+    },
+    "en": {
+      "display": "Language Selector: Choose Hindi, Odia, Bhojpuri, Bengali, or English.",
+      "spoken": "Language selector. Choose your preferred language.",
+      "enSub": "Select portal interface language."
+    }
+  },
+  "theme_toggle": {
+    "hi": {
+      "display": "थीम बटन: डार्क मोड या लाइट मोड पर स्विच करें।",
+      "spoken": "थीम बदलने का बटन। डार्क मोड या लाइट मोड पर स्विच करें।",
+      "enSub": "Theme toggle: Switch between dark mode and light mode."
+    },
+    "ta": {
+      "display": "தீம் பொத்தான்: டார்க் மோட் அல்லது லைட் மோடுக்கு மாற்றவும்.",
+      "spoken": "தீம் மாற்றும் பொத்தான். டார்க் மோட் அல்லது லைட் மோடுக்கு மாற்றவும்.",
+      "enSub": "Color appearance mode switch."
+    },
+    "te": {
+      "display": "థీమ్ బటన్: డార్క్ మోడ్ లేదా లైట్ మోడ్‌కు మారండి.",
+      "spoken": "థీమ్ మార్చే బటన్. డార్క్ మోడ్ లేదా లైట్ మోడ్‌కు మారండి.",
+      "enSub": "Color appearance mode switch."
+    },
+    "kn": {
+      "display": "ಥೀಮ್ ಬಟನ್: ಡಾರ್ಕ್ ಮೋಡ್ ಅಥವಾ ಲೈಟ್ ಮೋಡ್‌ಗೆ ಬದಲಾಯಿಸಿ.",
+      "spoken": "ಥೀಮ್ ಬದಲಾಯಿಸುವ ಬಟನ್. ಡಾರ್ಕ್ ಮೋಡ್ ಅಥವಾ ಲೈಟ್ ಮೋಡ್‌ಗೆ ಬದಲಾಯಿಸಿ.",
+      "enSub": "Color appearance mode switch."
+    },
+    "ml": {
+      "display": "തീം ബട്ടൺ: ഡാർക്ക് മോഡിലേക്കോ ലൈറ്റ് മോഡിലേക്കോ മാറ്റുക.",
+      "spoken": "തീം മാറ്റാനുള്ള ബട്ടൺ. ഡാർക്ക് മോഡ് അല്ലെങ്കിൽ ലൈറ്റ് മോഡ് തിരഞ്ഞെടുക്കുക.",
+      "enSub": "Color appearance mode switch."
+    },
+    "mr": {
+      "display": "थीम बटण: डार्क मोड किंवा लाइट मोडवर स्विच करा.",
+      "spoken": "थीम बदलण्याचे बटण. डार्क मोड किंवा लाइट मोडवर स्विच करा.",
+      "enSub": "Color appearance mode switch."
+    },
+    "gu": {
+      "display": "થીમ બટન: ડાર્ક મોડ અથવા લાઇટ મોડ પર સ્વિચ કરો.",
+      "spoken": "થીમ બદલવાનું બટન. ડાર્ક મોડ અથવા લાઇટ મોડ વચ્ચે સ્વિચ કરો.",
+      "enSub": "Color appearance mode switch."
+    },
+    "pa": {
+      "display": "ਥੀਮ ਬਟਨ: ਡਾਰਕ ਮੋਡ ਜਾਂ ਲਾਈਟ ਮੋਡ ਵਿੱਚ ਬਦਲੋ।",
+      "spoken": "ਥੀਮ ਬਦਲਣ ਦਾ ਬਟਨ। ਡਾਰਕ ਮੋਡ ਜਾਂ ਲਾਈਟ ਮੋਡ 'ਤੇ ਸਵਿਚ ਕਰੋ।",
+      "enSub": "Color appearance mode switch."
+    },
+    "ur": {
+      "display": "تھیم بٹن: ڈارک موڈ یا لائٹ موڈ پر تبدیل کریں۔",
+      "spoken": "تھیم تبدیل کرنے کا بٹن۔ ڈارک موڈ یا لائٹ موڈ پر سوئچ کریں۔",
+      "enSub": "Color appearance mode switch."
+    },
+    "as": {
+      "display": "থীম বুটাম: ডাৰ্ক ম'ড বা লাইট ম'ডলৈ সলনি কৰক।",
+      "spoken": "থীম সলনি কৰাৰ বুটাম। ডাৰ্ক ম'ড বা লাইট ম'ডলৈ সলনি কৰক।",
+      "enSub": "Color appearance mode switch."
+    },
+    "mai": {
+      "display": "थीम बटन: डार्क मोड या लाइट मोड पर स्विच करू।",
+      "spoken": "थीम बदलबाक बटन। डार्क मोड या लाइट मोड पर स्विच करू।",
+      "enSub": "Color appearance mode switch."
+    },
+    "sat": {
+      "display": "ᱛᱷᱤᱢ ᱵᱟᱴᱚᱱ: ᱰᱟᱨᱠ ᱢᱳᱰ ᱥᱮ ᱞᱟᱭᱤᱴ ᱢᱳᱰ ᱨᱮ ᱵᱚᱫᱚᱞ ᱢᱮ᱾",
+      "spoken": "ᱛᱷᱤᱢ ᱵᱚᱫᱚᱞ ᱵᱟᱴᱚᱱ᱾ ᱰᱟᱨᱠ ᱢᱳᱰ ᱥᱮ ᱞᱟᱭᱤᱴ ᱢᱳᱰ ᱨᱮ ᱵᱚᱫᱚᱞ ᱢᱮ᱾",
+      "enSub": "Color appearance mode switch."
+    },
+    "ks": {
+      "display": "تھیم بَٹَن: ڈارک موڈ یا لائٹ موڈَس پؠٹھ کٔریو سُوِچ۔",
+      "spoken": "تھیم بدلاونک بَٹَن۔ ڈارک موڈ یا لائٹ موڈَس پؠٹھ کٔریو سُوِچ۔",
+      "enSub": "Color appearance mode switch."
+    },
+    "sd": {
+      "display": "ٿيم بٽڻ: ڊارڪ موڊ يا لائٽ موڊ تي تبديل ڪريو.",
+      "spoken": "ٿيم تبديل ڪرڻ جو بٽڻ. ڊارڪ موڊ يا لائٽ موڊ تي تبديل ڪريو.",
+      "enSub": "Color appearance mode switch."
+    },
+    "en": {
+      "display": "Theme Toggle: Switch between dark mode and light mode.",
+      "spoken": "Theme toggle. Switch between dark mode and light mode.",
+      "enSub": "Color appearance mode switch."
+    }
+  },
+  "notifications": {
+    "hi": {
+      "display": "सूचनाएं: आपकी शिकायतों पर हुई प्रशासनिक कार्रवाई की ताज़ा सूचनाएं।",
+      "spoken": "सूचनाएं। आपकी शिकायतों पर हुई ताज़ा प्रशासनिक कार्रवाई की सूचनाएं यहाँ देखें।",
+      "enSub": "Notifications: Real-time action alerts on your complaints."
+    },
+    "ta": {
+      "display": "அறிவிப்புகள்: உங்கள் புகார்கள் மீதான நிர்வாக நடவடிக்கைகளின் அறிவிப்புகள்.",
+      "spoken": "அறிவிப்புகள். உங்கள் புகார்கள் மீதான சமீபத்திய அரசு நடவடிக்கைகளை இங்கே பாருங்கள்.",
+      "enSub": "Official status alerts."
+    },
+    "te": {
+      "display": "నోటిఫికేషన్‌లు: మీ ఫిర్యాదులపై తీసుకున్న పరిపాలనా చర్యల తాజా సమాచారం.",
+      "spoken": "నోటిఫికేషన్‌లు. మీ ఫిర్యాదులపై తాజా పరిపాలనా చర్యల వివరాలను ఇక్కడ చూడండి.",
+      "enSub": "Official status alerts."
+    },
+    "kn": {
+      "display": "ಅಧಿಸೂಚನೆಗಳು: ನಿಮ್ಮ ದೂರುಗಳ ಮೇಲಿನ ಆಡಳಿತಾತ್ಮಕ ಕ್ರಮಗಳ ಇತ್ತೀಚಿನ ನವೀಕರಣಗಳು.",
+      "spoken": "ಅಧಿಸೂಚನೆಗಳು. ನಿಮ್ಮ ದೂರುಗಳ ಮೇಲಿನ ಇತ್ತೀಚಿನ ಕ್ರಮಗಳ ಅಧಿಸೂಚನೆಗಳನ್ನು ಇಲ್ಲಿ ನೋಡಿ.",
+      "enSub": "Official status alerts."
+    },
+    "ml": {
+      "display": "അറിയിപ്പുകൾ: നിങ്ങളുടെ പരാതികളിലെ ഭരണപരമായ നടപടികളുടെ വിവരങ്ങൾ.",
+      "spoken": "അറിയിപ്പുകൾ. നിങ്ങളുടെ പരാതികളിലെ നടപടികളുടെ വിവരങ്ങൾ ഇവിടെ പരിശോധിക്കുക.",
+      "enSub": "Official status alerts."
+    },
+    "mr": {
+      "display": "सूचना: आपल्या तक्रारींवरील प्रशासकीय कारवाईच्या ताज्या सूचना.",
+      "spoken": "सूचना. आपल्या तक्रारींवर झालेल्या ताज्या प्रशासकीय कारवाईची माहिती येथे पहा.",
+      "enSub": "Official status alerts."
+    },
+    "gu": {
+      "display": "સૂચનાઓ: તમારી ફરિયાદો પર થયેલી વહીવટી કાર્યવાહીની તાજી સૂચનાઓ.",
+      "spoken": "સૂચનાઓ. તમારી ફરિયાદો પર થયેલી વહીવટી કાર્યવાહીની તાજી સૂચનાઓ અહીં જુઓ.",
+      "enSub": "Official status alerts."
+    },
+    "pa": {
+      "display": "ਸੂਚਨਾਵਾਂ: ਤੁਹਾਡੀਆਂ ਸ਼ਿਕਾਇਤਾਂ 'ਤੇ ਹੋਈ ਪ੍ਰਸ਼ਾਸਕੀ ਕਾਰਵਾਈ ਦੀਆਂ ਤਾਜ਼ਾ ਸੂਚਨਾਵਾਂ।",
+      "spoken": "ਸੂਚਨਾਵਾਂ। ਤੁਹਾਡੀਆਂ ਸ਼ਿਕਾਇਤਾਂ 'ਤੇ ਹੋਈ ਤਾਜ਼ਾ ਕਾਰਵਾਈ ਦੀਆਂ ਸੂਚਨਾਵਾਂ ਇੱਥੇ ਵੇਖੋ।",
+      "enSub": "Official status alerts."
+    },
+    "ur": {
+      "display": "اطلاعات: آپ کی شکایات پر انتظامی کارروائی کی تازہ ترین اطلاعات۔",
+      "spoken": "اطلاعات۔ اپنی شکایات پر ہونے والی تازہ ترین کارروائی کی اطلاعات یہاں دیکھیں۔",
+      "enSub": "Official status alerts."
+    },
+    "as": {
+      "display": "জাননীসমূহ: আপোনাৰ অভিযোগসমূহৰ ওপৰত হোৱা প্ৰশাসনিক কাৰ্যৰ সতেজ জাননী।",
+      "spoken": "জাননীসমূহ। আপোনাৰ অভিযোগসমূহৰ ওপৰত হোৱা শেহতীয়া ব্যৱস্থাৰ জাননী ইয়াত চাওক।",
+      "enSub": "Official status alerts."
+    },
+    "mai": {
+      "display": "सूचना सभ: अहाँक समस्या पर भेल प्रशासनिक कार्रवाईक ताजा सूचना।",
+      "spoken": "सूचना सभ। अहाँक समस्या पर भेल प्रशासनिक कार्रवाईक सूचना एतय देखू।",
+      "enSub": "Official status alerts."
+    },
+    "sat": {
+      "display": "ᱵᱟᱰᱟᱭ ᱠᱚ: ᱟᱢᱟᱜ ᱟᱱᱟᱴ ᱨᱮ ᱦᱩᱭ ᱟᱠᱟᱱ ᱠᱟᱹᱢᱤᱦᱚᱨᱟ ᱨᱮᱱᱟᱜ ᱱᱟᱣᱟ ᱠᱷᱚᱵᱚᱨ᱾",
+      "spoken": "ᱵᱟᱰᱟᱭ ᱠᱚ᱾ ᱟᱢᱟᱜ ᱟᱱᱟᱴ ᱨᱮ ᱦᱩᱭ ᱟᱠᱟᱱ ᱥᱚᱨᱠᱟᱨᱤ ᱠᱟᱹᱢᱤ ᱨᱮᱱᱟᱜ ᱠᱷᱚᱵᱚᱨ ᱱᱚᱸᱰᱮ ᱧᱮᱞ ᱢᱮ᱾",
+      "enSub": "Official status alerts."
+    },
+    "ks": {
+      "display": "اِطِلاعہٕ: تُہٕنٛدؠن شِکایتَن پؠٹھ سَرکٲری کاروٲیی ہٕنٛز تازہ اِطِلاعہٕ۔",
+      "spoken": "اِطِلاعہٕ۔ پَننؠن شِکایتَن پؠٹھ سَرکٲری کاروٲیی ہٕنٛز تازہ اِطِلاعہٕ وُچِھو ییٚتہِ۔",
+      "enSub": "Official status alerts."
+    },
+    "sd": {
+      "display": "نوٽيفڪيشن: شڪايتن تي ٿيل انتظامي ڪارروائي جا تازا الرٽ.",
+      "spoken": "نوٽيفڪيشن. پنهنجي شڪايتن تي ٿيل تازي ڪارروائي جا الرٽ هتي ڏسو.",
+      "enSub": "Official status alerts."
+    },
+    "en": {
+      "display": "Notifications: Real-time action alerts on your complaints.",
+      "spoken": "Notifications. Check status updates and actions on your grievances.",
+      "enSub": "Official status alerts."
+    }
+  },
+  "profile_nav": {
+    "hi": {
+      "display": "नागरिक प्रोफ़ाइल: आपकी व्यक्तिगत जानकारी और डिजीलॉकर खाता।",
+      "spoken": "नागरिक प्रोफ़ाइल। आपकी व्यक्तिगत जानकारी और डिजीलॉकर सत्यापन रिकॉर्ड।",
+      "enSub": "Citizen Profile: Account credentials and DigiLocker credentials."
+    },
+    "ta": {
+      "display": "குடிமக்கள் சுயவிவரம்: உங்கள் தனிப்பட்ட விவரங்கள் மற்றும் டிஜிலாக்கர் கணக்கு.",
+      "spoken": "குடிமக்கள் சுயவிவரம். உங்கள் தனிப்பட்ட கணக்கு மற்றும் டிஜிலாக்கர் பதிவுகளை அணுகவும்.",
+      "enSub": "View profile details."
+    },
+    "te": {
+      "display": "పౌర ప్రొఫైల్: మీ వ్యక్తిగత సమాచారం మరియు డిజిలాకర్ ఖాతా.",
+      "spoken": "పౌర ప్రొఫైల్. మీ వ్యక్తిగత ఖాతా మరియు డిజిలాకర్ రికార్డులను చూడండి.",
+      "enSub": "View profile details."
+    },
+    "kn": {
+      "display": "ನಾಗರಿಕ ಪ್ರೊಫೈಲ್: ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ಮಾಹಿತಿ ಮತ್ತು ಡಿಜಿಲಾಕರ್ ಖಾತೆ.",
+      "spoken": "ನಾಗರಿಕ ಪ್ರೊಫೈಲ್. ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ಖಾತೆ ಮತ್ತು ಡಿಜಿಲಾಕರ್ ದಾಖಲೆಗಳನ್ನು ಪ್ರವೇಶಿಸಿ.",
+      "enSub": "View profile details."
+    },
+    "ml": {
+      "display": "പൗര പ്രൊഫൈൽ: നിങ്ങളുടെ സ്വകാര്യ വിവരങ്ങളും ഡിജിലോക്കർ അക്കൗണ്ടും.",
+      "spoken": "പൗര പ്രൊഫൈൽ. നിങ്ങളുടെ വ്യക്തിഗത വിവരങ്ങളും ഡിജിലോക്കർ രേഖകളും കാണുക.",
+      "enSub": "View profile details."
+    },
+    "mr": {
+      "display": "नागरिक प्रोफाइल: आपली वैयक्तिक माहिती आणि डिजिलॉकर खाते.",
+      "spoken": "नागरिक प्रोफाइल. आपली वैयक्तिक माहिती आणि डिजिलॉकर पडताळणी रेकॉर्ड पहा.",
+      "enSub": "View profile details."
+    },
+    "gu": {
+      "display": "નાગરિક પ્રોફાઇલ: તમારી અંગત માહિતી અને ડિજીલોકર ખાતું.",
+      "spoken": "નાગરિક પ્રોફાઇલ. તમારી અંગત માહિતી અને ડિજીલોકર ચકાસણી રેકોર્ડ જુઓ.",
+      "enSub": "View profile details."
+    },
+    "pa": {
+      "display": "ਨਾਗਰਿਕ ਪ੍ਰੋਫਾਈਲ: ਤੁਹਾਡੀ ਨਿੱਜੀ ਜਾਣਕਾਰੀ ਅਤੇ ਡਿਜੀਲੌਕਰ ਖਾਤਾ।",
+      "spoken": "ਨਾਗਰਿਕ ਪ੍ਰੋਫਾਈਲ। ਆਪਣੀ ਨਿੱਜੀ ਜਾਣਕਾਰੀ ਅਤੇ ਡਿਜੀਲੌਕਰ ਰਿਕਾਰਡ ਵੇਖੋ।",
+      "enSub": "View profile details."
+    },
+    "ur": {
+      "display": "شہری پروفائل: آپ کی ذاتی معلومات اور ڈیجی لاکر اکاؤنٹ۔",
+      "spoken": "شہری پروفائل۔ اپنی ذاتی معلومات اور ڈیجی لاکر کے ریکارڈ تک رسائی حاصل کریں۔",
+      "enSub": "View profile details."
+    },
+    "as": {
+      "display": "নাগৰিক প্ৰফাইল: আপোনাৰ ব্যক্তিগত তথ্য আৰু ডিজিলাকাৰ একাউণ্ট।",
+      "spoken": "নাগৰিক প্ৰফাইল। আপোনাৰ ব্যক্তিগত তথ্য আৰু ডিজিলাকাৰ নথিপত্ৰসমূহ চাওক।",
+      "enSub": "View profile details."
+    },
+    "mai": {
+      "display": "नागरिक प्रोफ़ाइल: अहाँक व्यक्तिगत जानकारी आ डिजीलॉकर खाता।",
+      "spoken": "नागरिक प्रोफ़ाइल। अहाँक व्यक्तिगत जानकारी आ डिजीलॉकर सत्यापन रिकॉर्ड।",
+      "enSub": "View profile details."
+    },
+    "sat": {
+      "display": "ᱱᱟᱹᱜᱟᱹᱨᱤᱭᱟᱹ ᱯᱨᱳᱯᱷᱟᱭᱤᱞ: ᱟᱢᱟᱜ ᱱᱤᱡᱮᱨ ᱵᱟᱰᱟᱭ ᱟᱨ ᱰᱤᱡᱤᱞᱚᱠᱟᱨ ᱠᱷᱟᱛᱟ᱾",
+      "spoken": "ᱱᱟᱹᱜᱟᱹᱨᱤᱭᱟᱹ ᱯᱨᱳᱯᱷᱟᱭᱤᱞ᱾ ᱟᱢᱟᱜ ᱱᱤᱡᱮᱨ ᱠᱷᱟᱛᱟ ᱟᱨ ᱰᱤᱡᱤᱞᱚᱠᱟᱨ ᱨᱮᱠᱚᱨᱰ ᱧᱮᱞ ᱢᱮ᱾",
+      "enSub": "View profile details."
+    },
+    "ks": {
+      "display": "شَہَری پروفائل: تُہٕنٛز ذٲتی مَعلوٗمات تہِ ڈیجی لاکر کھاتہٕ۔",
+      "spoken": "شَہَری پروفائل۔ پَنٕنؠ ذٲتی مَعلوٗمات تہِ ڈیجی لاکر تَصدیقی رِکارڈ وُچِھو۔",
+      "enSub": "View profile details."
+    },
+    "sd": {
+      "display": "شهري پروفائل: توهان جي ذاتي معلومات ۽ ڊيجي لاڪر کاتو.",
+      "spoken": "شهري پروفائل. پنهنجي ذاتي معلومات ۽ ڊيجي لاڪر رڪارڊ تائين رسائي حاصل ڪريو.",
+      "enSub": "View profile details."
+    },
+    "en": {
+      "display": "Citizen Profile: Account credentials and DigiLocker credentials.",
+      "spoken": "Citizen Profile. Access your personal account and DigiLocker records.",
+      "enSub": "View profile details."
+    }
+  },
+  "helpline": {
+    "hi": {
+      "display": "हेल्पलाइन: राष्ट्रीय सेवा 1947 या जिला सेवा पर सीधे संपर्क करें।",
+      "spoken": "सरकारी आपातकालीन हेल्पलाइन नंबर। राष्ट्रीय सेवा 1947 या जिला सेवा पर सीधे संपर्क करें।",
+      "enSub": "Official emergency helplines: National 1947 & District support."
+    },
+    "ta": {
+      "display": "அதிகாரப்பூர்வ உதவி எண்கள்: தேசிய சேவை 1947 மற்றும் மாவட்ட உதவி.",
+      "spoken": "அதிகாரப்பூர்வ அவசர உதவி எண்கள். தேசிய சேவை 1947 அல்லது மாவட்ட உதவியை நேரடியாக தொடர்பு கொள்ளவும்.",
+      "enSub": "Direct emergency assistance."
+    },
+    "te": {
+      "display": "అధికారిక హెల్ప్‌లైన్లు: జాతీయ సేవ 1947 మరియు జిల్లా సహాయం.",
+      "spoken": "అధికారిక అత్యవసర హెల్ప్‌లైన్ నంబర్లు. జాతీయ సేవ 1947 లేదా జిల్లా సహాయాన్ని సంప్రదించండి.",
+      "enSub": "Direct emergency assistance."
+    },
+    "kn": {
+      "display": "ಅಧಿಕೃತ ಸಹಾಯವಾಣಿಗಳು: ರಾಷ್ಟ್ರೀಯ ಸೇವೆ 1947 ಮತ್ತು ಜಿಲ್ಲಾ ಬೆಂಬಲ.",
+      "spoken": "ಅಧಿಕೃತ ತುರ್ತು ಸಹಾಯವಾಣಿ ಸಂಖ್ಯೆಗಳು. ರಾಷ್ಟ್ರೀಯ ಸೇವೆ 1947 ಅಥವಾ ಜಿಲ್ಲಾ ಸಹಾಯವನ್ನು ಸಂಪರ್ಕಿಸಿ.",
+      "enSub": "Direct emergency assistance."
+    },
+    "ml": {
+      "display": "ഔദ്യോഗിക ഹെൽപ്പ്‌ലൈനുകൾ: ദേശീയ ഹെൽപ്പ്‌ലൈൻ 1947, ജില്ലാ പിന്തുണ.",
+      "spoken": "ഔദ്യോഗിക അടിയന്തര ഹെൽപ്പ്‌ലൈൻ നമ്പറുകൾ. ദേശീയ സേവനം 1947 അല്ലെങ്കിൽ ജില്ലാ പിന്തുണയുമായി ബന്ധപ്പെടുക.",
+      "enSub": "Direct emergency assistance."
+    },
+    "mr": {
+      "display": "अधिकृत हेल्पलाइन: राष्ट्रीय सेवा 1947 किंवा जिल्हा सेवेशी थेट संपर्क साधा.",
+      "spoken": "अधिकृत आपत्कालीन हेल्पलाइन नंबर. राष्ट्रीय सेवा 1947 किंवा जिल्हा सेवेशी थेट संपर्क साधा.",
+      "enSub": "Direct emergency assistance."
+    },
+    "gu": {
+      "display": "સત્તાવાર હેલ્પલાઇન: રાષ્ટ્રીય સેવા 1947 અને જિલ્લા સેવા પર સીધો સંપર્ક કરો.",
+      "spoken": "સરકારી આપાતકાલીન હેલ્પલાઇન નંબર. રાષ્ટ્રીય સેવા 1947 અથવા જિલ્લા સેવા પર સીધો સંપર્ક કરો.",
+      "enSub": "Direct emergency assistance."
+    },
+    "pa": {
+      "display": "ਅਧਿਕਾਰਤ ਹੈਲਪਲਾਈਨ: ਰਾਸ਼ਟਰੀ ਸੇਵਾ 1947 ਜਾਂ ਜ਼ਿਲ੍ਹਾ ਸਹਾਇਤਾ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।",
+      "spoken": "ਸਰਕਾਰੀ ਐਮਰਜੈਂਸੀ ਹੈਲਪਲਾਈਨ ਨੰਬਰ। ਰਾਸ਼ਟਰੀ ਸੇਵਾ 1947 ਜਾਂ ਜ਼ਿਲ੍ਹਾ ਸੇਵਾ 'ਤੇ ਸਿੱਧਾ ਸੰਪਰਕ ਕਰੋ।",
+      "enSub": "Direct emergency assistance."
+    },
+    "ur": {
+      "display": "سرکاری ہیلپ لائن: قومی سروس 1947 یا ضلعی سروس پر براہ راست رابطہ کریں۔",
+      "spoken": "سرکاری ہنگامی ہیلپ لائن نمبرز۔ قومی سروس 1947 یا ضلعی سروس پر براہ راست رابطہ کریں۔",
+      "enSub": "Direct emergency assistance."
+    },
+    "as": {
+      "display": "চৰকাৰী হেল্পলাইন: ৰাষ্ট্ৰীয় সেৱা 1947 আৰু জিলা সহায়তাত পোনপটীয়া যোগাযোগ কৰক।",
+      "spoken": "চৰকাৰী জৰুৰীকালীন হেল্পলাইন নম্বৰ। ৰাষ্ট্ৰীয় সেৱা 1947 বা জিলা সেৱাত পোনপটীয়াকৈ যোগাযোগ কৰক।",
+      "enSub": "Direct emergency assistance."
+    },
+    "mai": {
+      "display": "हेल्पलाइन: राष्ट्रीय सेवा 1947 या जिला सेवा पर सीधे संपर्क करू।",
+      "spoken": "सरकारी आपातकालीन हेल्पलाइन नंबर। राष्ट्रीय सेवा 1947 या जिला सेवा पर सीधे संपर्क करू।",
+      "enSub": "Direct emergency assistance."
+    },
+    "sat": {
+      "display": "ᱥᱚᱨᱠᱟᱨᱤ ᱜᱚᱲᱚ ᱱᱚᱢᱵᱚᱨ: ᱡᱟᱹᱛᱤᱭᱟᱹᱨᱤ ᱥᱮᱵᱟ 1947 ᱟᱨ ᱦᱚᱱᱚᱛ ᱜᱚᱲᱚ᱾",
+      "spoken": "ᱥᱚᱨᱠᱟᱨᱤ ᱜᱚᱲᱚ ᱱᱚᱢᱵᱚᱨ᱾ ᱡᱟᱹᱛᱤᱭᱟᱹᱨᱤ ᱥᱮᱵᱟ 1947 ᱥᱮ ᱦᱚᱱᱚᱛ ᱜᱚᱲᱚ ᱨᱮ ᱥᱚᱡᱷᱮ ᱡᱚᱯᱚᱲᱟᱣ ᱢᱮ᱾",
+      "enSub": "Direct emergency assistance."
+    },
+    "ks": {
+      "display": "سَرکٲری ہیلپ لاین: قۄمی سٔروِس 1947 یا ضِلہٕ سٔروِسَس پؠٹھ کٔریو سِیدھے رٲبطہٕ۔",
+      "spoken": "سَرکٲری ہنگامی ہیلپ لائن نَمبَر۔ قۄمی سٔروِس 1947 یا ضِلہٕ سٔروِسَس پؠٹھ کٔریو رٲبطہٕ۔",
+      "enSub": "Direct emergency assistance."
+    },
+    "sd": {
+      "display": "سرڪاري هيلپ لائن: قومي سروس 1947 ۽ ضلعي مدد.",
+      "spoken": "سرڪاري ايمرجنسي هيلپ لائن نمبر. قومي سروس 1947 يا ضلعي مدد سان رابطو ڪريو.",
+      "enSub": "Direct emergency assistance."
+    },
+    "en": {
+      "display": "Official Helplines: National 1947 and district support.",
+      "spoken": "Official emergency helplines. National helpline 1947 and district support.",
+      "enSub": "Direct emergency assistance."
+    }
+  },
+  "font_zoom": {
+    "hi": {
+      "display": "फ़ॉन्ट आकार: स्क्रीन के अक्षरों को बड़ा या छोटा करें।",
+      "spoken": "फ़ॉन्ट आकार विकल्प। स्क्रीन के अक्षरों को बड़ा या छोटा करें।",
+      "enSub": "Font size adjustment for comfortable reading."
+    },
+    "ta": {
+      "display": "எழுத்து அளவு: வசதியாக படிக்க எழுத்துரு அளவை சரிசெய்யவும்.",
+      "spoken": "எழுத்துரு அளவு கட்டுப்பாடுகள். திரையில் எழுத்துக்களை பெரிதாக்க அல்லது சிறிதாக்க சரிசெய்யவும்.",
+      "enSub": "Accessibility zoom controls."
+    },
+    "te": {
+      "display": "ఫాంట్ పరిమాణం: సౌకర్యవంతమైన చదువు కోసం అక్షరాల పరిమాణాన్ని మార్చండి.",
+      "spoken": "ఫాంట్ పరిమాణ నియంత్రణలు. స్క్రీన్‌పై అక్షరాలను పెద్దవిగా లేదా చిన్నవిగా మార్చండి.",
+      "enSub": "Accessibility zoom controls."
+    },
+    "kn": {
+      "display": "ಫಾಂಟ್ ಗಾತ್ರ: ಆರಾಮದಾಯಕ ಓದುವಿಕೆಗಾಗಿ ಪಠ್ಯದ ಗಾತ್ರವನ್ನು ಹೊಂದಿಸಿ.",
+      "spoken": "ಫಾಂಟ್ ಗಾತ್ರದ ಆಯ್ಕೆಗಳು. ಪರದೆಯ ಅಕ್ಷರಗಳನ್ನು ದೊಡ್ಡದಾಗಿಸಲು ಅಥವಾ ಚಿಕ್ಕದಾಗಿಸಲು ಹೊಂದಿಸಿ.",
+      "enSub": "Accessibility zoom controls."
+    },
+    "ml": {
+      "display": "ഫോണ്ട് വലുപ്പം: സൗകര്യപ്രദമായി വായിക്കാൻ അക്ഷരങ്ങളുടെ വലുപ്പം മാറ്റുക.",
+      "spoken": "ഫോണ്ട് സൈസ് നിയന്ത്രണങ്ങൾ. സ്ക്രീനിലെ അക്ഷരങ്ങൾ വലുതാക്കാനോ ചെറുതാക്കാനോ മാറ്റുക.",
+      "enSub": "Accessibility zoom controls."
+    },
+    "mr": {
+      "display": "फॉन्ट आकार: स्क्रीनवरील अक्षरे मोठी किंवा लहान करा.",
+      "spoken": "फॉन्ट आकार पर्याय. स्क्रीनवरील अक्षरे मोठी किंवा लहान करण्यासाठी येथे क्लिक करा.",
+      "enSub": "Accessibility zoom controls."
+    },
+    "gu": {
+      "display": "ફોન્ટ કદ: સ્ક્રીન અક્ષરો મોટા કે નાના કરવા માટે ગોઠવો.",
+      "spoken": "ફોન્ટ કદ વિકલ્પ. સ્ક્રીન અક્ષરો મોટા કે નાના કરવા માટે અહીં ક્લિક કરો.",
+      "enSub": "Accessibility zoom controls."
+    },
+    "pa": {
+      "display": "ਫੌਂਟ ਦਾ ਆਕਾਰ: ਆਸਾਨੀ ਨਾਲ ਪੜ੍ਹਨ ਲਈ ਅੱਖਰਾਂ ਦਾ ਆਕਾਰ ਬਦਲੋ।",
+      "spoken": "ਫੌਂਟ ਆਕਾਰ ਵਿਕਲਪ। ਸਕ੍ਰੀਨ ਦੇ ਅੱਖਰਾਂ ਨੂੰ ਵੱਡਾ ਜਾਂ ਛੋਟਾ ਕਰੋ।",
+      "enSub": "Accessibility zoom controls."
+    },
+    "ur": {
+      "display": "فونٹ سائز: آرام دہ پڑھائی کے لیے الفاظ کا سائز ایڈجسٹ کریں۔",
+      "spoken": "فونٹ سائز کنٹرولز۔ اسکرین کے الفاظ کو بڑا یا چھوٹا کریں۔",
+      "enSub": "Accessibility zoom controls."
+    },
+    "as": {
+      "display": "ফণ্টৰ আকাৰ: সহজে পঢ়িবলৈ আখৰৰ আকাৰ সলনি কৰক।",
+      "spoken": "ফণ্টৰ আকাৰ নিয়ন্ত্ৰণ। স্ক্ৰীণৰ আখৰসমূহ ডাঙৰ বা সৰু কৰক।",
+      "enSub": "Accessibility zoom controls."
+    },
+    "mai": {
+      "display": "फ़ॉन्ट आकार: स्क्रीनक अक्षर पैघ या छोट करू।",
+      "spoken": "फ़ॉन्ट आकार विकल्प। स्क्रीनक अक्षर सभ पैघ या छोट करू।",
+      "enSub": "Accessibility zoom controls."
+    },
+    "sat": {
+      "display": "ᱪᱤᱠᱤ ᱢᱟᱯ: ᱱᱟᱯᱟᱭ ᱛᱮ ᱯᱟᱲᱦᱟᱣ ᱞᱟᱹᱜᱤᱫ ᱪᱤᱠᱤ ᱢᱟᱨᱟᱝ ᱥᱮ ᱦᱩᱰᱤᱧ ᱢᱮ᱾",
+      "spoken": "ᱪᱤᱠᱤ ᱢᱟᱯ ᱵᱟᱪᱷᱟᱣ᱾ ᱥᱠᱨᱤᱱ ᱨᱮᱱᱟᱜ ᱪᱤᱠᱤ ᱢᱟᱨᱟᱝ ᱥᱮ ᱦᱩᱰᱤᱧ ᱢᱮ᱾",
+      "enSub": "Accessibility zoom controls."
+    },
+    "ks": {
+      "display": "فونٹ سایز: پَرنہٕ کِس آرامہٕ خٲطرٕ بَناوِو اَکھرَن ہُنٛد سائز بۆڈ یا لۄکُٹ۔",
+      "spoken": "فونٹ سایز کنٹرولز۔ سکرین کؠن اَکھرَن کٔریو بۆڈ یا لۄکُٹ۔",
+      "enSub": "Accessibility zoom controls."
+    },
+    "sd": {
+      "display": "فونٽ سائيز: آرام سان پڙهڻ لاءِ اکرن جي سائيز مٽايو.",
+      "spoken": "فونٽ سائيز ڪنٽرول. اسڪرين جي اکرن کي وڏو يا ننڍو ڪريو.",
+      "enSub": "Accessibility zoom controls."
+    },
+    "en": {
+      "display": "Font Size: Adjust text size for comfortable reading.",
+      "spoken": "Font size controls. Adjust text size for comfortable reading.",
+      "enSub": "Accessibility zoom controls."
+    }
+  },
+  "radar_filter": {
+    "hi": {
+      "display": "दूरी दायरा: अपने आस-पास के 2 किमी, 5 किमी या 10 किमी की समस्याएं देखें।",
+      "spoken": "दूरी दायरा। अपने आस-पास के चुने हुए दायरे की समस्याएं देखें।",
+      "enSub": "Distance radar filter: View issues within your selected radius."
+    },
+    "ta": {
+      "display": "தொலைவு ரேடார்: உங்களைச் சுற்றியுள்ள 2 கி.மீ, 5 கி.மீ புகார்களை வடிகட்டவும்.",
+      "spoken": "தொலைவு ரேடார் வடிகட்டி. நீங்கள் தேர்ந்தெடுத்த தூரத்திற்குள் உள்ள புகார்களைப் பாருங்கள்.",
+      "enSub": "Spatial distance scope."
+    },
+    "te": {
+      "display": "దూరం రాడార్: మీ చుట్టూ ఉన్న 2 కి.మీ, 5 కి.మీ సమస్యలను ఫిల్టర్ చేయండి.",
+      "spoken": "దూరం రాడార్ ఫిల్టర్. మీరు ఎంచుకున్న పరిధిలోని సమస్యలను చూడండి.",
+      "enSub": "Spatial distance scope."
+    },
+    "kn": {
+      "display": "ದೂರ ರೇಡಾರ್: ನಿಮ್ಮ ಸುತ್ತಮುತ್ತಲಿನ 2 ಕಿಮೀ, 5 ಕಿಮೀ ವ್ಯಾಪ್ತಿಯ ದೂರುಗಳನ್ನು ಫಿಲ್ಟರ್ ಮಾಡಿ.",
+      "spoken": "ದೂರ ರೇಡಾರ್ ಫಿಲ್ಟರ್. ನೀವು ಆಯ್ಕೆಮಾಡಿದ ತ್ರಿಜ್ಯದೊಳಗಿನ ಸಮಸ್ಯೆಗಳನ್ನು ವೀಕ್ಷಿಸಿ.",
+      "enSub": "Spatial distance scope."
+    },
+    "ml": {
+      "display": "ദൂര റഡാർ: നിങ്ങളുടെ ചുറ്റുമുള്ള 2 കി.മീ, 5 കി.മീ ചുറ്റളവിലെ പ്രശ്നങ്ങൾ കാണുക.",
+      "spoken": "ദൂര റഡാർ ഫിൽട്ടർ. നിങ്ങൾ തിരഞ്ഞെടുത്ത പരിധിയിലുള്ള പ്രശ്നങ്ങൾ കാണുക.",
+      "enSub": "Spatial distance scope."
+    },
+    "mr": {
+      "display": "अंतर रडार: आपल्या सभोवतालच्या 2 किमी, 5 किमी किंवा 10 किमीच्या समस्या पहा.",
+      "spoken": "अंतर रडार फिल्टर. आपण निवडलेल्या त्रिज्येतील समस्या पहा.",
+      "enSub": "Spatial distance scope."
+    },
+    "gu": {
+      "display": "અંતર રડાર: તમારી આસપાસ 2 કિમી, 5 કિમી કે 10 કિમીની સમસ્યાઓ જુઓ.",
+      "spoken": "અંતર રડાર ફિલ્ટર. તમારા પસંદ કરેલા ત્રિજ્યા વિસ્તારની સમસ્યાઓ જુઓ.",
+      "enSub": "Spatial distance scope."
+    },
+    "pa": {
+      "display": "ਦੂਰੀ ਰਾਡਾਰ: ਆਪਣੇ ਆਸ-ਪਾਸ 2 ਕਿਲੋਮੀਟਰ, 5 ਕਿਲੋਮੀਟਰ ਜਾਂ 10 ਕਿਲੋਮੀਟਰ ਦੀਆਂ ਸਮੱਸਿਆਵਾਂ ਵੇਖੋ।",
+      "spoken": "ਦੂਰੀ ਰਾਡਾਰ ਫਿਲਟਰ। ਆਪਣੇ ਚੁਣੇ ਹੋਏ ਘੇਰੇ ਦੀਆਂ ਸਮੱਸਿਆਵਾਂ ਵੇਖੋ।",
+      "enSub": "Spatial distance scope."
+    },
+    "ur": {
+      "display": "فاصلہ ریڈار: اپنے ارد گرد 2 کلومیٹر، 5 کلومیٹر یا 10 کلومیٹر کے مسائل دیکھیں۔",
+      "spoken": "فاصلہ ریڈار فلٹر۔ اپنے منتخب کردہ دائرے کے اندر مسائل دیکھیں۔",
+      "enSub": "Spatial distance scope."
+    },
+    "as": {
+      "display": "দূৰত্ব ৰাডাৰ: আপোনাৰ ওচৰৰ ২ কিঃমিঃ, ৫ কিঃমিঃ বা ১০ কিঃমিঃৰ সমস্যা চাওক।",
+      "spoken": "দূৰত্ব ৰাডাৰ ফিল্টাৰ। আপোনাৰ নিৰ্বাচিত পৰিসৰৰ ভিতৰত সমস্যাসমূহ চাওক।",
+      "enSub": "Spatial distance scope."
+    },
+    "mai": {
+      "display": "दूरी दायरा: अपन आस-पासक 2 किमी, 5 किमी समस्या सभ देखू।",
+      "spoken": "दूरी दायरा फिल्टर। अपन आस-पासक चुनल दायराक समस्या सभ देखू।",
+      "enSub": "Spatial distance scope."
+    },
+    "sat": {
+      "display": "ᱥᱟᱺᱜᱤᱧ ᱨᱟᱰᱟᱨ: ᱟᱢᱟᱜ ᱟᱰᱮᱯᱟᱥᱮ 2 ᱠᱤᱢᱤ ᱥᱮ 5 ᱠᱤᱢᱤ ᱨᱮᱱᱟᱜ ᱟᱱᱟᱴ ᱧᱮᱞ ᱢᱮ᱾",
+      "spoken": "ᱥᱟᱺᱜᱤᱧ ᱨᱟᱰᱟᱨ ᱪᱷᱟᱹᱱᱤ᱾ ᱟᱢᱟᱜ ᱵᱟᱪᱷᱟᱣ ᱜᱷᱮᱨᱟᱣ ᱨᱮᱱᱟᱜ ᱟᱱᱟᱴ ᱠᱚ ᱧᱮᱞ ᱢᱮ᱾",
+      "enSub": "Spatial distance scope."
+    },
+    "ks": {
+      "display": "دوری ریڈار: پَننِس آس پاس 2 کِلوٗمیٖٹَر، 5 کِلوٗمیٖٹَر مَسئلہٕ وُچِھو۔",
+      "spoken": "دوری ریڈار فلٹر۔ پَننِس مُنتخٕب کٔرِتھ دائرَس مَنٛز وُچِھو مَسئلہٕ۔",
+      "enSub": "Spatial distance scope."
+    },
+    "sd": {
+      "display": "فاصلو رڊار: پنهنجي ڀرپاسي 2 ڪلوميٽر يا 5 ڪلوميٽر جا مسئلا ڏسو.",
+      "spoken": "فاصلو رڊار فلٽر. پنهنجي چونڊيل فاصلي اندر مسئلا ڏسو.",
+      "enSub": "Spatial distance scope."
+    },
+    "en": {
+      "display": "Distance Radar: Filter complaints by geographic radius.",
+      "spoken": "Distance radar filter. View issues within your selected radius.",
+      "enSub": "Spatial distance scope."
+    }
+  },
+  "data_fusion": {
+    "hi": {
+      "display": "डेटा संलयन: उपग्रह चित्रों और जमीनी साक्ष्यों का एआई मिलान।",
+      "spoken": "डेटा संलयन विश्लेषण। उपग्रह चित्रों और जमीनी साक्ष्यों का एआई मिलान।",
+      "enSub": "Multi-Source Ground Truth Data Fusion Suite."
+    },
+    "ta": {
+      "display": "தரவு இணைப்பு: செயற்கைக்கோள் படங்கள் மற்றும் கள ஆதாரங்களின் AI சரிபார்ப்பு.",
+      "spoken": "தரவு இணைப்பு பகுப்பாய்வு. செயற்கைக்கோள் மற்றும் நேரடி ஆதாரங்களின் AI சரிபார்ப்பு.",
+      "enSub": "Multimodal truth engine."
+    },
+    "te": {
+      "display": "డేటా ఫ్యూజన్: ఉపగ్రహ చిత్రాలు మరియు క్షేత్రస్థాయి ఆధారాల AI ధృవీకరణ.",
+      "spoken": "డేటా ఫ్యూజన్ విశ్లేషణ. ఉపగ్రహ చిత్రాలు మరియు గ్రౌండ్ ఆధారాల ఏఐ విశ్లేషణ.",
+      "enSub": "Multimodal truth engine."
+    },
+    "kn": {
+      "display": "ಡೇಟಾ ಫ್ಯೂಷನ್: ಉಪಗ್ರಹ ಚಿತ್ರಗಳು ಮತ್ತು ಕ್ಲಪ್ತ ಪುರಾವೆಗಳ AI ಪರಿಶೀಲನೆ.",
+      "spoken": "ಡೇಟಾ ಫ್ಯೂಷನ್ ವಿಶ್ಲೇಷಣೆ. ಉಪಗ್ರಹ ಚಿತ್ರಗಳು ಮತ್ತು ಕ್ಷೇತ್ರ ಪುರಾವೆಗಳ ಎಐ ಪರಿಶೀಲನೆ.",
+      "enSub": "Multimodal truth engine."
+    },
+    "ml": {
+      "display": "ഡാറ്റാ ഫ്യൂഷൻ: ഉപഗ്രഹ ചിത്രങ്ങളുടെയും ഫീൽഡ് തെളിവുകളുടെയും AI സ്ഥിരീകരണം.",
+      "spoken": "ഡാറ്റാ ഫ്യൂഷൻ വിശകലനം. ഉപഗ്രഹ ചിത്രങ്ങളും തെളിവുകളും എഐ വഴി പരിശോധിക്കുന്നു.",
+      "enSub": "Multimodal truth engine."
+    },
+    "mr": {
+      "display": "डेटा संलयन: उपग्रह चित्रे आणि जमिनीवरील पुराव्यांचे AI विश्लेषण.",
+      "spoken": "डेटा संलयन विश्लेषण. उपग्रह प्रतिमा आणि प्रत्यक्ष पुराव्यांचे एआय पडताळणी.",
+      "enSub": "Multimodal truth engine."
+    },
+    "gu": {
+      "display": "ડેટા ફ્યુઝન: સેટેલાઇટ છબીઓ અને જમીની પુરાવાનું AI મેળવણું.",
+      "spoken": "ડેટા ફ્યુઝન વિશ્લેષણ. સેટેલાઇટ છબીઓ અને જમીની પુરાવાનું આર્ટિફિશિયલ ઇન્ટેલિજન્સ મેળવણું.",
+      "enSub": "Multimodal truth engine."
+    },
+    "pa": {
+      "display": "ਡੇਟਾ ਫਿਊਜ਼ਨ: ਸੈਟੇਲਾਈਟ ਤਸਵੀਰਾਂ ਅਤੇ ਜ਼ਮੀਨੀ ਸਬੂਤਾਂ ਦਾ AI ਮਿਲਾਨ।",
+      "spoken": "ਡੇਟਾ ਫਿਊਜ਼ਨ ਵਿਸ਼ਲੇਸ਼ਣ। ਸੈਟੇਲਾਈਟ ਤਸਵੀਰਾਂ ਅਤੇ ਫੀਲਡ ਸਬੂਤਾਂ ਦਾ ਏਆਈ ਮਿਲਾਨ।",
+      "enSub": "Multimodal truth engine."
+    },
+    "ur": {
+      "display": "ڈیٹا فیوژن: سیٹلائٹ تصاویر اور زمینی شواہد کی AI تصدیق۔",
+      "spoken": "ڈیٹا فیوژن تجزیہ۔ سیٹلائٹ تصاویر اور فیلڈ ڈیٹا کی مصنوعی ذہانت سے تصدیق۔",
+      "enSub": "Multimodal truth engine."
+    },
+    "as": {
+      "display": "তথ্য সংমিশ্ৰণ: উপগ্ৰহ চিত্ৰ আৰু ফিল্ড প্ৰমাণৰ AI পৰীক্ষণ।",
+      "spoken": "তথ্য সংমিশ্ৰণ বিশ্লেষণ। উপগ্ৰহ চিত্ৰ আৰু বাস্তৱ প্ৰমাণৰ এআই পৰীক্ষণ।",
+      "enSub": "Multimodal truth engine."
+    },
+    "mai": {
+      "display": "डेटा संलयन: उपग्रह चित्र आ जमीनी साक्ष्यक एआई मिलान।",
+      "spoken": "डेटा संलयन विश्लेषण। उपग्रह चित्र आ जमीनी साक्ष्यक एआई मिलान।",
+      "enSub": "Multimodal truth engine."
+    },
+    "sat": {
+      "display": "ᱰᱮᱴᱟ ᱯᱷᱤᱭᱩᱡᱚᱱ: ᱥᱮᱴᱮᱞᱟᱭᱤᱴ ᱪᱤᱛᱟᱹᱨ ᱟᱨ ᱡᱟᱭᱜᱟ ᱥᱟᱹᱵᱩᱫᱽ ᱨᱮᱱᱟᱜ AI ᱛᱩᱞᱟᱹᱡᱚᱠᱷᱟ᱾",
+      "spoken": "ᱰᱮᱴᱟ ᱯᱷᱤᱭᱩᱡᱚᱱ ᱯᱚᱨᱠᱷᱟ᱾ ᱥᱮᱴᱮᱞᱟᱭᱤᱴ ᱪᱤᱛᱟᱹᱨ ᱟᱨ ᱥᱟᱹᱵᱩᱫᱽ ᱨᱮᱱᱟᱜ AI ᱛᱩᱞᱟᱹᱡᱚᱠᱷᱟ᱾",
+      "enSub": "Multimodal truth engine."
+    },
+    "ks": {
+      "display": "ڈیٹا فیوژن: سیٹلائٹ فوٹو تہِ زَمینی ثَبوتَن ہُنٛد AI تَصدیق۔",
+      "spoken": "ڈیٹا فیوژن تجزیہٕ۔ سیٹلائٹ فوٹو تہِ فیلڈ ڈیٹا ہُنٛد AI تصدیق۔",
+      "enSub": "Multimodal truth engine."
+    },
+    "sd": {
+      "display": "ڊيٽا فيوزن: سيٽلائيٽ تصويرن ۽ زميني ثبوتن جي AI تصديق.",
+      "spoken": "ڊيٽا فيوزن تجزيو. سيٽلائيٽ تصويرن ۽ زميني ثبوتن جي AI جاچ.",
+      "enSub": "Multimodal truth engine."
+    },
+    "en": {
+      "display": "Data Fusion: Multi-sensor satellite and drone verification.",
+      "spoken": "Data Fusion analysis. AI verification across satellite, field, and citizen data.",
+      "enSub": "Multimodal truth engine."
+    }
+  },
+  "page_guide": {
+    "hi": {
+      "display": "लोक स्वर गाइड: बोलकर या लिखकर शिकायत दर्ज करें, नक्शा देखें और जन प्राथमिकताओं को समर्थन दें।",
+      "spoken": "लोक स्वर मुख्य पृष्ठ पर आपका स्वागत है। यहाँ आप अपनी समस्या बोलकर या लिखकर दर्ज कर सकते हैं, वास्तविक समय में अनुवाद प्राप्त कर सकते हैं, अपने क्षेत्र के नक्शे पर समस्याएं देख सकते हैं और चल रहे कार्यों को समर्थन दे सकते हैं।",
+      "enSub": "Lok Swar Portal Tour: Voice or text grievance intake, GIS maps, and community progress."
+    },
+    "bho": {
+      "display": "लोक स्वर गाइड: बोल के भा लिख के शिकायत दर्ज करीं, नक्शा देखीं आ समर्थन दिहीं।",
+      "spoken": "लोक स्वर मुख्य पृष्ठ पर स्वागत बा। इहवाँ रउआ आपन समस्या बोल के चाहे लिख के दर्ज कर सकत बानी। नक्शा पर आपन क्षेत्र देखीं।",
+      "enSub": "Portal tour in Bhojpuri."
+    },
+    "or": {
+      "display": "ଲୋକ ସ୍ୱର ଗାଇଡ୍: ସମସ୍ୟା କହି କିମ୍ବା ଲେଖି ଦାଖଲ କରନ୍ତୁ, ମ୍ୟାପ୍ ଦେଖନ୍ତୁ ଓ ସମର୍ଥନ ଦିଅନ୍ତୁ।",
+      "spoken": "ଲୋକ ସ୍ୱର ମୁଖ୍ୟ ପୃଷ୍ଠାକୁ ସ୍ୱାଗତ। ଏଠାରେ ଆପଣ ସମସ୍ୟା କହି କିମ୍ବା ଲେଖି ଦାଖଲ କରିପାରିବେ ଏବଂ ମ୍ୟାପ୍ ରେ ଦେଖିପାରିବେ।",
+      "enSub": "Portal tour in Odia."
+    },
+    "bn": {
+      "display": "লোক স্বর গাইড: সমস্যা বলে বা লিখে নথিভুক্ত করুন, মানচিত্র দেখুন ও ভোট দিন।",
+      "spoken": "লোক স্বর প্রধান পৃষ্ঠায় স্বাগতম। এখানে আপনি समस्या বলে বা লিখে নথিভুক্ত করতে পারেন மற்றும் মানচিত্রে দেখতে পারেন।",
+      "enSub": "Portal tour in Bengali."
+    },
+    "ta": {
+      "display": "லோக் ஸ்வர் வழிகாட்டி: பேசி அல்லது எழுதி புகார் பதிவு செய்யுங்கள், வரைபடத்தைப் பாருங்கள்.",
+      "spoken": "லோக் ஸ்வர் முதன்மை போர்ட்டலுக்கு வரவேற்கிறோம். இங்கே நீங்கள் பேசி அல்லது எழுதி புகார் செய்யலாம், வரைபடத்தில் திட்டங்களைப் பார்க்கலாம்.",
+      "enSub": "Audio guided tour of portal capabilities."
+    },
+    "te": {
+      "display": "లోక్ స్వర్ గైడ్: మాట్లాడి లేదా రాసి ఫిర్యాదు నమోదు చేయండి, మ్యాప్ చూడండి.",
+      "spoken": "లోక్ స్వర్ ప్రధాన పోర్టల్‌కు స్వాగతం. ఇక్కడ మీరు మాట్లాడి లేదా రాసి ఫిర్యాదు దాఖలు చేయవచ్చు, పురోగతిని ట్రాక్ చేయవచ్చు.",
+      "enSub": "Audio guided tour of portal capabilities."
+    },
+    "kn": {
+      "display": "ಲೋಕ್ ಸ್ವರ್ ಮಾರ್ಗದರ್ಶಿ: ಮಾತನಾಡಿ ಅಥವಾ ಬರೆದು ದೂರು ದಾಖಲಿಸಿ, ನಕ್ಷೆ ವೀಕ್ಷಿಸಿ.",
+      "spoken": "ಲೋಕ್ ಸ್ವರ್ ಮುಖ್ಯ ಪೋರ್ಟಲ್‌ಗೆ ಸುಸ್ವಾಗತ. ಇಲ್ಲಿ ನೀವು ಮಾತನಾಡಿ ಅಥವಾ ಬರೆದು ದೂರು ದಾಖಲಿಸಬಹುದು, ಪ್ರಗತಿಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಬಹುದು.",
+      "enSub": "Audio guided tour of portal capabilities."
+    },
+    "ml": {
+      "display": "ലോക് സ്വര് വഴികാട്ടി: സംസാരിച്ചോ എഴുതിയോ പരാതി നൽകുക, ഭൂപടം കാണുക.",
+      "spoken": "ലോക് സ്വര് പോർട്ടലിലേക്ക് സ്വാഗതം. ഇവിടെ നിങ്ങൾക്ക് സംസാരിച്ചോ എഴുതിയോ പരാതി നൽകാം, ഭൂപടം കാണാം, പുരോഗതി അറിയാം.",
+      "enSub": "Audio guided tour of portal capabilities."
+    },
+    "mr": {
+      "display": "लोक स्वर मार्गदर्शक: बोलून किंवा लिहून तक्रार नोंदवा, नकाशा पहा आणि प्रगती ट्रॅक करा.",
+      "spoken": "लोक स्वर मुख्य पोर्टलमध्ये आपले स्वागत आहे. येथे आपण बोलून किंवा लिहून तक्रार नोंदवू शकता, नकाशा पाहू शकता आणि प्रगती ट्रॅक करू शकता.",
+      "enSub": "Audio guided tour of portal capabilities."
+    },
+    "gu": {
+      "display": "લોક સ્વર માર્ગદર્શિકા: બોલીને કે લખીને ફરિયાદ નોંધાવો, નકશો જુઓ અને પ્રગતિ તપાસો.",
+      "spoken": "લોક સ્વર મુખ્ય પોર્ટલમાં તમારું સ્વાગત છે. અહીં તમે બોલીને કે લખીને સમસ્યા નોંધાવી શકો છો, નકશા પર હોટસ્પોટ જોઈ શકો છો અને પ્રગતિ ટ્રેક કરી શકો છો.",
+      "enSub": "Audio guided tour of portal capabilities."
+    },
+    "pa": {
+      "display": "ਲੋਕ ਸਵਰ ਗਾਈਡ: ਬੋਲ ਕੇ ਜਾਂ ਲਿਖ ਕੇ ਸ਼ਿਕਾਇਤ ਦਰਜ ਕਰੋ, ਨਕਸ਼ਾ ਵੇਖੋ ਅਤੇ ਪ੍ਰਗਤੀ ਟ੍ਰੈਕ ਕਰੋ।",
+      "spoken": "ਲੋਕ ਸਵਰ ਮੁੱਖ ਪੋਰਟਲ ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ। ਇੱਥੇ ਤੁਸੀਂ ਬੋਲ ਕੇ ਜਾਂ ਲਿਖ ਕੇ ਸ਼ਿਕਾਇਤ ਦਰਜ ਕਰ ਸਕਦੇ ਹੋ, ਨਕਸ਼ੇ 'ਤੇ ਹਾਟਸਪੌਟ ਵੇਖ ਸਕਦੇ ਹੋ ਅਤੇ ਤਰੱਕੀ ਵੇਖ ਸਕਦੇ ਹੋ।",
+      "enSub": "Audio guided tour of portal capabilities."
+    },
+    "ur": {
+      "display": "لوک سور گائیڈ: بول کر یا لکھ کر شکایت درج کریں، نقشہ دیکھیں اور پیش رفت چیک کریں۔",
+      "spoken": "لوک سور پورٹل پر خوش آمدید۔ یہاں آپ بول کر یا لکھ کر شکایت درج کر سکتے ہیں، نقشے پر ہاٹ اسپاٹ دیکھ سکتے ہیں اور پیش رفت جان سکتے ہیں۔",
+      "enSub": "Audio guided tour of portal capabilities."
+    },
+    "as": {
+      "display": "লোক স্বৰ নিৰ্দেশিকা: কথাৰে বা লিখি অভিযোগ দাখিল কৰক, মানচিত্ৰ চাওক আৰু অগ্ৰগতি পৰীক্ষা কৰক।",
+      "spoken": "লোক স্বৰ মূল পৰ্টেললৈ স্বাগতম। ইয়াত আপুনি কথাৰে বা লিখি অভিযোগ দাখিল কৰিব পাৰে, মানচিত্ৰ চাব পাৰে আৰু অগ্ৰগতি পৰীক্ষা কৰিব পাৰে।",
+      "enSub": "Audio guided tour of portal capabilities."
+    },
+    "mai": {
+      "display": "लोक स्वर गाइड: बाजि कऽ या लिखि कऽ समस्या दर्ज करू, नक्शा देखू आ प्रगति जाँचू।",
+      "spoken": "लोक स्वर मुख्य पोर्टल मे अहाँक स्वागत अछि। एतय अहाँ बाजि कऽ या लिखि कऽ समस्या दर्ज कऽ सकैत छी, नक्शा देखि सकैत छी।",
+      "enSub": "Audio guided tour of portal capabilities."
+    },
+    "sat": {
+      "display": "ᱞᱚᱠ ᱥᱣᱚᱨ ᱜᱟᱭᱤᱰ: ᱨᱚᱲ ᱠᱟᱛᱮ ᱥᱮ ᱚᱞ ᱠᱟᱛᱮ ᱟᱱᱟᱴ ᱫᱟᱨᱡᱽ ᱢᱮ, ᱢᱮᱯ ᱧᱮᱞ ᱢᱮ ᱟᱨ ᱞᱟᱦᱟᱱᱛᱤ ᱯᱟᱸᱡᱟᱭ ᱢᱮ᱾",
+      "spoken": "ᱞᱚᱠ ᱥᱣᱚᱨ ᱢᱩᱬ ᱯᱳᱨᱴᱟᱞ ᱨᱮ ᱥᱟᱹᱜᱩᱱ ᱫᱟᱨᱟᱢ᱾ ᱱᱚᱸᱰᱮ ᱟᱢ ᱨᱚᱲ ᱠᱟᱛᱮ ᱥᱮ ᱚᱞ ᱠᱟᱛᱮ ᱟᱱᱟᱴ ᱫᱟᱨᱡᱽ ᱫᱟᱲᱮᱭᱟᱜᱼᱟᱢ᱾",
+      "enSub": "Audio guided tour of portal capabilities."
+    },
+    "ks": {
+      "display": "لوک سور گائیڈ: بولِتھ یا لؠکِھتھ کٔریو شِکایتھ دَرٕج، نقشہٕ وُچِھو تہِ ترقی کٔریو ٹریک۔",
+      "spoken": "لوک سور پۄرٹَلَس مَنٛز خۄش آمدید۔ ییٚتہِ ہؠکِو تُہؠ بولِتھ یا لؠکِھتھ شِکایتھ دَرٕج کٔرِتھ، نقشہٕ وُچِھتھ تہِ ترقی ٹریک کٔرِتھ۔",
+      "enSub": "Audio guided tour of portal capabilities."
+    },
+    "sd": {
+      "display": "لوڪ سور گائيڊ: ڳالهائي يا لکي شڪايت داخل ڪريو، نقشو ڏسو ۽ ترقي ٽريڪ ڪريو.",
+      "spoken": "لوڪ سور مکيه پورٽل ۾ ڀليڪار. هتي توهان ڳالهائي يا لکي شڪايت داخل ڪري سگهو ٿا، نقشو ڏسي سگهو ٿا.",
+      "enSub": "Audio guided tour of portal capabilities."
+    },
+    "en": {
+      "display": "Lok Swar Tour: Voice or text complaints, GIS maps, and community progress.",
+      "spoken": "Welcome to the Lok Swar main portal. Here you can voice or write your civic issues with instant translation, view geographic hotspots, and track community progress.",
+      "enSub": "Audio guided tour of portal capabilities."
+    }
+  },
+  "voice_toggle_on": {
+    "hi": {
+      "display": "आवाज सहायक चालू है। स्क्रीन पर कहीं भी क्लिक करें, मैं आपको बोलकर मार्गदर्शन दूंगा।",
+      "spoken": "आवाज सहायक चालू है। अब आप स्क्रीन पर जहाँ भी क्लिक करेंगे, मैं आपको बोलकर मार्गदर्शन दूंगा।",
+      "enSub": "Voice Assistant active. Spoken guidance enabled on every click."
+    },
+    "bho": {
+      "display": "आवाज सहायक चालू बा। स्क्रीन पर कहीं भी क्लिक करब, हम बोल के बताएम।",
+      "spoken": "आवाज सहायक चालू बा। अब स्क्रीन पर जहाँ भी क्लिक करब, हम बोल के बताएम।",
+      "enSub": "Voice Assistant active in Bhojpuri."
+    },
+    "or": {
+      "display": "ଭଏସ୍ ଆସିଷ୍ଟାଣ୍ଟ ସକ୍ରିୟ ଅଛି। ଆପଣ ସ୍କ୍ରିନରେ ଯେଉଁଠି ବି କ୍ଲିକ୍ କରିବେ, ମୁଁ କହିକି ସାହାଯ୍ୟ କରିବି।",
+      "spoken": "ଭଏସ୍ ଆସିଷ୍ଟାଣ୍ଟ ସକ୍ରିୟ ଅଛି। ଆପଣ ସ୍କ୍ରିନରେ ଯେଉଁଠି ବି କ୍ଲିକ୍ କରିବେ, ମୁଁ କହିକି ସାହାଯ୍ୟ କରିବି।",
+      "enSub": "Voice Assistant active in Odia."
+    },
+    "bn": {
+      "display": "ভয়েস অ্যাসিস্ট্যান্ট সক্রিয় হয়েছে। আপনি স্ক্রিনে যেখানেই ক্লিক করবেন, আমি বলে পথ দেখাব।",
+      "spoken": "ভয়েস অ্যাসিস্ট্যান্ট সক্রিয় হয়েছে। আপনি স্ক্রিনে যেখানেই ক্লিক করবেন, আমি বলে পথ দেখাব।",
+      "enSub": "Voice Assistant active in Bengali."
+    },
+    "ta": {
+      "display": "குரல் உதவியாளர் இயக்கத்தில் உள்ளது. திரையில் எங்கு கிளிக் செய்தாலும், நான் பேசி வழிகாட்டுவேன்.",
+      "spoken": "குரல் உதவியாளர் இயக்கத்தில் உள்ளது. நீங்கள் திரையில் எங்கு கிளிக் செய்தாலும், நான் பேசி வழிகாட்டுவேன்.",
+      "enSub": "Spoken guidance active on every click."
+    },
+    "te": {
+      "display": "వాయిస్ అసిస్టెంట్ ఆన్‌లో ఉంది. స్క్రీన్‌పై ఎక్కడ క్లిక్ చేసినా, నేను మాట్లాడి మార్గనిర్దేశం చేస్తాను.",
+      "spoken": "వాయిస్ అసిస్టెంట్ ఆన్‌లో ఉంది. మీరు స్క్రీన్‌పై ఎక్కడ క్లిక్ చేసినా, నేను మాట్లాడి మార్గనిర్దేశం చేస్తాను.",
+      "enSub": "Spoken guidance active on every click."
+    },
+    "kn": {
+      "display": "ಧ್ವನಿ ಸಹಾಯಕ ಆನ್ ಆಗಿದೆ. ಪರದೆಯ ಮೇಲೆ ಎಲ್ಲಿಯಾದರೂ ಕ್ಲಿಕ್ ಮಾಡಿ, ನಾನು ಮಾತನಾಡಿ ಮಾರ್ಗದರ್ಶನ ನೀಡುತ್ತೇನೆ.",
+      "spoken": "ಧ್ವನಿ ಸಹಾಯಕ ಆನ್ ಆಗಿದೆ. ಈಗ ನೀವು ಪರದೆಯ ಮೇಲೆ ಎಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿದರೂ ನಾನು ಮಾತನಾಡಿ ಮಾರ್ಗದರ್ಶನ ನೀಡುತ್ತೇನೆ.",
+      "enSub": "Spoken guidance active on every click."
+    },
+    "ml": {
+      "display": "വോയ്‌സ് അസിസ്റ്റന്റ് ഓണാണ്. സ്ക്രീനിൽ എവിടെ ക്ലിക്ക് ചെയ്താലും ഞാൻ സംസാരിച്ച് വഴികാട്ടും.",
+      "spoken": "വോയ്‌സ് അസിസ്റ്റന്റ് ഓണാണ്. സ്ക്രീനിൽ എവിടെ ക്ലിക്ക് ചെയ്താലും ഞാൻ സംസാരിച്ച് നിങ്ങളെ വഴികാട്ടും.",
+      "enSub": "Spoken guidance active on every click."
+    },
+    "mr": {
+      "display": "आवाज सहाय्यक सुरू आहे. स्क्रीनवर कुठेही क्लिक करा, मी बोलून मार्गदर्शन करेन.",
+      "spoken": "आवाज सहाय्यक सुरू आहे. आता आपण स्क्रीनवर जिथेही क्लिक कराल, मी बोलून मार्गदर्शन करेन.",
+      "enSub": "Spoken guidance active on every click."
+    },
+    "gu": {
+      "display": "અવાજ સહાયક ચાલુ છે. સ્ક્રીન પર ગમે ત્યાં ક્લિક કરો, હું તમને બોલીને માર્ગદર્શન આપીશ.",
+      "spoken": "અવાજ સહાયક ચાલુ છે. હવે તમે સ્ક્રીન પર જ્યાં પણ ક્લિક કરશો, હું તમને બોલીને માર્ગદર્શન આપીશ.",
+      "enSub": "Spoken guidance active on every click."
+    },
+    "pa": {
+      "display": "ਆਵਾਜ਼ ਸਹਾਇਕ ਚਾਲੂ ਹੈ। ਸਕ੍ਰੀਨ 'ਤੇ ਕਿਤੇ ਵੀ ਕਲਿੱਕ ਕਰੋ, ਮੈਂ ਬੋਲ ਕੇ ਮਾਰਗਦਰਸ਼ਨ ਕਰਾਂਗਾ।",
+      "spoken": "ਆਵਾਜ਼ ਸਹਾਇਕ ਚਾਲੂ ਹੈ। ਹੁਣ ਤੁਸੀਂ ਸਕ੍ਰੀਨ 'ਤੇ ਜਿੱਥੇ ਵੀ ਕਲਿੱਕ ਕਰੋਗੇ, ਮੈਂ ਬੋਲ ਕੇ ਮਾਰਗਦਰਸ਼ਨ ਕਰਾਂਗਾ।",
+      "enSub": "Spoken guidance active on every click."
+    },
+    "ur": {
+      "display": "وائس اسسٹنٹ آن ہے۔ اسکرین پر کہیں بھی کلک کریں، میں بول کر رہنمائی کروں گا۔",
+      "spoken": "وائس اسسٹنٹ فعال ہے۔ اب آپ اسکرین پر جہاں بھی کلک کریں گے، میں بول کر رہنمائی کروں گا۔",
+      "enSub": "Spoken guidance active on every click."
+    },
+    "as": {
+      "display": "ভয়েচ সহায়ক সক্ৰিয় হৈছে। স্ক্ৰীণত যিকোনো ঠাইত ক্লিক কৰক, মই কথাৰে পথ দেখুৱাম।",
+      "spoken": "ভয়েচ সহায়ক সক্ৰিয় হৈছে। এতিয়া আপুনি স্ক্ৰীণত য'তেই ক্লিক কৰিব, মই কথাৰে আপোনাক সহায় কৰিম।",
+      "enSub": "Spoken guidance active on every click."
+    },
+    "mai": {
+      "display": "आवाज सहायक चालू अछि। स्क्रीन पर कतौ क्लिक करू, हम बाजि कऽ मार्गदर्शन देब।",
+      "spoken": "आवाज सहायक चालू अछि। आब अहाँ स्क्रीन पर जतय सेहो क्लिक करब, हम बाजि कऽ मार्गदर्शन देब।",
+      "enSub": "Spoken guidance active on every click."
+    },
+    "sat": {
+      "display": "ᱨᱚᱲ ᱜᱚᱲᱚᱭᱤᱡ ᱪᱟᱹᱞᱩ ᱟᱠᱟᱱᱟ᱾ ᱥᱠᱨᱤᱱ ᱨᱮ ᱡᱟᱦᱟᱸ ᱨᱮᱜᱮ ᱴᱮᱯ ᱢᱮ, ᱤᱧ ᱨᱚᱲ ᱠᱟᱛᱮᱧ ᱜᱟᱭᱤᱰ ᱢᱮᱭᱟ᱾",
+      "spoken": "ᱨᱚᱲ ᱜᱚᱲᱚᱭᱤᱡ ᱪᱟᱹᱞᱩ ᱟᱠᱟᱱᱟ᱾ ᱱᱤᱛ ᱟᱢ ᱥᱠᱨᱤᱱ ᱨᱮ ᱡᱟᱦᱟᱸ ᱨᱮᱜᱮ ᱴᱮᱯ ᱢᱮ, ᱤᱧ ᱨᱚᱲ ᱠᱟᱛᱮᱧ ᱜᱟᱭᱤᱰ ᱢᱮᱭᱟ᱾",
+      "enSub": "Spoken guidance active on every click."
+    },
+    "ks": {
+      "display": "وائس اَسِسٹنٹ چھُ آن۔ سکرینَس پؠٹھ کُنہِ تِہ جاے کٔریو کِلک، بؤ کَرِ تُہٕنٛز بولِتھ رَہنُمٲیی۔",
+      "spoken": "وائس اَسِسٹنٹ چھُ چالو۔ وۄنؠ کٔریو سکرینَس پؠٹھ ییٚتہِ تِہ کِلک، بؤ کَرِ تُہٕنٛز بولِتھ رَہنُمٲیی۔",
+      "enSub": "Spoken guidance active on every click."
+    },
+    "sd": {
+      "display": "وائس اسسٽنٽ چالو آهي. اسڪرين تي ڪٿي به ڪلڪ ڪريو، مان ڳالهائي رهنمائي ڪندس.",
+      "spoken": "وائس اسسٽنٽ چالو آهي. هاڻي اسڪرين تي جتي به ڪلڪ ڪندؤ، مان ڳالهائي رهنمائي ڪندس.",
+      "enSub": "Spoken guidance active on every click."
+    },
+    "en": {
+      "display": "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
+      "spoken": "Voice Assistant is active. Wherever you click on the page, I will guide you through speech.",
+      "enSub": "Spoken guidance active on every click."
+    }
+  },
+  "voice_toggle_off": {
+    "hi": {
+      "display": "आवाज सहायक म्यूट कर दिया गया है।",
+      "spoken": "आवाज सहायक म्यूट कर दिया गया है। पुनः चालू करने के लिए आवाज गाइड पर क्लिक करें।",
+      "enSub": "Voice Assistant muted."
+    },
+    "bho": {
+      "display": "आवाज सहायक म्यूट कइल गइल बा।",
+      "spoken": "आवाज सहायक म्यूट कइल गइल बा।",
+      "enSub": "Voice Assistant muted in Bhojpuri."
+    },
+    "or": {
+      "display": "ଭଏସ୍ ଆସିଷ୍ଟାଣ୍ଟ ମ୍ୟୁଟ୍ ହୋଇଛି।",
+      "spoken": "ଭଏସ୍ ଆସିଷ୍ଟାଣ୍ଟ ମ୍ୟୁଟ୍ ହୋଇଛି।",
+      "enSub": "Voice Assistant muted in Odia."
+    },
+    "bn": {
+      "display": "ভয়েস অ্যাসিস্ট্যান্ট মিউট করা হয়েছে।",
+      "spoken": "ভয়েস অ্যাসিস্ট্যান্ট মিউট করা হয়েছে।",
+      "enSub": "Voice Assistant muted in Bengali."
+    },
+    "ta": {
+      "display": "குரல் உதவியாளர் முடக்கப்பட்டது.",
+      "spoken": "குரல் உதவியாளர் முடக்கப்பட்டது. மீண்டும் இயக்க குரல் வழிகாட்டியை கிளிக் செய்யவும்.",
+      "enSub": "Voice guidance muted."
+    },
+    "te": {
+      "display": "వాయిస్ అసిస్టెంట్ మ్యూట్ చేయబడింది.",
+      "spoken": "వాయిస్ అసిస్టెంట్ మ్యూట్ చేయబడింది. మళ్లీ ఆన్ చేయడానికి వాయిస్ గైడ్‌పై క్లిక్ చేయండి.",
+      "enSub": "Voice guidance muted."
+    },
+    "kn": {
+      "display": "ಧ್ವನಿ ಸಹಾಯಕವನ್ನು ಮ್ಯೂಟ್ ಮಾಡಲಾಗಿದೆ.",
+      "spoken": "ಧ್ವನಿ ಸಹಾಯಕವನ್ನು ಮ್ಯೂಟ್ ಮಾಡಲಾಗಿದೆ. ಮತ್ತೆ ಆನ್ ಮಾಡಲು ಧ್ವನಿ ಮಾರ್ಗದರ್ಶಿ ಮೇಲೆ ಕ್ಲಿಕ್ ಮಾಡಿ.",
+      "enSub": "Voice guidance muted."
+    },
+    "ml": {
+      "display": "വോയ്‌സ് അസിസ്റ്റന്റ് മ്യൂട്ട് ചെയ്തു.",
+      "spoken": "വോയ്‌സ് അസിസ്റ്റന്റ് മ്യൂട്ട് ചെയ്തു. വീണ്ടും ഓണാക്കാൻ വോയ്‌സ് ഗൈഡിൽ ക്ലിക്ക് ചെയ്യുക.",
+      "enSub": "Voice guidance muted."
+    },
+    "mr": {
+      "display": "आवाज सहाय्यक म्यूट केला आहे.",
+      "spoken": "आवाज सहाय्यक म्यूट केला आहे. पुन्हा सुरू करण्यासाठी आवाज मार्गदर्शकावर क्लिक करा.",
+      "enSub": "Voice guidance muted."
+    },
+    "gu": {
+      "display": "અવાજ સહાયક બંધ કરવામાં આવ્યો છે.",
+      "spoken": "અવાજ સહાયક બંધ કરવામાં આવ્યો છે. ફરી ચાલુ કરવા માટે અવાજ ગાઇડ પર ક્લિક કરો.",
+      "enSub": "Voice guidance muted."
+    },
+    "pa": {
+      "display": "ਆਵਾਜ਼ ਸਹਾਇਕ ਬੰਦ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ।",
+      "spoken": "ਆਵਾਜ਼ ਸਹਾਇਕ ਬੰਦ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ। ਮੁੜ ਚਾਲੂ ਕਰਨ ਲਈ ਆਵਾਜ਼ ਗਾਈਡ 'ਤੇ ਕਲਿੱਕ ਕਰੋ।",
+      "enSub": "Voice guidance muted."
+    },
+    "ur": {
+      "display": "وائس اسسٹنٹ میوٹ کر دیا گیا ہے۔",
+      "spoken": "وائس اسسٹنٹ میوٹ کر دیا گیا ہے۔ دوبارہ شروع کرنے کے لیے وائس گائیڈ پر کلک کریں۔",
+      "enSub": "Voice guidance muted."
+    },
+    "as": {
+      "display": "ভয়েচ সহায়ক মিউট কৰা হৈছে।",
+      "spoken": "ভয়েচ সহায়ক মিউট কৰা হৈছে। পুনৰ আৰম্ভ কৰিবলৈ ভয়েচ গাইডত ক্লিক কৰক।",
+      "enSub": "Voice guidance muted."
+    },
+    "mai": {
+      "display": "आवाज सहायक म्यूट कएल गेल अछि।",
+      "spoken": "आवाज सहायक म्यूट कएल गेल अछि। पुनः चालू करवाक लेल आवाज गाइड पर क्लिक करू।",
+      "enSub": "Voice guidance muted."
+    },
+    "sat": {
+      "display": "ᱨᱚᱲ ᱜᱚᱲᱚᱭᱤᱡ ᱵᱚᱸᱫᱽ ᱮᱱᱟ᱾",
+      "spoken": "ᱨᱚᱲ ᱜᱚᱲᱚᱭᱤᱡ ᱵᱚᱸᱫᱽ ᱮᱱᱟ᱾ ᱫᱚᱦᱲᱟ ᱪᱟᱹᱞᱩ ᱞᱟᱹᱜᱤᱫ ᱨᱚᱲ ᱜᱟᱭᱤᱰ ᱨᱮ ᱴᱮᱯ ᱢᱮ᱾",
+      "enSub": "Voice guidance muted."
+    },
+    "ks": {
+      "display": "وائس اَسِسٹنٹ آو میوٹ کَرنہٕ۔",
+      "spoken": "وائس اَسِسٹنٹ آو میوٹ کَرنہٕ۔ دوبارٕ آن کَرنہٕ خٲطرٕ کٔریو وائس گائیڈَس پؠٹھ کِلک।",
+      "enSub": "Voice guidance muted."
+    },
+    "sd": {
+      "display": "وائس اسسٽنٽ بند ڪيو ويو آهي.",
+      "spoken": "وائس اسسٽنٽ بند ڪيو ويو آهي. ٻيهر شروع ڪرڻ لاءِ وائس گائيڊ تي ڪلڪ ڪريو.",
+      "enSub": "Voice guidance muted."
+    },
+    "en": {
+      "display": "Voice Assistant is now muted.",
+      "spoken": "Voice Assistant is now muted. Click Voice Guide to turn back on.",
+      "enSub": "Voice guidance muted."
+    }
+  },
+  "empty_submit": {
+    "hi": {
+      "display": "कृपया अपनी समस्या रिकॉर्ड करने के लिए माइक बटन दबाएं, या सर्च बार में लिखें।",
+      "spoken": "कृपया अपनी समस्या रिकॉर्ड करने के लिए माइक बटन दबाएं, या सर्च बार में लिखें।",
+      "enSub": "Please tap the microphone button to record your issue, or type in the search bar."
+    },
+    "ta": {
+      "display": "உங்கள் புகாரைப் பதிவு செய்ய மைக் பொத்தானை அழுத்தவும், அல்லது தேடல் பட்டியில் தட்டச்சு செய்யவும்.",
+      "spoken": "உங்கள் புகாரைப் பதிவு செய்ய மைக் பொத்தானை அழுத்தவும், அல்லது தேடல் பட்டியில் தட்டச்சு செய்யவும்.",
+      "enSub": "Voice or text input is required before submitting."
+    },
+    "te": {
+      "display": "దయచేసి మీ సమస్యను రికార్డ్ చేయడానికి మైక్ బటన్ నొక్కండి, లేదా సెర్చ్ బార్‌లో టైప్ చేయండి.",
+      "spoken": "దయచేసి మీ సమస్యను రికార్డ్ చేయడానికి మైక్ బటన్ నొక్కండి, లేదా సెర్చ్ బార్‌లో టైప్ చేయండి.",
+      "enSub": "Voice or text input is required before submitting."
+    },
+    "kn": {
+      "display": "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಸಮಸ್ಯೆಯನ್ನು ರೆಕಾರ್ಡ್ ಮಾಡಲು ಮೈಕ್ ಬಟನ್ ಒತ್ತಿರಿ, ಅಥವಾ ಹುಡುಕಾಟ ಪಟ್ಟಿಯಲ್ಲಿ ಬರೆಯಿರಿ.",
+      "spoken": "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಸಮಸ್ಯೆಯನ್ನು ರೆಕಾರ್ಡ್ ಮಾಡಲು ಮೈಕ್ ಬಟನ್ ಒತ್ತಿರಿ, ಅಥವಾ ಹುಡುಕಾಟ ಪಟ್ಟಿಯಲ್ಲಿ ಬರೆಯಿರಿ.",
+      "enSub": "Voice or text input is required before submitting."
+    },
+    "ml": {
+      "display": "നിങ്ങളുടെ പ്രശ്നം റെക്കോർഡ് ചെയ്യാൻ മൈക്ക് ബട്ടൺ അമർത്തുക, അല്ലെങ്കിൽ തിരയൽ ബാറിൽ എഴുതുക.",
+      "spoken": "നിങ്ങളുടെ പ്രശ്നം റെക്കോർഡ് ചെയ്യാൻ മൈക്ക് ബട്ടൺ അമർത്തുക, അല്ലെങ്കിൽ തിരയൽ ബാറിൽ എഴുതുക.",
+      "enSub": "Voice or text input is required before submitting."
+    },
+    "mr": {
+      "display": "कृपया आपली समस्या रेकॉर्ड करण्यासाठी माइक बटण दाबा, किंवा शोध पट्टीमध्ये टाइप करा.",
+      "spoken": "कृपया आपली समस्या रेकॉर्ड करण्यासाठी माइक बटण दाबा, किंवा शोध पट्टीमध्ये टाइप करा.",
+      "enSub": "Voice or text input is required before submitting."
+    },
+    "gu": {
+      "display": "કૃપા કરીને તમારી સમસ્યા રેકોર્ડ કરવા માઇક બટન દબાવો, અથવા સર્ચ બારમાં લખો.",
+      "spoken": "કૃપા કરીને તમારી સમસ્યા રેકોર્ડ કરવા માઇક બટન દબાવો, અથવા સર્ચ બારમાં લખો.",
+      "enSub": "Voice or text input is required before submitting."
+    },
+    "pa": {
+      "display": "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੀ ਸਮੱਸਿਆ ਰਿਕਾਰਡ ਕਰਨ ਲਈ ਮਾਈਕ ਬਟਨ ਦਬਾਓ, ਜਾਂ ਸਰਚ ਬਾਰ ਵਿੱਚ ਲਿਖੋ।",
+      "spoken": "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੀ ਸਮੱਸਿਆ ਰਿਕਾਰਡ ਕਰਨ ਲਈ ਮਾਈਕ ਬਟਨ ਦਬਾਓ, ਜਾਂ ਸਰਚ ਬਾਰ ਵਿੱਚ ਲਿਖੋ।",
+      "enSub": "Voice or text input is required before submitting."
+    },
+    "ur": {
+      "display": "براہ کرم اپنی شکایت ریکارڈ کرنے کے لیے مائیک بٹن دبائیں، یا سرچ بار میں لکھیں۔",
+      "spoken": "براہ کرم اپنی شکایت ریکارڈ کرنے کے لیے مائیک بٹن دبائیں، یا سرچ بار میں لکھیں۔",
+      "enSub": "Voice or text input is required before submitting."
+    },
+    "as": {
+      "display": "অনুগ্ৰহ কৰি আপোনাৰ সমস্যা ৰেকৰ্ড কৰিবলৈ মাইক বুটাম টিপক, বা সন্ধান বাৰত লিখক।",
+      "spoken": "অনুগ্ৰহ কৰি আপোনাৰ সমস্যা ৰেকৰ্ড কৰিবলৈ মাইক বুটাম টিপক, বা সন্ধান বাৰত লিখক।",
+      "enSub": "Voice or text input is required before submitting."
+    },
+    "mai": {
+      "display": "कृपा कऽ अपन समस्या रिकॉर्ड करबाक लेल माइक बटन दबाऊ, या सर्च बार मे लिखू।",
+      "spoken": "कृपा कऽ अपन समस्या रिकॉर्ड करबाक लेल माइक बटन दबाऊ, या सर्च बार मे लिखू।",
+      "enSub": "Voice or text input is required before submitting."
+    },
+    "sat": {
+      "display": "ᱫᱟᱭᱟᱠᱟᱛᱮ ᱟᱢᱟᱜ ᱟᱱᱟᱴ ᱨᱮᱠᱚᱨᱰ ᱞᱟᱹᱜᱤᱫ ᱢᱟᱭᱤᱠ ᱴᱮᱯ ᱢᱮ, ᱥᱮ ᱥᱮᱸᱫᱽᱨᱟ ᱵᱟᱨ ᱨᱮ ᱚᱞ ᱢᱮ᱾",
+      "spoken": "ᱫᱟᱭᱟᱠᱟᱛᱮ ᱟᱢᱟᱜ ᱟᱱᱟᱴ ᱨᱮᱠᱚᱨᱰ ᱞᱟᱹᱜᱤᱫ ᱢᱟᱭᱤᱠ ᱴᱮᱯ ᱢᱮ, ᱥᱮ ᱥᱮᱸᱫᱽᱨᱟ ᱵᱟᱨ ᱨᱮ ᱚᱞ ᱢᱮ᱾",
+      "enSub": "Voice or text input is required before submitting."
+    },
+    "ks": {
+      "display": "مہرَبٲنی کٔرِتھ پَنٕنؠ شِکایتھ ریکارڈ کَرنہٕ خٲطرٕ دَبٲوِو مائیک بَٹَن، یا سَرچ بارَس مَنٛز لؠکِھو۔",
+      "spoken": "مہرَبٲنی کٔرِتھ پَنٕنؠ شِکایتھ ریکارڈ کَرنہٕ خٲطرٕ دَبٲوِو مائیک بَٹَن، یا سَرچ بارَس مَنٛز لؠکِھو۔",
+      "enSub": "Voice or text input is required before submitting."
+    },
+    "sd": {
+      "display": "مهرباني ڪري پنهنجو مسئلو رڪارڊ ڪرڻ لاءِ مائيڪ بٽڻ دٻايو، يا سرچ بار ۾ لکو.",
+      "spoken": "مهرباني ڪري پنهنجو مسئلو رڪارڊ ڪرڻ لاءِ مائيڪ بٽڻ دٻايو، يا سرچ بار ۾ لکو.",
+      "enSub": "Voice or text input is required before submitting."
+    },
+    "en": {
+      "display": "Please tap the microphone button to record your issue, or type in the search bar.",
+      "spoken": "Please tap the microphone button to record your issue, or type in the search bar.",
+      "enSub": "Voice or text input is required before submitting."
+    }
+  }
+};
+
+  const BCP47_LANG_MAP = {
+    hi: 'hi-IN',
+    bho: 'hi-IN',
+    or: 'or-IN',
+    bn: 'bn-IN',
+    ta: 'ta-IN',
+    te: 'te-IN',
+    kn: 'kn-IN',
+    ml: 'ml-IN',
+    mr: 'mr-IN',
+    gu: 'gu-IN',
+    pa: 'pa-IN',
+    ur: 'ur-IN',
+    sd: 'ur-IN',
+    as: 'as-IN',
+    mai: 'hi-IN',
+    sat: 'hi-IN',
+    ks: 'ur-IN',
+    en: 'en-IN'
   };
 
-// Instant Native Browser Speech Synthesis Engine
-  const fallbackBrowserSpeech = (spokenText, currentLang) => {
+  // Instant Native Browser Speech Synthesis Engine with Safe Lifecycle Callbacks
+  const fallbackBrowserSpeech = (spokenText, currentLang, onEnd, onError) => {
     if (!('speechSynthesis' in window)) {
-      setTimeout(() => {
-        setIsSpeaking(false);
-        setTtsPopupMessage(null);
-      }, 3500);
-      return;
+      if (typeof onError === 'function') onError(new Error('speechSynthesis unsupported'));
+      return false;
     }
     try {
       window.speechSynthesis.cancel();
@@ -3501,31 +2218,48 @@ const GUIDANCE_DICTIONARY = {
       const utterance = new SpeechSynthesisUtterance(spokenText);
       utterance.rate = 0.96;
       utterance.pitch = 1.0;
-      if (currentLang === 'hi' || currentLang === 'bho') utterance.lang = 'hi-IN';
-      else if (currentLang === 'or') utterance.lang = 'or-IN';
-      else if (currentLang === 'bn') utterance.lang = 'bn-IN';
-      else utterance.lang = 'en-IN';
+      utterance.lang = BCP47_LANG_MAP[currentLang] || 'hi-IN';
 
-      const voices = window.speechSynthesis.getVoices();
-      const matchedVoice = voices.find(v => v.lang.startsWith(currentLang) || (currentLang === 'bho' && v.lang.startsWith('hi')) || (currentLang === 'or' && v.lang.startsWith('hi')));
-      if (matchedVoice) utterance.voice = matchedVoice;
+      const voices = window.speechSynthesis.getVoices() || [];
+      const matchedVoice = voices.find(v => {
+        const vl = (v.lang || '').toLowerCase();
+        return vl.startsWith(currentLang) ||
+               (currentLang === 'bho' && vl.startsWith('hi')) ||
+               (currentLang === 'mai' && vl.startsWith('hi')) ||
+               (currentLang === 'sat' && vl.startsWith('hi')) ||
+               (currentLang === 'ks' && (vl.startsWith('ur') || vl.startsWith('ks'))) ||
+               (currentLang === 'sd' && (vl.startsWith('ur') || vl.startsWith('sd'))) ||
+               (currentLang === 'as' && (vl.startsWith('as') || vl.startsWith('bn'))) ||
+               (currentLang === 'or' && (vl.startsWith('or') || vl.startsWith('hi')));
+      });
+
+      // If non-English selected and browser OS lacks native Indian voice for this language:
+      // Return false to allow streaming high-fidelity neural audio via /api/tts
+      if (!matchedVoice && currentLang !== 'en' && currentLang !== 'hi') {
+        if (typeof onError === 'function') onError(new Error('No matching voice for ' + currentLang));
+        return false;
+      }
+
+      if (matchedVoice) {
+        utterance.voice = matchedVoice;
+      }
 
       utterance.onend = () => {
-        setIsSpeaking(false);
-        setTimeout(() => setTtsPopupMessage(null), 2500);
+        if (typeof onEnd === 'function') onEnd();
       };
-      utterance.onerror = () => {
-        setIsSpeaking(false);
-        setTimeout(() => setTtsPopupMessage(null), 2500);
+      utterance.onerror = (err) => {
+        if (typeof onError === 'function') onError(err);
       };
+
       window.speechSynthesis.speak(utterance);
+      return true;
     } catch (err) {
-      setIsSpeaking(false);
-      setTimeout(() => setTtsPopupMessage(null), 2500);
+      if (typeof onError === 'function') onError(err);
+      return false;
     }
   };
 
-// Intelligent Context Identifier: Infers guidance meaning for ANY clicked element on the main page
+  // Intelligent Context Identifier: Infers guidance meaning for ANY clicked element on the main page
   const getVoiceGuideForElement = target => {
     if (!target) return null;
 
@@ -3570,10 +2304,10 @@ const GUIDANCE_DICTIONARY = {
     const card = target.closest('.group, .p-6.rounded-3xl');
     if (card) {
       const text = card.innerText || '';
-      if (text.includes('बुनियादी') || text.includes('Roads') || text.includes('ରାସ୍ତା') || text.includes('রাস্তা')) return { key: 'card_roads' };
-      if (text.includes('प्रगति') || text.includes('Progress') || text.includes('ପ୍ରଗତି') || text.includes('অগ্রগতি')) return { key: 'card_progress' };
-      if (text.includes('हॉटस्पॉट') || text.includes('GIS') || text.includes('ହଟସ୍ପଟ୍') || text.includes('হটস্পট')) return { key: 'card_gis' };
-      if (text.includes('प्रोफ़ाइल') || text.includes('Profile') || text.includes('ପ୍ରୋଫାଇଲ୍') || text.includes('প্রোফাইল')) return { key: 'card_profile' };
+      if (text.includes('बुनियादी') || text.includes('Roads') || text.includes('રાસ્તા') || text.includes('ਰਸਤੇ') || text.includes('ರಸ್ತೆ') || text.includes('சாலை') || text.includes('ರೋಡ್') || text.includes('ਰਾਹ') || text.includes('ਰਾਸਤਾ') || text.includes('રાસ્તો') || text.includes('ରାସ୍ତା') || text.includes('রাস্তা')) return { key: 'card_roads' };
+      if (text.includes('प्रगति') || text.includes('Progress') || text.includes('ਤਰੱਕੀ') || text.includes('પ્રગતિ') || text.includes('முன்னேற்றம்') || text.includes('పురోగతి') || text.includes('ಪ್ರಾಜೆಕ್ಟ್') || text.includes('ପ୍ରଗତି') || text.includes('অগ্রগতি')) return { key: 'card_progress' };
+      if (text.includes('हॉटस्पॉट') || text.includes('GIS') || text.includes('હાટસ્પોટ') || text.includes('ਹੌਟਸਪੋਟ') || text.includes('ஹாட்ஸ்பாட்') || text.includes('హాట్‌స్పాట్') || text.includes('ಹಾಟ್‌ಸ್ಪಾಟ್') || text.includes('ହଟସ୍ପଟ୍') || text.includes('হটস্পট')) return { key: 'card_gis' };
+      if (text.includes('प्रोफ़ाइल') || text.includes('Profile') || text.includes('پروفائل') || text.includes('પ્રોફાઇલ') || text.includes('ਪ੍ਰੋਫਾਈਲ') || text.includes('சுயவிவரம்') || text.includes('ప్రొఫైల్') || text.includes('ಪ್ರೊಫೈಲ್') || text.includes('ପ୍ରୋଫାଇଲ୍') || text.includes('প্রোফাইল')) return { key: 'card_profile' };
     }
     // Language dropdown
     if (target.closest('select')) {
