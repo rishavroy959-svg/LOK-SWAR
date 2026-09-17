@@ -440,6 +440,41 @@ def transcribe_audio_data(raw_audio_bytes, preferred_lang=None):
     
     return "", ""
 
+def _chunk_text_by_sentences(text, max_chars=300):
+    """Splits long text (e.g. 100+ words) into natural sentence chunks for reliable API translation."""
+    if len(text) <= max_chars:
+        return [text]
+    parts = re.split(r'([।\.\n\?!]+)', text)
+    chunks = []
+    curr = ""
+    for p in parts:
+        if not p:
+            continue
+        if len(curr) + len(p) <= max_chars:
+            curr += p
+        else:
+            if curr.strip():
+                chunks.append(curr.strip())
+            curr = p
+    if curr.strip():
+        chunks.append(curr.strip())
+    # Fallback if a single sentence was too long
+    final_chunks = []
+    for c in chunks:
+        if len(c) > max_chars:
+            words = c.split()
+            sub = ""
+            for w in words:
+                if len(sub) + len(w) + 1 <= max_chars:
+                    sub += (" " if sub else "") + w
+                else:
+                    if sub: final_chunks.append(sub)
+                    sub = w
+            if sub: final_chunks.append(sub)
+        else:
+            final_chunks.append(c)
+    return final_chunks or [text]
+
 def fetch_live_translation_to_english(raw_text, quick_mode=False):
     """
     Translates regional text from ANY language (Bihari, Bhojpuri, Odia, Hindi, Bengali, Tamil, etc.)
@@ -448,7 +483,10 @@ def fetch_live_translation_to_english(raw_text, quick_mode=False):
     """
     if not raw_text or not raw_text.strip():
         return ""
-    text = raw_text.strip()
+    # Strip any accidental prefixes
+    text = re.sub(r'^(Public infrastructure grievance:\s*)+', '', raw_text.strip(), flags=re.IGNORECASE).strip()
+    if not text:
+        return ""
 
     # Skip if text is already English (ASCII-only with common punctuation)
     if all(ord(c) < 128 for c in text):
@@ -506,10 +544,12 @@ def fetch_live_translation_to_english(raw_text, quick_mode=False):
     if english_chars / total_alpha > 0.7 and english_chars > 10:
         return processed_text.strip()
 
-    # Tier 1: Google GTX NMT Translation API (most reliable server-side, with retry)
-    for attempt in range(2):
-        try:
-            url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=' + urllib.parse.quote(processed_text)
+    # Tier 1: Google GTX NMT Translation API (supports multi-sentence long text)
+    try:
+        chunks = _chunk_text_by_sentences(processed_text, max_chars=400)
+        translated_parts = []
+        for chunk in chunks:
+            url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=' + urllib.parse.quote(chunk)
             req = urllib.request.Request(url, headers={
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
                 'Accept': 'application/json',
@@ -517,55 +557,53 @@ def fetch_live_translation_to_english(raw_text, quick_mode=False):
             })
             with urllib.request.urlopen(req, timeout=5) as response:
                 res = json.loads(response.read().decode('utf-8'))
-                translated = ''.join([part[0] for part in res[0] if part and part[0]])
-                if translated and translated.strip() and translated.strip().lower() != text.lower():
-                    return translated.strip()
-        except Exception:
-            if attempt == 0:
-                import time
-                time.sleep(0.3)
-            continue
-
-    # Tier 2: Google Mobile Translation Scraper (backup)
-    try:
-        g_url = f"https://translate.google.com/m?sl=auto&tl=en&q={urllib.parse.quote(processed_text)}"
-        g_req = urllib.request.Request(g_url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'})
-        with urllib.request.urlopen(g_req, timeout=5) as g_resp:
-            html = g_resp.read().decode('utf-8')
-            m = re.search(r'class="result-container">([^<]+)<', html)
-            if m and m.group(1).strip():
-                clean_t = m.group(1).replace('&amp;', '&').replace('&quot;', '"').replace('&#39;', "'").strip()
-                if clean_t and clean_t.lower() != text.lower():
-                    return clean_t
-    except Exception:
+                part = ''.join([p[0] for p in res[0] if p and p[0]])
+                if part and part.strip():
+                    translated_parts.append(part.strip())
+        if translated_parts:
+            combined = ' '.join(translated_parts).strip()
+            if combined and combined.lower() != text.lower():
+                return combined
+    except Exception as e:
         pass
 
-    # Tier 3: LibreTranslate Public API (free, no CORS issues server-side)
+    # Tier 2: deep-translator MyMemory (Installed library, supports 100+ words with chunking)
     try:
-        iso_map = {
-            "Hindi": "hi", "Hindi/Marathi": "hi", "Bihari / Bhojpuri": "hi", "Bhojpuri": "hi",
-            "Odia": "hi", "Bengali": "bn", "Tamil": "ta", "Telugu": "te",
-            "Punjabi": "hi", "Gujarati": "hi", "Kannada": "hi",
-            "Malayalam": "hi", "Urdu": "ur", "Urdu/Kashmiri/Sindhi": "ur",
-            "Marathi": "hi", "Assamese": "bn", "Maithili": "hi", "Santali": "hi"
+        from deep_translator import MyMemoryTranslator
+        iso_map_mm = {
+            "Hindi": "hi-IN", "Hindi/Marathi": "hi-IN", "Bihari / Bhojpuri": "hi-IN", "Bhojpuri": "hi-IN",
+            "Odia": "or-IN", "Bengali": "bn-IN", "Tamil": "ta-IN", "Telugu": "te-IN",
+            "Punjabi": "pa-IN", "Gujarati": "gu-IN", "Kannada": "kn-IN",
+            "Malayalam": "ml-IN", "Marathi": "mr-IN", "Urdu": "ur-PK", "Urdu/Kashmiri/Sindhi": "ur-PK"
         }
-        src_lang = iso_map.get(det_lang, "hi")
-        libre_url = "https://libretranslate.com/translate"
-        libre_data = json.dumps({"q": processed_text, "source": src_lang, "target": "en", "format": "text"}).encode('utf-8')
-        libre_req = urllib.request.Request(libre_url, data=libre_data, headers={
-            'Content-Type': 'application/json',
-            'User-Agent': 'Mozilla/5.0'
-        })
-        with urllib.request.urlopen(libre_req, timeout=5) as libre_resp:
-            libre_result = json.loads(libre_resp.read().decode('utf-8'))
-            if libre_result and libre_result.get("translatedText"):
-                lt = libre_result["translatedText"].strip()
-                if lt and lt.lower() != text.lower():
-                    return lt
+        src_mm = iso_map_mm.get(det_lang, "hi-IN")
+        chunks = _chunk_text_by_sentences(processed_text, max_chars=300)
+        mm_parts = []
+        for chunk in chunks:
+            res_chunk = MyMemoryTranslator(source=src_mm, target='en-GB').translate(chunk)
+            if res_chunk and not any(k in res_chunk.upper() for k in ["INVALID", "WARNING", "MYMEMORY", "QUERY LENGTH"]):
+                mm_parts.append(res_chunk.strip())
+        if mm_parts:
+            combined_mm = ' '.join(mm_parts).strip()
+            if combined_mm and combined_mm.lower() != text.lower():
+                return combined_mm
+    except Exception as e:
+        pass
+
+    # Tier 3: Google Clients5 Dict Chrome Extension Proxy
+    try:
+        c_url = f"https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=auto&tl=en&q={urllib.parse.quote(processed_text)}"
+        c_req = urllib.request.Request(c_url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
+        with urllib.request.urlopen(c_req, timeout=5) as c_resp:
+            c_data = json.loads(c_resp.read().decode('utf-8'))
+            if isinstance(c_data, list) and c_data and isinstance(c_data[0], str):
+                c_res = c_data[0].strip()
+                if c_res and c_res.lower() != text.lower():
+                    return c_res
     except Exception:
         pass
 
-    # Tier 4: MyMemory Translation API with ISO Language Pair
+    # Tier 4: Direct MyMemory HTTP API fallback
     try:
         iso_map = {
             "Hindi": "hi", "Hindi/Marathi": "hi", "Bihari / Bhojpuri": "hi", "Bhojpuri": "hi",
@@ -574,7 +612,7 @@ def fetch_live_translation_to_english(raw_text, quick_mode=False):
             "Malayalam": "ml", "Urdu": "ur"
         }
         lang_code = iso_map.get(det_lang, "hi")
-        url_mm = f"https://api.mymemory.translated.net/get?q={urllib.parse.quote(processed_text)}&langpair={lang_code}|en"
+        url_mm = f"https://api.mymemory.translated.net/get?q={urllib.parse.quote(processed_text[:400])}&langpair={lang_code}|en"
         req_mm = urllib.request.Request(url_mm, headers={'User-Agent': 'Mozilla/5.0'})
         with urllib.request.urlopen(req_mm, timeout=4) as response:
             mm_data = json.loads(response.read().decode('utf-8'))
@@ -584,8 +622,11 @@ def fetch_live_translation_to_english(raw_text, quick_mode=False):
     except Exception:
         pass
 
-    # Tier 5: Domain-specific fallback lexicon
-    return translate_regional_phrase_to_english(text, det_lang)
+    # Tier 5: Domain-specific fallback lexicon (without fake prefixes)
+    translated_fallback = translate_regional_phrase_to_english(text, det_lang)
+    if translated_fallback:
+        return translated_fallback
+    return text
 
 def translate_regional_phrase_to_english(raw_text, detected_lang):
     """
@@ -609,7 +650,7 @@ def translate_regional_phrase_to_english(raw_text, detected_lang):
     elif any(w in text or w in lower for w in ["नहर", "खेत", "canal", "पटवन", "सिंचाई", "farmer", "नहरिया"]):
         return "Agricultural canal irrigation blockage and crop water distress."
     
-    return text if detected_lang == "English" else f"Public infrastructure grievance: {text}"
+    return text
 
 def generate_ai_analyzed_title(direct_english, raw_text, category):
     """
@@ -683,7 +724,7 @@ def process_and_translate_grievance(text_input, spoken_language=None, is_verifie
     formulating an official incident title, extracting schemes, and computing priority urgency.
     Supports Bhojpuri, Odia, Hindi, Bengali, and English.
     """
-    raw_text = (text_input or "").strip()
+    raw_text = re.sub(r"^(Public infrastructure grievance:\s*)+", "", (text_input or "").strip(), flags=re.IGNORECASE).strip()
     detected_lang = spoken_language or detect_language(raw_text)
     if spoken_language and spoken_language.lower() in ["bho", "bhojpuri", "bihari"]:
         detected_lang = "Bhojpuri"
