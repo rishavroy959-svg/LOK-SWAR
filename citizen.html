@@ -156,7 +156,7 @@
       vertical-align: middle !important;
     }
   </style>
-<link rel="stylesheet" href="css/design-system.css" /></head>
+</head>
 
 <body class="antialiased bg-[#fdfbfb] text-[#4a4643] selection:bg-[#d48c48] selection:text-white relative">
   <div id="root"></div>
@@ -429,14 +429,6 @@ function CitizenPortalApp() {
       return CIVIC_BACKGROUNDS[Math.floor(Math.random() * CIVIC_BACKGROUNDS.length)];
     }
   });
-  const [highlightLanguage, setHighlightLanguage] = useState(true);
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setHighlightLanguage(false);
-    }, 10000);
-    return () => clearTimeout(timer);
-  }, []);
-
   const [selectedLang, setSelectedLang] = useState(() => {
     try {
       return localStorage.getItem('lok_swar_selected_language') || 'hi';
@@ -2506,7 +2498,7 @@ function CitizenPortalApp() {
   }), isLocationPermissionModalOpen && /*#__PURE__*/React.createElement("div", {
     className: "fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "ls-card w-full max-w-md p-6 space-y-4 text-left text-[#4a4643]"
+    className: "w-full max-w-md border rounded-[2.5rem] p-6 shadow-2xl space-y-4 text-left bg-white dark:bg-[#282624] border-[#f0ece6] dark:border-[#33302d] text-[#4a4643] dark:text-white"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-3"
   }, /*#__PURE__*/React.createElement("div", {
@@ -2684,7 +2676,7 @@ function CitizenPortalApp() {
     className: "p-4 border-t bg-[#fdfbfb] dark:bg-[#1f1e1c] border-[#f0ece6] dark:border-[#33302d]"
   }, /*#__PURE__*/React.createElement("button", {
     onClick: closeNotifWithAnimation,
-    className: "ls-btn ls-btn-secondary w-full flex items-center justify-center text-xs text-white"
+    className: "w-full flex items-center justify-center p-3.5 rounded-[1.5rem] font-bold text-xs bg-slate-900 hover:bg-slate-800 dark:bg-[#33302d] dark:hover:bg-slate-700 text-white cursor-pointer shadow-md border border-slate-800 dark:border-[#423f3b]"
   }, "Close")))), /*#__PURE__*/React.createElement("div", {
     className: "w-full h-1 bg-gradient-to-r from-amber-500 via-white to-emerald-500 z-50"
   }), /*#__PURE__*/React.createElement("div", {
@@ -2815,7 +2807,7 @@ function CitizenPortalApp() {
       } catch (err) {}
       handleLanguageChange(e.target.value);
     },
-    className: `h-9 px-2.5 text-xs font-bold rounded-[1rem] border border-[#f0ece6] dark:border-[#423f3b] bg-[#f7f5f2] hover:bg-[#f0ece6] dark:bg-[#33302d] dark:hover:bg-slate-700 text-[#5a5551] dark:text-[#d1ccc6] outline-none cursor-pointer shadow-xs transition-all ${highlightLanguage ? 'ring-4 ring-emerald-500/80 shadow-[0_0_20px_rgba(16,185,129,0.8)] animate-pulse' : ''}`
+    className: "h-9 px-2.5 text-xs font-bold rounded-[1rem] border border-[#f0ece6] dark:border-[#423f3b] bg-[#f7f5f2] hover:bg-[#f0ece6] dark:bg-[#33302d] dark:hover:bg-slate-700 text-[#5a5551] dark:text-[#d1ccc6] outline-none cursor-pointer shadow-xs"
   }, /*#__PURE__*/React.createElement("option", {
     value: "hi"
   }, "हिन्दी (HI)"), /*#__PURE__*/React.createElement("option", {
@@ -2923,7 +2915,7 @@ function CitizenPortalApp() {
   }, t.heroSubtitle), /*#__PURE__*/React.createElement("div", {
     className: "flex justify-center w-full pt-2"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "ls-card items-center gap-2.5 text-xs text-[#5a5551] flex-wrap justify-center"
+    className: "inline-flex items-center gap-2.5 px-5 py-2 rounded-[1.5rem] bg-white/95 dark:bg-[#282624]/95 border-2 border-emerald-500/40 dark:border-emerald-500/50 shadow-md text-xs font-bold text-[#5a5551] dark:text-[#eae6e1] backdrop-blur-md flex-wrap justify-center"
   }, /*#__PURE__*/React.createElement("span", {
     className: "relative flex h-2.5 w-2.5 flex-shrink-0"
   }, /*#__PURE__*/React.createElement("span", {
@@ -2950,7 +2942,7 @@ function CitizenPortalApp() {
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-2.5 flex-wrap"
   }, photoPreview && /*#__PURE__*/React.createElement("div", {
-    className: "ls-card items-center gap-2 p-1.5"
+    className: "inline-flex items-center gap-2 p-1.5 pr-3 rounded-[1.5rem] border shadow-sm self-start bg-white dark:bg-[#282624] border-[#f0ece6] dark:border-[#33302d] animate-in fade-in"
   }, /*#__PURE__*/React.createElement("img", {
     src: photoPreview,
     alt: "Evidence",
@@ -2967,7 +2959,7 @@ function CitizenPortalApp() {
     className: "ml-2 w-6 h-6 rounded-full bg-[#f7f5f2] dark:bg-[#33302d] hover:bg-rose-500 hover:text-white text-[#a19b95] text-xs font-bold flex items-center justify-center cursor-pointer transition-colors",
     title: "Remove attached photo"
   }, "✕")), recordedAudioBase64 && /*#__PURE__*/React.createElement("div", {
-    className: "ls-card items-center gap-2.5 p-2"
+    className: "inline-flex items-center gap-2.5 p-2 pr-3.5 rounded-[1.5rem] border shadow-sm self-start bg-white dark:bg-[#282624] border-[#d48c48]/50 dark:border-[#c27a38]/50/70 animate-in fade-in"
   }, /*#__PURE__*/React.createElement("div", {
     className: "w-9 h-9 rounded-[1rem] bg-emerald-100 dark:bg-[#3d2c1d] text-[#d48c48] dark:text-[#e8a361] flex items-center justify-center font-bold flex-shrink-0 shadow-xs"
   }, /*#__PURE__*/React.createElement(Icons.Mic, {
@@ -3001,15 +2993,15 @@ function CitizenPortalApp() {
     onSubmit: handleCitizenReportSubmit,
     className: "w-full"
   }, /*#__PURE__*/React.createElement("div", {
-    className: `w-full rounded-[2rem] border shadow-sm hover:shadow-md transition-all px-3 py-4 flex flex-col sm:flex-row sm:items-center gap-4 bg-white dark:bg-[#282624] ${isRecording ? 'border-rose-500 ring-2 ring-rose-500/20' : 'border-emerald-500 ring-2 ring-emerald-500/20'}`
-  }, /*#__PURE__*/React.createElement("div", { className: "flex flex-col items-center justify-center" }, /*#__PURE__*/React.createElement("button", {
+    className: `w-full rounded-full border shadow-sm hover:shadow-md transition-all px-3 py-1.5 sm:px-4 sm:py-2 flex items-center gap-2 sm:gap-3 bg-white dark:bg-[#282624] ${isRecording ? 'border-emerald-500 dark:border-emerald-500 ring-2 ring-[#d48c48]/20' : 'border-[#f0ece6] dark:border-[#33302d]'}`
+  }, /*#__PURE__*/React.createElement("button", {
     type: "button",
     onClick: toggleVoiceRecording,
-    className: `w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center transition-all cursor-pointer flex-shrink-0 shadow-lg ${isRecording ? "bg-rose-600 text-white animate-pulse ring-8 ring-rose-200 dark:ring-rose-900/60 shadow-[0_0_30px_rgba(225,29,72,0.6)]" : "bg-emerald-600 text-white hover:bg-emerald-500 ring-4 ring-emerald-100 dark:ring-emerald-900/40 shadow-[0_0_20px_rgba(16,185,129,0.6)]"}`,
-    title: isRecording ? "Stop Recording" : "Start Recording"
+    className: `w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer flex-shrink-0 ${isRecording ? "bg-[#d48c48] text-white animate-pulse ring-4 ring-emerald-100 dark:ring-emerald-950/60" : "text-[#d48c48] dark:text-[#e8a361] hover:bg-[#fff6e5] dark:hover:bg-slate-800"}`,
+    title: isRecording ? t.cancelBtn : t.recordingPrompt
   }, /*#__PURE__*/React.createElement(Icons.Mic, {
-    className: "w-10 h-10 sm:w-12 sm:h-12"
-  })), /*#__PURE__*/React.createElement("span", { className: `mt-2 text-xs font-bold ${isRecording ? 'text-rose-600 animate-pulse' : 'text-emerald-600'}`}, isRecording ? "STOP (लाल)" : "SPEAK (हरा)")), /*#__PURE__*/React.createElement("textarea", {
+    className: "w-5 h-5"
+  })), /*#__PURE__*/React.createElement("textarea", {
     ref: textareaRef,
     rows: 1,
     value: inputText,
@@ -3099,7 +3091,7 @@ function CitizenPortalApp() {
     ref: submitBtnRef,
     type: "submit",
     disabled: isSubmittingAnim,
-    className: `px-4 sm:px-5 py-2 sm:py-2.5 rounded-full font-bold text-xs sm:text-sm flex items-center justify-center cursor-pointer transition-all shadow-xs active:scale-95 flex-shrink-0 ${isSubmittedButton ? 'bg-[#d48c48] text-white shadow-md' : 'bg-blue-600 hover:bg-blue-700 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]'}`,
+    className: `px-4 sm:px-5 py-2 sm:py-2.5 rounded-full font-bold text-xs sm:text-sm flex items-center justify-center cursor-pointer transition-all shadow-xs active:scale-95 flex-shrink-0 ${isSubmittedButton ? 'bg-[#d48c48] text-white shadow-md' : 'bg-slate-900 dark:bg-[#f7f5f2] hover:bg-slate-800 dark:hover:bg-[#f0ece6] text-white dark:text-[#4a4643]'}`,
     title: t.submitBtn
   }, isSubmittedButton ? /*#__PURE__*/React.createElement("span", {
     className: "flex items-center gap-1.5 font-black text-white"
@@ -3138,7 +3130,7 @@ function CitizenPortalApp() {
       setSelectedDepartmentFilter('roads');
       navigateView('admin_overview');
     },
-    className: "ls-card p-6 flex flex-col justify-between h-44 text-[#4a4643]"
+    className: "p-6 rounded-[2.5rem] flex flex-col justify-between h-44 sm:h-48 bg-white dark:bg-[#282624] border border-[#f0ece6]/80 dark:border-[#33302d] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer text-[#4a4643] dark:text-white group"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-start justify-between"
   }, /*#__PURE__*/React.createElement(Icons.RoadIllustration, {
@@ -3154,7 +3146,7 @@ function CitizenPortalApp() {
       setSelectedDepartmentFilter('all');
       navigateView('admin_overview');
     },
-    className: "ls-card p-6 flex flex-col justify-between h-44 text-[#4a4643]"
+    className: "p-6 rounded-[2.5rem] flex flex-col justify-between h-44 sm:h-48 bg-white dark:bg-[#282624] border border-[#f0ece6]/80 dark:border-[#33302d] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer text-[#4a4643] dark:text-white group"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-start justify-between"
   }, /*#__PURE__*/React.createElement(Icons.ProgressTicket, {
@@ -3170,7 +3162,7 @@ function CitizenPortalApp() {
       setSelectedDepartmentFilter('all');
       navigateView('gis_map');
     },
-    className: "ls-card p-6 flex flex-col justify-between h-44 text-[#4a4643]"
+    className: "p-6 rounded-[2.5rem] flex flex-col justify-between h-44 sm:h-48 bg-white dark:bg-[#282624] border border-[#f0ece6]/80 dark:border-[#33302d] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer text-[#4a4643] dark:text-white group"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-start justify-between"
   }, /*#__PURE__*/React.createElement(Icons.GisHotspotMap, {
@@ -3183,7 +3175,7 @@ function CitizenPortalApp() {
     className: "text-xs text-[#a19b95] dark:text-[#9e9790] mt-1 font-medium line-clamp-1"
   }, t.cardGisSubtitle || "Real GPS coordinates & evidence"))), /*#__PURE__*/React.createElement("div", {
     onClick: () => window.location.href = 'profile.html',
-    className: "ls-card p-6 flex flex-col justify-between h-44 text-[#4a4643]"
+    className: "p-6 rounded-[2.5rem] flex flex-col justify-between h-44 sm:h-48 bg-white dark:bg-[#282624] border border-[#f0ece6]/80 dark:border-[#33302d] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer text-[#4a4643] dark:text-white group"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-start justify-between"
   }, /*#__PURE__*/React.createElement(Icons.CitizenProfileGroup, {
@@ -3212,7 +3204,7 @@ function CitizenPortalApp() {
   React.createElement("main", {
     className: "flex-1 max-w-6xl w-full mx-auto px-4 py-6 z-10 relative space-y-6"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "ls-card p-5 space-y-4 text-[#4a4643]"
+    className: "p-5 md:p-6 rounded-[2.5rem] border shadow-sm space-y-4 bg-white dark:bg-[#282624] border-[#f0ece6] dark:border-[#33302d] text-[#4a4643] dark:text-[#eae6e1]"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-[#33302d]"
   }, /*#__PURE__*/React.createElement("div", {
@@ -3241,7 +3233,7 @@ function CitizenPortalApp() {
       playChime('tap');
       requestLocationAndAutoSetLanguage(true);
     },
-    className: "ls-btn ls-btn-secondary text-white text-xs flex items-center gap-1.5",
+    className: "px-3 py-1.5 rounded-[1rem] bg-slate-900 hover:bg-slate-800 dark:bg-[#f7f5f2] dark:hover:bg-white text-white dark:text-[#4a4643] font-bold text-xs shadow-xs cursor-pointer active:scale-95 transition-all flex items-center gap-1.5",
     title: t.updateGps
   }, /*#__PURE__*/React.createElement("span", null, "🔄"), /*#__PURE__*/React.createElement("span", null, t.updateGps)))), (() => {
     const rankedProblems = getRankedProblems(problems, userLocation, selectedDepartmentFilter, radarRadius);
@@ -3495,7 +3487,7 @@ function CitizenPortalApp() {
   React.createElement("main", {
     className: "flex-1 max-w-6xl w-full mx-auto px-4 py-6 z-10 relative space-y-6"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "ls-card p-6 space-y-5 text-[#4a4643]"
+    className: "p-6 md:p-8 rounded-[2.5rem] border shadow-sm space-y-5 bg-white dark:bg-[#282624] border-[#f0ece6] dark:border-[#33302d] text-[#4a4643] dark:text-[#eae6e1]"
   }, /*#__PURE__*/React.createElement("div", {
     className: "pb-3 border-b border-slate-100 dark:border-[#33302d]"
   }, /*#__PURE__*/React.createElement("div", {
@@ -3556,14 +3548,14 @@ function CitizenPortalApp() {
   React.createElement("main", {
     className: "flex-1 max-w-5xl w-full mx-auto px-4 py-6 z-10 relative"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "ls-card p-6 text-[#4a4643]"
+    className: "rounded-[2.5rem] p-6 shadow-sm border bg-white dark:bg-[#282624] border-[#f0ece6] dark:border-[#33302d] text-[#4a4643] dark:text-[#eae6e1]"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center justify-between pb-3 mb-3 border-b border-slate-100 dark:border-[#33302d]"
   }, /*#__PURE__*/React.createElement("h2", {
     className: "text-lg font-bold"
   }, drawerTabs.find(t => t.id === currentView)?.title), /*#__PURE__*/React.createElement("button", {
     onClick: () => navigateView('citizen'),
-    className: "ls-btn ls-btn-secondary text-white text-xs"
+    className: "px-3.5 py-1.5 rounded-[1rem] bg-slate-900 hover:bg-slate-800 dark:bg-[#33302d] dark:hover:bg-slate-700 text-white font-bold text-xs cursor-pointer shadow-xs"
   }, "Back to Intake")), /*#__PURE__*/React.createElement("div", {
     className: "text-sm font-medium text-[#8b857f] dark:text-[#9e9790]"
   }, "Module Content Active & Synchronized."))), isProfileModalOpen && /*#__PURE__*/React.createElement("div", {
@@ -3675,7 +3667,7 @@ function CitizenPortalApp() {
   }, "Save Profile Details"))))), isLocationSelectModalOpen && /*#__PURE__*/React.createElement("div", {
     className: "fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "ls-card w-full max-w-lg p-6 space-y-5 text-left text-[#4a4643]"
+    className: "w-full max-w-lg border rounded-[2.5rem] p-6 sm:p-7 shadow-2xl space-y-5 text-left bg-white dark:bg-[#282624] border-[#f0ece6] dark:border-[#33302d] text-[#4a4643] dark:text-white transition-colors max-h-[92vh] overflow-y-auto"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-start justify-between pb-3 border-b border-[#f0ece6] dark:border-[#33302d]"
   }, /*#__PURE__*/React.createElement("div", {

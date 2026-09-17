@@ -6,14 +6,15 @@ from datetime import datetime
 from typing import Literal, Optional
 from pydantic import BaseModel, Field
 
+
 # ---------------------------------------------------------------------------
 # Ticket document (as stored in MongoDB)
 # ---------------------------------------------------------------------------
 class IVRTicket(BaseModel):
     call_sid: str = ""
     caller_phone: str = ""
-    language: Literal["hi", "en", "te", "mr", "bn", "ta"] = "hi"
-    category: Literal["water", "electricity", "roads", "sanitation", "healthcare", "other"] = "other"
+    language: Literal["hi", "te", "en"] = "hi"
+    category: Literal["electricity", "water", "other"] = "other"
     recording_url: str = ""
     recording_sid: str = ""
     duration: int = 0                  # seconds
@@ -40,19 +41,13 @@ class NotesUpdate(BaseModel):
 # ---------------------------------------------------------------------------
 LANGUAGE_LABELS: dict[str, str] = {
     "hi": "Hindi",
-    "en": "English",
     "te": "Telugu",
-    "mr": "Marathi",
-    "bn": "Bengali",
-    "ta": "Tamil",
+    "en": "English",
 }
 
 CATEGORY_LABELS: dict[str, str] = {
-    "water": "Water / Paani",
     "electricity": "Electricity / Bijli",
-    "roads": "Roads / Sadak",
-    "sanitation": "Sanitation / Swachhta",
-    "healthcare": "Healthcare / Swasthya",
+    "water": "Water / Paani",
     "other": "Other Complaint",
 }
 
@@ -65,25 +60,71 @@ STATUS_LABELS: dict[str, str] = {
 # ---------------------------------------------------------------------------
 # Multi-language TTS script library
 # ---------------------------------------------------------------------------
-PROMPTS: dict[str, str] = {
-    "category_hi": "अपनी समस्या की श्रेणी चुनें। पानी के लिए १ दबाएँ। बिजली के लिए २ दबाएँ। सड़कों के लिए ३ दबाएँ। स्वच्छता के लिए ४ दबाएँ। स्वास्थ्य के लिए ५ दबाएँ। अन्य के लिए ६ दबाएँ।",
-    "category_en": "Select your issue category. Press 1 for Water. Press 2 for Electricity. Press 3 for Roads. Press 4 for Sanitation. Press 5 for Healthcare. Press 6 for Other.",
-    "category_te": "మీ సమస్య వర్గాన్ని ఎంచుకోండి. నీటి కోసం 1 నొక్కండి. విద్యుత్ కోసం 2 నొక్కండి. రోడ్ల కోసం 3 నొక్కండి. పారిశుధ్యం కోసం 4 నొక్కండి. ఆరోగ్యం కోసం 5 నొక్కండి. ఇతరుల కోసం 6 నొక్కండి.",
-    "category_mr": "आपल्या समस्येची श्रेणी निवडा. पाण्यासाठी १ दाबा. विजेसाठी २ दाबा. रस्त्यांसाठी ३ दाबा. स्वच्छतेसाठी ४ दाबा. आरोग्यासाठी ५ दाबा. अन्य तक्रारींसाठी ६ दाबा.",
-    "category_bn": "আপনার সমস্যার বিভাগ বেছে নিন। জলের জন্য ১ টিপুন। বিদ্যুতের জন্য ২ টিপুন। রাস্তার জন্য ৩ টিপুন। পরিচ্ছন্নতার জন্য ৪ টিপুন। স্বাস্থ্যের জন্য ৫ টিপুন। অন্য অভিযোগের জন্য ৬ টিপুন।",
-    "category_ta": "உங்கள் பிரச்சனைக்கான வகையைத் தேர்ந்தெடுக்கவும். தண்ணீருக்கு 1 ஐ அழுத்தவும். மின்சாரத்திற்கு 2 ஐ அழுத்தவும். சாலைகளுக்கு 3 ஐ அழுத்தவும். சுகாதாரத்திற்கு 4 ஐ அழுத்தவும். மருத்துவ வசதிக்கு 5 ஐ அழுத்தவும். மற்ற புகார்களுக்கு 6 ஐ அழுத்தவும்.",
-    
-    "record_hi": "कृपया बीप के बाद अपनी समस्या विस्तार से बताएं। बोलने के बाद हैश दबाएँ या फोन काट दें।",
-    "record_en": "Please describe your issue after the beep. Press hash or hang up when you are done.",
-    "record_te": "దయచేసి బీప్ తర్వాత మీ సమస్యను వివరించండి. మాట్లాడిన తర్వాత హ్యాష్ నొక్కండి లేదా కాల్ ముగించండి.",
-    "record_mr": "कृपया बीपनंतर तुमची समस्या सविस्तर सांगा. बोलून झाल्यावर हॅश दाबा किंवा फोन ठेवा.",
-    "record_bn": "দয়া করে বিপের পর আপনার সমস্যার কথা বিস্তারিত বলুন। বলা শেষ হলে হ্যাশ টিপুন অথবা ফোন কেটে দিন।",
-    "record_ta": "பீப் ஒலிக்குப் பிறகு உங்கள் பிரச்சனையை விவரிக்கவும். பேசிய பிறகு ஹேஷ் பொத்தானை அழுத்தவும் அல்லது அழைப்பைத் துண்டிக்கவும்.",
-    
-    "thanks_hi": "धन्यवाद। आपकी समस्या लोक स्वर में दर्ज कर दी गई है।",
-    "thanks_en": "Thank you. Your problem has been registered in Lok Swar.",
-    "thanks_te": "ధన్యవాదాలు. మీ సమస్య లోక్ స్వర్ లో నమోదు చేయబడింది.",
-    "thanks_mr": "धन्यवाद. तुमची समस्या लोक स्वर मध्ये नोंदवली गेली आहे.",
-    "thanks_bn": "ধন্যবাদ। আপনার সমস্যা লোক স্বর-এ রেকর্ড করা হয়েছে।",
-    "thanks_ta": "நன்றி. உங்கள் பிரச்சனை லோக் ஸ்வர்-இல் பதிவு செய்யப்பட்டுள்ளது.",
+PROMPTS: dict[str, dict[str, str]] = {
+    "welcome": {
+        "hi": (
+            "नमस्ते। लोक स्वर ग्राहक सेवा में आपका स्वागत है। "
+            "भाषा चुनने के लिए अंक दबाएँ। "
+            "हिंदी के लिए एक दबाएँ। "
+            "तेलुगू के लिए दो दबाएँ। "
+            "अंग्रेज़ी के लिए तीन दबाएँ।"
+        ),
+        "te": (
+            "నమస్కారం. లోక్ స్వర్ కస్టమర్ కేర్‌కు స్వాగతం. "
+            "భాష ఎంచుకోవడానికి నంబర్ నొక్కండి. "
+            "హిందీ కోసం ఒకటి నొక్కండి. "
+            "తెలుగు కోసం రెండు నొక్కండి. "
+            "ఇంగ్లీష్ కోసం మూడు నొక్కండి."
+        ),
+        "en": (
+            "Welcome to Lok Swar customer care. "
+            "Press 1 for Hindi. "
+            "Press 2 for Telugu. "
+            "Press 3 for English."
+        ),
+    },
+    "category_hi": (
+        "अपनी समस्या की श्रेणी चुनें। "
+        "बिजली की समस्या के लिए एक दबाएँ। "
+        "पानी या सिंचाई की समस्या के लिए दो दबाएँ। "
+        "अन्य शिकायत के लिए तीन दबाएँ।"
+    ),
+    "category_te": (
+        "మీ సమస్య వర్గాన్ని ఎంచుకోండి. "
+        "విద్యుత్ సమస్య కోసం ఒకటి నొక్కండి. "
+        "నీరు లేదా నీటిపారుదల కోసం రెండు నొక్కండి. "
+        "ఇతర ఫిర్యాదు కోసం మూడు నొక్కండి."
+    ),
+    "category_en": (
+        "Select your issue category. "
+        "Press 1 for Electricity. "
+        "Press 2 for Water or Irrigation. "
+        "Press 3 for Other complaints."
+    ),
+    "record_hi": (
+        "कृपया बीप के बाद अपनी समस्या विस्तार से बताएं। बोलने के बाद हैश दबाएँ या सीधे फोन काट दें।"
+    ),
+    "record_te": (
+        "దయచేసి బీప్ తర్వాత మీ సమస్యను వివరించండి మరియు పూర్తయిన తర్వాత హ్యాష్ నొక్కండి లేదా కాల్ ముగించండి."
+    ),
+    "record_en": (
+        "Please describe your issue after the beep. Press hash or hang up when you are done."
+    ),
+    "thanks_hi": (
+        "धन्यवाद। आपकी शिकायत लोक स्वर में दर्ज कर ली गई है। "
+        "प्रशासनिक टीम शीघ्र कार्रवाई करेगी। नमस्ते।"
+    ),
+    "thanks_te": (
+        "ధన్యవాదాలు. మీ ఫిర్యాదు లోక్ స్వర్ లో నమోదు చేయబడింది. "
+        "త్వరలో పరిష్కరించబడుతుంది. నమస్కారం."
+    ),
+    "thanks_en": (
+        "Thank you. Your complaint has been registered with Lok Swar. "
+        "It will be resolved shortly. Goodbye."
+    ),
+    "invalid": {
+        "hi": "अमान्य प्रविष्टि। कृपया पुनः प्रयास करें।",
+        "te": "చెల్లని ఎంపిక. దయచేసి మళ్ళీ ప్రయత్నించండి.",
+        "en": "Invalid input. Please try again.",
+    },
 }

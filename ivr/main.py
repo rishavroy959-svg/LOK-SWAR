@@ -9,11 +9,7 @@ Run:  uvicorn ivr.main:app --reload --port 8001
 """
 
 from __future__ import annotations
-import asyncio
-import io
-from zoneinfo import ZoneInfo
-import speech_recognition as sr
-from deep_translator import GoogleTranslator
+
 import os
 import re
 import json
@@ -27,7 +23,6 @@ from pathlib import Path
 from fastapi import Depends, FastAPI, Form, HTTPException, Request, Query, UploadFile, File
 from fastapi.responses import HTMLResponse, JSONResponse, Response, FileResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
 from motor.motor_asyncio import AsyncIOMotorCollection
 from bson import ObjectId
 from dotenv import load_dotenv
@@ -50,17 +45,11 @@ from ivr.models import (
 # ---------------------------------------------------------------------------
 # App bootstrap
 # ---------------------------------------------------------------------------
-
 app = FastAPI(
     title="Lok Swar IVR",
     description="Zero-cost IVR Customer Care — TwiML Webhook Engine",
     version="1.0.0",
 )
-
-# Mount static files
-app.mount("/css", StaticFiles(directory="css"), name="css")
-app.mount("/assets", StaticFiles(directory="assets"), name="assets")
-
 
 _templates_dir = Path(__file__).parent / "templates"
 templates = Jinja2Templates(directory=str(_templates_dir))
@@ -103,17 +92,14 @@ def xml_response(body: str) -> Response:
 def twiml_say(text: str, language: str = "en") -> str:
     """Build a <Say> TwiML verb with the correct language/voice."""
     lang_map = {
-        "hi": ("hi-IN", ' voice="Polly.Aditi"'),
-        "te": ("te-IN", ' voice="Polly.Aditi"'),
-        "en": ("en-IN", ' voice="Polly.Raveena"'),
-        "mr": ("hi-IN", ' voice="Polly.Aditi"'),
-        "bn": ("hi-IN", ' voice="Polly.Aditi"'),
-        "ta": ("ta-IN", ' voice="Polly.Aditi"'),
+        "hi": ("hi-IN", "Polly.Aditi"),
+        "te": ("te-IN", "Polly.Aditi"),      # Telugu fallback to Aditi
+        "en": ("en-IN", "Polly.Raveena"),
     }
-    twiml_lang, voice_attr = lang_map.get(language, ("en-IN", ' voice="Polly.Raveena"'))
+    twiml_lang, voice = lang_map.get(language, ("en-IN", "Polly.Raveena"))
     # Escape XML special chars
     safe = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-    return f'<Say language="{twiml_lang}"{voice_attr}>{safe}</Say>'
+    return f'<Say language="{twiml_lang}" voice="{voice}">{safe}</Say>'
 
 
 def twiml_gather(action: str, num_digits: int = 1, timeout: int = 5, body: str = "") -> str:
@@ -169,11 +155,8 @@ async def ivr_welcome():
     say_hi = twiml_say("नमस्ते। लोक स्वर में आपका स्वागत है। हिंदी के लिए 1 दबाएँ।", "hi")
     say_en = twiml_say("For English, press 2.", "en")
     say_te = twiml_say("తెలుగు కోసం 3 నొక్కండి.", "te")
-    say_mr = twiml_say("मराठीसाठी 4 दाबा.", "mr")
-    say_bn = twiml_say("বাংলার জন্য 5 টিপুন.", "bn")
-    say_ta = twiml_say("தமிழுக்கு 6 ஐ அழுத்தவும்.", "ta")
 
-    gather_body = f"{say_hi}\n  {say_en}\n  {say_te}\n  {say_mr}\n  {say_bn}\n  {say_ta}"
+    gather_body = f"{say_hi}\n  {say_en}\n  {say_te}"
     gather = twiml_gather(
         action="/ivr/category",
         num_digits=1,
@@ -201,13 +184,14 @@ async def ivr_category(
     Returns category menu TwiML.
     """
     pressed = (Digits or digit or "").strip()
-    if pressed == "1": selected_lang = "hi"
-    elif pressed == "2": selected_lang = "en"
-    elif pressed == "3": selected_lang = "te"
-    elif pressed == "4": selected_lang = "mr"
-    elif pressed == "5": selected_lang = "bn"
-    elif pressed == "6": selected_lang = "ta"
-    else: selected_lang = lang if lang in ("hi", "en", "te", "mr", "bn", "ta") else "hi"
+    if pressed == "2":
+        selected_lang = "en"
+    elif pressed == "3":
+        selected_lang = "te"
+    elif pressed == "1":
+        selected_lang = "hi"
+    else:
+        selected_lang = lang if lang in ("hi", "te", "en") else "hi"
 
     category_prompt_key = f"category_{selected_lang}"
     prompt_text = PROMPTS.get(category_prompt_key, PROMPTS["category_hi"])
@@ -241,8 +225,8 @@ async def ivr_record_prompt(
     Returns TwiML that plays recording prompt and starts <Record>.
     """
     pressed = (Digits or digit or "").strip()
-    cat_map = {"1": "water", "2": "electricity", "3": "roads", "4": "sanitation", "5": "healthcare", "6": "other"}
-    selected_cat = cat_map.get(pressed, cat if cat in cat_map.values() else "other")
+    cat_map = {"1": "electricity", "2": "water", "3": "other"}
+    selected_cat = cat_map.get(pressed, cat if cat in ("electricity", "water", "other") else "electricity")
 
     form_data = {}
     try:
@@ -272,149 +256,6 @@ async def ivr_record_prompt(
 # IVR Webhook — Step 4: Save Recording & Confirm
 # ---------------------------------------------------------------------------
 
-async def process_audio_and_update(ticket_id: str, recording_sid: str, lang: str, cat: str, caller_phone: str):
-    await asyncio.sleep(2)  # Give Twilio time to finish writing the file
-    print(f"[IVR STT] Starting background processing for {ticket_id}")
-    
-    transcription = "Audio could not be transcribed."
-    english_translation = "Translation not available."
-    
-    try:
-        # Fetch WAV from Twilio
-        sid = os.getenv("TWILIO_ACCOUNT_SID", "")
-        token = os.getenv("TWILIO_AUTH_TOKEN", "")
-        
-        if sid and token and recording_sid.startswith("RE"):
-            url = f"https://api.twilio.com/2010-04-01/Accounts/{sid}/Recordings/{recording_sid}.wav"
-            import base64, httpx
-            auth = base64.b64encode(f"{sid}:{token}".encode()).decode()
-            
-            async with httpx.AsyncClient(timeout=30, follow_redirects=True) as client:
-                resp = await client.get(url, headers={"Authorization": f"Basic {auth}"})
-                
-            if resp.status_code == 200:
-                wav_bytes = resp.content
-                recognizer = sr.Recognizer()
-                with sr.AudioFile(io.BytesIO(wav_bytes)) as source:
-                    audio_data = recognizer.record(source)
-                
-                lang_code = "hi-IN"
-                if lang == "te": lang_code = "te-IN"
-                elif lang == "mr": lang_code = "mr-IN"
-                elif lang == "bn": lang_code = "bn-IN"
-                elif lang == "ta": lang_code = "ta-IN"
-                elif lang == "en": lang_code = "en-IN"
-                
-                try:
-                    transcription = recognizer.recognize_google(audio_data, language=lang_code)
-                    print(f"[IVR STT] Transcribed ({lang_code}): {transcription}")
-                except Exception as e:
-                    print(f"[IVR STT] recognition error: {e}")
-                    transcription = "Audio unintelligible or too short."
-                    
-                if transcription and transcription not in ("Audio unintelligible or too short.", "Audio could not be transcribed."):
-                    if lang != "en":
-                        try:
-                            english_translation = GoogleTranslator(source='auto', target='en').translate(transcription)
-                            print(f"[IVR STT] Translated: {english_translation}")
-                        except Exception as e:
-                            print(f"[IVR STT] Translation error: {e}")
-                            english_translation = transcription
-                    else:
-                        english_translation = transcription
-    except Exception as e:
-        print(f"[IVR STT] Background process error: {e}")
-
-    now = datetime.now(ZoneInfo("Asia/Kolkata"))
-    
-    # --- AI NLP Heuristics (Urgency and Category) ---
-    urgency = "normal"
-    assigned_category = cat
-    
-    if english_translation and english_translation not in ("Translation not available.", "Audio could not be transcribed.", "Audio unintelligible or too short."):
-        text_lower = english_translation.lower()
-        
-        # 1. Urgency Detection
-        urgent_keywords = ["emergency", "fire", "danger", "accident", "dying", "sparking", "leak", "hospital", "urgent", "critical", "blood", "help me", "saving", "die", "dead", "killing"]
-        if any(keyword in text_lower for keyword in urgent_keywords):
-            urgency = "high"
-            
-        # 2. Smart Department Routing
-        category_mapping = {
-            "water": ["water", "pipe", "leak", "tap", "drinking", "plumbing", "drain", "sewage"],
-            "electricity": ["power", "electricity", "wire", "pole", "current", "shock", "blackout", "light", "spark"],
-            "roads": ["road", "pothole", "street", "highway", "broken", "pavement"],
-            "health": ["health", "hospital", "doctor", "ambulance", "disease", "fever", "sick", "clinic"],
-            "education": ["school", "teacher", "student", "college", "education", "books", "class"],
-            "sanitation": ["garbage", "trash", "waste", "cleaning", "dump", "smell", "toilet", "dustbin"]
-        }
-        
-        best_cat = cat
-        max_matches = 0
-        for c, keywords in category_mapping.items():
-            matches = sum(1 for k in keywords if k in text_lower)
-            if matches > max_matches:
-                max_matches = matches
-                best_cat = c
-                
-        if max_matches > 0:
-            assigned_category = best_cat
-
-    try:
-        # Update MongoDB Ticket directly
-        from motor.motor_asyncio import AsyncIOMotorClient
-        client = AsyncIOMotorClient(os.getenv("MONGODB_URI"))
-        db = client["lok_swar_db"]
-        collection = db["ivr_tickets"]
-        
-        from bson import ObjectId
-        await collection.update_one(
-            {"_id": ObjectId(ticket_id)},
-            {"$set": {
-                "transcription": transcription,
-                "english_translation": english_translation,
-                "urgency": urgency,
-                "category": assigned_category,
-                "updated_at": now
-            }}
-        )
-        
-        # Update Main Grievances collection
-        grievances_col = db["grievances"]
-        report_ref = f"IVR-{ticket_id[-6:].upper()}"
-        await grievances_col.update_one(
-            {"id": report_ref},
-            {"$set": {
-                "titleOriginal": transcription,
-                "description": transcription,
-                "category": assigned_category,
-                "urgency": urgency,
-                "updatedAt": now.isoformat()
-            }}
-        )
-        
-        # Re-fetch ticket to push via SSE
-        ticket_doc = await collection.find_one({"_id": ObjectId(ticket_id)})
-        if ticket_doc:
-            res_data = ticket_doc.copy()
-            res_data["id"] = ticket_id
-            res_data.pop("_id", None)
-            
-            # format dates safely
-            for df in ["created_at", "updated_at"]:
-                if isinstance(res_data.get(df), datetime):
-                    res_data[df] = res_data[df].isoformat()
-                elif res_data.get(df) is None:
-                    res_data[df] = now.isoformat()
-                    
-            from ivr.main import broadcast_live_report
-            await broadcast_live_report(res_data)
-        
-        client.close()
-    except Exception as e:
-        print(f"[IVR STT] DB/SSE update error: {e}")
-
-
 @app.api_route("/ivr/save-recording", methods=["GET", "POST"])
 async def ivr_save_recording(
     request: Request,
@@ -443,7 +284,7 @@ async def ivr_save_recording(
     def _get(key: str, default: str = "") -> str:
         return str(form_data.get(key) or params.get(key) or default)
 
-    call_sid = _get("CallSid") or f"CA_{int(datetime.now(ZoneInfo("Asia/Kolkata")).timestamp())}"
+    call_sid = _get("CallSid") or f"CA_{int(datetime.now(timezone.utc).timestamp())}"
     raw_phone = _get("From", _get("Caller", _get("from_num", "+91 8926160600")))
     
     # Clean and format Indian phone numbers
@@ -466,7 +307,7 @@ async def ivr_save_recording(
 
     # Handle local uploaded audio file (from web phone simulator)
     if uploaded_file:
-        rec_id = f"REC_{int(datetime.now(ZoneInfo("Asia/Kolkata")).timestamp())}"
+        rec_id = f"REC_{int(datetime.now(timezone.utc).timestamp())}"
         ext = Path(uploaded_file.filename).suffix or ".webm"
         local_path = RECORDINGS_DIR / f"{rec_id}{ext}"
         try:
@@ -484,30 +325,32 @@ async def ivr_save_recording(
     if recording_sid and not recording_url.startswith("/ivr/audio"):
         recording_url = f"/ivr/audio/{recording_sid}"
 
-    if lang not in ("hi", "en", "te", "mr", "bn", "ta"):
+    if lang not in ("hi", "te", "en"):
         lang = "hi"
-    if cat not in ("water", "electricity", "roads", "sanitation", "healthcare", "other"):
-        cat = "other"
+    if cat not in ("electricity", "water", "other"):
+        cat = "electricity"
 
     # Dialect-appropriate realistic transcriptions
-    default_hi = "गाँव में पिछले 3 दिनों से ट्रांसफार्मर खराब है। कृपया तत्काल नया ट्रांसफार्मर लगवाया जाए।"
-    default_en = "Severe power outage reported in the village for 3 consecutive days. Immediate replacement required."
     transcripts = {
-        "hi": {"electricity": default_hi, "water": "पानी नहीं आ रहा है।", "roads": "सड़कें टूटी हैं।", "sanitation": "सफाई नहीं हो रही है।", "healthcare": "अस्पताल में डॉक्टर नहीं हैं।", "other": "अन्य समस्या है।"},
-        "en": {"electricity": default_en, "water": "No water supply.", "roads": "Roads are damaged.", "sanitation": "Poor sanitation.", "healthcare": "No doctors available.", "other": "Other issue."},
-        "te": {"electricity": "విద్యుత్ సమస్య.", "water": "నీటి సమస్య.", "roads": "రోడ్లు పాడయ్యాయి.", "sanitation": "పారిశుద్ధ్యం బాగాలేదు.", "healthcare": "ఆరోగ్య సమస్య.", "other": "ఇతర సమస్య."},
-        "mr": {"electricity": "विद्युत समस्या.", "water": "पाण्याची समस्या.", "roads": "रस्ते खराब आहेत.", "sanitation": "स्वच्छता नाही.", "healthcare": "आरोग्य समस्या.", "other": "इतर समस्या."},
-        "bn": {"electricity": "বিদ্যুৎ সমস্যা।", "water": "জলের সমস্যা।", "roads": "রাস্তা খারাপ।", "sanitation": "পরিচ্ছন্নতা নেই।", "healthcare": "স্বাস্থ্য সমস্যা।", "other": "অন্য সমস্যা।"},
-        "ta": {"electricity": "மின்சார பிரச்சனை.", "water": "தண்ணீர் பிரச்சனை.", "roads": "சாலைகள் மோசம்.", "sanitation": "சுகாதாரம் இல்லை.", "healthcare": "சுகாதார பிரச்சனை.", "other": "மற்ற பிரச்சனை."},
+        "hi": {
+            "electricity": "गाँव में पिछले 3 दिनों से ट्रांसफार्मर खराब है और बिजली की आपूर्ति पूरी तरह ठप है। कृपया तत्काल नया ट्रांसफार्मर लगवाया जाए।",
+            "water": "हमारे वार्ड में मुख्य पेयजल पाइपलाइन टूट गई है, पीने का साफ पानी नहीं मिल रहा है। तत्काल मरम्मत कार्य कराया जाए।",
+            "other": "गाँव की मुख्य संपर्क सड़क बारिश के कारण धंस गई है, आवागमन पूरी तरह अवरुद्ध है। त्वरित सुधार कराया जाए।"
+        },
+        "en": {
+            "electricity": "Severe power outage reported in the village for 3 consecutive days due to transformer blowout. Immediate replacement required.",
+            "water": "Main drinking water pipeline is leaking heavily, causing contamination and acute water shortage in the ward.",
+            "other": "Primary village connecting road has collapsed due to heavy rainfall, blocking vehicular movement and emergency access."
+        },
+        "te": {
+            "electricity": "గ్రామంలో ట్రాన్స్‌ఫార్మర్ చెడిపోయి మూడు రోజులుగా విద్యుత్ సరఫరా నిలిచిపోయింది. దయచేసి వెంటనే మరమ్మతు చేయించండి.",
+            "water": "ప్రధాన తాగునీటి పైప్‌లైన్ పగిలిపోవడంతో గ్రామంలో తీవ్ర నీటి కొరత ఏర్పడింది. వెంటనే సరిచేయండి.",
+            "other": "భారీ వర్షాల కారణంగా గ్రామం ప్రధాన రహదారి కొట్టుకుపోయింది. రాకపోకలు పూర్తిగా స్తంభించాయి."
+        }
     }
-    if recording_sid and recording_sid.startswith("RE"):
-        transcription = "🎙️ Processing AI transcription..."
-        english_translation = "🔄 Translating..."
-    else:
-        transcription = transcripts.get(lang, transcripts["hi"]).get(cat, transcripts["hi"]["electricity"])
-        english_translation = transcripts["en"].get(cat, transcripts["en"]["electricity"]) if lang != "en" else ""
+    transcription = transcripts.get(lang, transcripts["hi"]).get(cat, transcripts["hi"]["electricity"])
 
-    now = datetime.now(ZoneInfo("Asia/Kolkata"))
+    now = datetime.now(timezone.utc)
     
     # Idempotent upsert to avoid duplicate tickets if both action & recordingStatusCallback fire
     ticket_id = "UNKNOWN"
@@ -527,9 +370,7 @@ async def ivr_save_recording(
         "duration": max(duration, 8),
         "status": "new",
         "transcription": transcription,
-        "english_translation": english_translation,
         "admin_notes": "",
-        "urgency": "normal",
         "updated_at": now,
     }
 
@@ -542,7 +383,6 @@ async def ivr_save_recording(
                     "recording_url": recording_url or existing.get("recording_url"),
                     "duration": max(duration, existing.get("duration", 0)),
                     "transcription": existing.get("transcription") or transcription,
-                    "english_translation": existing.get("english_translation") or english_translation,
                     "updated_at": now,
                 }}
             )
@@ -550,7 +390,6 @@ async def ivr_save_recording(
             ticket_doc = existing
             ticket_doc["duration"] = max(duration, existing.get("duration", 0))
             ticket_doc["recording_url"] = recording_url or existing.get("recording_url")
-            ticket_doc["english_translation"] = existing.get("english_translation") or english_translation
         else:
             ticket_doc["created_at"] = now
             result = await collection.insert_one(ticket_doc)
@@ -606,19 +445,10 @@ async def ivr_save_recording(
     if "application/json" in request.headers.get("accept", "") or form_data.get("format") == "json":
         return JSONResponse({"ok": True, "ticket_id": ticket_id, "ticket": res_data})
 
-    # Spawn background task for transcription if real Twilio recording
-    if recording_sid and recording_sid.startswith("RE"):
-        asyncio.create_task(process_audio_and_update(ticket_id, recording_sid, lang, cat, caller_phone))
-
-    # Twilio Voice XML response with SMS Confirmation
+    # Twilio Voice XML response
     thanks_text = PROMPTS.get(f"thanks_{lang}", PROMPTS["thanks_hi"])
     say_block = twiml_say(thanks_text, lang)
-    
-    # Send SMS to the caller with the confirmation message
-    # Twilio <Sms> defaults to sending to the caller if 'to' is not specified
-    sms_block = f'<Sms from="{os.getenv("TWILIO_PHONE_NUMBER", "+1234567890")}">{thanks_text}</Sms>'
-    
-    return xml_response(f"{say_block}\n{sms_block}\n<Hangup/>")
+    return xml_response(f"{say_block}\n<Hangup/>")
 
 
 # ---------------------------------------------------------------------------
@@ -679,7 +509,7 @@ async def create_mock_ticket(
     Inserts a dummy IVR ticket so the admin dashboard is populated
     even when no real phone calls have been made yet.
     """
-    now = datetime.now(ZoneInfo("Asia/Kolkata"))
+    now = datetime.now(timezone.utc)
     mock = {
         "call_sid": f"CA_MOCK_{int(now.timestamp())}",
         "caller_phone": "+91 8926160600",
@@ -689,8 +519,6 @@ async def create_mock_ticket(
         "recording_sid": "RE_MOCK",
         "duration": 37,
         "status": "new",
-        "transcription": "गाँव में पिछले 3 दिनों से ट्रांसफार्मर खराब है और बिजली की आपूर्ति पूरी तरह ठप है। कृपया तत्काल नया ट्रांसफार्मर लगवाया जाए।",
-        "english_translation": "Severe power outage reported in the village for 3 consecutive days due to transformer blowout. Immediate replacement required.",
         "admin_notes": "",
         "created_at": now,
         "updated_at": now,
@@ -758,9 +586,9 @@ async def list_tickets(
     query: dict = {}
     if status and status in ("new", "in_progress", "resolved"):
         query["status"] = status
-    if category and category in ("water", "electricity", "roads", "sanitation", "healthcare", "other"):
+    if category and category in ("electricity", "water", "other"):
         query["category"] = category
-    if lang and lang in ("hi", "en", "te", "mr", "bn", "ta"):
+    if lang and lang in ("hi", "te", "en"):
         query["language"] = lang
 
     cursor = collection.find(query).sort("created_at", -1).skip(skip).limit(limit)
@@ -785,7 +613,7 @@ async def update_status(
 
     result = await collection.update_one(
         {"_id": oid},
-        {"$set": {"status": body.status, "updated_at": datetime.now(ZoneInfo("Asia/Kolkata"))}},
+        {"$set": {"status": body.status, "updated_at": datetime.now(timezone.utc)}},
     )
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Ticket not found")
@@ -806,7 +634,7 @@ async def update_notes(
 
     result = await collection.update_one(
         {"_id": oid},
-        {"$set": {"admin_notes": body.admin_notes, "updated_at": datetime.now(ZoneInfo("Asia/Kolkata"))}},
+        {"$set": {"admin_notes": body.admin_notes, "updated_at": datetime.now(timezone.utc)}},
     )
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Ticket not found")
