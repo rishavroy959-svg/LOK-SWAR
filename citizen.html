@@ -1079,32 +1079,53 @@ function CitizenPortalApp() {
       return;
     }
     const clean = text.trim();
+    // Skip translation if text is already English (all ASCII)
+    if (/^[\x00-\x7F]*$/.test(clean) && /[a-zA-Z]/.test(clean)) {
+      setRealtimeTranslation('');
+      return;
+    }
     setIsTranslatingRealtime(true);
     try {
       let translated = '';
       let detectedLang = lang || selectedLang;
-      // 1. Primary Engine: Server Python AI Multi-lingual NMT
+
+      // 1. Primary Engine: Fast server-proxy translation (Google GTX server-side, no CORS)
       try {
-        const res = await resilientFetch('/api/translate', {
+        const res = await resilientFetch('/api/translate/quick', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            text: clean,
-            spokenLanguage: lang || selectedLang
-          })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: clean, sourceLang: lang || selectedLang }),
+          timeout: 6000
         });
         if (res && res.ok) {
           const data = await res.json();
-          if (data && data.success && (data.directEnglishTranslation || data.translatedText)) {
-            translated = data.directEnglishTranslation || data.translatedText;
-            if (data.spokenLanguage) detectedLang = data.spokenLanguage;
+          if (data && data.success && data.translatedText && data.translatedText.trim().toLowerCase() !== clean.toLowerCase()) {
+            translated = data.translatedText;
+            if (data.detectedLang) detectedLang = data.detectedLang;
           }
         }
       } catch (e) {}
 
-      // 2. Client-side Google Translate NMT API fallback
+      // 2. Fallback: Full server AI translation (OpenAI + categorization)
+      if (!translated) {
+        try {
+          const res = await resilientFetch('/api/translate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: clean, spokenLanguage: lang || selectedLang }),
+            timeout: 8000
+          });
+          if (res && res.ok) {
+            const data = await res.json();
+            if (data && data.success && (data.directEnglishTranslation || data.translatedText)) {
+              translated = data.directEnglishTranslation || data.translatedText;
+              if (data.spokenLanguage) detectedLang = data.spokenLanguage;
+            }
+          }
+        } catch (e) {}
+      }
+
+      // 3. Client-side Google Translate NMT API fallback (works on localhost, may be CORS-blocked in production)
       if (!translated) {
         try {
           const gUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(clean)}`;
@@ -1116,7 +1137,7 @@ function CitizenPortalApp() {
         } catch (e) {}
       }
 
-      // 3. Client-side MyMemory Multi-lingual fallback
+      // 4. Client-side MyMemory Multi-lingual fallback
       if (!translated) {
         try {
           const mmUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(clean)}&langpair=autodetect|en`;
@@ -1135,6 +1156,10 @@ function CitizenPortalApp() {
         const finalEng = translated.trim();
         setRealtimeTranslation(finalEng);
         setInputDetectedLang(detectedLang);
+        // Always preserve the original regional text for bilingual display
+        if (!originalRegionalText || force) {
+          setOriginalRegionalText(clean);
+        }
 
         // ONLY replace text in the input bar if user explicitly requested manual translation (force === true)
         if (force) {
@@ -1656,14 +1681,18 @@ function CitizenPortalApp() {
       let scheme = "SDRF Disaster Relief Fund / PMGSY Rural Roads";
       let urgency = 92.0;
 
-      // 1. Call server STT
+      // Immediately preserve the original spoken text for bilingual display
+      if (origText) {
+        setOriginalRegionalText(origText);
+        setLiveSpokenText(origText);
+      }
+
+      // 1. Call server STT (handles audio transcription + translation)
       if (wavBase64 || origText) {
         try {
           const res = await fetch('/api/speech-to-text', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               audioBase64: wavBase64,
               transcript: origText,
@@ -1684,18 +1713,29 @@ function CitizenPortalApp() {
         } catch (e) {}
       }
 
-      // 2. Direct server translate fallback
+      // 2. Fast server-proxy translate fallback (Google GTX via server, no CORS issues)
+      if (!englishText && origText) {
+        try {
+          const res = await fetch('/api/translate/quick', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: origText, sourceLang: selectedLang })
+          });
+          const data = await res.json();
+          if (data.success && data.translatedText && data.translatedText.trim().toLowerCase() !== origText.toLowerCase()) {
+            englishText = data.translatedText;
+            if (data.detectedLang) detectedLanguage = data.detectedLang;
+          }
+        } catch (e) {}
+      }
+
+      // 3. Full server AI translate fallback (OpenAI + categorization)
       if (!englishText && origText) {
         try {
           const res = await fetch('/api/translate', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              text: origText,
-              spokenLanguage: selectedLang
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: origText, spokenLanguage: selectedLang })
           });
           const data = await res.json();
           if (data.success && (data.directEnglishTranslation || data.translatedText)) {
@@ -1705,7 +1745,7 @@ function CitizenPortalApp() {
         } catch (e) {}
       }
 
-      // 3. Fallback: Google NMT Translation
+      // 4. Client-side Google NMT Translation fallback
       if (!englishText && origText) {
         try {
           const gUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(origText)}`;
@@ -1716,14 +1756,28 @@ function CitizenPortalApp() {
           }
         } catch (e) {}
       }
+
       const finalText = (englishText || origText).trim();
       if (!origText && !finalText) {
         setIsTranslatingVoice(false);
         return;
       }
+      // Enhanced language detection from script analysis
       if (detectedLanguage === "Hindi" || !detectedLanguage) {
-        if (/[\u0B00-\u0B7F]/.test(origText)) detectedLanguage = "Odia (ଓଡ଼ିଆ)";else if (/[\u0980-\u09FF]/.test(origText)) detectedLanguage = "Bengali (বাংলা)";else if (/(\bबा\b|\bनइखे\b|\bगइल\b|\bपुलवा\b|\bसड़किया\b|\bपनिया\b|\bचापकाल\b|\bचापाकल\b)/.test(origText)) detectedLanguage = "Bihari / Bhojpuri (भोजपुरी)";else if (/[\u0900-\u097F]/.test(origText)) detectedLanguage = "Hindi (हिन्दी)";else detectedLanguage = "English";
+        if (/[\u0B00-\u0B7F]/.test(origText)) detectedLanguage = "Odia (ଓଡ଼ିଆ)";
+        else if (/[\u0980-\u09FF]/.test(origText)) detectedLanguage = "Bengali (বাংলা)";
+        else if (/[\u0B80-\u0BFF]/.test(origText)) detectedLanguage = "Tamil (தமிழ்)";
+        else if (/[\u0C00-\u0C7F]/.test(origText)) detectedLanguage = "Telugu (తెలుగు)";
+        else if (/[\u0C80-\u0CFF]/.test(origText)) detectedLanguage = "Kannada (ಕನ್ನಡ)";
+        else if (/[\u0D00-\u0D7F]/.test(origText)) detectedLanguage = "Malayalam (മലയാളം)";
+        else if (/[\u0A00-\u0A7F]/.test(origText)) detectedLanguage = "Punjabi (ਪੰਜਾਬੀ)";
+        else if (/[\u0A80-\u0AFF]/.test(origText)) detectedLanguage = "Gujarati (ગુજરાતી)";
+        else if (/[\u0600-\u06FF]/.test(origText)) detectedLanguage = "Urdu (اردو)";
+        else if (/(\bबा\b|\bनइखे\b|\bगइल\b|\bपुलवा\b|\bसड़किया\b|\bपनिया\b|\bचापकाल\b|\bचापाकल\b)/.test(origText)) detectedLanguage = "Bihari / Bhojpuri (भोजपुरी)";
+        else if (/[\u0900-\u097F]/.test(origText)) detectedLanguage = "Hindi (हिन्दी)";
+        else detectedLanguage = "English";
       }
+      // Always preserve original text for bilingual display
       setOriginalRegionalText(origText || finalText);
       setInputDetectedLang(detectedLanguage);
       setHasAutoTranslated(true);

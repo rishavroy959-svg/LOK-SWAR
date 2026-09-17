@@ -440,19 +440,28 @@ def transcribe_audio_data(raw_audio_bytes, preferred_lang=None):
     
     return "", ""
 
-def fetch_live_translation_to_english(raw_text):
+def fetch_live_translation_to_english(raw_text, quick_mode=False):
     """
     Translates regional text from ANY language (Bihari, Bhojpuri, Odia, Hindi, Bengali, Tamil, etc.)
     directly into clean English for search bar insertion and categorization.
+    quick_mode=True skips OpenAI for faster response (used by /api/translate/quick).
     """
     if not raw_text or not raw_text.strip():
         return ""
     text = raw_text.strip()
 
+    # Skip if text is already English (ASCII-only with common punctuation)
+    if all(ord(c) < 128 for c in text):
+        return text
+
     # Tier 0: OpenAI Translation Engine (High accuracy for Indian languages/dialects)
-    openai_res = translate_and_analyze_with_openai(text)
-    if openai_res and openai_res.get("directEnglishTranslation"):
-        return openai_res["directEnglishTranslation"].strip()
+    if not quick_mode:
+        try:
+            openai_res = translate_and_analyze_with_openai(text)
+            if openai_res and openai_res.get("directEnglishTranslation"):
+                return openai_res["directEnglishTranslation"].strip()
+        except Exception:
+            pass
 
     # Pre-process regional idioms (Bhojpuri, Odia, Bengali) for maximum translation precision
     processed_text = text
@@ -491,36 +500,75 @@ def fetch_live_translation_to_english(raw_text):
         processed_text = processed_text.replace("বিদ্যুৎ নেই", "there is no electricity")
         processed_text = processed_text.replace("জল আসছে না", "drinking water is not available")
 
-    # Tier 1: Google Mobile Translation Engine
+    # If preprocessed text is now mostly English (idiom replacement worked), return it
+    english_chars = sum(1 for c in processed_text if ord(c) < 128 and c.isalpha())
+    total_alpha = sum(1 for c in processed_text if c.isalpha()) or 1
+    if english_chars / total_alpha > 0.7 and english_chars > 10:
+        return processed_text.strip()
+
+    # Tier 1: Google GTX NMT Translation API (most reliable server-side, with retry)
+    for attempt in range(2):
+        try:
+            url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=' + urllib.parse.quote(processed_text)
+            req = urllib.request.Request(url, headers={
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+                'Accept': 'application/json',
+                'Accept-Language': 'en-US,en;q=0.9'
+            })
+            with urllib.request.urlopen(req, timeout=5) as response:
+                res = json.loads(response.read().decode('utf-8'))
+                translated = ''.join([part[0] for part in res[0] if part and part[0]])
+                if translated and translated.strip() and translated.strip().lower() != text.lower():
+                    return translated.strip()
+        except Exception:
+            if attempt == 0:
+                import time
+                time.sleep(0.3)
+            continue
+
+    # Tier 2: Google Mobile Translation Scraper (backup)
     try:
         g_url = f"https://translate.google.com/m?sl=auto&tl=en&q={urllib.parse.quote(processed_text)}"
-        g_req = urllib.request.Request(g_url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'})
+        g_req = urllib.request.Request(g_url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'})
         with urllib.request.urlopen(g_req, timeout=5) as g_resp:
             html = g_resp.read().decode('utf-8')
             m = re.search(r'class="result-container">([^<]+)<', html)
             if m and m.group(1).strip():
                 clean_t = m.group(1).replace('&amp;', '&').replace('&quot;', '"').replace('&#39;', "'").strip()
-                if clean_t:
+                if clean_t and clean_t.lower() != text.lower():
                     return clean_t
     except Exception:
         pass
 
-    # Tier 2: Google GTX NMT Translation API
+    # Tier 3: LibreTranslate Public API (free, no CORS issues server-side)
     try:
-        url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=' + urllib.parse.quote(processed_text)
-        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
-        with urllib.request.urlopen(req, timeout=4) as response:
-            res = json.loads(response.read().decode('utf-8'))
-            translated = ''.join([part[0] for part in res[0] if part and part[0]])
-            if translated and translated.strip():
-                return translated.strip()
+        iso_map = {
+            "Hindi": "hi", "Hindi/Marathi": "hi", "Bihari / Bhojpuri": "hi", "Bhojpuri": "hi",
+            "Odia": "hi", "Bengali": "bn", "Tamil": "ta", "Telugu": "te",
+            "Punjabi": "hi", "Gujarati": "hi", "Kannada": "hi",
+            "Malayalam": "hi", "Urdu": "ur", "Urdu/Kashmiri/Sindhi": "ur",
+            "Marathi": "hi", "Assamese": "bn", "Maithili": "hi", "Santali": "hi"
+        }
+        src_lang = iso_map.get(det_lang, "hi")
+        libre_url = "https://libretranslate.com/translate"
+        libre_data = json.dumps({"q": processed_text, "source": src_lang, "target": "en", "format": "text"}).encode('utf-8')
+        libre_req = urllib.request.Request(libre_url, data=libre_data, headers={
+            'Content-Type': 'application/json',
+            'User-Agent': 'Mozilla/5.0'
+        })
+        with urllib.request.urlopen(libre_req, timeout=5) as libre_resp:
+            libre_result = json.loads(libre_resp.read().decode('utf-8'))
+            if libre_result and libre_result.get("translatedText"):
+                lt = libre_result["translatedText"].strip()
+                if lt and lt.lower() != text.lower():
+                    return lt
     except Exception:
         pass
 
-    # Tier 3: MyMemory Translation API with ISO Language Pair
+    # Tier 4: MyMemory Translation API with ISO Language Pair
     try:
         iso_map = {
-            "Hindi": "hi", "Bihari / Bhojpuri": "hi", "Bhojpuri": "hi",
+            "Hindi": "hi", "Hindi/Marathi": "hi", "Bihari / Bhojpuri": "hi", "Bhojpuri": "hi",
             "Odia": "or", "Bengali": "bn", "Tamil": "ta", "Telugu": "te",
             "Punjabi": "pa", "Gujarati": "gu", "Kannada": "kn",
             "Malayalam": "ml", "Urdu": "ur"
@@ -536,7 +584,7 @@ def fetch_live_translation_to_english(raw_text):
     except Exception:
         pass
 
-    # Tier 4: Domain-specific fallback lexicon
+    # Tier 5: Domain-specific fallback lexicon
     return translate_regional_phrase_to_english(text, det_lang)
 
 def translate_regional_phrase_to_english(raw_text, detected_lang):

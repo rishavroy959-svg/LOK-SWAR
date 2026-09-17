@@ -1278,6 +1278,33 @@ class LokSwarBackendHandler(http.server.SimpleHTTPRequestHandler):
                 "urgencyScore": res.get("urgencyScore", 80.0)
             }).encode('utf-8'))
             return
+
+        # 11b. QUICK TRANSLATION: Lightweight real-time translation proxy (no OpenAI, no categorization)
+        if path == "/api/translate/quick":
+            text_input = body.get("text", "").strip()
+            source_lang = body.get("sourceLang") or body.get("spokenLanguage") or ""
+
+            if not text_input:
+                self._set_headers(200)
+                self.wfile.write(json.dumps({
+                    "success": True,
+                    "translatedText": "",
+                    "detectedLang": "English"
+                }).encode('utf-8'))
+                return
+
+            det_lang = detect_language(text_input)
+            # Use quick_mode to skip OpenAI for faster response
+            translated = fetch_live_translation_to_english(text_input, quick_mode=True)
+
+            self._set_headers(200)
+            self.wfile.write(json.dumps({
+                "success": True,
+                "originalText": text_input,
+                "translatedText": translated or text_input,
+                "detectedLang": det_lang
+            }).encode('utf-8'))
+            return
             
         # 12. SPEECH-TO-TEXT: AI Audio Transcription & Translation (Bihari, Bhojpuri, Odia, Bengali, Hindi, English)
         if path == "/api/speech-to-text" or path == "/api/ai/transcribe":
