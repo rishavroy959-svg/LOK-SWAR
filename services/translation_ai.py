@@ -5,12 +5,32 @@ into structured Administrative English, Hindi, and Bhojpuri summaries with auto-
 priority urgency scoring, and government funding scheme matching.
 """
 
+import os
 import re
 import io
 import urllib.request
 import urllib.parse
 import json
 import base64
+
+# Auto-load .env from root
+_env_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
+if os.path.exists(_env_path):
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(_env_path)
+    except Exception:
+        try:
+            with open(_env_path, "r", encoding="utf-8") as _f:
+                for _line in _f:
+                    _line = _line.strip()
+                    if _line and not _line.startswith("#") and "=" in _line:
+                        _k, _v = _line.split("=", 1)
+                        if _k.strip() not in os.environ:
+                            os.environ[_k.strip()] = _v.strip()
+        except Exception:
+            pass
+
 try:
     import speech_recognition as sr
     HAS_SR = True
@@ -235,13 +255,116 @@ def detect_language(text):
     
     return "English"
 
+def transcribe_audio_with_openai(raw_audio_bytes, preferred_lang=None):
+    """
+    Transcribes audio bytes into original native text using OpenAI Whisper API.
+    """
+    api_key = os.getenv("OPENAI_API_KEY", "").strip()
+    if not api_key or not raw_audio_bytes:
+        return "", ""
+    try:
+        import httpx
+        url = "https://api.openai.com/v1/audio/transcriptions"
+        headers = {
+            "Authorization": f"Bearer {api_key}"
+        }
+        files = {
+            "file": ("voice_input.wav", raw_audio_bytes, "audio/wav")
+        }
+        data = {
+            "model": "whisper-1",
+            "response_format": "verbose_json"
+        }
+        if preferred_lang:
+            iso_2 = preferred_lang[:2].lower()
+            if iso_2 in ["hi", "bn", "ta", "te", "mr", "gu", "kn", "ml", "pa", "ur", "en"]:
+                data["language"] = iso_2
+        with httpx.Client(timeout=15.0) as client:
+            resp = client.post(url, headers=headers, files=files, data=data)
+            if resp.status_code == 200:
+                result = resp.json()
+                text = result.get("text", "").strip()
+                detected_lang = result.get("language", "")
+                if text:
+                    lang_name = detect_language(text)
+                    if detected_lang:
+                        lang_map = {
+                            "hindi": "Hindi", "odia": "Odia", "bengali": "Bengali",
+                            "marathi": "Marathi", "tamil": "Tamil", "telugu": "Telugu",
+                            "english": "English", "urdu": "Urdu", "gujarati": "Gujarati",
+                            "punjabi": "Punjabi", "kannada": "Kannada", "malayalam": "Malayalam"
+                        }
+                        lang_name = lang_map.get(detected_lang.lower(), lang_name)
+                    return text, lang_name
+    except Exception as e:
+        print(f"[OpenAI Whisper Notice]: {e}")
+    return "", ""
+
+def translate_and_analyze_with_openai(text, spoken_language=None):
+    """
+    Leverages OpenAI GPT to translate regional speech into fluent Administrative English,
+    auto-categorize, and generate incident summaries for district officials.
+    """
+    api_key = os.getenv("OPENAI_API_KEY", "").strip()
+    if not api_key or not text or not text.strip():
+        return None
+    try:
+        import httpx
+        url = "https://api.openai.com/v1/chat/completions"
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+        system_prompt = (
+            "You are Lok Swar AI, an expert civic infrastructure assistant for Indian regional languages and governance. "
+            "Analyze citizen complaints in Indian languages (Hindi, Odia, Bhojpuri, Bengali, Maithili, Tamil, Telugu, etc.) "
+            "and convert them into clear, professional English for government administration.\n"
+            "Return STRICT JSON only with keys:\n"
+            "- 'spokenLanguage': identified language name (e.g. Hindi, Odia, Bhojpuri, Bengali, English)\n"
+            "- 'originalText': clean transcription of the input in its native script\n"
+            "- 'directEnglishTranslation': faithful, natural English translation of what the citizen said\n"
+            "- 'aiAnalyzedTitle': concise government incident title in English (max 8 words)\n"
+            "- 'adminEnglishTranslation': formal administrative inspection summary for District Magistrate\n"
+            "- 'category': one of ['Roads & Connectivity', 'Drinking Water & RWSS', 'Power & Electricity', 'Education & 5T Schools', 'Healthcare & PHC', 'Drainage & Flood Mitigation', 'Irrigation & Canal', 'General']\n"
+            "- 'suggestedScheme': official government scheme (e.g. PMGSY Rural Roads, Jal Jeevan Mission, DDUGJY, NHM, 5T High School, etc.)\n"
+            "- 'urgencyScore': float between 70.0 and 99.0"
+        )
+        user_prompt = f"Citizen Grievance Text: {text}\nSelected Language Hint: {spoken_language or 'Auto-detect'}"
+        payload = {
+            "model": "gpt-4o-mini",
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            "response_format": {"type": "json_object"},
+            "temperature": 0.2,
+            "max_tokens": 500
+        }
+        with httpx.Client(timeout=10.0) as client:
+            resp = client.post(url, headers=headers, json=payload)
+            if resp.status_code == 200:
+                content = resp.json()["choices"][0]["message"]["content"]
+                parsed = json.loads(content)
+                return parsed
+    except Exception as e:
+        print(f"[OpenAI Translation Notice]: {e}")
+    return None
+
 def transcribe_audio_data(raw_audio_bytes, preferred_lang=None):
     """
-    Transcribes audio bytes (WAV or supported raw audio) into text using Python SpeechRecognition.
+    Transcribes audio bytes (WAV or supported raw audio) into text using OpenAI Whisper or Python SpeechRecognition.
     Supports Odia (or-IN), Bengali (bn-IN), Hindi/Bihari/Bhojpuri (hi-IN), and English (en-IN/en-US).
     Returns (transcribed_text, detected_language_name).
     """
-    if not HAS_SR or not raw_audio_bytes:
+    if not raw_audio_bytes:
+        return "", ""
+
+    # 1. Primary Engine: OpenAI Whisper (if API key configured)
+    stt_text, stt_lang = transcribe_audio_with_openai(raw_audio_bytes, preferred_lang)
+    if stt_text:
+        return stt_text, stt_lang
+
+    if not HAS_SR:
         return "", ""
     
     try:
@@ -325,6 +448,11 @@ def fetch_live_translation_to_english(raw_text):
     if not raw_text or not raw_text.strip():
         return ""
     text = raw_text.strip()
+
+    # Tier 0: OpenAI Translation Engine (High accuracy for Indian languages/dialects)
+    openai_res = translate_and_analyze_with_openai(text)
+    if openai_res and openai_res.get("directEnglishTranslation"):
+        return openai_res["directEnglishTranslation"].strip()
 
     # Pre-process regional idioms (Bhojpuri, Odia, Bengali) for maximum translation precision
     processed_text = text
@@ -512,6 +640,32 @@ def process_and_translate_grievance(text_input, spoken_language=None, is_verifie
     if spoken_language and spoken_language.lower() in ["bho", "bhojpuri", "bihari"]:
         detected_lang = "Bhojpuri"
     
+    # 0. High-Fidelity OpenAI Analysis (if API key provided)
+    openai_analysis = translate_and_analyze_with_openai(raw_text, spoken_language=detected_lang)
+    if openai_analysis and openai_analysis.get("directEnglishTranslation"):
+        eng_trans = openai_analysis["directEnglishTranslation"].strip()
+        cat = openai_analysis.get("category") or "Roads & Connectivity"
+        scheme = openai_analysis.get("suggestedScheme") or "General Civic Infrastructure Fund"
+        try:
+            urg = float(openai_analysis.get("urgencyScore", 88.0))
+        except (ValueError, TypeError):
+            urg = 88.0
+        if is_verified:
+            urg = min(99.8, urg + 2.5)
+        return {
+            "spokenLanguage": openai_analysis.get("spokenLanguage") or detected_lang,
+            "transcribedOriginalText": openai_analysis.get("originalText") or raw_text,
+            "directEnglishTranslation": eng_trans,
+            "aiAnalyzedTitle": openai_analysis.get("aiAnalyzedTitle") or generate_ai_analyzed_title(eng_trans, raw_text, cat),
+            "adminEnglishTranslation": openai_analysis.get("adminEnglishTranslation") or f"{eng_trans}. Recommended for official field verification.",
+            "adminHindiTranslation": f"नागरिक शिकायत: {raw_text}। {scheme} अंतर्गत त्वरित निरीक्षण अनुशंसित।",
+            "adminBhojpuriTranslation": f"नागरिक के गुहार: {raw_text}। {scheme} तहत त्वरित कार्रवाई के सिफारिश बा।",
+            "category": cat,
+            "suggestedScheme": scheme,
+            "urgencyScore": round(urg, 1),
+            "affectedPopulation": 14000 if urg > 90 else 6500
+        }
+
     # 1. Exact translation of user's actual speech
     direct_english = fetch_live_translation_to_english(raw_text) if raw_text else ""
     combined_search_text = (raw_text + " " + (direct_english or "")).lower()

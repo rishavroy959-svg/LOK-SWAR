@@ -1799,16 +1799,24 @@ function CitizenPortalApp() {
 
     // Convert PCM chunks into real WAV audio file
     let wavBase64String = await convertPcmToWavBase64();
+    if (!wavBase64String && audioChunksRef.current && audioChunksRef.current.length > 0) {
+      try {
+        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        wavBase64String = await new Promise(res => {
+          const r = new FileReader();
+          r.onloadend = () => res(r.result);
+          r.onerror = () => res(null);
+          r.readAsDataURL(blob);
+        });
+      } catch (e) {}
+    }
     if (wavBase64String) {
       setRecordedAudioBase64(wavBase64String);
     }
     if ((captured && captured.length > 0) || wavBase64String) {
       translateTextToEnglishAndType(captured || "", wavBase64String);
     } else {
-      setInputText("");
-      setLiveSpokenText("");
-      setRealtimeTranslation("");
-      setVoiceMeta(null);
+      setIsTranslatingVoice(false);
     }
     return wavBase64String;
   };
@@ -1864,7 +1872,7 @@ function CitizenPortalApp() {
       playChime('tap');
       isRecordingRef.current = true;
       setIsRecording(true);
-      setAudioVolumeLevel(0.3);
+      setAudioVolumeLevel(0.2);
       setIsSilenceDetected(false);
       setSilenceProgress(0);
       hasSpokenRef.current = false;
@@ -1887,14 +1895,14 @@ function CitizenPortalApp() {
         });
       }, 1000);
 
-      // Dedicated Real-Time Voice Activity Detection (VAD) Silence Watchdog Interval (every 80ms)
+      // Fast, Ultra-Responsive Silence Watchdog Interval (every 50ms)
       if (silenceCheckIntervalRef.current) clearInterval(silenceCheckIntervalRef.current);
       silenceCheckIntervalRef.current = setInterval(() => {
         if (!isRecordingRef.current) return;
         if (hasSpokenRef.current) {
           const silenceMs = Date.now() - lastVoiceTimeRef.current;
-          // User has spoken, and has now been silent for >= 1.3 seconds -> Automatic Stop
-          if (silenceMs >= 1300 && !isAutoStoppingRef.current && isRecordingRef.current) {
+          // Auto-stop as soon as user pauses speaking for >= 1.2 seconds
+          if (silenceMs >= 1200 && !isAutoStoppingRef.current && isRecordingRef.current) {
             isAutoStoppingRef.current = true;
             setIsSilenceDetected(true);
             if (stopVoiceRecordingRef.current) {
@@ -1902,7 +1910,7 @@ function CitizenPortalApp() {
             }
           }
         }
-      }, 80);
+      }, 50);
 
       // 1. Google Web Speech Recognition for continuous speech transcription
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1951,11 +1959,11 @@ function CitizenPortalApp() {
           rec.onspeechend = () => {
             if (hasSpokenRef.current && !isAutoStoppingRef.current) {
               setTimeout(() => {
-                if (isRecordingRef.current && hasSpokenRef.current && Date.now() - lastVoiceTimeRef.current >= 1200) {
+                if (isRecordingRef.current && hasSpokenRef.current && Date.now() - lastVoiceTimeRef.current >= 900) {
                   isAutoStoppingRef.current = true;
                   if (stopVoiceRecordingRef.current) stopVoiceRecordingRef.current();
                 }
-              }, 400);
+              }, 300);
             }
           };
           rec.onend = () => {
@@ -1976,7 +1984,7 @@ function CitizenPortalApp() {
         } catch (err) {}
       }
 
-      // 2. Setup Web Audio API PCM Stream + Real-Time RMS Silence VAD (Automatic Audio Stop)
+      // 2. Setup High-Compatibility MediaRecorder + Web Audio API PCM Stream + Adaptive VAD Silence Auto-Stop
       try {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
           const stream = await navigator.mediaDevices.getUserMedia({
@@ -1987,6 +1995,20 @@ function CitizenPortalApp() {
             }
           });
           audioStreamRef.current = stream;
+
+          // Standard MediaRecorder instance for guaranteed browser recording
+          try {
+            const mr = new MediaRecorder(stream);
+            mediaRecorderRef.current = mr;
+            audioChunksRef.current = [];
+            mr.ondataavailable = ev => {
+              if (ev.data && ev.data.size > 0) {
+                audioChunksRef.current.push(ev.data);
+              }
+            };
+            mr.start(200);
+          } catch (mrErr) {}
+
           const AudioCtx = window.AudioContext || window.webkitAudioContext;
           if (AudioCtx) {
             const ctx = new AudioCtx();
@@ -1997,6 +2019,7 @@ function CitizenPortalApp() {
             analyser.fftSize = 512;
             analyserRef.current = analyser;
             source.connect(analyser);
+
             const scriptNode = ctx.createScriptProcessor(4096, 1, 1);
             scriptProcessorRef.current = scriptNode;
             scriptNode.onaudioprocess = audioEvent => {
@@ -2010,18 +2033,21 @@ function CitizenPortalApp() {
                 sumSquares += channelData[i] * channelData[i];
               }
               const rms = Math.sqrt(sumSquares / channelData.length);
-              const normVol = Math.min(1, rms * 12);
+              const normVol = Math.min(1, rms * 15);
               setAudioVolumeLevel(normVol);
 
-              // Volume threshold: User is actively speaking
-              if (rms > 0.012) {
+              // Sensitive volume threshold: User is actively speaking
+              if (rms > 0.005) {
                 hasSpokenRef.current = true;
                 lastVoiceTimeRef.current = Date.now();
                 setIsSilenceDetected(false);
-              } else if (hasSpokenRef.current && Date.now() - speechStartTimeRef.current > 1000) {
-                // User has spoken, and now silence has elapsed >= 1600ms
+                setSilenceProgress(0);
+              } else if (hasSpokenRef.current && (Date.now() - speechStartTimeRef.current > 600)) {
+                // User has spoken, and now silence has elapsed >= 1200ms -> Auto Stop
                 const silenceMs = Date.now() - lastVoiceTimeRef.current;
-                if (silenceMs >= 1600 && !isAutoStoppingRef.current && isRecordingRef.current) {
+                const prog = Math.min(100, Math.round((silenceMs / 1200) * 100));
+                setSilenceProgress(prog);
+                if (silenceMs >= 1200 && !isAutoStoppingRef.current && isRecordingRef.current) {
                   isAutoStoppingRef.current = true;
                   setIsSilenceDetected(true);
                   if (stopVoiceRecordingRef.current) {
@@ -2030,8 +2056,12 @@ function CitizenPortalApp() {
                 }
               }
             };
+            // Route through a zero-gain node to avoid speaker feedback
+            const silenceGain = ctx.createGain();
+            silenceGain.gain.value = 0;
             source.connect(scriptNode);
-            scriptNode.connect(ctx.destination);
+            scriptNode.connect(silenceGain);
+            silenceGain.connect(ctx.destination);
           }
         }
       } catch (err) {}
@@ -2057,15 +2087,19 @@ function CitizenPortalApp() {
     }
     const newGid = `TKT-${Math.floor(1000 + Math.random() * 9000)}`;
     const gpsCoords = userObj.gps || (userLocation ? `${userLocation.lat.toFixed(4)}° N, ${userLocation.lng.toFixed(4)}° E` : "22.1245° N, 84.0321° E");
-    const autoGeneratedTitle = generateAutoProblemTitle(submissionText, categoryDetermined, voiceMeta);
+    const origSpoken = pendingGrievanceData?.originalText || originalRegionalText || (voiceMeta && voiceMeta.originalText) || submissionText;
+    const engTrans = pendingGrievanceData?.englishText || (voiceMeta && voiceMeta.englishText) || realtimeTranslation || submissionText;
+    const detLang = pendingGrievanceData?.spokenLanguage || inputDetectedLang || (voiceMeta && voiceMeta.detectedLang) || (selectedLang === 'en' ? 'English' : 'Hindi');
+    const autoGeneratedTitle = engTrans || generateAutoProblemTitle(submissionText, categoryDetermined, voiceMeta);
     const newGrievance = {
       id: newGid,
-      title: autoGeneratedTitle,
-      aiAnalyzedTitle: autoGeneratedTitle,
-      titleOriginal: submissionText,
-      transcribedOriginalText: submissionText,
-      directEnglishTranslation: voiceMeta && voiceMeta.englishText || realtimeTranslation || submissionText,
-      adminEnglishTranslation: `${realtimeTranslation || voiceMeta && voiceMeta.englishText || submissionText}. Queued for official field inspection.`,
+      title: engTrans || autoGeneratedTitle,
+      aiAnalyzedTitle: engTrans || autoGeneratedTitle,
+      titleOriginal: origSpoken,
+      transcribedOriginalText: origSpoken,
+      directEnglishTranslation: engTrans,
+      adminEnglishTranslation: `${engTrans}. Queued for official field inspection.`,
+      spokenLanguage: detLang,
       author: userObj.name || "Verified Citizen",
       citizenMobile: userObj.mobile || "9861234567",
       aadhaarMasked: userObj.aadhaarMasked || "XXXX-XXXX-1940",
@@ -2131,8 +2165,12 @@ function CitizenPortalApp() {
       window.dispatchEvent(new Event('storage'));
     } catch (e) {}
     const reportPayload = {
-      text: submissionText,
-      spokenLanguage: selectedLang || 'en',
+      text: engTrans || submissionText,
+      title: engTrans || autoGeneratedTitle,
+      titleOriginal: origSpoken,
+      transcribedOriginalText: origSpoken,
+      directEnglishTranslation: engTrans,
+      spokenLanguage: detLang,
       audioBase64: audio || null,
       photoBase64: photo || null,
       author: userObj.name,
@@ -2176,15 +2214,22 @@ function CitizenPortalApp() {
     if (isRecordingRef.current) {
       finalAudio = await stopVoiceRecording();
     }
-    const submissionText = (inputText || liveSpokenText || realtimeTranslation || voiceMeta && voiceMeta.originalText || "").trim();
-    if (!submissionText && !finalAudio && !photoPreview) {
+    const submissionText = (inputText || realtimeTranslation || liveSpokenText || voiceMeta && voiceMeta.originalText || "").trim();
+    const origSpokenText = (originalRegionalText || liveSpokenText || voiceMeta && voiceMeta.originalText || submissionText).trim();
+    const engText = (inputText || realtimeTranslation || voiceMeta && voiceMeta.englishText || submissionText).trim();
+    const detLang = inputDetectedLang || voiceMeta && voiceMeta.detectedLang || selectedLang;
+
+    if (!submissionText && !finalAudio && !photoPreview && !origSpokenText) {
       speakGuidance('empty_submit');
       return;
     }
 
     // Prepare pending grievance and prompt user for location tagging (Auto GPS vs Manual)
     setPendingGrievanceData({
-      text: submissionText || "Public infrastructure issue recorded via voice intake",
+      text: engText || origSpokenText || "Public infrastructure issue recorded via voice intake",
+      originalText: origSpokenText,
+      englishText: engText,
+      spokenLanguage: detLang,
       photo: photoPreview,
       audio: finalAudio
     });
@@ -3000,24 +3045,31 @@ function CitizenPortalApp() {
     className: "flex items-center gap-1.5"
   }, /*#__PURE__*/React.createElement("span", {
     className: "w-3 h-3 border-2 border-white dark:border-slate-900 border-t-transparent rounded-full animate-spin"
-  }), /*#__PURE__*/React.createElement("span", null, t.submitting)) : /*#__PURE__*/React.createElement("span", null, t.submitBtn)))), hasAutoTranslated && originalRegionalText && /*#__PURE__*/React.createElement("div", {
-    className: "px-4 py-2 rounded-[1.5rem] bg-blue-50/90 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/70 text-xs text-blue-900 dark:text-blue-200 flex items-center justify-between gap-3 animate-in fade-in shadow-xs backdrop-blur-sm"
+  }), /*#__PURE__*/React.createElement("span", null, t.submitting)) : /*#__PURE__*/React.createElement("span", null, t.submitBtn)))), (originalRegionalText || liveSpokenText || hasAutoTranslated) && (originalRegionalText || liveSpokenText) && /*#__PURE__*/React.createElement("div", {
+    className: "px-4 py-3 rounded-[1.5rem] bg-gradient-to-r from-amber-50/95 to-blue-50/95 dark:from-amber-950/40 dark:to-blue-950/40 border border-amber-200 dark:border-amber-800/60 text-xs shadow-xs space-y-2 animate-in fade-in"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-2 min-w-0"
+    className: "flex items-center justify-between gap-2 flex-wrap"
   }, /*#__PURE__*/React.createElement("span", {
-    className: "text-sm"
-  }, "🌐"), /*#__PURE__*/React.createElement("span", {
-    className: "font-bold text-[11px] sm:text-xs truncate"
-  }, "Auto-translated to English: ", /*#__PURE__*/React.createElement("span", {
-    className: "font-normal italic text-[#8b857f] dark:text-[#b8b3ad] truncate"
-  }, `"${originalRegionalText}"`))), /*#__PURE__*/React.createElement("button", {
+    className: "font-bold text-amber-900 dark:text-amber-300 text-[11px] flex items-center gap-1.5"
+  }, /*#__PURE__*/React.createElement("span", null, "🗣️ Spoken in"), /*#__PURE__*/React.createElement("span", {
+    className: "font-mono px-2 py-0.5 rounded-full bg-amber-200 dark:bg-amber-900/80 text-amber-950 dark:text-amber-200 text-[10px] font-black"
+  }, inputDetectedLang || "Selected Language"), ":"), /*#__PURE__*/React.createElement("button", {
     type: "button",
     onClick: () => {
       playChime("tap");
-      setInputText(originalRegionalText);
+      setInputText(originalRegionalText || liveSpokenText);
       setHasAutoTranslated(false);
     },
-    className: "text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer flex-shrink-0"
+    className: "text-[10px] font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+  }, "Switch to Native Text")), /*#__PURE__*/React.createElement("p", {
+    className: "font-semibold text-slate-800 dark:text-slate-100 italic text-xs leading-relaxed"
+  }, "\"", originalRegionalText || liveSpokenText, "\""), (inputText || realtimeTranslation) && /*#__PURE__*/React.createElement("div", {
+    className: "pt-2 border-t border-amber-200/60 dark:border-amber-900/40 flex items-start gap-1.5 text-[11px]"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-blue-700 dark:text-blue-300 flex-shrink-0"
+  }, "🇬🇧 Converted English:"), /*#__PURE__*/React.createElement("span", {
+    className: "font-medium text-slate-700 dark:text-slate-200 leading-relaxed"
+  }, inputText || realtimeTranslation)))
   }, "↩ Undo to Original"))), /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-10 sm:mt-12 mb-8 w-full max-w-5xl z-20"
   }, /*#__PURE__*/React.createElement("div", {
@@ -3279,9 +3331,23 @@ function CitizenPortalApp() {
         className: "px-2 py-0.5 rounded-lg bg-slate-900 dark:bg-[#f7f5f2] text-white dark:text-[#4a4643] font-mono text-[10px] font-black"
       }, "#", rankIdx + 1, " ", t.priorityRank), /*#__PURE__*/React.createElement("span", {
         className: "font-mono text-xs font-bold text-[#a19b95] dark:text-[#9e9790]"
-      }, "#", prob.id)), /*#__PURE__*/React.createElement("h4", {
-        className: "font-bold text-base text-[#4a4643] dark:text-white pt-1"
-      }, selectedLang !== 'en' && prob.titleOriginal ? prob.titleOriginal : prob.title || prob.aiAnalyzedTitle)), /*#__PURE__*/React.createElement("div", {
+      }, "#", prob.id)), /*#__PURE__*/React.createElement("div", {
+        className: "space-y-1.5 pt-1"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "flex items-center gap-1.5 flex-wrap"
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-100/90 dark:bg-blue-950 text-blue-800 dark:text-blue-300 font-mono text-[10px] font-bold border border-blue-200 dark:border-blue-900"
+      }, "🇬🇧 English Translation"), (prob.spokenLanguage || prob.titleOriginal) && /*#__PURE__*/React.createElement("span", {
+        className: "inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-100/90 dark:bg-amber-950 text-amber-800 dark:text-amber-300 font-mono text-[10px] font-bold border border-amber-200 dark:border-amber-900"
+      }, "🗣️ Spoken in ", prob.spokenLanguage || (selectedLang !== 'en' ? selectedLang.toUpperCase() : "Regional Voice"))), /*#__PURE__*/React.createElement("h4", {
+        className: "font-bold text-base text-[#4a4643] dark:text-white leading-snug"
+      }, prob.directEnglishTranslation || prob.title || prob.aiAnalyzedTitle), prob.titleOriginal && prob.titleOriginal !== (prob.directEnglishTranslation || prob.title) && /*#__PURE__*/React.createElement("div", {
+        className: "p-2 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-900/40 text-xs mt-1"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "text-[10px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300 flex items-center gap-1"
+      }, /*#__PURE__*/React.createElement("span", null, "🗣️ Original Spoken / Regional Text:")), /*#__PURE__*/React.createElement("p", {
+        className: "font-medium text-[#4a4643] dark:text-[#eae6e1] italic mt-0.5 text-xs sm:text-sm"
+      }, "\"", prob.titleOriginal, "\"")))), /*#__PURE__*/React.createElement("div", {
         className: "flex items-center gap-2 flex-shrink-0"
       }, /*#__PURE__*/React.createElement("button", {
         type: "button",

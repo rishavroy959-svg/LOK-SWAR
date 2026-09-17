@@ -1076,8 +1076,13 @@ class LokSwarBackendHandler(http.server.SimpleHTTPRequestHandler):
             nlp_result = process_and_translate_grievance(raw_text, spoken_language=spoken_lang, is_verified=is_verified)
             consensus_meta = detect_submission_consensus(raw_text, nlp_result.get("category", ""), body.get("village", ""))
 
+            # Support explicit dual-language submission from client (Original Regional + English Translation)
+            spoken_orig_text = body.get("titleOriginal") or body.get("transcribedOriginalText") or body.get("originalText") or raw_text
+            direct_eng_text = body.get("directEnglishTranslation") or body.get("translatedText") or nlp_result.get("directEnglishTranslation", raw_text)
+            spoken_lang_final = body.get("spokenLanguage") or nlp_result.get("spokenLanguage") or spoken_lang
+            ai_title = body.get("title") or nlp_result.get("aiAnalyzedTitle") or direct_eng_text or "Civic Grievance Report"
+
             new_gid = body.get("id") or f"PROB-{random.randint(1000, 9999)}"
-            ai_title = nlp_result.get("aiAnalyzedTitle") or nlp_result.get("directEnglishTranslation") or raw_text or "Audio Voice Report submitted for administrative audit"
             c_mobile = body.get("citizenMobile") or body.get("mobile") or ""
             c_user = db.get_citizen(c_mobile) or {}
             c_email = body.get("citizenEmail") or body.get("email") or c_user.get("email") or ""
@@ -1094,17 +1099,17 @@ class LokSwarBackendHandler(http.server.SimpleHTTPRequestHandler):
                 "isAadhaarVerified": is_verified,
                 "title": ai_title,
                 "aiAnalyzedTitle": ai_title,
-                "titleOriginal": raw_text,
-                "spokenLanguage": nlp_result["spokenLanguage"],
+                "titleOriginal": spoken_orig_text,
+                "spokenLanguage": spoken_lang_final,
                 "audioRecordingUrl": primary_audio_url,
                 "audioRecordings": audio_recordings,
-                "transcribedOriginalText": nlp_result["transcribedOriginalText"],
-                "directEnglishTranslation": nlp_result.get("directEnglishTranslation", raw_text),
-                "adminEnglishTranslation": nlp_result["adminEnglishTranslation"],
+                "transcribedOriginalText": spoken_orig_text,
+                "directEnglishTranslation": direct_eng_text,
+                "adminEnglishTranslation": body.get("adminEnglishTranslation") or nlp_result["adminEnglishTranslation"],
                 "adminHindiTranslation": nlp_result["adminHindiTranslation"],
                 "adminBhojpuriTranslation": nlp_result.get("adminBhojpuriTranslation", ""),
-                "category": nlp_result["category"],
-                "suggestedScheme": nlp_result["suggestedScheme"],
+                "category": body.get("category") or nlp_result["category"],
+                "suggestedScheme": body.get("suggestedScheme") or nlp_result["suggestedScheme"],
                 "village": body.get("village") or "",
                 "block": body.get("block") or "",
                 "gps": body.get("gps") or "22.1245° N, 84.0321° E",

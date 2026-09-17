@@ -3996,7 +3996,9 @@
               className: `text-[10px] font-bold px-2 py-0.5 rounded-full border ${report.consensus.is_anomalous ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800' : (report.consensus.consensus_level === 'HIGH_CONSENSUS' ? 'bg-[#fff6e5] text-emerald-700 dark:bg-[#3d2c1d]/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' : 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-800')}`
             }, report.consensus.badge_label || "🟢 Community Verified")), /*#__PURE__*/React.createElement("h3", {
               className: "text-sm font-black line-clamp-1 text-[#4a4643] dark:text-white"
-            }, report.aiAnalyzedTitle || report.title), (report.audioRecordingUrl || report.hasAudio || report.audioRecordings && report.audioRecordings.length > 0) && /*#__PURE__*/React.createElement("div", {
+            }, report.aiAnalyzedTitle || report.title || report.directEnglishTranslation), report.titleOriginal && report.titleOriginal !== (report.aiAnalyzedTitle || report.title) && /*#__PURE__*/React.createElement("p", {
+              className: "text-[11px] font-medium text-amber-800 dark:text-amber-300 italic line-clamp-1 mt-0.5"
+            }, "🗣️ \"", report.titleOriginal, "\""), (report.audioRecordingUrl || report.hasAudio || report.audioRecordings && report.audioRecordings.length > 0) && /*#__PURE__*/React.createElement("div", {
               className: "mt-2 p-1.5 rounded-[1rem] bg-[#f7f5f2] dark:bg-[#1f1e1c] border border-[#e0dcd5] dark:border-[#33302d] flex items-center justify-between gap-2",
               onClick: e => e.stopPropagation()
             }, /*#__PURE__*/React.createElement("span", {
