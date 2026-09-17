@@ -3,203 +3,283 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lok Swar — IVR Admin Dashboard</title>
-  <meta name="description" content="IVR Customer Care Admin — Listen, triage and resolve citizen complaints collected via voice." />
+  <title>Lok Swar — Complaints</title>
+  <meta name="description" content="Voice complaint management console for Lok Swar rural grievance platform." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', 'sans-serif'] },
-          colors: {
-            brand: { DEFAULT: '#059669', dark: '#047857', light: '#10b981' },
-          }
-        }
-      }
-    };
-  </script>
+  <link rel="stylesheet" href="/css/design-system.css" />
   <style>
-    /* Custom audio player styling for light mode */
-    audio { width: 100%; accent-color: #059669; }
-    audio::-webkit-media-controls-panel { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; }
-    audio::-webkit-media-controls-current-time-display,
-    audio::-webkit-media-controls-time-remaining-display { color: #475569; font-weight: 500; }
+    /* Override base font for this page since design-system.css sets Inter */
+    audio { width: 100%; accent-color: var(--brand); border-radius: var(--radius-md); }
+    audio::-webkit-media-controls-panel { background: var(--surface-muted); border: 1px solid var(--border); border-radius: var(--radius-md); }
 
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #f1f5f9; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-    /* Pulse animation for new tickets */
-    @keyframes soft-pulse { 
-      0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.35); } 
-      50% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0.0); } 
+    /* Card entrance animation */
+    @keyframes card-enter {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .ticket-new { animation: soft-pulse 2.5s ease-in-out infinite; }
+    .card-enter { animation: card-enter 0.25s ease both; }
 
-    /* Fade-in */
-    @keyframes fade-up { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-    .fade-up { animation: fade-up .3s ease both; }
+    /* New ticket subtle pulse (only on new status) */
+    @keyframes new-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(15, 118, 110, 0.15); }
+      50% { box-shadow: 0 0 0 6px rgba(15, 118, 110, 0); }
+    }
+    .ticket-new-pulse { animation: new-pulse 2.5s ease-in-out 2; }
 
-    /* Status badge colors (Light Mode) */
-    .badge-new         { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
-    .badge-in_progress { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
-    .badge-resolved    { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+    /* Complaint detail drawer sections */
+    .detail-section { padding: var(--space-4) 0; border-bottom: 1px solid var(--border-light); }
+    .detail-section:last-child { border-bottom: none; }
 
-    /* Category badge */
-    .cat-electricity { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
-    .cat-water       { background: #ecfeff; color: #0891b2; border: 1px solid #a5f3fc; }
-    .cat-other       { background: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe; }
-
-    /* Lang badge */
-    .lang-hi { background: #fdf2f8; color: #db2777; border: 1px solid #fbcfe8; }
-    .lang-te { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
-    .lang-en { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
-
-    /* Toast */
-    #toast { transition: opacity .3s ease, transform .3s ease; }
-    #toast.hidden { opacity:0; transform:translateY(8px); pointer-events:none; }
+    /* Complaint list item */
+    .complaint-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--border-light);
+      cursor: pointer;
+      transition: background 150ms ease;
+    }
+    .complaint-item:hover { background: var(--surface-muted); }
+    .complaint-item:last-child { border-bottom: none; }
+    .complaint-item-critical { border-left: 3px solid var(--status-critical); }
   </style>
 </head>
-<body class="bg-[#f8fafc] text-slate-800 font-sans min-h-screen antialiased selection:bg-emerald-100 selection:text-emerald-900">
+<body>
+  <!-- ═══ Application Shell ═══ -->
+  <div class="ls-shell">
 
-  <!-- ───── Navbar ───── -->
-  <nav class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 backdrop-blur-md shadow-xs">
-    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-      <!-- Logo -->
-      <div class="flex items-center gap-3 flex-shrink-0">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white font-black text-sm shadow-sm shadow-emerald-500/20">
-          IVR
-        </div>
-        <div>
-          <div class="font-bold text-base text-slate-900 tracking-tight flex items-center gap-2">
-            Lok Swar <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/80">Live Toll-Free</span>
+    <!-- ─── Sidebar ─── -->
+    <aside class="ls-sidebar" id="sidebar">
+      <div class="ls-sidebar-header">
+        <div class="ls-sidebar-brand">
+          <div class="ls-sidebar-logo">LS</div>
+          <div>
+            <div class="ls-sidebar-brand-text">Lok Swar</div>
+            <div class="ls-sidebar-brand-sub">Rural Grievance Intelligence</div>
           </div>
-          <div class="text-[11px] font-medium text-slate-500 leading-tight">Keypad Phone Customer Care Console</div>
         </div>
       </div>
-
-      <!-- Search -->
-      <div class="flex-1 max-w-sm hidden sm:block">
-        <div class="relative">
-          <input id="search-input" type="search" placeholder="Search +91 8926160600 or ticket ID…"
-            class="w-full bg-slate-100/90 border border-slate-200/80 rounded-xl pl-9 pr-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:bg-white transition shadow-2xs" />
-          <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </div>
-      </div>
-
-      <!-- Actions -->
-      <div class="flex items-center gap-2.5">
-        <div id="live-stream-badge" class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border border-emerald-200 bg-emerald-50 text-emerald-700 transition shadow-2xs">
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          Live Stream Active
-        </div>
-        <a href="/phone" target="_blank"
-          class="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl text-xs font-bold text-emerald-800 transition cursor-pointer shadow-2xs">
-          📱 Open Keypad Phone
-        </a>
-        <button onclick="createMockTicket()"
-          class="hidden sm:flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200/80 border border-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition cursor-pointer active:scale-95 shadow-2xs">
-          ➕ New Call Ticket
+      <nav class="ls-sidebar-nav">
+        <button class="ls-nav-item ls-nav-item-active" data-view="overview" onclick="switchView('overview')">
+          <svg class="ls-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Overview
         </button>
-        <button onclick="loadTickets()"
-          class="flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-xl text-xs font-bold text-white transition cursor-pointer active:scale-95 shadow-sm shadow-emerald-600/20">
-          🔄 Refresh Feed
+        <button class="ls-nav-item" data-view="complaints" onclick="switchView('complaints')">
+          <svg class="ls-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Complaints
         </button>
-        <a href="/health" target="_blank"
-          class="px-3 py-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 transition cursor-pointer shadow-2xs">
-          ⚡ Health
-        </a>
+        <div class="ls-nav-divider"></div>
+        <button class="ls-nav-item" onclick="window.location.href='http://localhost:8000/admin.html'">
+          <svg class="ls-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Full Dashboard
+        </button>
+        <button class="ls-nav-item" onclick="window.location.href='/'">
+          <svg class="ls-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Home
+        </button>
+      </nav>
+      <div class="ls-sidebar-footer">
+        <div style="font-size: 0.6875rem; color: var(--text-muted); padding: var(--space-2) var(--space-3);">
+          Voice-first civic platform
+        </div>
       </div>
-    </div>
-  </nav>
+    </aside>
 
-  <!-- ───── Stats Bar ───── -->
-  <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 pt-6">
-    <div id="stats-bar" class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-      <!-- Populated by JS -->
-      <div class="h-24 rounded-2xl bg-white border border-slate-200 animate-pulse shadow-xs"></div>
-      <div class="h-24 rounded-2xl bg-white border border-slate-200 animate-pulse shadow-xs"></div>
-      <div class="h-24 rounded-2xl bg-white border border-slate-200 animate-pulse shadow-xs"></div>
-      <div class="h-24 rounded-2xl bg-white border border-slate-200 animate-pulse shadow-xs"></div>
+    <!-- ─── Main Content ─── -->
+    <div class="ls-main">
+
+      <!-- Topbar -->
+      <header class="ls-topbar">
+        <div style="display:flex; align-items:center; gap: var(--space-3);">
+          <button class="ls-btn-ghost" id="menu-toggle" onclick="toggleSidebar()" style="display:none; padding:var(--space-2);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <span class="ls-topbar-title" id="topbar-title">Overview</span>
+        </div>
+        <div class="ls-topbar-actions">
+          <div id="live-badge" style="display:flex; align-items:center; gap:6px; font-size:0.75rem; font-weight:600; color:var(--status-success);">
+            <span class="ls-live-dot"></span> Live
+          </div>
+          <button class="ls-btn ls-btn-secondary ls-btn-sm" onclick="loadTickets()">Refresh</button>
+        </div>
+      </header>
+
+      <!-- Content Area -->
+      <div class="ls-content">
+
+        <!-- ═══ OVERVIEW VIEW ═══ -->
+        <div id="view-overview">
+          <!-- Critical Alert Banner -->
+          <div id="critical-banner" class="ls-alert ls-alert-critical ls-hidden">
+            <div>
+              <div class="ls-alert-text" id="critical-banner-text">Critical complaints require immediate attention</div>
+            </div>
+            <button class="ls-btn ls-btn-sm" style="background: var(--status-critical); color: white; border-color: var(--status-critical);" onclick="switchView('complaints'); setFilter('status','new');">
+              View critical
+            </button>
+          </div>
+
+          <!-- Metrics -->
+          <div class="ls-grid-4 ls-mb-5" id="stats-bar">
+            <div class="ls-metric-card"><div class="ls-skeleton" style="height:20px;width:40px;margin-bottom:8px;"></div><div class="ls-skeleton" style="height:14px;width:100px;"></div></div>
+            <div class="ls-metric-card"><div class="ls-skeleton" style="height:20px;width:40px;margin-bottom:8px;"></div><div class="ls-skeleton" style="height:14px;width:100px;"></div></div>
+            <div class="ls-metric-card"><div class="ls-skeleton" style="height:20px;width:40px;margin-bottom:8px;"></div><div class="ls-skeleton" style="height:14px;width:100px;"></div></div>
+            <div class="ls-metric-card"><div class="ls-skeleton" style="height:20px;width:40px;margin-bottom:8px;"></div><div class="ls-skeleton" style="height:14px;width:100px;"></div></div>
+          </div>
+
+          <!-- Recent Complaints -->
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: var(--space-4);">
+              <h2 class="ls-section-title">Recent complaints</h2>
+              <button class="ls-btn ls-btn-ghost ls-btn-sm" onclick="switchView('complaints')">View all →</button>
+            </div>
+            <div class="ls-card" style="padding:0; overflow:hidden;">
+              <div id="recent-list">
+                <!-- Populated by JS -->
+              </div>
+              <div id="recent-empty" class="ls-empty ls-hidden">
+                <div class="ls-empty-title">No complaints yet</div>
+                <div class="ls-empty-text">Citizen calls received via toll-free number will appear here.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ COMPLAINTS VIEW ═══ -->
+        <div id="view-complaints" class="ls-hidden">
+          <!-- Header -->
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap: var(--space-3); margin-bottom: var(--space-4);">
+            <div>
+              <h2 class="ls-section-title">Complaints</h2>
+              <div class="ls-caption ls-mt-4" id="ticket-count"></div>
+            </div>
+            <div style="display:flex; gap: var(--space-2); align-items:center; flex-wrap:wrap;">
+              <input type="search" id="search-input" class="ls-input" placeholder="Search phone, ticket or text…" style="max-width: 240px;" />
+              <button class="ls-btn ls-btn-secondary ls-btn-sm" onclick="createMockTicket()">+ Test call</button>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div style="display:flex; gap: var(--space-3); align-items:center; flex-wrap:wrap; margin-bottom: var(--space-4);">
+            <div class="ls-tab-group" id="status-tabs">
+              <button class="ls-tab ls-tab-active" data-val="all" onclick="filterTab('status', 'all', this)">All</button>
+              <button class="ls-tab" data-val="new" onclick="filterTab('status', 'new', this)">New</button>
+              <button class="ls-tab" data-val="in_progress" onclick="filterTab('status', 'in_progress', this)">In progress</button>
+              <button class="ls-tab" data-val="resolved" onclick="filterTab('status', 'resolved', this)">Resolved</button>
+            </div>
+            <select class="ls-select" onchange="setFilter('lang', this.value)">
+              <option value="all">All languages</option>
+              <option value="hi">Hindi</option>
+              <option value="en">English</option>
+              <option value="te">Telugu</option>
+              <option value="mr">Marathi</option>
+              <option value="bn">Bengali</option>
+              <option value="ta">Tamil</option>
+            </select>
+            <select class="ls-select" onchange="setFilter('cat', this.value)">
+              <option value="all">All departments</option>
+              <option value="water">Water</option>
+              <option value="electricity">Electricity</option>
+              <option value="roads">Roads</option>
+              <option value="sanitation">Sanitation</option>
+              <option value="healthcare">Healthcare</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <!-- Complaint List -->
+          <div class="ls-card" style="padding:0; overflow:hidden;">
+            <div id="tickets-grid">
+              <!-- Populated by JS -->
+            </div>
+            <div id="empty-state" class="ls-empty ls-hidden">
+              <div class="ls-empty-title">No complaints found</div>
+              <div class="ls-empty-text">Citizen calls received via the toll-free number will appear here live.</div>
+              <button class="ls-btn ls-btn-primary ls-mt-4" onclick="createMockTicket()">Create a test call</button>
+            </div>
+          </div>
+
+          <!-- Loading -->
+          <div id="loading-state" style="display:flex; justify-content:center; padding: var(--space-7);">
+            <div style="text-align:center;">
+              <div style="width:24px;height:24px;border:2px solid var(--brand);border-top-color:transparent;border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto var(--space-3);"></div>
+              <div class="ls-caption">Loading complaints…</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /ls-content -->
+    </div><!-- /ls-main -->
+  </div><!-- /ls-shell -->
+
+  <!-- ─── Complaint Detail Drawer ─── -->
+  <div class="ls-drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+  <div class="ls-drawer" id="complaint-drawer">
+    <div class="ls-drawer-header">
+      <div>
+        <div id="drawer-badge" class="ls-badge ls-badge-new" style="margin-bottom: var(--space-2);"></div>
+        <h3 id="drawer-title" style="font-size:1.0625rem; font-weight:700; color: var(--text-primary);"></h3>
+      </div>
+      <button class="ls-drawer-close" onclick="closeDrawer()">×</button>
+    </div>
+    <div class="ls-drawer-body" id="drawer-body">
+      <!-- Populated by JS when opening a complaint -->
     </div>
   </div>
 
-  <!-- ───── Filters ───── -->
-  <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 pt-5">
-    <div class="bg-white border border-slate-200/90 rounded-2xl p-3.5 shadow-xs flex flex-wrap gap-3 items-center justify-between">
-      <div class="flex flex-wrap gap-2 items-center">
-        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">Status:</span>
-        <div class="flex gap-1.5 flex-wrap" id="status-filters">
-          <button onclick="setFilter('status','all')" class="filter-btn status-btn active-filter px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-900 bg-slate-900 text-white transition cursor-pointer shadow-xs" data-val="all">All</button>
-          <button onclick="setFilter('status','new')" class="filter-btn status-btn px-3 py-1.5 rounded-xl text-xs font-semibold border border-red-200 bg-red-50/80 text-red-700 hover:bg-red-100 transition cursor-pointer" data-val="new">🔴 New</button>
-          <button onclick="setFilter('status','in_progress')" class="filter-btn status-btn px-3 py-1.5 rounded-xl text-xs font-semibold border border-amber-200 bg-amber-50/80 text-amber-700 hover:bg-amber-100 transition cursor-pointer" data-val="in_progress">🟡 In Progress</button>
-          <button onclick="setFilter('status','resolved')" class="filter-btn status-btn px-3 py-1.5 rounded-xl text-xs font-semibold border border-emerald-200 bg-emerald-50/80 text-emerald-700 hover:bg-emerald-100 transition cursor-pointer" data-val="resolved">✅ Resolved</button>
-        </div>
+  <!-- ─── Toast ─── -->
+  <div class="ls-toast" id="toast"></div>
 
-        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider ml-3 mr-1">Language:</span>
-        <div class="flex gap-1.5 flex-wrap">
-          <button onclick="setFilter('lang','all')" class="filter-btn lang-btn active-filter px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-900 bg-slate-900 text-white transition cursor-pointer shadow-xs" data-val="all">All</button>
-          <button onclick="setFilter('lang','hi')" class="filter-btn lang-btn px-3 py-1.5 rounded-xl text-xs font-semibold border border-pink-200 bg-pink-50 text-pink-700 hover:bg-pink-100 transition cursor-pointer" data-val="hi">हिंदी</button>
-          <button onclick="setFilter('lang','te')" class="filter-btn lang-btn px-3 py-1.5 rounded-xl text-xs font-semibold border border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100 transition cursor-pointer" data-val="te">తెలుగు</button>
-          <button onclick="setFilter('lang','en')" class="filter-btn lang-btn px-3 py-1.5 rounded-xl text-xs font-semibold border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition cursor-pointer" data-val="en">English</button>
-        </div>
-
-        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider ml-3 mr-1">Category:</span>
-        <div class="flex gap-1.5 flex-wrap">
-          <button onclick="setFilter('cat','all')" class="filter-btn cat-btn active-filter px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-900 bg-slate-900 text-white transition cursor-pointer shadow-xs" data-val="all">All</button>
-          <button onclick="setFilter('cat','electricity')" class="filter-btn cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition cursor-pointer" data-val="electricity">⚡ Electricity</button>
-          <button onclick="setFilter('cat','water')" class="filter-btn cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold border border-cyan-200 bg-cyan-50 text-cyan-700 hover:bg-cyan-100 transition cursor-pointer" data-val="water">💧 Water</button>
-          <button onclick="setFilter('cat','other')" class="filter-btn cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold border border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 transition cursor-pointer" data-val="other">📋 Other</button>
-        </div>
-      </div>
-
-      <div class="text-xs font-medium text-slate-500" id="ticket-count"></div>
-    </div>
-  </div>
-
-  <!-- ───── Ticket Grid ───── -->
-  <main class="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6">
-    <div id="tickets-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-      <!-- Populated by JS -->
-    </div>
-    
-    <!-- Empty State -->
-    <div id="empty-state" class="hidden text-center py-20 bg-white rounded-3xl border border-slate-200/90 shadow-xs max-w-lg mx-auto">
-      <div class="text-6xl mb-3">📞</div>
-      <div class="text-slate-800 font-bold text-lg">No Voice Tickets Found</div>
-      <div class="text-slate-500 text-xs mt-1 max-w-xs mx-auto">Citizen calls received from keypad phones via toll-free number will stream here live.</div>
-      <button onclick="createMockTicket()"
-        class="mt-5 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 rounded-xl text-xs font-bold text-white transition cursor-pointer active:scale-95 shadow-sm shadow-emerald-600/20">
-        + Create Sample Call (+91 8926160600)
-      </button>
-    </div>
-
-    <!-- Loading State -->
-    <div id="loading-state" class="flex items-center justify-center py-24">
-      <div class="flex flex-col items-center gap-3">
-        <div class="w-8 h-8 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
-        <div class="text-slate-500 text-xs font-medium tracking-wide">Syncing citizen phone recordings…</div>
-      </div>
-    </div>
-  </main>
-
-  <!-- ───── Toast Notification ───── -->
-  <div id="toast" class="hidden fixed bottom-6 right-6 z-50 px-4 py-3 bg-slate-900 text-white text-xs font-semibold rounded-2xl shadow-xl flex items-center gap-2">
-    ✅ Saved successfully
-  </div>
+  <!-- ─── Spin Keyframe ─── -->
+  <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
 
   <script>
-    // ── State ──────────────────────────────────────────────────────────────
+    // ══════════════════════════════════════════════════════════════════════
+    // STATE
+    // ══════════════════════════════════════════════════════════════════════
     const state = { status: 'all', lang: 'all', cat: 'all', search: '' };
     let allTickets = [];
+    let currentView = 'overview';
 
-    // ── Web Audio Chime for Live Call Alert ────────────────────────────────
+    // ══════════════════════════════════════════════════════════════════════
+    // VIEW SWITCHING
+    // ══════════════════════════════════════════════════════════════════════
+    function switchView(view) {
+      currentView = view;
+      document.getElementById('view-overview').classList.toggle('ls-hidden', view !== 'overview');
+      document.getElementById('view-complaints').classList.toggle('ls-hidden', view !== 'complaints');
+      document.getElementById('topbar-title').textContent = view === 'overview' ? 'Overview' : 'Complaints';
+
+      // Update sidebar active state
+      document.querySelectorAll('.ls-nav-item').forEach(btn => {
+        btn.classList.toggle('ls-nav-item-active', btn.dataset.view === view);
+      });
+
+      if (view === 'complaints') renderTickets();
+      if (view === 'overview') renderRecentList();
+    }
+
+    // ══════════════════════════════════════════════════════════════════════
+    // SIDEBAR TOGGLE (mobile)
+    // ══════════════════════════════════════════════════════════════════════
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('mobile-open');
+    }
+
+    // Responsive check
+    function checkResponsive() {
+      const isMobile = window.innerWidth <= 1024;
+      document.getElementById('menu-toggle').style.display = isMobile ? 'flex' : 'none';
+      if (!isMobile) document.getElementById('sidebar').classList.remove('mobile-open');
+    }
+    window.addEventListener('resize', checkResponsive);
+    checkResponsive();
+
+    // ══════════════════════════════════════════════════════════════════════
+    // BOOT & SSE
+    // ══════════════════════════════════════════════════════════════════════
     let audioCtx = null;
     function playNotificationChime() {
       try {
@@ -209,16 +289,15 @@
         const gain = audioCtx.createGain();
         osc.connect(gain);
         gain.connect(audioCtx.destination);
-        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
-        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
         osc.start();
-        osc.stop(audioCtx.currentTime + 0.5);
+        osc.stop(audioCtx.currentTime + 0.4);
       } catch(e) {}
     }
 
-    // ── Boot & Realtime Stream ────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', () => {
       loadTickets();
       connectLiveStream();
@@ -228,29 +307,22 @@
         renderTickets();
       });
 
-      // Listen for Live Calls from Keypad Phone Simulator
+      // BroadcastChannel for IVR sync
       try {
         const syncChannel = new BroadcastChannel('lok_swar_ivr_sync');
         syncChannel.onmessage = (e) => {
           if (e.data?.type === 'NEW_CALL_TICKET') {
-            if (e.data.ticket) {
-              handleLiveIncomingReport(e.data.ticket);
-            } else {
-              loadTickets(true);
-            }
+            if (e.data.ticket) handleLiveIncomingReport(e.data.ticket);
+            else loadTickets(true);
           }
         };
-      } catch(err) {
-        console.log('BroadcastChannel not supported', err);
-      }
+      } catch(err) {}
 
-      // Background failsafe auto-refresh polling every 12s (SSE handles instant live push)
-      setInterval(() => {
-        loadTickets(true);
-      }, 12000);
+      // Background polling every 12s
+      setInterval(() => { loadTickets(true); }, 12000);
     });
 
-    // ── Zero-Latency SSE Real-time Connection ──────────────────────────────
+    // ═══ SSE ═══
     let sseSource = null;
     function connectLiveStream() {
       if (!window.EventSource) return;
@@ -259,10 +331,10 @@
         sseSource = new EventSource('/admin/events');
 
         sseSource.addEventListener('connected', () => {
-          const badge = document.getElementById('live-stream-badge');
+          const badge = document.getElementById('live-badge');
           if (badge) {
-            badge.className = 'hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border border-emerald-200 bg-emerald-50 text-emerald-700 transition shadow-2xs';
-            badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Live Stream Active';
+            badge.style.color = 'var(--status-success)';
+            badge.innerHTML = '<span class="ls-live-dot"></span> Live';
           }
         });
 
@@ -270,58 +342,43 @@
           try {
             const report = JSON.parse(e.data);
             handleLiveIncomingReport(report);
-          } catch (err) {
-            console.error(err);
-          }
+          } catch (err) { console.error(err); }
         });
 
         sseSource.onerror = () => {
-          const badge = document.getElementById('live-stream-badge');
+          const badge = document.getElementById('live-badge');
           if (badge) {
-            badge.className = 'hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border border-amber-200 bg-amber-50 text-amber-700 transition shadow-2xs';
-            badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-500"></span> Reconnecting Stream…';
+            badge.style.color = 'var(--status-warning)';
+            badge.innerHTML = '<span style="width:8px;height:8px;border-radius:50%;background:var(--status-warning);display:inline-block;"></span> Reconnecting…';
           }
           if (sseSource) sseSource.close();
           setTimeout(connectLiveStream, 4000);
         };
-      } catch (err) {
-        console.warn('SSE Setup Error:', err);
-      }
+      } catch (err) { console.warn('SSE Setup Error:', err); }
     }
 
     function handleLiveIncomingReport(report) {
       playNotificationChime();
-      showToast(`🚨 Live Call Ingested: ${report.caller_phone || '+91 8926160600'} (${(report.category || 'ELECTRICITY').toUpperCase()})!`);
+      showToast(`New complaint from ${report.caller_phone || 'Unknown'}`);
 
       const idx = allTickets.findIndex(t => t.id === report.id);
-      if (idx >= 0) {
-        allTickets[idx] = report;
-      } else {
-        allTickets.unshift(report);
-      }
+      if (idx >= 0) allTickets[idx] = report;
+      else allTickets.unshift(report);
 
       renderStats(allTickets.length, allTickets);
       renderTickets();
-
-      // Soft pulsating glow highlight on newly ingested card
-      setTimeout(() => {
-        const cardEl = document.getElementById(`card-${report.id}`);
-        if (cardEl) {
-          cardEl.classList.add('ring-4', 'ring-emerald-500/50', 'bg-emerald-50/30');
-          cardEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          setTimeout(() => {
-            cardEl.classList.remove('ring-4', 'ring-emerald-500/50', 'bg-emerald-50/30');
-          }, 4500);
-        }
-      }, 120);
+      renderRecentList();
     }
 
-    // ── Data fetch with Smart DOM Cache (Prevents Blinking) ────────────────
+    // ══════════════════════════════════════════════════════════════════════
+    // DATA FETCH
+    // ══════════════════════════════════════════════════════════════════════
     async function loadTickets(silent = false) {
       if (!silent) {
-        document.getElementById('loading-state').classList.remove('hidden');
-        document.getElementById('tickets-grid').innerHTML = '';
-        document.getElementById('empty-state').classList.add('hidden');
+        document.getElementById('loading-state')?.classList.remove('ls-hidden');
+        const grid = document.getElementById('tickets-grid');
+        if (grid) grid.innerHTML = '';
+        document.getElementById('empty-state')?.classList.add('ls-hidden');
       }
 
       try {
@@ -334,66 +391,113 @@
         const data = await res.json();
         const incomingTickets = data.tickets || [];
 
-        // Check if data actually changed before touching the DOM
-        const hasChanged = !silent || 
+        const hasChanged = !silent ||
           (allTickets.length !== incomingTickets.length) ||
           JSON.stringify(allTickets.map(t => [t.id, t.status, t.admin_notes, t.duration])) !==
           JSON.stringify(incomingTickets.map(t => [t.id, t.status, t.admin_notes, t.duration]));
 
-        if (!hasChanged) {
-          // Zero changes: Do not touch DOM (completely stops blinking)
-          return;
-        }
+        if (!hasChanged) return;
 
-        // Alert on newly detected live calls
         if (allTickets.length > 0 && incomingTickets.length > allTickets.length) {
           const newest = incomingTickets[0];
           playNotificationChime();
-          showToast(`🚨 New Call Received from ${newest.caller_phone || '+91 8926160600'}!`);
+          showToast(`New complaint received from ${newest.caller_phone || 'Unknown'}`);
         }
 
         allTickets = incomingTickets;
         renderStats(data.total || 0, allTickets);
         renderTickets();
+        renderRecentList();
       } catch (err) {
         console.error(err);
-        if (!silent) showToast('❌ Failed to load tickets', 'error');
+        if (!silent) showToast('Could not load complaints. Please try again.', 'error');
       } finally {
-        if (!silent) document.getElementById('loading-state').classList.add('hidden');
+        if (!silent) document.getElementById('loading-state')?.classList.add('ls-hidden');
       }
     }
 
-    // ── Render Stats (Rock-solid without animation flicker) ────────────────
+    // ══════════════════════════════════════════════════════════════════════
+    // RENDER — STATS
+    // ══════════════════════════════════════════════════════════════════════
     function renderStats(total, tickets) {
       const counts = { new: 0, in_progress: 0, resolved: 0 };
-      tickets.forEach(t => { if (counts[t.status] !== undefined) counts[t.status]++; });
+      let criticalCount = 0;
+      tickets.forEach(t => {
+        if (counts[t.status] !== undefined) counts[t.status]++;
+        if (t.urgency === 'high') criticalCount++;
+      });
 
-      const stats = [
-        { label: 'Total Calls Received', value: total, icon: '📞', border: 'border-slate-200/90', bg: 'bg-white', text: 'text-slate-900' },
-        { label: 'New Grievances', value: counts.new, icon: '🔴', border: 'border-red-200/80', bg: 'bg-red-50/30', text: 'text-red-700' },
-        { label: 'In Progress / Triage', value: counts.in_progress, icon: '🟡', border: 'border-amber-200/80', bg: 'bg-amber-50/30', text: 'text-amber-700' },
-        { label: 'Resolved Works', value: counts.resolved, icon: '✅', border: 'border-emerald-200/80', bg: 'bg-emerald-50/30', text: 'text-emerald-700' },
-      ];
+      const bar = document.getElementById('stats-bar');
+      bar.innerHTML = [
+        { label: 'Total complaints', value: total },
+        { label: 'New', value: counts.new },
+        { label: 'Under resolution', value: counts.in_progress },
+        { label: 'Resolved', value: counts.resolved }
+      ].map(s => `
+        <div class="ls-metric-card">
+          <div class="ls-metric-value">${s.value}</div>
+          <div class="ls-metric-label">${s.label}</div>
+        </div>
+      `).join('');
 
-      document.getElementById('stats-bar').innerHTML = stats.map(s => `
-        <div class="flex items-center gap-4 ${s.bg} border ${s.border} rounded-2xl p-4 shadow-xs transition hover:shadow-sm">
-          <div class="text-3xl">${s.icon}</div>
-          <div>
-            <div class="text-2xl font-extrabold ${s.text} tracking-tight">${s.value}</div>
-            <div class="text-xs font-semibold text-slate-500 mt-0.5">${s.label}</div>
-          </div>
-        </div>`).join('');
+      // Critical banner
+      const banner = document.getElementById('critical-banner');
+      if (criticalCount > 0) {
+        banner.classList.remove('ls-hidden');
+        document.getElementById('critical-banner-text').textContent = `${criticalCount} critical complaint${criticalCount > 1 ? 's' : ''} require${criticalCount === 1 ? 's' : ''} immediate attention`;
+      } else {
+        banner.classList.add('ls-hidden');
+      }
     }
 
-    // ── Render Ticket Cards ────────────────────────────────────────────────
+    // ══════════════════════════════════════════════════════════════════════
+    // RENDER — RECENT LIST (Overview)
+    // ══════════════════════════════════════════════════════════════════════
+    function renderRecentList() {
+      const recent = allTickets.slice(0, 8);
+      const container = document.getElementById('recent-list');
+      const empty = document.getElementById('recent-empty');
+      if (!container) return;
+
+      if (recent.length === 0) {
+        container.innerHTML = '';
+        empty?.classList.remove('ls-hidden');
+        return;
+      }
+      empty?.classList.add('ls-hidden');
+
+      container.innerHTML = recent.map(t => {
+        const isUrgent = t.urgency === 'high';
+        const title = getComplaintTitle(t);
+        const dept = getDeptLabel(t.category);
+        const timeAgo = getTimeAgo(t.created_at);
+
+        return `
+          <div class="complaint-item ${isUrgent ? 'complaint-item-critical' : ''}" onclick="openDrawer('${t.id}')">
+            <div style="flex:1; min-width:0;">
+              <div style="display:flex; align-items:center; gap: var(--space-2); margin-bottom: 2px;">
+                ${isUrgent ? '<span class="ls-badge ls-badge-critical" style="font-size:0.625rem;">Critical</span>' : ''}
+                <span style="font-size:0.875rem; font-weight:600; color:var(--text-primary); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escHtml(title)}</span>
+              </div>
+              <div class="ls-caption">${escHtml(dept)} · ${timeAgo}</div>
+            </div>
+            <span class="ls-badge ${getStatusBadgeClass(t.status)}">${formatStatus(t.status)}</span>
+          </div>`;
+      }).join('');
+    }
+
+    // ══════════════════════════════════════════════════════════════════════
+    // RENDER — COMPLAINT LIST (Complaints view)
+    // ══════════════════════════════════════════════════════════════════════
     function renderTickets() {
+      if (currentView !== 'complaints') return;
       const query = state.search;
       const filtered = allTickets.filter(t => {
-        const phone = t.caller_phone || '+91 8926160600';
+        const phone = t.caller_phone || '';
         if (query && !phone.toLowerCase().includes(query) &&
-            !t.caller_phone.toLowerCase().includes(query) &&
-            !t.call_sid.toLowerCase().includes(query) &&
+            !(t.call_sid || '').toLowerCase().includes(query) &&
             !(t.transcription || '').toLowerCase().includes(query) &&
+            !(t.english_translation || '').toLowerCase().includes(query) &&
             !(t.admin_notes || '').toLowerCase().includes(query)) return false;
         return true;
       });
@@ -402,154 +506,212 @@
       const empty = document.getElementById('empty-state');
       const countEl = document.getElementById('ticket-count');
 
-      countEl.textContent = `Showing ${filtered.length} of ${allTickets.length} calls`;
+      if (countEl) countEl.textContent = `Showing ${filtered.length} of ${allTickets.length} complaints`;
 
       if (filtered.length === 0) {
         grid.innerHTML = '';
-        empty.classList.remove('hidden');
+        empty?.classList.remove('ls-hidden');
         return;
       }
-      empty.classList.add('hidden');
-      grid.innerHTML = filtered.map(t => buildCard(t)).join('');
+      empty?.classList.add('ls-hidden');
+
+      grid.innerHTML = filtered.map(t => {
+        const isUrgent = t.urgency === 'high';
+        const title = getComplaintTitle(t);
+        const dept = getDeptLabel(t.category);
+        const lang = getLangLabel(t.language);
+        const timeAgo = getTimeAgo(t.created_at);
+
+        return `
+          <div class="complaint-item card-enter ${isUrgent ? 'complaint-item-critical' : ''}" onclick="openDrawer('${t.id}')" id="card-${t.id}">
+            <div style="flex:1; min-width:0;">
+              <div style="display:flex; align-items:center; gap: var(--space-2); margin-bottom: 2px; flex-wrap: wrap;">
+                ${isUrgent ? '<span class="ls-badge ls-badge-critical" style="font-size:0.625rem;">Critical</span>' : ''}
+                <span style="font-size:0.875rem; font-weight:600; color:var(--text-primary); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escHtml(title)}</span>
+              </div>
+              <div class="ls-caption" style="margin-top:2px;">
+                ${escHtml(dept)} · ${lang} · ${timeAgo}
+              </div>
+              <div class="ls-caption" style="margin-top:2px;">
+                ${t.caller_phone || 'Unknown number'} · #${(t.id || '').slice(-6).toUpperCase()}
+              </div>
+            </div>
+            <span class="ls-badge ${getStatusBadgeClass(t.status)}">${formatStatus(t.status)}</span>
+          </div>`;
+      }).join('');
     }
 
-    // ── Build Ticket Card HTML (Light Mode) ────────────────────────────────
-    function buildCard(t) {
-      const langLabel = { hi: 'हिंदी', te: 'తెలుగు', en: 'English' }[t.language] || t.language;
-      const catLabel  = { electricity: '⚡ Electricity', water: '💧 Drinking Water', other: '📋 Rural Works' }[t.category] || t.category;
-      const catClass  = { electricity: 'cat-electricity', water: 'cat-water', other: 'cat-other' }[t.category] || 'cat-other';
-      const langClass = { hi: 'lang-hi', te: 'lang-te', en: 'lang-en' }[t.language] || 'lang-en';
-      const statusClass = { new: 'badge-new', in_progress: 'badge-in_progress', resolved: 'badge-resolved' }[t.status] || 'badge-new';
-      const isNew = t.status === 'new';
+    // ══════════════════════════════════════════════════════════════════════
+    // COMPLAINT DETAIL DRAWER
+    // ══════════════════════════════════════════════════════════════════════
+    function openDrawer(ticketId) {
+      const t = allTickets.find(x => x.id === ticketId);
+      if (!t) return;
 
-      const displayPhone = t.caller_phone || '+91 8926160600';
+      const drawer = document.getElementById('complaint-drawer');
+      const overlay = document.getElementById('drawer-overlay');
+      const body = document.getElementById('drawer-body');
+
+      // Badge
+      const badgeEl = document.getElementById('drawer-badge');
+      if (t.urgency === 'high') {
+        badgeEl.className = 'ls-badge ls-badge-critical';
+        badgeEl.textContent = 'Critical';
+      } else {
+        badgeEl.className = 'ls-badge ' + getStatusBadgeClass(t.status);
+        badgeEl.textContent = formatStatus(t.status);
+      }
+
+      // Title
+      document.getElementById('drawer-title').textContent = getComplaintTitle(t);
+
+      // Audio source
+      let audioSrc = t.recording_url || '';
+      if (t.recording_sid && t.recording_sid !== 'RE_MOCK') audioSrc = `/ivr/audio/${t.recording_sid}`;
 
       const createdAt = t.created_at ? new Date(t.created_at) : new Date();
       const timeStr = createdAt.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
 
-      // Audio player source
-      let audioSrc = t.recording_url || '';
-      if (t.recording_sid && t.recording_sid !== 'RE_MOCK') {
-        audioSrc = `/ivr/audio/${t.recording_sid}`;
-      }
-
-      const audioBlock = audioSrc
-        ? `<div class="mt-1">
-             <audio controls preload="none" class="w-full rounded-xl" src="${audioSrc}">
-               Your browser does not support audio playback.
-             </audio>
-           </div>`
-        : `<div class="flex items-center gap-2 px-3 py-2 bg-slate-100 rounded-xl text-xs text-slate-500 mt-1">
-             🎙️ Voice recording captured
-           </div>`;
-
-      return `
-        <div class="relative bg-white border border-slate-200/90 rounded-2xl p-5 space-y-3.5 shadow-xs hover:shadow-md hover:border-slate-300 transition-all ${isNew ? 'ticket-new' : ''}" id="card-${t.id}">
-          
-          <!-- Card Header -->
-          <div class="flex items-start justify-between gap-3">
+      body.innerHTML = `
+        <!-- Location & Department -->
+        <div class="detail-section">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
             <div>
-              <div class="font-extrabold text-slate-900 text-base tracking-tight flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                ${displayPhone}
+              <div class="ls-label ls-mb-2">Department</div>
+              <div style="font-size:0.875rem; font-weight:600; color: var(--text-primary);">${getDeptLabel(t.category)}</div>
+            </div>
+            <div>
+              <div class="ls-label ls-mb-2">Language</div>
+              <div style="font-size:0.875rem; font-weight:500; color: var(--text-primary);">${getLangLabel(t.language)}</div>
+            </div>
+            <div>
+              <div class="ls-label ls-mb-2">Reported</div>
+              <div style="font-size:0.875rem; color: var(--text-secondary);">${timeStr}</div>
+            </div>
+            <div>
+              <div class="ls-label ls-mb-2">Caller</div>
+              <div style="font-size:0.875rem; color: var(--text-secondary);">${t.caller_phone || 'Unknown'}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Translated complaint text -->
+        ${t.english_translation ? `
+        <div class="detail-section">
+          <div class="ls-label ls-mb-2">Citizen statement</div>
+          <div style="font-size:0.875rem; color: var(--text-primary); font-style: italic; line-height: 1.6;">
+            "${escHtml(t.english_translation)}"
+          </div>
+        </div>` : ''}
+
+        <!-- Status action -->
+        <div class="detail-section">
+          <div class="ls-label ls-mb-2">Status</div>
+          <select class="ls-select" style="width:100%;" onchange="updateStatus('${t.id}', this.value)">
+            <option value="new" ${t.status==='new'?'selected':''}>New complaint</option>
+            <option value="in_progress" ${t.status==='in_progress'?'selected':''}>In progress</option>
+            <option value="resolved" ${t.status==='resolved'?'selected':''}>Resolved</option>
+          </select>
+        </div>
+
+        <!-- Notes -->
+        <div class="detail-section">
+          <div class="ls-label ls-mb-2">Resolution notes</div>
+          <textarea class="ls-textarea" id="drawer-notes-${t.id}" rows="3" placeholder="Enter investigation notes or work order ID…">${escHtml(t.admin_notes || '')}</textarea>
+          <div style="display:flex; gap: var(--space-2); margin-top: var(--space-3);">
+            <button class="ls-btn ls-btn-primary ls-btn-sm" onclick="saveNotes('${t.id}')">Save notes</button>
+            <button class="ls-btn ls-btn-sm" style="background: var(--status-critical-bg); color: var(--status-critical); border-color: var(--status-critical-border);" onclick="deleteTicket('${t.id}')">Delete</button>
+          </div>
+        </div>
+
+        <!-- Audio (expandable) -->
+        ${audioSrc ? `
+        <div class="detail-section">
+          <button class="ls-expand-trigger" onclick="toggleExpand(this)">Audio recording</button>
+          <div class="ls-expand-content">
+            <audio controls preload="none" class="ls-audio" src="${audioSrc}">Audio not supported.</audio>
+          </div>
+        </div>` : ''}
+
+        <!-- Original transcript (expandable) -->
+        ${t.transcription ? `
+        <div class="detail-section">
+          <button class="ls-expand-trigger" onclick="toggleExpand(this)">Original transcript</button>
+          <div class="ls-expand-content">
+            <div style="font-size:0.8125rem; color: var(--text-secondary); font-style: italic; line-height: 1.6;">
+              "${escHtml(t.transcription)}"
+            </div>
+          </div>
+        </div>` : ''}
+
+        <!-- AI analysis (expandable) -->
+        <div class="detail-section">
+          <button class="ls-expand-trigger" onclick="toggleExpand(this)">AI analysis</button>
+          <div class="ls-expand-content">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+              <div>
+                <div class="ls-label ls-mb-2">Urgency</div>
+                <span class="ls-badge ${t.urgency === 'high' ? 'ls-badge-critical' : 'ls-badge-resolved'}">${t.urgency === 'high' ? 'High' : 'Normal'}</span>
               </div>
-              <div class="text-[11px] font-medium text-slate-400 mt-0.5">${timeStr} · Ticket #${t.id.slice(-6).toUpperCase()}</div>
-            </div>
-            
-            <div class="flex flex-col items-end gap-1.5">
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide ${statusClass}">
-                ${t.status.replace('_', ' ')}
-              </span>
-              <div class="flex gap-1">
-                <span class="px-2 py-0.5 rounded-md text-[10px] font-semibold ${langClass}">${langLabel}</span>
-                <span class="px-2 py-0.5 rounded-md text-[10px] font-semibold ${catClass}">${catLabel}</span>
+              <div>
+                <div class="ls-label ls-mb-2">Detected department</div>
+                <span class="ls-badge ls-badge-dept">${getDeptLabel(t.category)}</span>
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- Duration info -->
-          <div class="flex items-center gap-2 text-[11px] font-medium text-slate-500">
-            <span>⏱️ Call Duration: <strong>${t.duration > 0 ? t.duration : 15}s</strong></span>
-            <span>•</span>
-            <span class="text-emerald-700 bg-emerald-50 px-2 py-0.2 rounded-sm border border-emerald-200">Zero-Literacy Verified</span>
-          </div>
-
-          <!-- Audio Player Block -->
-          ${audioBlock}
-
-          <!-- Audio Grievance Transcript -->
-          ${t.transcription ? `
-          <div class="bg-emerald-50/60 border border-emerald-200/80 rounded-xl p-3 space-y-1">
-            <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-emerald-800">
-              <span class="flex items-center gap-1.5">🗣️ Recorded Grievance Transcript</span>
-              <span class="text-[9px] bg-emerald-100/80 text-emerald-700 px-1.5 py-0.2 rounded border border-emerald-200 font-semibold">AI Ingested</span>
-            </div>
-            <div class="text-xs text-slate-800 font-medium leading-relaxed italic">
-              "${t.transcription}"
-            </div>
-          </div>` : ''}
-
-          <!-- Administrative Assessment & SLA Routing -->
-          <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-2.5 flex items-center justify-between text-[11px] font-medium text-slate-600">
-            <div class="flex items-center gap-1.5 truncate">
-              <span>🏛️ <strong>${t.category === 'electricity' ? 'DISCOM Power Division' : (t.category === 'water' ? 'RWSS Drinking Water' : 'Rural Works & Panchayati Raj')}</strong></span>
-            </div>
-            <div class="flex items-center gap-1 text-emerald-800 font-bold bg-emerald-100/70 border border-emerald-200/60 px-2 py-0.5 rounded text-[10px] shrink-0">
-              <span>⚡ 24h SLA Active</span>
+        <!-- System details (expandable) -->
+        <div class="detail-section">
+          <button class="ls-expand-trigger" onclick="toggleExpand(this)">System details</button>
+          <div class="ls-expand-content">
+            <div style="font-family: var(--font-mono); font-size: 0.6875rem; color: var(--text-muted); line-height: 1.8;">
+              Ticket ID: ${t.id}<br>
+              Call SID: ${t.call_sid || 'N/A'}<br>
+              Recording SID: ${t.recording_sid || 'N/A'}<br>
+              Duration: ${t.duration > 0 ? t.duration : 15}s<br>
+              Created: ${timeStr}
             </div>
           </div>
+        </div>
+      `;
 
-          <!-- Status Switcher -->
-          <div class="flex items-center gap-2 pt-1">
-            <label class="text-xs text-slate-500 font-semibold shrink-0">Stage:</label>
-            <select onchange="updateStatus('${t.id}', this.value)"
-              class="flex-1 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 cursor-pointer transition">
-              <option value="new"         ${t.status==='new'?'selected':''}>🔴 New Complaint</option>
-              <option value="in_progress" ${t.status==='in_progress'?'selected':''}>🟡 Investigation In Progress</option>
-              <option value="resolved"    ${t.status==='resolved'?'selected':''}>✅ Sanctioned & Resolved</option>
-            </select>
-          </div>
-
-          <!-- Admin Notes -->
-          <div class="space-y-1.5">
-            <label class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">Action / Resolution Notes</label>
-            <textarea id="notes-${t.id}" rows="2"
-              placeholder="Enter official investigation notes or work order ID…"
-              class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:bg-white resize-none transition">${t.admin_notes || ''}</textarea>
-          </div>
-
-          <!-- Actions -->
-          <div class="flex gap-2 pt-1 border-t border-slate-100">
-            <button onclick="saveNotes('${t.id}')"
-              class="flex-1 py-2 bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 rounded-xl text-xs font-bold text-emerald-800 transition cursor-pointer active:scale-95 shadow-2xs">
-              💾 Save Notes
-            </button>
-            <button onclick="deleteTicket('${t.id}')"
-              class="py-2 px-3.5 bg-slate-50 hover:bg-red-50 border border-slate-200 hover:border-red-200 rounded-xl text-xs font-semibold text-slate-400 hover:text-red-600 transition cursor-pointer active:scale-95"
-              title="Delete record">
-              🗑
-            </button>
-          </div>
-        </div>`;
+      // Show drawer
+      drawer.classList.add('active');
+      overlay.classList.add('active');
     }
 
-    // ── Filters ────────────────────────────────────────────────────────────
-    function setFilter(type, val) {
+    function closeDrawer() {
+      document.getElementById('complaint-drawer').classList.remove('active');
+      document.getElementById('drawer-overlay').classList.remove('active');
+    }
+
+    function toggleExpand(trigger) {
+      trigger.classList.toggle('open');
+      const content = trigger.nextElementSibling;
+      if (content) content.classList.toggle('open');
+    }
+
+    // ══════════════════════════════════════════════════════════════════════
+    // FILTER TABS
+    // ══════════════════════════════════════════════════════════════════════
+    function filterTab(type, val, btn) {
       state[type] = val;
-      const groupMap = { status: '.status-btn', lang: '.lang-btn', cat: '.cat-btn' };
-      document.querySelectorAll(groupMap[type]).forEach(btn => {
-        const isActive = btn.dataset.val === val;
-        btn.classList.toggle('active-filter', isActive);
-        if (isActive) {
-          btn.classList.add('bg-slate-900', 'text-white', 'border-slate-900', 'shadow-xs');
-        } else {
-          btn.classList.remove('bg-slate-900', 'text-white', 'border-slate-900', 'shadow-xs');
-        }
-      });
+      // Update tab active state
+      const group = btn.parentElement;
+      group.querySelectorAll('.ls-tab').forEach(t => t.classList.remove('ls-tab-active'));
+      btn.classList.add('ls-tab-active');
       loadTickets();
     }
 
-    // ── API Actions ────────────────────────────────────────────────────────
+    function setFilter(type, val) {
+      state[type] = val;
+      loadTickets();
+    }
+
+    // ══════════════════════════════════════════════════════════════════════
+    // API ACTIONS (preserved exactly)
+    // ══════════════════════════════════════════════════════════════════════
     async function updateStatus(id, status) {
       try {
         const res = await fetch(`/admin/tickets/${id}/status`, {
@@ -558,17 +720,19 @@
           body: JSON.stringify({ status })
         });
         if (!res.ok) throw new Error('API error');
-        showToast(`Status updated: ${status.replace('_', ' ').toUpperCase()}`);
+        showToast(`Status updated to ${status.replace('_', ' ')}`);
         const ticket = allTickets.find(t => t.id === id);
         if (ticket) ticket.status = status;
         renderTickets();
+        renderRecentList();
+        renderStats(allTickets.length, allTickets);
       } catch {
-        showToast('❌ Update failed', 'error');
+        showToast('Update failed. Please try again.', 'error');
       }
     }
 
     async function saveNotes(id) {
-      const notes = document.getElementById(`notes-${id}`)?.value || '';
+      const notes = document.getElementById(`drawer-notes-${id}`)?.value || '';
       try {
         const res = await fetch(`/admin/tickets/${id}/notes`, {
           method: 'PATCH',
@@ -576,23 +740,26 @@
           body: JSON.stringify({ admin_notes: notes })
         });
         if (!res.ok) throw new Error('API error');
-        showToast('Official notes saved ✔');
+        showToast('Notes saved');
         const ticket = allTickets.find(t => t.id === id);
         if (ticket) ticket.admin_notes = notes;
       } catch {
-        showToast('❌ Save failed', 'error');
+        showToast('Save failed. Please try again.', 'error');
       }
     }
 
     async function deleteTicket(id) {
-      if (!confirm('Are you sure you want to remove this record?')) return;
+      if (!confirm('Are you sure you want to remove this complaint?')) return;
       try {
         await fetch(`/admin/tickets/${id}`, { method: 'DELETE' });
         allTickets = allTickets.filter(t => t.id !== id);
+        closeDrawer();
         renderTickets();
-        showToast('Ticket removed');
+        renderRecentList();
+        renderStats(allTickets.length, allTickets);
+        showToast('Complaint removed');
       } catch {
-        showToast('❌ Delete failed', 'error');
+        showToast('Delete failed. Please try again.', 'error');
       }
     }
 
@@ -600,23 +767,77 @@
       try {
         const res = await fetch('/ivr/test/create-mock', { method: 'POST' });
         const data = await res.json();
-        showToast('New call ticket added (+91 8926160600) ✔');
+        showToast('Test complaint created');
         await loadTickets();
       } catch {
-        showToast('❌ Failed to create ticket', 'error');
+        showToast('Failed to create test complaint', 'error');
       }
     }
 
-    // ── Toast ──────────────────────────────────────────────────────────────
+    // ══════════════════════════════════════════════════════════════════════
+    // HELPERS
+    // ══════════════════════════════════════════════════════════════════════
+    function getComplaintTitle(t) {
+      if (t.english_translation && t.english_translation !== 'Translation not available.' && t.english_translation !== 'Audio could not be transcribed.' && t.english_translation !== 'Audio unintelligible or too short.') {
+        return t.english_translation.length > 80 ? t.english_translation.substring(0, 77) + '…' : t.english_translation;
+      }
+      if (t.transcription) {
+        return t.transcription.length > 60 ? t.transcription.substring(0, 57) + '…' : t.transcription;
+      }
+      const cat = getDeptLabel(t.category);
+      return `${cat} complaint via voice call`;
+    }
+
+    function getDeptLabel(cat) {
+      return { electricity: 'Electricity', water: 'Water', roads: 'Roads', sanitation: 'Sanitation', healthcare: 'Healthcare', other: 'General' }[cat] || 'General';
+    }
+
+    function getLangLabel(lang) {
+      return { hi: 'Hindi', te: 'Telugu', en: 'English', mr: 'Marathi', bn: 'Bengali', ta: 'Tamil' }[lang] || lang || 'Unknown';
+    }
+
+    function getStatusBadgeClass(status) {
+      return { new: 'ls-badge-new', in_progress: 'ls-badge-progress', resolved: 'ls-badge-resolved' }[status] || 'ls-badge-new';
+    }
+
+    function formatStatus(status) {
+      return { new: 'New', in_progress: 'In progress', resolved: 'Resolved' }[status] || status;
+    }
+
+    function getTimeAgo(dateStr) {
+      if (!dateStr) return 'Just now';
+      const now = new Date();
+      const then = new Date(dateStr);
+      const diffMs = now - then;
+      const mins = Math.floor(diffMs / 60000);
+      if (mins < 1) return 'Just now';
+      if (mins < 60) return `${mins} min ago`;
+      const hours = Math.floor(mins / 60);
+      if (hours < 24) return `${hours}h ago`;
+      const days = Math.floor(hours / 24);
+      return `${days}d ago`;
+    }
+
+    function escHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // ══════════════════════════════════════════════════════════════════════
+    // TOAST
+    // ══════════════════════════════════════════════════════════════════════
     let _toastTimer;
     function showToast(msg, type = 'success') {
       const el = document.getElementById('toast');
       el.textContent = msg;
-      el.className = `fixed bottom-6 right-6 z-50 px-4 py-3 text-xs font-bold rounded-2xl shadow-xl transition-all flex items-center gap-2 ${
-        type === 'error' ? 'bg-red-600 text-white' : 'bg-slate-900 text-white'
-      }`;
+      el.classList.add('visible');
+      if (type === 'error') {
+        el.style.background = 'var(--status-critical)';
+      } else {
+        el.style.background = 'var(--text-primary)';
+      }
       clearTimeout(_toastTimer);
-      _toastTimer = setTimeout(() => { el.classList.add('hidden'); }, 3000);
+      _toastTimer = setTimeout(() => { el.classList.remove('visible'); }, 3000);
     }
   </script>
 </body>
