@@ -377,31 +377,34 @@ def transcribe_audio_data(raw_audio_bytes, preferred_lang=None):
             audio_data = r.record(source)
 
         # Build candidate language list
+        # Build candidate language list with robust multi-dialect fallbacks
         candidate_langs = []
         if preferred_lang:
             pl = preferred_lang.lower().strip()
             lang_map = {
-                "or": "or-IN", "odia": "or-IN",
-                "bn": "bn-IN", "bengali": "bn-IN", "bangla": "bn-IN",
-                "hi": "hi-IN", "hindi": "hi-IN",
-                "bho": "hi-IN", "bihari": "hi-IN", "bhojpuri": "hi-IN",
-                "en": "en-IN", "english": "en-IN",
-                "ta": "ta-IN", "tamil": "ta-IN",
-                "te": "te-IN", "telugu": "te-IN",
-                "kn": "kn-IN", "kannada": "kn-IN",
-                "ml": "ml-IN", "malayalam": "ml-IN",
-                "mr": "mr-IN", "marathi": "mr-IN",
-                "gu": "gu-IN", "gujarati": "gu-IN",
-                "pa": "pa-IN", "punjabi": "pa-IN",
-                "ur": "ur-IN", "urdu": "ur-IN",
-                "as": "as-IN", "assamese": "as-IN",
-                "mai": "mai-IN", "maithili": "mai-IN",
-                "sat": "sat-IN", "santali": "sat-IN",
-                "ks": "ks-IN", "kashmiri": "ks-IN",
-                "sd": "sd-IN", "sindhi": "sd-IN"
+                "or": ["or-IN", "hi-IN", "bn-IN"], "odia": ["or-IN", "hi-IN", "bn-IN"],
+                "bn": ["bn-IN", "hi-IN"], "bengali": ["bn-IN", "hi-IN"], "bangla": ["bn-IN", "hi-IN"],
+                "hi": ["hi-IN", "en-IN"], "hindi": ["hi-IN", "en-IN"],
+                "bho": ["hi-IN"], "bihari": ["hi-IN"], "bhojpuri": ["hi-IN"],
+                "en": ["en-IN", "en-US"], "english": ["en-IN", "en-US"],
+                "ta": ["ta-IN", "en-IN"], "tamil": ["ta-IN", "en-IN"],
+                "te": ["te-IN", "en-IN"], "telugu": ["te-IN", "en-IN"],
+                "kn": ["kn-IN", "en-IN"], "kannada": ["kn-IN", "en-IN"],
+                "ml": ["ml-IN", "en-IN"], "malayalam": ["ml-IN", "en-IN"],
+                "mr": ["mr-IN", "hi-IN"], "marathi": ["mr-IN", "hi-IN"],
+                "gu": ["gu-IN", "hi-IN"], "gujarati": ["gu-IN", "hi-IN"],
+                "pa": ["pa-IN", "hi-IN"], "punjabi": ["pa-IN", "hi-IN"],
+                "ur": ["ur-IN", "hi-IN"], "urdu": ["ur-IN", "hi-IN"],
+                "as": ["as-IN", "bn-IN", "hi-IN"], "assamese": ["as-IN", "bn-IN", "hi-IN"],
+                "mai": ["hi-IN"], "maithili": ["hi-IN"],
+                "sat": ["hi-IN", "bn-IN"], "santali": ["hi-IN", "bn-IN"],
+                "ks": ["ur-IN", "hi-IN"], "kashmiri": ["ur-IN", "hi-IN"],
+                "sd": ["ur-IN", "hi-IN"], "sindhi": ["ur-IN", "hi-IN"]
             }
             if pl in lang_map:
-                candidate_langs.append(lang_map[pl])
+                for c in lang_map[pl]:
+                    if c not in candidate_langs:
+                        candidate_langs.append(c)
 
         # Priority scan: Odia, Hindi/Bihari, Bengali, English + some common ones
         all_langs = ["hi-IN", "en-IN", "bn-IN", "te-IN", "ta-IN", "mr-IN", "gu-IN", "ur-IN"]
@@ -501,52 +504,9 @@ def fetch_live_translation_to_english(raw_text, quick_mode=False):
         except Exception:
             pass
 
-    # Pre-process regional idioms (Bhojpuri, Odia, Bengali) for maximum translation precision
-    processed_text = text
-    det_lang = detect_language(text)
-    
-    # Bhojpuri / Bihari
-    if det_lang in ["Bihari / Bhojpuri", "Bhojpuri"]:
-        processed_text = processed_text.replace("पुलवा बह गइल बा", "The bridge has been washed away")
-        processed_text = processed_text.replace("पुलिया टूट गइल बा", "The bridge and culvert is collapsed")
-        processed_text = processed_text.replace("सड़किया टूट गइल बा", "The road is broken")
-        processed_text = processed_text.replace("सड़किया", "road")
-        processed_text = processed_text.replace("पुलवा", "bridge")
-        processed_text = processed_text.replace("पनिया", "drinking water")
-        processed_text = processed_text.replace("चापाकल खराब बा", "the handpump is broken")
-        processed_text = processed_text.replace("चापकाल खराब बा", "the handpump is broken")
-        processed_text = processed_text.replace("लाइन नइखे", "there is no electricity")
-        processed_text = processed_text.replace("जर गइल बा", "is burnt down")
-        processed_text = processed_text.replace("छत चुअता", "the school roof is leaking")
-        processed_text = processed_text.replace("डाक्टर नइखन", "doctor is absent in hospital")
-        processed_text = processed_text.replace("पटवन नइखे होत", "no canal water for crop irrigation")
-
-    # Odia
-    if det_lang == "Odia":
-        processed_text = processed_text.replace("ପୋଲ ଭାଙ୍ଗିଯାଇଛି", "the bridge has collapsed")
-        processed_text = processed_text.replace("ପୋଲ ଧୋଇଯାଇଛି", "the bridge was washed away")
-        processed_text = processed_text.replace("ରାସ୍ତା ଖରାପ", "the road is severely damaged")
-        processed_text = processed_text.replace("ନଳକୂପ ଅଚଳ", "the tube well handpump is defunct")
-        processed_text = processed_text.replace("ପାଣି ମିଳୁନାହିଁ", "drinking water is not available")
-        processed_text = processed_text.replace("ବିଜୁଳି ନାହିଁ", "there is no electricity supply")
-        processed_text = processed_text.replace("ସ୍କୁଲ ଛାତ ଭାଙ୍ଗିଯାଇଛି", "the school roof is damaged")
-
-    # Bengali
-    if det_lang == "Bengali":
-        processed_text = processed_text.replace("সেতু ভেঙে গেছে", "the bridge is broken")
-        processed_text = processed_text.replace("রাস্তা নষ্ট", "the road is badly damaged")
-        processed_text = processed_text.replace("বিদ্যুৎ নেই", "there is no electricity")
-        processed_text = processed_text.replace("জল আসছে না", "drinking water is not available")
-
-    # If preprocessed text is now mostly English (idiom replacement worked), return it
-    english_chars = sum(1 for c in processed_text if ord(c) < 128 and c.isalpha())
-    total_alpha = sum(1 for c in processed_text if c.isalpha()) or 1
-    if english_chars / total_alpha > 0.7 and english_chars > 10:
-        return processed_text.strip()
-
     # Tier 1: Google GTX NMT Translation API (supports multi-sentence long text)
     try:
-        chunks = _chunk_text_by_sentences(processed_text, max_chars=400)
+        chunks = _chunk_text_by_sentences(text, max_chars=400)
         translated_parts = []
         for chunk in chunks:
             url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=' + urllib.parse.quote(chunk)
@@ -567,6 +527,8 @@ def fetch_live_translation_to_english(raw_text, quick_mode=False):
     except Exception as e:
         pass
 
+    det_lang = detect_language(text)
+
     # Tier 2: deep-translator MyMemory (Installed library, supports 100+ words with chunking)
     try:
         from deep_translator import MyMemoryTranslator
@@ -577,7 +539,7 @@ def fetch_live_translation_to_english(raw_text, quick_mode=False):
             "Malayalam": "ml-IN", "Marathi": "mr-IN", "Urdu": "ur-PK", "Urdu/Kashmiri/Sindhi": "ur-PK"
         }
         src_mm = iso_map_mm.get(det_lang, "hi-IN")
-        chunks = _chunk_text_by_sentences(processed_text, max_chars=300)
+        chunks = _chunk_text_by_sentences(text, max_chars=300)
         mm_parts = []
         for chunk in chunks:
             res_chunk = MyMemoryTranslator(source=src_mm, target='en-GB').translate(chunk)
@@ -589,6 +551,44 @@ def fetch_live_translation_to_english(raw_text, quick_mode=False):
                 return combined_mm
     except Exception as e:
         pass
+
+    # Tier 3: Pre-process regional idioms (Bhojpuri, Odia, Bengali) if online translators were unreachable
+    processed_text = text
+    if det_lang in ["Bihari / Bhojpuri", "Bhojpuri"]:
+        processed_text = processed_text.replace("पुलवा बह गइल बा", "The bridge has been washed away")
+        processed_text = processed_text.replace("पुलिया टूट गइल बा", "The bridge and culvert is collapsed")
+        processed_text = processed_text.replace("सड़किया टूट गइल बा", "The road is broken")
+        processed_text = processed_text.replace("सड़किया", "road")
+        processed_text = processed_text.replace("पुलवा", "bridge")
+        processed_text = processed_text.replace("पनिया", "drinking water")
+        processed_text = processed_text.replace("चापाकल खराब बा", "the handpump is broken")
+        processed_text = processed_text.replace("चापकाल खराब बा", "the handpump is broken")
+        processed_text = processed_text.replace("लाइन नइखे", "there is no electricity")
+        processed_text = processed_text.replace("जर गइल बा", "is burnt down")
+        processed_text = processed_text.replace("छत चुअता", "the school roof is leaking")
+        processed_text = processed_text.replace("डाक्टर नइखन", "doctor is absent in hospital")
+        processed_text = processed_text.replace("पटवन नइखे होत", "no canal water for crop irrigation")
+
+    if det_lang == "Odia":
+        processed_text = processed_text.replace("ପୋଲ ଭାଙ୍ଗିଯାଇଛି", "the bridge has collapsed")
+        processed_text = processed_text.replace("ପୋଲ ଧୋଇଯାଇଛି", "the bridge was washed away")
+        processed_text = processed_text.replace("ରାସ୍ତା ଖରାପ", "the road is severely damaged")
+        processed_text = processed_text.replace("ନଳକୂପ ଅଚଳ", "the tube well handpump is defunct")
+        processed_text = processed_text.replace("ପାଣି ମିଳୁନାହିଁ", "drinking water is not available")
+        processed_text = processed_text.replace("ବିଜୁଳି ନାହିଁ", "there is no electricity supply")
+        processed_text = processed_text.replace("ସ୍କୁଲ ଛାତ ଭାଙ୍ଗିଯାଇଛି", "the school roof is damaged")
+
+    if det_lang == "Bengali":
+        processed_text = processed_text.replace("সেতু ভেঙে গেছে", "the bridge is broken")
+        processed_text = processed_text.replace("রাস্তা নষ্ট", "the road is badly damaged")
+        processed_text = processed_text.replace("বিদ্যুৎ নেই", "there is no electricity")
+        processed_text = processed_text.replace("জল আসছে না", "drinking water is not available")
+
+    english_chars = sum(1 for c in processed_text if ord(c) < 128 and c.isalpha())
+    total_alpha = sum(1 for c in processed_text if c.isalpha()) or 1
+    if english_chars / total_alpha > 0.7 and english_chars > 10:
+        return processed_text.strip()
+
 
     # Tier 3: Google Clients5 Dict Chrome Extension Proxy
     try:

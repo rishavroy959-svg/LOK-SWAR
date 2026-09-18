@@ -1080,13 +1080,20 @@ function CitizenPortalApp() {
   // Fast Real-Time Translation to English (Continuously converts local language & types directly into Search Bar)
   const fetchRealtimeTranslation = async (text, lang, force = false) => {
     if (!text || !text.trim()) {
-      setRealtimeTranslation('');
       return;
     }
     const clean = text.trim();
-    // Skip translation if text is already English (all ASCII)
-    if (/^[\x00-\x7F]*$/.test(clean) && /[a-zA-Z]/.test(clean)) {
-      setRealtimeTranslation('');
+    // If text is already English (or selectedLang is 'en'), immediately display in search bar
+    const isAlreadyEnglish = (lang === 'en') || (/^[\x00-\x7F]*$/.test(clean) && /[a-zA-Z]/.test(clean));
+    if (isAlreadyEnglish) {
+      setRealtimeTranslation(clean);
+      setInputDetectedLang('English');
+      setInputText(clean);
+      if (textareaRef.current) {
+        textareaRef.current.value = clean;
+        textareaRef.current.style.height = 'auto';
+        textareaRef.current.style.height = Math.min(140, Math.max(38, textareaRef.current.scrollHeight)) + 'px';
+      }
       return;
     }
     setIsTranslatingRealtime(true);
@@ -1100,11 +1107,11 @@ function CitizenPortalApp() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: clean, sourceLang: lang || selectedLang }),
-          timeout: 6000
+          timeout: 5000
         });
         if (res && res.ok) {
           const data = await res.json();
-          if (data && data.success && data.translatedText && data.translatedText.trim().toLowerCase() !== clean.toLowerCase()) {
+          if (data && data.success && data.translatedText) {
             translated = data.translatedText;
             if (data.detectedLang) detectedLang = data.detectedLang;
           }
@@ -1118,7 +1125,7 @@ function CitizenPortalApp() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text: clean, spokenLanguage: lang || selectedLang }),
-            timeout: 8000
+            timeout: 6000
           });
           if (res && res.ok) {
             const data = await res.json();
@@ -1157,19 +1164,16 @@ function CitizenPortalApp() {
         } catch (e) {}
       }
 
-      if (translated && translated.trim() && translated.trim().toLowerCase() !== clean.toLowerCase()) {
+      if (translated && translated.trim()) {
         const finalEng = translated.trim();
-        setRealtimeTranslation(finalEng);
+        const cleanEng = finalEng.replace(/^(Public infrastructure grievance:\s*)+/gi, '').trim();
+        setRealtimeTranslation(cleanEng);
         setInputDetectedLang(detectedLang);
         // Always preserve the original regional text for bilingual display
-        if (!originalRegionalText || force) {
-          setOriginalRegionalText(clean);
-        }
-
-        // Directly update the text bar in real-time ongoing as user speaks with 100% precision
-        const cleanEng = finalEng.replace(/^(Public infrastructure grievance:\s*)+/gi, '').trim();
         setOriginalRegionalText(clean);
         setHasAutoTranslated(true);
+
+        // Directly update the text bar in real-time ongoing as user speaks with 100% precision
         setInputText(cleanEng);
         if (textareaRef.current) {
           textareaRef.current.value = cleanEng;
@@ -1725,8 +1729,8 @@ function CitizenPortalApp() {
             body: JSON.stringify({ text: origText, sourceLang: selectedLang })
           });
           const data = await res.json();
-          if (data.success && data.translatedText && data.translatedText.trim().toLowerCase() !== origText.toLowerCase()) {
-            englishText = data.translatedText;
+          if (data.success && data.translatedText) {
+            englishText = data.translatedText.trim();
             if (data.detectedLang) detectedLanguage = data.detectedLang;
           }
         } catch (e) {}
@@ -1936,6 +1940,13 @@ function CitizenPortalApp() {
       rawTranscriptRef.current = "";
       audioChunksRef.current = [];
       pcmChunksRef.current = [];
+      setInputText('');
+      setRealtimeTranslation('');
+      setOriginalRegionalText('');
+      if (textareaRef.current) {
+        textareaRef.current.value = '';
+        textareaRef.current.style.height = '38px';
+      }
       timerIntervalRef.current = setInterval(() => {
         setRecordingTimer(prev => {
           if (prev >= 180) {
@@ -1946,14 +1957,16 @@ function CitizenPortalApp() {
         });
       }, 1000);
 
-      // Fast, Ultra-Responsive Silence Watchdog Interval (every 50ms)
+      // Fast, Ultra-Responsive Silence Watchdog Interval (every 60ms)
       if (silenceCheckIntervalRef.current) clearInterval(silenceCheckIntervalRef.current);
       silenceCheckIntervalRef.current = setInterval(() => {
         if (!isRecordingRef.current) return;
         if (hasSpokenRef.current) {
           const silenceMs = Date.now() - lastVoiceTimeRef.current;
-          // Auto-stop as soon as user pauses speaking for >= 1.2 seconds
-          if (silenceMs >= 1200 && !isAutoStoppingRef.current && isRecordingRef.current) {
+          // Auto-stop when user pauses speaking for >= 2.4 seconds
+          const prog = Math.min(100, Math.round((silenceMs / 2400) * 100));
+          setSilenceProgress(prog);
+          if (silenceMs >= 2400 && !isAutoStoppingRef.current && isRecordingRef.current) {
             isAutoStoppingRef.current = true;
             setIsSilenceDetected(true);
             if (stopVoiceRecordingRef.current) {
@@ -1961,7 +1974,7 @@ function CitizenPortalApp() {
             }
           }
         }
-      }, 50);
+      }, 60);
 
       // 1. Google Web Speech Recognition for continuous speech transcription
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1973,9 +1986,9 @@ function CitizenPortalApp() {
           rec.interimResults = true;
           rec.maxAlternatives = 1;
           const speechLangMap = {
-            hi: 'hi-IN', bho: 'hi-IN', or: 'or-IN', bn: 'bn-IN', en: 'en-IN',
+            hi: 'hi-IN', bho: 'hi-IN', or: 'hi-IN', bn: 'bn-IN', en: 'en-IN',
             ta: 'ta-IN', te: 'te-IN', kn: 'kn-IN', ml: 'ml-IN', mr: 'mr-IN',
-            gu: 'gu-IN', pa: 'pa-IN', ur: 'ur-IN', sd: 'ur-IN', as: 'as-IN',
+            gu: 'gu-IN', pa: 'pa-IN', ur: 'ur-IN', sd: 'ur-IN', as: 'bn-IN',
             mai: 'hi-IN', sat: 'hi-IN', ks: 'ur-IN'
           };
           rec.lang = speechLangMap[selectedLang] || 'hi-IN';
@@ -2001,34 +2014,43 @@ function CitizenPortalApp() {
               setIsSilenceDetected(false);
               rawTranscriptRef.current = currentSpoken;
               setLiveSpokenText(currentSpoken);
-              if (translateDebounceTimeoutRef.current) clearTimeout(translateDebounceTimeoutRef.current);
-              translateDebounceTimeoutRef.current = setTimeout(() => {
-                fetchRealtimeTranslation(currentSpoken, selectedLang);
-              }, 120);
-            }
-          };
-          rec.onspeechend = () => {
-            if (hasSpokenRef.current && !isAutoStoppingRef.current) {
-              setTimeout(() => {
-                if (isRecordingRef.current && hasSpokenRef.current && Date.now() - lastVoiceTimeRef.current >= 900) {
-                  isAutoStoppingRef.current = true;
-                  if (stopVoiceRecordingRef.current) stopVoiceRecordingRef.current();
+
+              const isEnglishInput = selectedLang === 'en' || (/^[\x00-\x7F]*$/.test(currentSpoken) && /[a-zA-Z]/.test(currentSpoken));
+              if (isEnglishInput) {
+                // English: Directly and immediately stream into search bar with zero latency
+                setInputText(currentSpoken);
+                setRealtimeTranslation(currentSpoken);
+                setInputDetectedLang('English');
+                if (textareaRef.current) {
+                  textareaRef.current.value = currentSpoken;
+                  textareaRef.current.style.height = 'auto';
+                  textareaRef.current.style.height = Math.min(140, Math.max(38, textareaRef.current.scrollHeight)) + 'px';
                 }
-              }, 300);
+              } else {
+                // Regional language: Preserve native speech and stream real-time English translation
+                setOriginalRegionalText(currentSpoken);
+                if (translateDebounceTimeoutRef.current) clearTimeout(translateDebounceTimeoutRef.current);
+                translateDebounceTimeoutRef.current = setTimeout(() => {
+                  fetchRealtimeTranslation(currentSpoken, selectedLang);
+                }, 60);
+              }
             }
           };
           rec.onend = () => {
-            if (isRecordingRef.current && hasSpokenRef.current && !isAutoStoppingRef.current) {
-              isAutoStoppingRef.current = true;
-              if (stopVoiceRecordingRef.current) stopVoiceRecordingRef.current();
+            // Auto-restart recognition continuously if user is still recording
+            if (isRecordingRef.current && !isAutoStoppingRef.current) {
+              setTimeout(() => {
+                if (isRecordingRef.current && !isAutoStoppingRef.current && speechRecRef.current) {
+                  try {
+                    speechRecRef.current.start();
+                  } catch (err) {}
+                }
+              }, 100);
             }
           };
           rec.onerror = e => {
-            if (e.error === 'language-not-supported' && rec.lang !== 'hi-IN') {
+            if (e.error === 'language-not-supported') {
               rec.lang = 'hi-IN';
-              try {
-                rec.start();
-              } catch (err) {}
             }
           };
           rec.start();
@@ -2094,11 +2116,11 @@ function CitizenPortalApp() {
                 setIsSilenceDetected(false);
                 setSilenceProgress(0);
               } else if (hasSpokenRef.current && (Date.now() - speechStartTimeRef.current > 600)) {
-                // User has spoken, and now silence has elapsed >= 1200ms -> Auto Stop
+                // User has spoken, and now silence has elapsed >= 2400ms -> Auto Stop
                 const silenceMs = Date.now() - lastVoiceTimeRef.current;
-                const prog = Math.min(100, Math.round((silenceMs / 1200) * 100));
+                const prog = Math.min(100, Math.round((silenceMs / 2400) * 100));
                 setSilenceProgress(prog);
-                if (silenceMs >= 1200 && !isAutoStoppingRef.current && isRecordingRef.current) {
+                if (silenceMs >= 2400 && !isAutoStoppingRef.current && isRecordingRef.current) {
                   isAutoStoppingRef.current = true;
                   setIsSilenceDetected(true);
                   if (stopVoiceRecordingRef.current) {
