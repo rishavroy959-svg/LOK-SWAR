@@ -1105,7 +1105,9 @@ function CitizenPortalApp() {
   // Helper to distinguish true English from Romanized Indian vernacular (Hinglish)
   const isLikelyEnglish = text => {
     if (!text || !text.trim()) return true;
-    if (/[^ -]/.test(text)) return false; // Any Indic script character
+    for (let i = 0; i < text.length; i++) {
+      if (text.charCodeAt(i) > 127) return false;
+    }
     const lower = text.toLowerCase();
     const hinglishMarkers = [
       "humare", "hamare", "gaon", "gao", "mein", "me", "pani", "paani", "bijli", "sadak",
@@ -1114,7 +1116,7 @@ function CitizenPortalApp() {
       "aspataal", "mariz", "bimar", "kharab", "thik", "jal", "log", "pura", "bhi", "aur", "chhat",
       "taar", "aawat", "naikhe", "gail", "badka"
     ];
-    return !hinglishMarkers.some(m => new RegExp(`\\b${m}\\b`, 'i').test(lower));
+    return !hinglishMarkers.some(m => new RegExp('\\b' + m + '\\b', 'i').test(lower));
   };
 
   // High-Speed Real-Time Translation to English (Instant 40ms Google GTX + Async AI Categorization)
