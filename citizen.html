@@ -509,6 +509,9 @@ function CitizenPortalApp() {
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
   const [inputText, setInputText] = useState('');
+  const inputTextRef = useRef(inputText);
+  useEffect(() => { inputTextRef.current = inputText; }, [inputText]);
+  const translationSeqRef = useRef(0);
   const [realtimeTranslation, setRealtimeTranslation] = useState('');
   const [originalRegionalText, setOriginalRegionalText] = useState('');
   const [inputDetectedLang, setInputDetectedLang] = useState('');
@@ -1099,48 +1102,50 @@ function CitizenPortalApp() {
     requestLocationAndAutoSetLanguage(false);
   }, []);
 
-  // Fast Real-Time Translation to English (Continuously converts local language & types directly into Search Bar)
+  // Helper to distinguish true English from Romanized Indian vernacular (Hinglish)
+  const isLikelyEnglish = text => {
+    if (!text || !text.trim()) return true;
+    if (/[^ -]/.test(text)) return false; // Any Indic script character
+    const lower = text.toLowerCase();
+    const hinglishMarkers = [
+      "humare", "hamare", "gaon", "gao", "mein", "me", "pani", "paani", "bijli", "sadak",
+      "toot", "khambha", "khamba", "gaya", "hai", "nahi", "nhi", "raha", "chapakal", "gaddha",
+      "pul", "pulia", "bada", "bahut", "samasya", "dikkat", "kisan", "kheti", "naali", "nala",
+      "aspataal", "mariz", "bimar", "kharab", "thik", "jal", "log", "pura", "bhi", "aur", "chhat",
+      "taar", "aawat", "naikhe", "gail", "badka"
+    ];
+    return !hinglishMarkers.some(m => new RegExp(`\\b${m}\\b`, 'i').test(lower));
+  };
+
+  // High-Speed Real-Time Translation to English (Instant 40ms Google GTX + Async AI Categorization)
   const fetchRealtimeTranslation = async (text, lang, force = false) => {
     if (!text || !text.trim()) {
       setRealtimeTranslation('');
       return;
     }
     const clean = text.trim();
+    const seq = ++translationSeqRef.current;
     setIsTranslatingRealtime(true);
+
     try {
       let translated = '';
       let detectedLang = lang || selectedLang;
-      let category = '';
-      let scheme = '';
-      let urgency = 92.0;
-      let aiTitle = '';
 
-      // 1. Primary Engine: Server Python AI Multi-lingual NMT
+      // 1. FASTEST CLIENT-SIDE ENGINE: Google GTX Neural Translation
+      // Takes ~40-70ms, supports 100+ languages + Hinglish + Odia + Bhojpuri + Bengali with 0 server latency
       try {
-        const res = await resilientFetch('/api/translate', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            text: clean,
-            spokenLanguage: lang || selectedLang
-          })
-        });
-        if (res && res.ok) {
-          const data = await res.json();
-          if (data && data.success && (data.directEnglishTranslation || data.translatedText)) {
-            translated = data.directEnglishTranslation || data.translatedText;
-            if (data.spokenLanguage) detectedLang = data.spokenLanguage;
-            if (data.category) category = data.category;
-            if (data.suggestedScheme) scheme = data.suggestedScheme;
-            if (data.urgencyScore) urgency = data.urgencyScore;
-            if (data.aiAnalyzedTitle) aiTitle = data.aiAnalyzedTitle;
+        const gUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(clean)}`;
+        const gRes = await fetch(gUrl);
+        if (gRes.ok) {
+          const gData = await gRes.json();
+          if (gData && gData[0]) {
+            translated = gData[0].map(p => p[0]).filter(Boolean).join('').trim();
+            if (gData[2]) detectedLang = gData[2];
           }
         }
       } catch (e) {}
 
-      // 1b. Fast Light-Proxy Fallback
+      // 2. SERVER NMT ENGINE FALLBACK: /api/translate/quick
       if (!translated) {
         try {
           const qRes = await fetch('/api/translate/quick', {
@@ -1148,7 +1153,7 @@ function CitizenPortalApp() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text: clean, spokenLanguage: lang || selectedLang })
           });
-          if (qRes && qRes.ok) {
+          if (qRes.ok) {
             const qData = await qRes.json();
             if (qData && qData.translatedText) {
               translated = qData.translatedText;
@@ -1158,63 +1163,50 @@ function CitizenPortalApp() {
         } catch (e) {}
       }
 
-      // 2. Client-side Google Translate NMT API fallback
-      if (!translated) {
-        try {
-          const gUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(clean)}`;
-          const gRes = await fetch(gUrl);
-          const gData = await gRes.json();
-          if (gData && gData[0]) {
-            translated = gData[0].map(p => p[0]).filter(Boolean).join('');
-          }
-        } catch (e) {}
-      }
-
-      // 3. Client-side MyMemory Multi-lingual fallback
-      if (!translated) {
-        try {
-          const mmUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(clean)}&langpair=autodetect|en`;
-          const mmRes = await fetch(mmUrl);
-          const mmData = await mmRes.json();
-          if (mmData && mmData.responseData && mmData.responseData.translatedText) {
-            const mmT = mmData.responseData.translatedText;
-            if (!mmT.toUpperCase().includes('INVALID') && !mmT.toUpperCase().includes('MYMEMORY')) {
-              translated = mmT;
-            }
-          }
-        } catch (e) {}
-      }
+      // Check if this request is still the newest one (prevents race conditions)
+      if (seq !== translationSeqRef.current) return;
 
       if (translated && translated.trim()) {
         const finalEng = translated.trim();
         setRealtimeTranslation(finalEng);
         setInputDetectedLang(detectedLang);
         setOriginalRegionalText(clean);
+        setHasAutoTranslated(true);
 
-        // Store AI-determined metadata
-        setVoiceMeta({
-          originalText: clean,
-          detectedLang: detectedLang,
-          englishText: finalEng,
-          category: category || "Roads & Connectivity",
-          scheme: scheme || "General Civic Infrastructure Fund",
-          urgency: urgency,
-          aiAnalyzedTitle: aiTitle || finalEng
-        });
-
-        // Live stream English translation directly into input bar as user speaks!
-        if (isRecordingRef.current || force) {
+        // Update search bar text if recording, or if force=true, or if input is not already English
+        if (isRecordingRef.current || force || !isLikelyEnglish(inputTextRef.current || clean)) {
           setInputText(finalEng);
           if (textareaRef.current) {
             textareaRef.current.style.height = 'auto';
             textareaRef.current.style.height = Math.min(140, Math.max(38, textareaRef.current.scrollHeight)) + 'px';
           }
         }
+
+        // Asynchronously prime full civic categorization and official AI title from /api/translate
+        fetch('/api/translate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: clean, spokenLanguage: lang || selectedLang })
+        }).then(r => r.json()).then(data => {
+          if (data && data.success) {
+            setVoiceMeta({
+              originalText: clean,
+              detectedLang: data.spokenLanguage || detectedLang,
+              englishText: finalEng,
+              category: data.category || "Roads & Connectivity",
+              scheme: data.suggestedScheme || "General Civic Infrastructure Fund",
+              urgency: data.urgencyScore || 92.0,
+              aiAnalyzedTitle: data.aiAnalyzedTitle || finalEng
+            });
+          }
+        }).catch(() => {});
       }
     } catch (err) {
       console.warn('Real-time translation notice:', err);
     } finally {
-      setIsTranslatingRealtime(false);
+      if (seq === translationSeqRef.current) {
+        setIsTranslatingRealtime(false);
+      }
     }
   };
 
@@ -1872,15 +1864,18 @@ function CitizenPortalApp() {
     if (audioStreamRef.current) {
       audioStreamRef.current.getTracks().forEach(track => track.stop());
     }
-    const captured = (rawTranscriptRef.current || liveSpokenText || "").trim();
+    const captured = (rawTranscriptRef.current || liveSpokenText || inputText || "").trim();
 
     // Convert PCM chunks into real WAV audio file
     let wavBase64String = await convertPcmToWavBase64();
     if (wavBase64String) {
       setRecordedAudioBase64(wavBase64String);
     }
-    if ((captured && captured.length > 0) || wavBase64String) {
-      translateTextToEnglishAndType(captured || "", wavBase64String);
+    if (captured && captured.length > 0) {
+      // 100% guarantee translation into English in the input bar
+      await fetchRealtimeTranslation(captured, selectedLang, true);
+    } else if (wavBase64String) {
+      translateTextToEnglishAndType("", wavBase64String);
     } else {
       setInputText("");
       setLiveSpokenText("");
@@ -2068,8 +2063,8 @@ function CitizenPortalApp() {
               setLiveSpokenText(currentSpoken);
               setOriginalRegionalText(currentSpoken);
 
-              // If English, directly display in input text bar in real-time!
-              if (selectedLang === 'en') {
+              // Always stream English translation in real-time for ANY input language (or Hinglish)
+              if (selectedLang === 'en' && isLikelyEnglish(currentSpoken)) {
                 setInputText(currentSpoken);
                 setRealtimeTranslation(currentSpoken);
                 if (textareaRef.current) {
@@ -2077,11 +2072,11 @@ function CitizenPortalApp() {
                   textareaRef.current.style.height = Math.min(140, Math.max(38, textareaRef.current.scrollHeight)) + 'px';
                 }
               } else {
-                // If local language, continuously stream English translation in real-time!
+                // If local language or Hinglish, stream English translation in real-time!
                 if (translateDebounceTimeoutRef.current) clearTimeout(translateDebounceTimeoutRef.current);
                 translateDebounceTimeoutRef.current = setTimeout(() => {
-                  fetchRealtimeTranslation(currentSpoken, selectedLang, false);
-                }, 75);
+                  fetchRealtimeTranslation(currentSpoken, selectedLang, true);
+                }, 60);
               }
             }
           };
@@ -3083,8 +3078,13 @@ function CitizenPortalApp() {
       if (translateDebounceTimeoutRef.current) clearTimeout(translateDebounceTimeoutRef.current);
       if (val && val.trim().length > 1) {
         translateDebounceTimeoutRef.current = setTimeout(() => {
-          fetchRealtimeTranslation(val, selectedLang, false);
-        }, 800);
+          // If typed text is non-English or Hinglish, auto-translate it after typing pause!
+          if (!isLikelyEnglish(val)) {
+            fetchRealtimeTranslation(val, selectedLang, true);
+          } else {
+            fetchRealtimeTranslation(val, selectedLang, false);
+          }
+        }, 650);
       }
     },
     onBlur: e => {

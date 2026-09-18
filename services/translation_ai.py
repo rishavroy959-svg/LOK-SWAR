@@ -478,9 +478,67 @@ def _chunk_text_by_sentences(text, max_chars=300):
             final_chunks.append(c)
     return final_chunks or [text]
 
+def normalize_vernacular_speech(text):
+    """
+    Normalizes common Indian dialect colloquialisms (Bhojpuri, Maithili, Odia, Hindi)
+    into standard terms for high-accuracy neural translation.
+    """
+    if not text:
+        return text
+    bhojpuri_map = [
+        (r'\bचापाकल\b', 'हैंडपंप'),
+        (r'\bचापकाल\b', 'हैंडपंप'),
+        (r'\bपनिया\b', 'पानी'),
+        (r'\bसड़किया\b', 'सड़क'),
+        (r'\bपुलवा\b', 'पुल'),
+        (r'\bनलवा\b', 'नल'),
+        (r'\bस्कूलवा\b', 'स्कूल'),
+        (r'\bछतवा\b', 'छत'),
+        (r'\bबिजुलिया\b', 'बिजली'),
+        (r'\bखम्भवा\b', 'खंभा'),
+        (r'\bनहरिया\b', 'नहर'),
+        (r'\bनालवा\b', 'नाला'),
+        (r'\bनइखे आवत\b', 'नहीं आ रहा है'),
+        (r'\bनइखे\b', 'नहीं है'),
+        (r'\bजर गइल\b', 'जल गया'),
+        (r'\bटूट गइल\b', 'टूट गया'),
+        (r'\bगिर गइल\b', 'गिर गया'),
+        (r'\bबह गइल\b', 'बह गया'),
+        (r'\bगइल\b', 'गया'),
+        (r'\bखराब बा\b', 'खराब है'),
+        (r'\bबा\b', 'है'),
+        (r'\bहमार\b', 'हमारे'),
+        (r'\bरउवा\b', 'आप'),
+        (r'\bतनी\b', 'थोड़ा'),
+        (r'\bबड़का\b', 'बड़ा'),
+    ]
+    for pattern, replacement in bhojpuri_map:
+        text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
+    return text
+
+def is_likely_english(text):
+    """Checks if ASCII text is actually English or Romanized Indian language (Hinglish)."""
+    if not text:
+        return True
+    if any(ord(c) >= 128 for c in text):
+        return False
+    hinglish_markers = {
+        "humare", "hamare", "gaon", "gao", "mein", "me", "pani", "paani", "bijli", "sadak",
+        "toot", "khambha", "khamba", "gaya", "hai", "nahi", "nhi", "raha", "chapakal", "gaddha",
+        "pul", "pulia", "bada", "bahut", "samasya", "dikkat", "kisan", "kheti", "naali", "nala",
+        "aspataal", "mariz", "bimar", "kharab", "thik", "pura", "bhi", "aur", "kar", "diya", "kiya",
+        "karo", "kijiye", "rahe", "hote", "kaise", "kab", "kyu", "kyun", "chhat", "pole", "wire"
+    }
+    words = re.findall(r'[a-zA-Z]+', text.lower())
+    if not words:
+        return True
+    if any(w in hinglish_markers for w in words):
+        return False
+    return True
+
 def fetch_live_translation_to_english(raw_text, quick_mode=False):
     """
-    Translates regional text from ANY language (Bihari, Bhojpuri, Odia, Hindi, Bengali, Tamil, etc.)
+    Translates regional text from ANY language (Bihari, Bhojpuri, Odia, Hindi, Bengali, Tamil, Hinglish, etc.)
     directly into clean English for search bar insertion and categorization.
     quick_mode=True skips OpenAI for faster response (used by /api/translate/quick).
     """
@@ -491,9 +549,12 @@ def fetch_live_translation_to_english(raw_text, quick_mode=False):
     if not text:
         return ""
 
-    # Skip if text is already English (ASCII-only with common punctuation)
-    if all(ord(c) < 128 for c in text):
+    # Skip ONLY if text is verified to be native English (not Hinglish)
+    if is_likely_english(text):
         return text
+
+    # Pre-normalize dialect terms (e.g. Bhojpuri chaapaakal -> handpump)
+    text = normalize_vernacular_speech(text)
 
     # Tier 0: OpenAI Translation Engine (High accuracy for Indian languages/dialects)
     if not quick_mode:
@@ -504,7 +565,7 @@ def fetch_live_translation_to_english(raw_text, quick_mode=False):
         except Exception:
             pass
 
-    # Tier 1: Google GTX NMT Translation API (supports multi-sentence long text)
+    # Tier 1: Google GTX NMT Translation API (supports multi-sentence long text & Hinglish)
     try:
         chunks = _chunk_text_by_sentences(text, max_chars=400)
         translated_parts = []
@@ -515,7 +576,7 @@ def fetch_live_translation_to_english(raw_text, quick_mode=False):
                 'Accept': 'application/json',
                 'Accept-Language': 'en-US,en;q=0.9'
             })
-            with urllib.request.urlopen(req, timeout=5) as response:
+            with urllib.request.urlopen(req, timeout=4) as response:
                 res = json.loads(response.read().decode('utf-8'))
                 part = ''.join([p[0] for p in res[0] if p and p[0]])
                 if part and part.strip():
