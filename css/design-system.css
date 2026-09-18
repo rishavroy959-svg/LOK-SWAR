@@ -1,0 +1,859 @@
+/* ============================================================
+   LOK SWAR — DESIGN SYSTEM
+   A unified design language for the entire platform.
+   ============================================================ */
+
+/* ─── 1. Design Tokens ─────────────────────────────────────── */
+:root {
+  /* Brand */
+  --brand: #0f766e;
+  --brand-light: #14b8a6;
+  --brand-dark: #0d5f58;
+  --brand-bg: #f0fdfa;
+
+  /* Surfaces */
+  --surface: #ffffff;
+  --surface-secondary: #f8fafc;
+  --surface-muted: #f1f5f9;
+  --surface-hover: #e2e8f0;
+
+  /* Text */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --text-inverse: #ffffff;
+
+  /* Borders */
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+  --border-focus: #0f766e;
+
+  /* Semantic Status */
+  --status-critical: #dc2626;
+  --status-critical-bg: #fef2f2;
+  --status-critical-border: #fecaca;
+  --status-warning: #d97706;
+  --status-warning-bg: #fffbeb;
+  --status-warning-border: #fde68a;
+  --status-success: #059669;
+  --status-success-bg: #ecfdf5;
+  --status-success-border: #a7f3d0;
+  --status-info: #2563eb;
+  --status-info-bg: #eff6ff;
+  --status-info-border: #bfdbfe;
+
+  /* Spacing (8px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.06), 0 4px 6px rgba(0,0,0,0.04);
+
+  /* Typography */
+  --font-family: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Sidebar */
+  --sidebar-width: 240px;
+  --sidebar-collapsed: 64px;
+  --topbar-height: 56px;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 200ms ease;
+  --transition-slow: 300ms ease;
+}
+
+/* ─── 2. Reset & Base ──────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  background: var(--surface-secondary);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+a { color: var(--brand); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+img, svg { display: inline-block; max-width: 100%; }
+
+/* ─── 3. Typography ────────────────────────────────────────── */
+.ls-page-title {
+  font-size: 1.625rem; /* 26px */
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.ls-section-title {
+  font-size: 1.125rem; /* 18px */
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.ls-card-title {
+  font-size: 0.9375rem; /* 15px */
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.ls-body {
+  font-size: 0.875rem; /* 14px */
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.ls-caption {
+  font-size: 0.75rem; /* 12px */
+  font-weight: 500;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.ls-label {
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+/* ─── 4. Layout — App Shell ────────────────────────────────── */
+.ls-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.ls-sidebar {
+  width: var(--sidebar-width);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 40;
+  transition: transform var(--transition-slow);
+}
+
+.ls-sidebar-header {
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.ls-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.ls-sidebar-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--brand);
+  color: var(--text-inverse);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.ls-sidebar-brand-text {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.ls-sidebar-brand-sub {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.ls-sidebar-nav {
+  flex: 1;
+  padding: var(--space-3);
+  overflow-y: auto;
+}
+
+.ls-sidebar-footer {
+  padding: var(--space-3);
+  border-top: 1px solid var(--border-light);
+}
+
+.ls-main {
+  margin-left: var(--sidebar-width);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.ls-topbar {
+  height: var(--topbar-height);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-5);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.ls-topbar-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.ls-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.ls-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--status-success);
+  display: inline-block;
+  animation: ls-pulse 2s ease-in-out infinite;
+}
+
+@keyframes ls-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.ls-content {
+  flex: 1;
+  padding: var(--space-5);
+  max-width: 1400px;
+  width: 100%;
+}
+
+/* ─── 5. Buttons ───────────────────────────────────────────── */
+.ls-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: var(--font-family);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  line-height: 1.5;
+}
+
+.ls-btn:active { transform: scale(0.97); }
+
+.ls-btn-primary {
+  background: var(--brand);
+  color: var(--text-inverse);
+  border-color: var(--brand);
+}
+.ls-btn-primary:hover { background: var(--brand-dark); border-color: var(--brand-dark); text-decoration: none; }
+
+.ls-btn-secondary {
+  background: var(--surface);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+.ls-btn-secondary:hover { background: var(--surface-muted); text-decoration: none; }
+
+.ls-btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+.ls-btn-ghost:hover { background: var(--surface-muted); text-decoration: none; }
+
+.ls-btn-danger {
+  background: var(--status-critical);
+  color: var(--text-inverse);
+  border-color: var(--status-critical);
+}
+.ls-btn-danger:hover { background: #b91c1c; text-decoration: none; }
+
+.ls-btn-lg {
+  padding: var(--space-3) var(--space-5);
+  font-size: 0.9375rem;
+  border-radius: var(--radius-lg);
+}
+
+.ls-btn-sm {
+  padding: var(--space-1) var(--space-3);
+  font-size: 0.75rem;
+}
+
+/* ─── 6. Cards ─────────────────────────────────────────────── */
+.ls-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.ls-card:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.ls-card-clickable {
+  cursor: pointer;
+}
+.ls-card-clickable:hover {
+  border-color: var(--brand-light);
+}
+
+.ls-card-critical {
+  border-color: var(--status-critical-border);
+  border-width: 2px;
+  background: var(--status-critical-bg);
+}
+
+/* Metric card */
+.ls-metric-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.ls-metric-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: var(--space-1);
+}
+
+.ls-metric-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* ─── 7. Badges ────────────────────────────────────────────── */
+.ls-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.ls-badge-critical {
+  background: var(--status-critical-bg);
+  color: var(--status-critical);
+  border: 1px solid var(--status-critical-border);
+}
+
+.ls-badge-new {
+  background: var(--status-warning-bg);
+  color: var(--status-warning);
+  border: 1px solid var(--status-warning-border);
+}
+
+.ls-badge-progress {
+  background: var(--status-info-bg);
+  color: var(--status-info);
+  border: 1px solid var(--status-info-border);
+}
+
+.ls-badge-resolved {
+  background: var(--status-success-bg);
+  color: var(--status-success);
+  border: 1px solid var(--status-success-border);
+}
+
+.ls-badge-dept {
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  text-transform: none;
+  font-weight: 500;
+}
+
+/* ─── 8. Forms ─────────────────────────────────────────────── */
+.ls-input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  background: var(--surface);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  outline: none;
+}
+
+.ls-input::placeholder { color: var(--text-muted); }
+.ls-input:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+}
+
+.ls-select {
+  appearance: none;
+  padding: var(--space-2) var(--space-6) var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+.ls-select:focus { border-color: var(--border-focus); }
+
+.ls-textarea {
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  background: var(--surface);
+  resize: vertical;
+  min-height: 80px;
+  outline: none;
+}
+.ls-textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+}
+
+/* ─── 9. Navigation ────────────────────────────────────────── */
+.ls-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-family);
+}
+
+.ls-nav-item:hover {
+  background: var(--surface-muted);
+  color: var(--text-primary);
+}
+
+.ls-nav-item-active {
+  background: var(--brand-bg);
+  color: var(--brand);
+  font-weight: 600;
+}
+
+.ls-nav-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.ls-nav-item-active .ls-nav-icon { opacity: 1; }
+
+.ls-nav-divider {
+  height: 1px;
+  background: var(--border-light);
+  margin: var(--space-2) 0;
+}
+
+/* Filter tabs */
+.ls-tab-group {
+  display: flex;
+  gap: var(--space-1);
+  background: var(--surface-muted);
+  padding: 3px;
+  border-radius: var(--radius-md);
+}
+
+.ls-tab {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: var(--font-family);
+  transition: all var(--transition-fast);
+}
+
+.ls-tab:hover { color: var(--text-primary); }
+
+.ls-tab-active {
+  background: var(--surface);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-xs);
+  font-weight: 600;
+}
+
+/* ─── 10. Drawers / Modals ─────────────────────────────────── */
+.ls-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 50;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+}
+.ls-drawer-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ls-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(520px, 90vw);
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  z-index: 51;
+  transform: translateX(100%);
+  transition: transform var(--transition-slow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.ls-drawer.active { transform: translateX(0); }
+
+.ls-drawer-header {
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.ls-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-5);
+}
+
+.ls-drawer-close {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  transition: background var(--transition-fast);
+}
+.ls-drawer-close:hover { background: var(--surface-muted); color: var(--text-primary); }
+
+/* Expandable sections */
+.ls-expand-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) 0;
+  border: none;
+  background: none;
+  font-family: var(--font-family);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+.ls-expand-trigger:hover { color: var(--text-primary); }
+
+.ls-expand-trigger::before {
+  content: '▸';
+  font-size: 0.75rem;
+  transition: transform var(--transition-fast);
+}
+.ls-expand-trigger.open::before {
+  transform: rotate(90deg);
+}
+
+.ls-expand-content {
+  display: none;
+  padding-bottom: var(--space-3);
+}
+.ls-expand-content.open {
+  display: block;
+}
+
+/* ─── 11. Lists ────────────────────────────────────────────── */
+.ls-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.ls-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border-light);
+  transition: background var(--transition-fast);
+  cursor: pointer;
+}
+.ls-list-item:last-child { border-bottom: none; }
+.ls-list-item:hover { background: var(--surface-muted); }
+
+.ls-list-item-critical {
+  border-left: 3px solid var(--status-critical);
+  padding-left: calc(var(--space-4) - 3px);
+}
+
+/* ─── 12. Map UI ───────────────────────────────────────────── */
+.ls-map-container {
+  width: 100%;
+  height: calc(100vh - var(--topbar-height) - var(--space-5) * 2);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.ls-map-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ─── 13. Alert Banner ─────────────────────────────────────── */
+.ls-alert {
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.ls-alert-critical {
+  background: var(--status-critical-bg);
+  border: 1px solid var(--status-critical-border);
+  color: var(--status-critical);
+}
+
+.ls-alert-info {
+  background: var(--status-info-bg);
+  border: 1px solid var(--status-info-border);
+  color: var(--status-info);
+}
+
+.ls-alert-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* ─── 14. Toast ────────────────────────────────────────────── */
+.ls-toast {
+  position: fixed;
+  bottom: var(--space-5);
+  right: var(--space-5);
+  padding: var(--space-3) var(--space-5);
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity var(--transition-normal), transform var(--transition-normal);
+  pointer-events: none;
+}
+.ls-toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ─── 15. Empty / Loading / Error States ───────────────────── */
+.ls-empty {
+  text-align: center;
+  padding: var(--space-7) var(--space-5);
+  color: var(--text-muted);
+}
+
+.ls-empty-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.ls-empty-text {
+  font-size: 0.8125rem;
+}
+
+.ls-skeleton {
+  background: linear-gradient(90deg, var(--surface-muted) 25%, var(--surface-hover) 50%, var(--surface-muted) 75%);
+  background-size: 200% 100%;
+  animation: ls-shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes ls-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ─── 16. Audio Player ─────────────────────────────────────── */
+.ls-audio {
+  width: 100%;
+  border-radius: var(--radius-md);
+  accent-color: var(--brand);
+}
+
+/* ─── 17. Utility ──────────────────────────────────────────── */
+.ls-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); }
+.ls-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); }
+.ls-flex { display: flex; }
+.ls-flex-col { flex-direction: column; }
+.ls-items-center { align-items: center; }
+.ls-justify-between { justify-content: space-between; }
+.ls-gap-2 { gap: var(--space-2); }
+.ls-gap-3 { gap: var(--space-3); }
+.ls-gap-4 { gap: var(--space-4); }
+.ls-gap-5 { gap: var(--space-5); }
+.ls-mb-2 { margin-bottom: var(--space-2); }
+.ls-mb-3 { margin-bottom: var(--space-3); }
+.ls-mb-4 { margin-bottom: var(--space-4); }
+.ls-mb-5 { margin-bottom: var(--space-5); }
+.ls-mt-4 { margin-top: var(--space-4); }
+.ls-hidden { display: none !important; }
+
+/* Section separator */
+.ls-section + .ls-section {
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border-light);
+}
+
+/* ─── 18. Scrollbar ────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface-hover); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ─── 19. Focus / Accessibility ────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Ensure status is not only communicated by color */
+.ls-badge-critical::before { content: '●'; margin-right: 4px; }
+
+/* ─── 20. Responsive ──────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .ls-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .ls-sidebar { transform: translateX(-100%); }
+  .ls-sidebar.mobile-open { transform: translateX(0); box-shadow: var(--shadow-lg); }
+  .ls-main { margin-left: 0; }
+}
+
+@media (max-width: 640px) {
+  .ls-grid-4 { grid-template-columns: 1fr; }
+  .ls-grid-2 { grid-template-columns: 1fr; }
+  .ls-content { padding: var(--space-4); }
+  .ls-drawer { width: 100vw; }
+  .ls-tab-group { overflow-x: auto; flex-wrap: nowrap; }
+  .ls-tab { flex-shrink: 0; }
+}
+
+/* ─── 21. Print ────────────────────────────────────────────── */
+@media print {
+  .ls-sidebar, .ls-topbar { display: none; }
+  .ls-main { margin-left: 0; }
+  .ls-card { break-inside: avoid; }
+}
+
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
