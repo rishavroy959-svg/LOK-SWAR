@@ -2236,8 +2236,8 @@ const GUIDANCE_DICTIONARY = {
       });
 
       // If non-English selected and browser OS lacks native Indian voice for this language:
-      // Return false to allow streaming high-fidelity neural audio via /api/tts
-      if (!matchedVoice && currentLang !== 'en' && currentLang !== 'hi') {
+      // Return false to prevent English OS voice attempting to pronounce Indic text
+      if (!matchedVoice && currentLang !== 'en') {
         if (typeof onError === 'function') onError(new Error('No matching voice for ' + currentLang));
         return false;
       }
@@ -2270,15 +2270,15 @@ const GUIDANCE_DICTIONARY = {
     if (explicit) return { key: explicit.getAttribute('data-voice-guide') };
 
     // Ignore clicks inside the speech popup, mute toggles, and typing inputs/textareas
-    if (target.closest('.tts-mute-toggle-btn, .tts-dismiss-btn, .voice-guide-toggle-btn')) return null;
+    if (target.closest('.tts-mute-toggle-btn, .tts-dismiss-btn, .voice-guide-toggle-btn, .tts-popup, audio, .audio-player')) return null;
     if (target.closest('textarea, input, select, [contenteditable="true"]')) return null;
-    // Mic button
-    if (target.closest('button[title*="record"], button[title*="माइक"], button[title*="रिकॉर्ड"], button[title*="Recording"]') || target.closest('.mic-btn')) {
-      return { key: 'mic_button' };
+    // Mic button & recording controls: do NOT speak over recording
+    if (target.closest('button[title*="record"], button[title*="माइक"], button[title*="रिकॉर्ड"], button[title*="Recording"], button[title*="Mic"], button[title*="mic"], button[title*="Cancel"], button[title*="Done"]') || target.closest('.mic-btn')) {
+      return null;
     }
     // Submit button
     if (target.closest('button[type="submit"]') || target.closest('button[title*="जमा"], button[title*="Submit"]')) {
-      return { key: 'submit_button' };
+      return null;
     }
     // Camera button
     if (target.closest('button[title*="Photo"], button[title*="कैमरा"], button[title*="Camera"], button[title*="Evidence"]')) {

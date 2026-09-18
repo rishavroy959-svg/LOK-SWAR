@@ -601,11 +601,12 @@ function CitizenPortalApp() {
     return parseFloat((R * c).toFixed(2));
   };
 
-  // Regional Address Entities loaded via js/citizen/location_data.js
-    const activeAudioElementRef = useRef(null);
+  const activeAudioElementRef = useRef(null);
+  const voiceSessionCounterRef = useRef(0);
 
   // Mute helper: completely stops all voice guidance (both Web Speech and server audio)
   const muteAllSpeech = () => {
+    voiceSessionCounterRef.current++;
     if ('speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();
@@ -615,6 +616,9 @@ function CitizenPortalApp() {
       try {
         activeAudioElementRef.current.pause();
         activeAudioElementRef.current.currentTime = 0;
+        activeAudioElementRef.current.onended = null;
+        activeAudioElementRef.current.onerror = null;
+        activeAudioElementRef.current.src = '';
       } catch (e) {}
       activeAudioElementRef.current = null;
     }
@@ -628,15 +632,17 @@ function CitizenPortalApp() {
   // Native Speech Synthesis Engine loaded via js/citizen/voice_engine.js
   const fallbackBrowserSpeech = window.fallbackBrowserSpeech;
 
-  // High-Reliability Voice Guidance Engine: Instant on-click spoken assistance
+  // High-Precision Voice Guidance Engine: Plays exactly ONE audio stream in ONE target language
   const speakGuidance = (key = 'welcome', customText = null, overrideLang = null) => {
     if (isRecordingRef.current) return;
     if (!isVoiceGuideActiveRef.current && key !== 'voice_toggle_on') {
       muteAllSpeech();
       return;
     }
+    // Cancel any current speech completely before starting new one
     muteAllSpeech();
 
+    const thisSession = ++voiceSessionCounterRef.current;
     const currentLang = overrideLang || selectedLang || 'hi';
     const langEntry = (key && GUIDANCE_DICTIONARY && GUIDANCE_DICTIONARY[key] && (GUIDANCE_DICTIONARY[key][currentLang] || GUIDANCE_DICTIONARY[key].hi || GUIDANCE_DICTIONARY[key].en)) || {};
     const displayText = customText || langEntry.display || (window.CITIZEN_I18N?.[currentLang]?.brandTitle ? `${window.CITIZEN_I18N[currentLang].brandTitle} Voice Guide` : "Lok Swar Voice Assistant");
@@ -653,40 +659,49 @@ function CitizenPortalApp() {
     setIsSpeaking(true);
 
     const onSpeechEnd = () => {
+      if (voiceSessionCounterRef.current !== thisSession) return;
       setIsSpeaking(false);
-      setTimeout(() => {
-        setTtsPopupMessage(prev => (prev && prev.display === displayText ? null : prev));
-      }, 2500);
       activeAudioElementRef.current = null;
-    };
-
-    const playViaBackendTts = () => {
-      try {
-        const ttsAudio = new Audio(`/api/tts?text=${encodeURIComponent(spokenText)}&lang=${encodeURIComponent(currentLang)}`);
-        activeAudioElementRef.current = ttsAudio;
-        ttsAudio.onended = onSpeechEnd;
-        ttsAudio.onerror = () => {
-          onSpeechEnd();
-        };
-        const playPromise = ttsAudio.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            fallbackBrowserSpeech(spokenText, currentLang, onSpeechEnd, onSpeechEnd);
-          });
+      setTimeout(() => {
+        if (voiceSessionCounterRef.current === thisSession) {
+          setTtsPopupMessage(prev => (prev && prev.display === displayText ? null : prev));
         }
-      } catch (e) {
-        fallbackBrowserSpeech(spokenText, currentLang, onSpeechEnd, onSpeechEnd);
-      }
+      }, 2000);
     };
 
-    // If non-English and browser does not have native voices installed for this language,
-    // stream studio-quality native neural audio from /api/tts
-    const started = fallbackBrowserSpeech(spokenText, currentLang, onSpeechEnd, () => {
-      playViaBackendTts();
-    });
+    // Primary High-Precision Neural Voice Stream via /api/tts (Google Neural TTS)
+    // Plays cleanly with 100% native pronunciation in the exact target language.
+    // NEVER overlaps with browser speech synthesis.
+    try {
+      const ttsAudio = new Audio(`/api/tts?text=${encodeURIComponent(spokenText)}&lang=${encodeURIComponent(currentLang)}`);
+      activeAudioElementRef.current = ttsAudio;
 
-    if (!started) {
-      playViaBackendTts();
+      ttsAudio.onended = onSpeechEnd;
+      ttsAudio.onerror = () => {
+        if (voiceSessionCounterRef.current !== thisSession) return;
+        activeAudioElementRef.current = null;
+        // Last-resort fallback: only if server audio failed
+        fallbackBrowserSpeech(spokenText, currentLang, onSpeechEnd, () => {
+          if (voiceSessionCounterRef.current === thisSession) setIsSpeaking(false);
+        });
+      };
+
+      const playPromise = ttsAudio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          if (voiceSessionCounterRef.current !== thisSession) return;
+          activeAudioElementRef.current = null;
+          fallbackBrowserSpeech(spokenText, currentLang, onSpeechEnd, () => {
+            if (voiceSessionCounterRef.current === thisSession) setIsSpeaking(false);
+          });
+        });
+      }
+    } catch (e) {
+      if (voiceSessionCounterRef.current === thisSession) {
+        fallbackBrowserSpeech(spokenText, currentLang, onSpeechEnd, () => {
+          if (voiceSessionCounterRef.current === thisSession) setIsSpeaking(false);
+        });
+      }
     }
   };
 
@@ -720,14 +735,14 @@ function CitizenPortalApp() {
 
       const target = e.target;
       if (!target) return;
-      if (target.closest('textarea, input, select, [contenteditable="true"]')) return;
+      if (target.closest('textarea, input, select, audio, [contenteditable="true"], .voice-guide-toggle-btn, button[title*="Voice"], button[title*="voice"], button[title*="Mic"], button[title*="mic"], button[title*="Cancel"], button[title*="Done"], button[title*="Dismiss"], .tts-popup, form')) return;
 
       const guideInfo = getVoiceGuideForElement(target);
       if (!guideInfo) return;
 
       const now = Date.now();
       const clickKey = guideInfo.key || guideInfo.customTitle || '';
-      if (lastSpokenRef.current && lastSpokenRef.current.key === clickKey && now - lastSpokenRef.current.time < 450) {
+      if (lastSpokenRef.current && lastSpokenRef.current.key === clickKey && now - lastSpokenRef.current.time < 500) {
         return; // Prevent duplicate rapid re-triggering
       }
       lastSpokenRef.current = { key: clickKey, time: now };
@@ -747,7 +762,7 @@ function CitizenPortalApp() {
           ta: `${title}। நீங்கள் இந்த விருப்பத்தை கிளிக் செய்துள்ளீர்கள்.`,
           te: `${title}। మీరు ఈ ఎంపికపై క్లిక్ చేశారు.`,
           kn: `${title}। ನೀವು ಈ ಆಯ್ಕೆಯನ್ನು ಕ್ಲಿಕ್ ಮಾಡಿದ್ದೀರಿ.`,
-          ml: `${title}। നിങ്ങൾ ഈ ഓപ്ഷനിൽ ക്ലിക്ക് ചെയ്തു.`,
+          ml: `${title}। നിങ്ങൾ ಈ ഓപ്ഷനിൽ ക്ലിക്ക് ചെയ്തു.`,
           ur: `${title}۔ آپ نے اس آپشن پر کلک کیا ہے۔`,
           sd: `${title}۔ توهان هن اختيار تي ڪلڪ ڪيو آهي.`,
           as: `${title}। আপুনি এই বিকল্পটোত ক্লিক কৰিছে।`,
@@ -3014,38 +3029,11 @@ function CitizenPortalApp() {
     onClick: () => setRecordedAudioBase64(null),
     className: "ml-2 w-6 h-6 rounded-full bg-[#f7f5f2] dark:bg-[#33302d] hover:bg-rose-500 hover:text-white text-[#a19b95] text-xs font-bold flex items-center justify-center cursor-pointer transition-colors",
     title: "Remove voice recording"
-  }, "✕"))), isRecording && /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center justify-between gap-2 sm:gap-4 px-4 py-2 rounded-[1.5rem] bg-[#f7f5f2]/95 dark:bg-[#282624]/95 backdrop-blur-md border border-emerald-500/40 dark:border-emerald-500/40 text-[#5a5551] dark:text-[#d1ccc6] shadow-xs animate-in fade-in"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-2 text-xs sm:text-sm font-semibold flex-shrink-0"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse inline-block flex-shrink-0"
-  }), /*#__PURE__*/React.createElement("span", {
-    className: "font-mono text-xs font-bold px-2 py-0.5 rounded-full bg-[#f0ece6] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#e0dcd5] dark:border-[#423f3b]"
-  }, Math.floor(recordingTimer / 60), ":", (recordingTimer % 60).toString().padStart(2, '0'))), /*#__PURE__*/React.createElement("div", {
-    className: "flex-1 flex items-center justify-center gap-[2.5px] sm:gap-[3px] h-7 px-2 overflow-hidden",
-    title: "Voice frequency pattern"
-  }, voiceWaveform.map((heightPx, idx) => /*#__PURE__*/React.createElement("span", {
-    key: idx,
-    className: "w-[2.5px] sm:w-[3px] rounded-full bg-emerald-500 dark:bg-emerald-400 transition-all duration-75 ease-out inline-block",
-    style: {
-      height: `${heightPx}px`,
-      opacity: heightPx > 5 ? 1 : 0.45
-    }
-  }))), /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-2 flex-shrink-0"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "hidden md:inline text-[11px] font-medium text-[#706a65] dark:text-[#b8b3ad]"
-  }, t.recordingPrompt, " (", selectedLang.toUpperCase(), ")"), /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    onClick: stopVoiceRecording,
-    className: "px-2.5 py-1 text-xs font-bold rounded-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs cursor-pointer transition-colors flex items-center gap-1",
-    title: "Finish recording"
-  }, "✓ Done"))), /*#__PURE__*/React.createElement("form", {
+  }, "✕"))), /*#__PURE__*/React.createElement("form", {
     onSubmit: handleCitizenReportSubmit,
     className: "w-full"
   }, /*#__PURE__*/React.createElement("div", {
-    className: `w-full rounded-full border shadow-sm hover:shadow-md transition-all px-3 py-1.5 sm:px-4 sm:py-2 flex items-center gap-2 sm:gap-3 bg-white dark:bg-[#282624] ${isRecording ? 'border-emerald-500 dark:border-emerald-500 ring-2 ring-emerald-500/20' : 'border-[#f0ece6] dark:border-[#33302d]'}`
+    className: `w-full rounded-full border shadow-sm hover:shadow-md transition-all px-3 py-1.5 sm:px-4 sm:py-2 flex items-center gap-2 sm:gap-3 bg-white dark:bg-[#282624] ${isRecording ? 'border-rose-500 dark:border-rose-500 ring-2 ring-rose-500/20' : 'border-[#f0ece6] dark:border-[#33302d]'}`
   }, /*#__PURE__*/React.createElement("button", {
     type: "button",
     onClick: toggleVoiceRecording,
@@ -3054,12 +3042,22 @@ function CitizenPortalApp() {
   }, /*#__PURE__*/React.createElement(Icons.Mic, {
     className: "w-5 h-5"
   })), isRecording && /*#__PURE__*/React.createElement("div", {
-    className: "hidden sm:flex items-center gap-[2px] h-5 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-500/20 flex-shrink-0 animate-in fade-in"
-  }, voiceWaveform.slice(0, 12).map((h, i) => /*#__PURE__*/React.createElement("span", {
+    className: "flex items-center gap-2 flex-shrink-0 animate-in fade-in"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse flex-shrink-0"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "font-mono text-xs font-bold text-rose-600 dark:text-rose-400 flex-shrink-0"
+  }, Math.floor(recordingTimer / 60), ":", (recordingTimer % 60).toString().padStart(2, '0')), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-[2.5px] h-6 px-1.5 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 flex-shrink-0 overflow-hidden",
+    title: "Voice frequency pattern"
+  }, voiceWaveform.slice(0, 16).map((h, i) => /*#__PURE__*/React.createElement("span", {
     key: i,
-    className: "w-[2px] rounded-full bg-emerald-600 dark:bg-emerald-400 transition-all duration-75",
-    style: { height: `${Math.max(3, Math.min(16, Math.round(h * 0.7)))}px` }
-  }))), /*#__PURE__*/React.createElement("textarea", {
+    className: "w-[2.5px] rounded-full bg-rose-500 dark:bg-rose-400 transition-all duration-75 ease-out",
+    style: {
+      height: `${Math.max(3, Math.min(18, Math.round(h * 0.8)))}px`,
+      opacity: h > 5 ? 1 : 0.4
+    }
+  })))), /*#__PURE__*/React.createElement("textarea", {
     ref: textareaRef,
     rows: 1,
     value: inputText,
