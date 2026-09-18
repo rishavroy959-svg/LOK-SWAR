@@ -205,32 +205,27 @@ function CitizenPortalApp() {
     }
     return null;
   };
-  // 1. Citizen Identity State
+  // 1. Citizen Identity State (No mock demo data)
   const [citizenUser, setCitizenUser] = useState(() => {
     try {
       const savedStr = localStorage.getItem('lok_swar_citizen_session') || localStorage.getItem('lok_swar_citizen_auth_session');
       let saved = savedStr ? JSON.parse(savedStr) : null;
+      if (saved && (saved.name === 'Rishav Yadav' || saved.name === 'Rishav' || saved.mobile === '9861234567')) {
+        saved.name = 'Citizen User';
+        saved.mobile = '';
+      }
       return saved || {
-        name: "Rishav Yadav",
-        mobile: "9861234567",
-        village: "Sundargarh District (AC-134)",
-        aadhaar: "XXXX-XXXX-4821",
-        aadhaarMasked: "XXXX-XXXX-4821",
-        isAadhaarVerified: true,
+        name: "Citizen User",
+        mobile: "",
+        village: localStorage.getItem('lok_swar_user_location_name') || "",
+        aadhaar: "",
+        aadhaarMasked: "",
+        isAadhaarVerified: false,
         dpUrl: "assets/bg_1_smart_village.jpg",
-        trustScore: 98
+        trustScore: 95
       };
     } catch (e) {
-      return {
-        name: "Rishav Yadav",
-        mobile: "9861234567",
-        village: "Sundargarh District (AC-134)",
-        aadhaar: "XXXX-XXXX-4821",
-        aadhaarMasked: "XXXX-XXXX-4821",
-        isAadhaarVerified: true,
-        dpUrl: "assets/bg_1_smart_village.jpg",
-        trustScore: 98
-      };
+      return null;
     }
   });
 
@@ -258,7 +253,7 @@ function CitizenPortalApp() {
 
   // Profile Modal State
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [profileName, setProfileName] = useState(() => citizenUser?.name || "Rishav Yadav");
+  const [profileName, setProfileName] = useState(() => citizenUser?.name && citizenUser?.name !== 'Rishav Yadav' && citizenUser?.name !== 'Rishav' ? citizenUser.name : "Citizen User");
   const [profileMobile, setProfileMobile] = useState(() => citizenUser?.mobile && citizenUser?.mobile !== '9861234567' ? citizenUser.mobile : "");
   const [profileVillage, setProfileVillage] = useState(() => citizenUser?.village || currentLocationName || "");
   const [profileAadhaar, setProfileAadhaar] = useState(() => citizenUser?.aadhaar && citizenUser?.aadhaar !== '5482 9104 1940' ? citizenUser.aadhaar : "");
@@ -436,7 +431,7 @@ function CitizenPortalApp() {
   });
   const [selectedLang, setSelectedLang] = useState(() => {
     try {
-      return localStorage.getItem('lok_swar_selected_language') || 'en';
+      return localStorage.getItem('lok_swar_selected_language') || 'hi';
     } catch (e) {
       return 'hi';
     }
@@ -537,8 +532,6 @@ function CitizenPortalApp() {
   const [radarRadius, setRadarRadius] = useState(10); // Radius in km (2, 5, 10, 50)
   const [isRecording, setIsRecording] = useState(false);
   const [audioVolumeLevel, setAudioVolumeLevel] = useState(0);
-  const [voiceWaveform, setVoiceWaveform] = useState(() => Array(24).fill(4));
-  const waveformAnimFrameRef = useRef(null);
   const [isSilenceDetected, setIsSilenceDetected] = useState(false);
   const [silenceProgress, setSilenceProgress] = useState(0);
   const [recordingTimer, setRecordingTimer] = useState(0);
@@ -556,15 +549,11 @@ function CitizenPortalApp() {
   const [ttsPopupMessage, setTtsPopupMessage] = useState(null);
   const [isVoiceGuideActive, setIsVoiceGuideActive] = useState(() => {
     try {
-      return localStorage.getItem('lok_swar_voice_guide_active') === 'true';
+      return localStorage.getItem('lok_swar_voice_guide_active') !== 'false';
     } catch (e) {
-      return false;
+      return true;
     }
   });
-  const isVoiceGuideActiveRef = useRef(isVoiceGuideActive);
-  useEffect(() => {
-    isVoiceGuideActiveRef.current = isVoiceGuideActive;
-  }, [isVoiceGuideActive]);
   const lastSpokenRef = useRef({ key: '', time: 0 });
   const [expandedProblemId, setExpandedProblemId] = useState(null);
 
@@ -631,15 +620,11 @@ function CitizenPortalApp() {
   // High-Reliability Voice Guidance Engine: Instant on-click spoken assistance
   const speakGuidance = (key = 'welcome', customText = null, overrideLang = null) => {
     if (isRecordingRef.current) return;
-    if (!isVoiceGuideActiveRef.current && key !== 'voice_toggle_on') {
-      muteAllSpeech();
-      return;
-    }
     muteAllSpeech();
 
     const currentLang = overrideLang || selectedLang || 'hi';
-    const langEntry = (key && GUIDANCE_DICTIONARY && GUIDANCE_DICTIONARY[key] && (GUIDANCE_DICTIONARY[key][currentLang] || GUIDANCE_DICTIONARY[key].hi || GUIDANCE_DICTIONARY[key].en)) || {};
-    const displayText = customText || langEntry.display || (window.CITIZEN_I18N?.[currentLang]?.brandTitle ? `${window.CITIZEN_I18N[currentLang].brandTitle} Voice Guide` : "Lok Swar Voice Assistant");
+    const langEntry = (key && GUIDANCE_DICTIONARY[key] && (GUIDANCE_DICTIONARY[key][currentLang] || GUIDANCE_DICTIONARY[key].hi || GUIDANCE_DICTIONARY[key].en)) || {};
+    const displayText = customText || langEntry.display || "लोक स्वर आवाज सहायक";
     const spokenText = customText || langEntry.spoken || displayText;
     const enSub = langEntry.enSub || "";
 
@@ -652,58 +637,50 @@ function CitizenPortalApp() {
     });
     setIsSpeaking(true);
 
-    const onSpeechEnd = () => {
-      setIsSpeaking(false);
-      setTimeout(() => {
-        setTtsPopupMessage(prev => (prev && prev.display === displayText ? null : prev));
-      }, 2500);
-      activeAudioElementRef.current = null;
-    };
+    // Instant speech: trigger SpeechSynthesis immediately with zero network delay
+    fallbackBrowserSpeech(spokenText, currentLang);
 
-    const playViaBackendTts = () => {
+    // Backup: If SpeechSynthesis has no voices or errors out, stream via /api/tts
+    if (!('speechSynthesis' in window) || window.speechSynthesis.getVoices().length === 0) {
       try {
         const ttsAudio = new Audio(`/api/tts?text=${encodeURIComponent(spokenText)}&lang=${encodeURIComponent(currentLang)}`);
         activeAudioElementRef.current = ttsAudio;
-        ttsAudio.onended = onSpeechEnd;
-        ttsAudio.onerror = () => {
-          onSpeechEnd();
+        ttsAudio.onended = () => {
+          setIsSpeaking(false);
+          setTimeout(() => setTtsPopupMessage(null), 2500);
+          activeAudioElementRef.current = null;
         };
         const playPromise = ttsAudio.play();
         if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            fallbackBrowserSpeech(spokenText, currentLang, onSpeechEnd, onSpeechEnd);
-          });
+          playPromise.catch(() => {});
         }
-      } catch (e) {
-        fallbackBrowserSpeech(spokenText, currentLang, onSpeechEnd, onSpeechEnd);
-      }
-    };
-
-    // If non-English and browser does not have native voices installed for this language,
-    // stream studio-quality native neural audio from /api/tts
-    const started = fallbackBrowserSpeech(spokenText, currentLang, onSpeechEnd, () => {
-      playViaBackendTts();
-    });
-
-    if (!started) {
-      playViaBackendTts();
+      } catch (e) {}
     }
   };
+
+  // Auto-play welcome voice guidance on platform entry and language change
+  useEffect(() => {
+    // Delay slightly to ensure browser audio context is ready
+    const timer = setTimeout(() => {
+      speakGuidance('welcome', null, selectedLang);
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [selectedLang]);
+
 
   // Toggle Voice Assistant Guidance Mode
   const toggleVoiceGuide = () => {
     playChime('tap');
     setIsVoiceGuideActive(prev => {
       const next = !prev;
-      isVoiceGuideActiveRef.current = next;
       try {
         localStorage.setItem('lok_swar_voice_guide_active', next ? 'true' : 'false');
       } catch (e) {}
       if (next) {
         speakGuidance('voice_toggle_on');
       } else {
-        // Complete silence when toggled off - stop until user clicks again to enable
         muteAllSpeech();
+        speakGuidance('voice_toggle_off');
       }
       return next;
     });
@@ -741,19 +718,6 @@ function CitizenPortalApp() {
           bho: `${title}। रउआ एह विकल्प पर क्लिक कइले बानी।`,
           or: `${title}। ଆପଣ ଏହି ବିକଳ୍ପ ଉପରେ କ୍ଲିକ୍ କରିଛନ୍ତି।`,
           bn: `${title}। আপনি এই বিকল্পটিতে ক্লিক করেছেন।`,
-          gu: `${title}। તમે આ વિકલ્પ પર ક્લિક કર્યું છે.`,
-          pa: `${title}। ਤੁਸੀਂ ਇਸ ਵਿਕਲਪ 'ਤੇ ਕਲਿੱਕ ਕੀਤਾ ਹੈ।`,
-          mr: `${title}। आपण या पर्यायावर क्लिक केले आहे.`,
-          ta: `${title}। நீங்கள் இந்த விருப்பத்தை கிளிக் செய்துள்ளீர்கள்.`,
-          te: `${title}। మీరు ఈ ఎంపికపై క్లిక్ చేశారు.`,
-          kn: `${title}। ನೀವು ಈ ಆಯ್ಕೆಯನ್ನು ಕ್ಲಿಕ್ ಮಾಡಿದ್ದೀರಿ.`,
-          ml: `${title}। നിങ്ങൾ ഈ ഓപ്ഷനിൽ ക്ലിക്ക് ചെയ്തു.`,
-          ur: `${title}۔ آپ نے اس آپشن پر کلک کیا ہے۔`,
-          sd: `${title}۔ توهان هن اختيار تي ڪلڪ ڪيو آهي.`,
-          as: `${title}। আপুনি এই বিকল্পটোত ক্লিক কৰিছে।`,
-          mai: `${title}। अहाँ एहि विकल्प पर क्लिक कएलहुँ अछि।`,
-          sat: `${title}᱾ ᱟᱢ ᱱᱚᱶᱟ ᱚᱯᱥᱚᱱ ᱨᱮ ᱴᱮᱯ ᱠᱮᱫᱟ᱾`,
-          ks: `${title}۔ تُہؠ کٔر اَتھ آپشنَس پؠٹھ کِلک۔`,
           en: `${title}. You clicked this option.`
         };
         const spoken = localizedTitles[selectedLang] || localizedTitles.en;
@@ -1091,64 +1055,36 @@ function CitizenPortalApp() {
   // Fast Real-Time Translation to English (Continuously converts local language & types directly into Search Bar)
   const fetchRealtimeTranslation = async (text, lang, force = false) => {
     if (!text || !text.trim()) {
+      setRealtimeTranslation('');
       return;
     }
     const clean = text.trim();
-    // If text is already English (or selectedLang is 'en'), immediately display in search bar
-    const isAlreadyEnglish = (lang === 'en') || (/^[\x00-\x7F]*$/.test(clean) && /[a-zA-Z]/.test(clean));
-    if (isAlreadyEnglish) {
-      setRealtimeTranslation(clean);
-      setInputDetectedLang('English');
-      setInputText(clean);
-      if (textareaRef.current) {
-        textareaRef.current.value = clean;
-        textareaRef.current.style.height = 'auto';
-        textareaRef.current.style.height = Math.min(140, Math.max(38, textareaRef.current.scrollHeight)) + 'px';
-      }
-      return;
-    }
     setIsTranslatingRealtime(true);
     try {
       let translated = '';
       let detectedLang = lang || selectedLang;
-
-      // 1. Primary Engine: Fast server-proxy translation (Google GTX server-side, no CORS)
+      // 1. Primary Engine: Server Python AI Multi-lingual NMT
       try {
-        const res = await resilientFetch('/api/translate/quick', {
+        const res = await resilientFetch('/api/translate', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: clean, sourceLang: lang || selectedLang }),
-          timeout: 5000
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            text: clean,
+            spokenLanguage: lang || selectedLang
+          })
         });
         if (res && res.ok) {
           const data = await res.json();
-          if (data && data.success && data.translatedText) {
-            translated = data.translatedText;
-            if (data.detectedLang) detectedLang = data.detectedLang;
+          if (data && data.success && (data.directEnglishTranslation || data.translatedText)) {
+            translated = data.directEnglishTranslation || data.translatedText;
+            if (data.spokenLanguage) detectedLang = data.spokenLanguage;
           }
         }
       } catch (e) {}
 
-      // 2. Fallback: Full server AI translation (OpenAI + categorization)
-      if (!translated) {
-        try {
-          const res = await resilientFetch('/api/translate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: clean, spokenLanguage: lang || selectedLang }),
-            timeout: 6000
-          });
-          if (res && res.ok) {
-            const data = await res.json();
-            if (data && data.success && (data.directEnglishTranslation || data.translatedText)) {
-              translated = data.directEnglishTranslation || data.translatedText;
-              if (data.spokenLanguage) detectedLang = data.spokenLanguage;
-            }
-          }
-        } catch (e) {}
-      }
-
-      // 3. Client-side Google Translate NMT API fallback (works on localhost, may be CORS-blocked in production)
+      // 2. Client-side Google Translate NMT API fallback
       if (!translated) {
         try {
           const gUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(clean)}`;
@@ -1160,7 +1096,7 @@ function CitizenPortalApp() {
         } catch (e) {}
       }
 
-      // 4. Client-side MyMemory Multi-lingual fallback
+      // 3. Client-side MyMemory Multi-lingual fallback
       if (!translated) {
         try {
           const mmUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(clean)}&langpair=autodetect|en`;
@@ -1175,21 +1111,22 @@ function CitizenPortalApp() {
         } catch (e) {}
       }
 
-      if (translated && translated.trim()) {
+      if (translated && translated.trim() && translated.trim().toLowerCase() !== clean.toLowerCase()) {
         const finalEng = translated.trim();
-        const cleanEng = finalEng.replace(/^(Public infrastructure grievance:\s*)+/gi, '').trim();
-        setRealtimeTranslation(cleanEng);
+        setRealtimeTranslation(finalEng);
         setInputDetectedLang(detectedLang);
-        // Always preserve the original regional text for bilingual display
-        setOriginalRegionalText(clean);
-        setHasAutoTranslated(true);
 
-        // Directly update the text bar in real-time ongoing as user speaks with 100% precision
-        setInputText(cleanEng);
-        if (textareaRef.current) {
-          textareaRef.current.value = cleanEng;
-          textareaRef.current.style.height = 'auto';
-          textareaRef.current.style.height = Math.min(140, Math.max(38, textareaRef.current.scrollHeight)) + 'px';
+        // ONLY replace text in the input bar if user explicitly requested manual translation (force === true)
+        if (force) {
+          setOriginalRegionalText(clean);
+          setHasAutoTranslated(true);
+          setInputText(finalEng);
+          if (textareaRef.current) {
+            textareaRef.current.value = finalEng;
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = Math.min(140, Math.max(38, textareaRef.current.scrollHeight)) + 'px';
+          }
+          playChime('tap');
         }
       }
     } catch (err) {
@@ -1699,18 +1636,14 @@ function CitizenPortalApp() {
       let scheme = "SDRF Disaster Relief Fund / PMGSY Rural Roads";
       let urgency = 92.0;
 
-      // Immediately preserve the original spoken text for bilingual display
-      if (origText) {
-        setOriginalRegionalText(origText);
-        setLiveSpokenText(origText);
-      }
-
-      // 1. Call server STT (handles audio transcription + translation)
+      // 1. Call server STT
       if (wavBase64 || origText) {
         try {
           const res = await fetch('/api/speech-to-text', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
               audioBase64: wavBase64,
               transcript: origText,
@@ -1731,29 +1664,18 @@ function CitizenPortalApp() {
         } catch (e) {}
       }
 
-      // 2. Fast server-proxy translate fallback (Google GTX via server, no CORS issues)
-      if (!englishText && origText) {
-        try {
-          const res = await fetch('/api/translate/quick', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: origText, sourceLang: selectedLang })
-          });
-          const data = await res.json();
-          if (data.success && data.translatedText) {
-            englishText = data.translatedText.trim();
-            if (data.detectedLang) detectedLanguage = data.detectedLang;
-          }
-        } catch (e) {}
-      }
-
-      // 3. Full server AI translate fallback (OpenAI + categorization)
+      // 2. Direct server translate fallback
       if (!englishText && origText) {
         try {
           const res = await fetch('/api/translate', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: origText, spokenLanguage: selectedLang })
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              text: origText,
+              spokenLanguage: selectedLang
+            })
           });
           const data = await res.json();
           if (data.success && (data.directEnglishTranslation || data.translatedText)) {
@@ -1763,7 +1685,7 @@ function CitizenPortalApp() {
         } catch (e) {}
       }
 
-      // 4. Client-side Google NMT Translation fallback
+      // 3. Fallback: Google NMT Translation
       if (!englishText && origText) {
         try {
           const gUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(origText)}`;
@@ -1774,28 +1696,14 @@ function CitizenPortalApp() {
           }
         } catch (e) {}
       }
-
       const finalText = (englishText || origText).trim();
       if (!origText && !finalText) {
         setIsTranslatingVoice(false);
         return;
       }
-      // Enhanced language detection from script analysis
       if (detectedLanguage === "Hindi" || !detectedLanguage) {
-        if (/[\u0B00-\u0B7F]/.test(origText)) detectedLanguage = "Odia (ଓଡ଼ିଆ)";
-        else if (/[\u0980-\u09FF]/.test(origText)) detectedLanguage = "Bengali (বাংলা)";
-        else if (/[\u0B80-\u0BFF]/.test(origText)) detectedLanguage = "Tamil (தமிழ்)";
-        else if (/[\u0C00-\u0C7F]/.test(origText)) detectedLanguage = "Telugu (తెలుగు)";
-        else if (/[\u0C80-\u0CFF]/.test(origText)) detectedLanguage = "Kannada (ಕನ್ನಡ)";
-        else if (/[\u0D00-\u0D7F]/.test(origText)) detectedLanguage = "Malayalam (മലയാളം)";
-        else if (/[\u0A00-\u0A7F]/.test(origText)) detectedLanguage = "Punjabi (ਪੰਜਾਬੀ)";
-        else if (/[\u0A80-\u0AFF]/.test(origText)) detectedLanguage = "Gujarati (ગુજરાતી)";
-        else if (/[\u0600-\u06FF]/.test(origText)) detectedLanguage = "Urdu (اردو)";
-        else if (/(\bबा\b|\bनइखे\b|\bगइल\b|\bपुलवा\b|\bसड़किया\b|\bपनिया\b|\bचापकाल\b|\bचापाकल\b)/.test(origText)) detectedLanguage = "Bihari / Bhojpuri (भोजपुरी)";
-        else if (/[\u0900-\u097F]/.test(origText)) detectedLanguage = "Hindi (हिन्दी)";
-        else detectedLanguage = "English";
+        if (/[\u0B00-\u0B7F]/.test(origText)) detectedLanguage = "Odia (ଓଡ଼ିଆ)";else if (/[\u0980-\u09FF]/.test(origText)) detectedLanguage = "Bengali (বাংলা)";else if (/(\bबा\b|\bनइखे\b|\bगइल\b|\bपुलवा\b|\bसड़किया\b|\bपनिया\b|\bचापकाल\b|\bचापाकल\b)/.test(origText)) detectedLanguage = "Bihari / Bhojpuri (भोजपुरी)";else if (/[\u0900-\u097F]/.test(origText)) detectedLanguage = "Hindi (हिन्दी)";else detectedLanguage = "English";
       }
-      // Always preserve original text for bilingual display
       setOriginalRegionalText(origText || finalText);
       setInputDetectedLang(detectedLanguage);
       setHasAutoTranslated(true);
@@ -1809,16 +1717,22 @@ function CitizenPortalApp() {
       });
       setRealtimeTranslation(finalText);
 
-      // Immediately set final high-precision English translation into search bar
-      const cleanFinal = finalText.replace(/^(Public infrastructure grievance:\s*)+/gi, '').trim();
-      setInputText(cleanFinal);
-      if (textareaRef.current) {
-        textareaRef.current.value = cleanFinal;
-        textareaRef.current.style.height = 'auto';
-        textareaRef.current.style.height = Math.min(140, Math.max(38, textareaRef.current.scrollHeight)) + 'px';
-      }
-      setIsTypingAnim(false);
-      playChime('success');
+      // Smooth Live Typewriter directly into the search bar
+      setIsTypingAnim(true);
+      setInputText('');
+      let charIndex = 0;
+      const step = Math.max(1, Math.floor(finalText.length / 28));
+      typewriterIntervalRef.current = setInterval(() => {
+        charIndex += step;
+        if (charIndex >= finalText.length) {
+          clearInterval(typewriterIntervalRef.current);
+          setInputText(finalText);
+          setIsTypingAnim(false);
+          playChime('tap');
+        } else {
+          setInputText(finalText.substring(0, charIndex));
+        }
+      }, 18);
     } catch (err) {
       if (spokenText) setInputText(spokenText);
     } finally {
@@ -1841,11 +1755,6 @@ function CitizenPortalApp() {
       clearInterval(silenceCheckIntervalRef.current);
       silenceCheckIntervalRef.current = null;
     }
-    if (waveformAnimFrameRef.current) {
-      cancelAnimationFrame(waveformAnimFrameRef.current);
-      waveformAnimFrameRef.current = null;
-    }
-    setVoiceWaveform(Array(24).fill(4));
     if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
     if (speechRecRef.current) {
@@ -1870,24 +1779,16 @@ function CitizenPortalApp() {
 
     // Convert PCM chunks into real WAV audio file
     let wavBase64String = await convertPcmToWavBase64();
-    if (!wavBase64String && audioChunksRef.current && audioChunksRef.current.length > 0) {
-      try {
-        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        wavBase64String = await new Promise(res => {
-          const r = new FileReader();
-          r.onloadend = () => res(r.result);
-          r.onerror = () => res(null);
-          r.readAsDataURL(blob);
-        });
-      } catch (e) {}
-    }
     if (wavBase64String) {
       setRecordedAudioBase64(wavBase64String);
     }
     if ((captured && captured.length > 0) || wavBase64String) {
       translateTextToEnglishAndType(captured || "", wavBase64String);
     } else {
-      setIsTranslatingVoice(false);
+      setInputText("");
+      setLiveSpokenText("");
+      setRealtimeTranslation("");
+      setVoiceMeta(null);
     }
     return wavBase64String;
   };
@@ -1900,11 +1801,6 @@ function CitizenPortalApp() {
       silenceCheckIntervalRef.current = null;
     }
     if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
-    if (waveformAnimFrameRef.current) {
-      cancelAnimationFrame(waveformAnimFrameRef.current);
-      waveformAnimFrameRef.current = null;
-    }
-    setVoiceWaveform(Array(24).fill(4));
     if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     if (speechRecRef.current) {
       try {
@@ -1948,7 +1844,7 @@ function CitizenPortalApp() {
       playChime('tap');
       isRecordingRef.current = true;
       setIsRecording(true);
-      setAudioVolumeLevel(0.2);
+      setAudioVolumeLevel(0.3);
       setIsSilenceDetected(false);
       setSilenceProgress(0);
       hasSpokenRef.current = false;
@@ -1961,13 +1857,6 @@ function CitizenPortalApp() {
       rawTranscriptRef.current = "";
       audioChunksRef.current = [];
       pcmChunksRef.current = [];
-      setInputText('');
-      setRealtimeTranslation('');
-      setOriginalRegionalText('');
-      if (textareaRef.current) {
-        textareaRef.current.value = '';
-        textareaRef.current.style.height = '38px';
-      }
       timerIntervalRef.current = setInterval(() => {
         setRecordingTimer(prev => {
           if (prev >= 180) {
@@ -1978,45 +1867,14 @@ function CitizenPortalApp() {
         });
       }, 1000);
 
-      // Start WhatsApp-style minimal audio frequency pattern animation loop
-      if (waveformAnimFrameRef.current) cancelAnimationFrame(waveformAnimFrameRef.current);
-      const updateWaveformLoop = () => {
-        if (!isRecordingRef.current) return;
-        let bars = [];
-        if (analyserRef.current) {
-          const freqData = new Uint8Array(analyserRef.current.frequencyBinCount);
-          analyserRef.current.getByteFrequencyData(freqData);
-          const numBars = 24;
-          const binStep = Math.max(1, Math.floor(48 / numBars));
-          for (let i = 0; i < numBars; i++) {
-            const val = freqData[2 + i * binStep] || 0;
-            // Map 0-255 into 4px minimal baseline up to 22px peak
-            const h = Math.max(4, Math.min(22, Math.round(4 + (val / 255) * 18)));
-            bars.push(h);
-          }
-        } else {
-          // Clean subtle breathing wave scaled by voice activity
-          const vol = audioVolumeLevel || 0.1;
-          bars = Array.from({ length: 24 }, (_, i) => {
-            const wave = (Math.sin(Date.now() / 140 + i * 0.6) * 0.5 + 0.5);
-            return Math.max(4, Math.min(22, Math.round(4 + vol * 12 + wave * 6)));
-          });
-        }
-        setVoiceWaveform(bars);
-        waveformAnimFrameRef.current = requestAnimationFrame(updateWaveformLoop);
-      };
-      waveformAnimFrameRef.current = requestAnimationFrame(updateWaveformLoop);
-
-      // Fast, Ultra-Responsive Silence Watchdog Interval (every 60ms)
+      // Dedicated Real-Time Voice Activity Detection (VAD) Silence Watchdog Interval (every 80ms)
       if (silenceCheckIntervalRef.current) clearInterval(silenceCheckIntervalRef.current);
       silenceCheckIntervalRef.current = setInterval(() => {
         if (!isRecordingRef.current) return;
         if (hasSpokenRef.current) {
           const silenceMs = Date.now() - lastVoiceTimeRef.current;
-          // Auto-stop when user pauses speaking for >= 2.4 seconds
-          const prog = Math.min(100, Math.round((silenceMs / 2400) * 100));
-          setSilenceProgress(prog);
-          if (silenceMs >= 2400 && !isAutoStoppingRef.current && isRecordingRef.current) {
+          // User has spoken, and has now been silent for >= 1.3 seconds -> Automatic Stop
+          if (silenceMs >= 1300 && !isAutoStoppingRef.current && isRecordingRef.current) {
             isAutoStoppingRef.current = true;
             setIsSilenceDetected(true);
             if (stopVoiceRecordingRef.current) {
@@ -2024,7 +1882,7 @@ function CitizenPortalApp() {
             }
           }
         }
-      }, 60);
+      }, 80);
 
       // 1. Google Web Speech Recognition for continuous speech transcription
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -2035,13 +1893,7 @@ function CitizenPortalApp() {
           rec.continuous = true;
           rec.interimResults = true;
           rec.maxAlternatives = 1;
-          const speechLangMap = {
-            hi: 'hi-IN', bho: 'hi-IN', or: 'hi-IN', bn: 'bn-IN', en: 'en-IN',
-            ta: 'ta-IN', te: 'te-IN', kn: 'kn-IN', ml: 'ml-IN', mr: 'mr-IN',
-            gu: 'gu-IN', pa: 'pa-IN', ur: 'ur-IN', sd: 'ur-IN', as: 'bn-IN',
-            mai: 'hi-IN', sat: 'hi-IN', ks: 'ur-IN'
-          };
-          rec.lang = speechLangMap[selectedLang] || 'hi-IN';
+          if (selectedLang === 'or') rec.lang = 'or-IN';else if (selectedLang === 'bn') rec.lang = 'bn-IN';else if (selectedLang === 'en') rec.lang = 'en-IN';else rec.lang = 'hi-IN';
           rec.onspeechstart = () => {
             hasSpokenRef.current = true;
             lastVoiceTimeRef.current = Date.now();
@@ -2064,50 +1916,41 @@ function CitizenPortalApp() {
               setIsSilenceDetected(false);
               rawTranscriptRef.current = currentSpoken;
               setLiveSpokenText(currentSpoken);
-
-              const isEnglishInput = selectedLang === 'en' || (/^[\x00-\x7F]*$/.test(currentSpoken) && /[a-zA-Z]/.test(currentSpoken));
-              if (isEnglishInput) {
-                // English: Directly and immediately stream into search bar with zero latency
-                setInputText(currentSpoken);
-                setRealtimeTranslation(currentSpoken);
-                setInputDetectedLang('English');
-                if (textareaRef.current) {
-                  textareaRef.current.value = currentSpoken;
-                  textareaRef.current.style.height = 'auto';
-                  textareaRef.current.style.height = Math.min(140, Math.max(38, textareaRef.current.scrollHeight)) + 'px';
+              if (translateDebounceTimeoutRef.current) clearTimeout(translateDebounceTimeoutRef.current);
+              translateDebounceTimeoutRef.current = setTimeout(() => {
+                fetchRealtimeTranslation(currentSpoken, selectedLang);
+              }, 120);
+            }
+          };
+          rec.onspeechend = () => {
+            if (hasSpokenRef.current && !isAutoStoppingRef.current) {
+              setTimeout(() => {
+                if (isRecordingRef.current && hasSpokenRef.current && Date.now() - lastVoiceTimeRef.current >= 1200) {
+                  isAutoStoppingRef.current = true;
+                  if (stopVoiceRecordingRef.current) stopVoiceRecordingRef.current();
                 }
-              } else {
-                // Regional language: Preserve native speech and stream real-time English translation
-                setOriginalRegionalText(currentSpoken);
-                if (translateDebounceTimeoutRef.current) clearTimeout(translateDebounceTimeoutRef.current);
-                translateDebounceTimeoutRef.current = setTimeout(() => {
-                  fetchRealtimeTranslation(currentSpoken, selectedLang);
-                }, 60);
-              }
+              }, 400);
             }
           };
           rec.onend = () => {
-            // Auto-restart recognition continuously if user is still recording
-            if (isRecordingRef.current && !isAutoStoppingRef.current) {
-              setTimeout(() => {
-                if (isRecordingRef.current && !isAutoStoppingRef.current && speechRecRef.current) {
-                  try {
-                    speechRecRef.current.start();
-                  } catch (err) {}
-                }
-              }, 100);
+            if (isRecordingRef.current && hasSpokenRef.current && !isAutoStoppingRef.current) {
+              isAutoStoppingRef.current = true;
+              if (stopVoiceRecordingRef.current) stopVoiceRecordingRef.current();
             }
           };
           rec.onerror = e => {
-            if (e.error === 'language-not-supported') {
+            if (e.error === 'language-not-supported' && rec.lang !== 'hi-IN') {
               rec.lang = 'hi-IN';
+              try {
+                rec.start();
+              } catch (err) {}
             }
           };
           rec.start();
         } catch (err) {}
       }
 
-      // 2. Setup High-Compatibility MediaRecorder + Web Audio API PCM Stream + Adaptive VAD Silence Auto-Stop
+      // 2. Setup Web Audio API PCM Stream + Real-Time RMS Silence VAD (Automatic Audio Stop)
       try {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
           const stream = await navigator.mediaDevices.getUserMedia({
@@ -2118,20 +1961,6 @@ function CitizenPortalApp() {
             }
           });
           audioStreamRef.current = stream;
-
-          // Standard MediaRecorder instance for guaranteed browser recording
-          try {
-            const mr = new MediaRecorder(stream);
-            mediaRecorderRef.current = mr;
-            audioChunksRef.current = [];
-            mr.ondataavailable = ev => {
-              if (ev.data && ev.data.size > 0) {
-                audioChunksRef.current.push(ev.data);
-              }
-            };
-            mr.start(200);
-          } catch (mrErr) {}
-
           const AudioCtx = window.AudioContext || window.webkitAudioContext;
           if (AudioCtx) {
             const ctx = new AudioCtx();
@@ -2142,7 +1971,6 @@ function CitizenPortalApp() {
             analyser.fftSize = 512;
             analyserRef.current = analyser;
             source.connect(analyser);
-
             const scriptNode = ctx.createScriptProcessor(4096, 1, 1);
             scriptProcessorRef.current = scriptNode;
             scriptNode.onaudioprocess = audioEvent => {
@@ -2156,21 +1984,18 @@ function CitizenPortalApp() {
                 sumSquares += channelData[i] * channelData[i];
               }
               const rms = Math.sqrt(sumSquares / channelData.length);
-              const normVol = Math.min(1, rms * 15);
+              const normVol = Math.min(1, rms * 12);
               setAudioVolumeLevel(normVol);
 
-              // Sensitive volume threshold: User is actively speaking
-              if (rms > 0.005) {
+              // Volume threshold: User is actively speaking
+              if (rms > 0.012) {
                 hasSpokenRef.current = true;
                 lastVoiceTimeRef.current = Date.now();
                 setIsSilenceDetected(false);
-                setSilenceProgress(0);
-              } else if (hasSpokenRef.current && (Date.now() - speechStartTimeRef.current > 600)) {
-                // User has spoken, and now silence has elapsed >= 2400ms -> Auto Stop
+              } else if (hasSpokenRef.current && Date.now() - speechStartTimeRef.current > 1000) {
+                // User has spoken, and now silence has elapsed >= 1600ms
                 const silenceMs = Date.now() - lastVoiceTimeRef.current;
-                const prog = Math.min(100, Math.round((silenceMs / 2400) * 100));
-                setSilenceProgress(prog);
-                if (silenceMs >= 2400 && !isAutoStoppingRef.current && isRecordingRef.current) {
+                if (silenceMs >= 1600 && !isAutoStoppingRef.current && isRecordingRef.current) {
                   isAutoStoppingRef.current = true;
                   setIsSilenceDetected(true);
                   if (stopVoiceRecordingRef.current) {
@@ -2179,12 +2004,8 @@ function CitizenPortalApp() {
                 }
               }
             };
-            // Route through a zero-gain node to avoid speaker feedback
-            const silenceGain = ctx.createGain();
-            silenceGain.gain.value = 0;
             source.connect(scriptNode);
-            scriptNode.connect(silenceGain);
-            silenceGain.connect(ctx.destination);
+            scriptNode.connect(ctx.destination);
           }
         }
       } catch (err) {}
@@ -2210,19 +2031,15 @@ function CitizenPortalApp() {
     }
     const newGid = `TKT-${Math.floor(1000 + Math.random() * 9000)}`;
     const gpsCoords = userObj.gps || (userLocation ? `${userLocation.lat.toFixed(4)}° N, ${userLocation.lng.toFixed(4)}° E` : "22.1245° N, 84.0321° E");
-    const origSpoken = pendingGrievanceData?.originalText || originalRegionalText || (voiceMeta && voiceMeta.originalText) || submissionText;
-    const engTrans = pendingGrievanceData?.englishText || (voiceMeta && voiceMeta.englishText) || realtimeTranslation || submissionText;
-    const detLang = pendingGrievanceData?.spokenLanguage || inputDetectedLang || (voiceMeta && voiceMeta.detectedLang) || (selectedLang === 'en' ? 'English' : 'Hindi');
-    const autoGeneratedTitle = engTrans || generateAutoProblemTitle(submissionText, categoryDetermined, voiceMeta);
+    const autoGeneratedTitle = generateAutoProblemTitle(submissionText, categoryDetermined, voiceMeta);
     const newGrievance = {
       id: newGid,
-      title: engTrans || autoGeneratedTitle,
-      aiAnalyzedTitle: engTrans || autoGeneratedTitle,
-      titleOriginal: origSpoken,
-      transcribedOriginalText: origSpoken,
-      directEnglishTranslation: engTrans,
-      adminEnglishTranslation: `${engTrans}. Queued for official field inspection.`,
-      spokenLanguage: detLang,
+      title: autoGeneratedTitle,
+      aiAnalyzedTitle: autoGeneratedTitle,
+      titleOriginal: submissionText,
+      transcribedOriginalText: submissionText,
+      directEnglishTranslation: voiceMeta && voiceMeta.englishText || realtimeTranslation || submissionText,
+      adminEnglishTranslation: `${realtimeTranslation || voiceMeta && voiceMeta.englishText || submissionText}. Queued for official field inspection.`,
       author: userObj.name || "Verified Citizen",
       citizenMobile: userObj.mobile || "9861234567",
       aadhaarMasked: userObj.aadhaarMasked || "XXXX-XXXX-1940",
@@ -2288,12 +2105,8 @@ function CitizenPortalApp() {
       window.dispatchEvent(new Event('storage'));
     } catch (e) {}
     const reportPayload = {
-      text: engTrans || submissionText,
-      title: engTrans || autoGeneratedTitle,
-      titleOriginal: origSpoken,
-      transcribedOriginalText: origSpoken,
-      directEnglishTranslation: engTrans,
-      spokenLanguage: detLang,
+      text: submissionText,
+      spokenLanguage: selectedLang || 'en',
       audioBase64: audio || null,
       photoBase64: photo || null,
       author: userObj.name,
@@ -2337,22 +2150,15 @@ function CitizenPortalApp() {
     if (isRecordingRef.current) {
       finalAudio = await stopVoiceRecording();
     }
-    const submissionText = (inputText || realtimeTranslation || liveSpokenText || voiceMeta && voiceMeta.originalText || "").trim();
-    const origSpokenText = (originalRegionalText || liveSpokenText || voiceMeta && voiceMeta.originalText || submissionText).trim();
-    const engText = (inputText || realtimeTranslation || voiceMeta && voiceMeta.englishText || submissionText).trim();
-    const detLang = inputDetectedLang || voiceMeta && voiceMeta.detectedLang || selectedLang;
-
-    if (!submissionText && !finalAudio && !photoPreview && !origSpokenText) {
+    const submissionText = (inputText || liveSpokenText || realtimeTranslation || voiceMeta && voiceMeta.originalText || "").trim();
+    if (!submissionText && !finalAudio && !photoPreview) {
       speakGuidance('empty_submit');
       return;
     }
 
     // Prepare pending grievance and prompt user for location tagging (Auto GPS vs Manual)
     setPendingGrievanceData({
-      text: engText || origSpokenText || "Public infrastructure issue recorded via voice intake",
-      originalText: origSpokenText,
-      englishText: engText,
-      spokenLanguage: detLang,
+      text: submissionText || "Public infrastructure issue recorded via voice intake",
       photo: photoPreview,
       audio: finalAudio
     });
@@ -2519,32 +2325,9 @@ function CitizenPortalApp() {
   const i18n = window.CITIZEN_I18N;
   const rawT = i18n[selectedLang] || i18n.hi;
   const localizedLocation = localizeAddress(currentLocationName, selectedLang);
-  const govPrefixMap = {
-    hi: 'भारत सरकार', bho: 'भारत सरकार', or: 'ଭାରତ ସରକାର', bn: 'ভারত সরকার',
-    gu: 'ભારત સરકાર', pa: 'ਭਾਰਤ ਸਰਕਾਰ', mr: 'भारत सरकार', ta: 'இந்திய அரசு',
-    te: 'భారత ప్రభుత్వం', kn: 'ಭಾರತ ಸರ್ಕಾರ', ml: 'ഭാരത സർക്കാർ', ur: 'حکومت ہند',
-    sd: 'ڀارت سرڪار', as: 'ভাৰত চৰকাৰ', mai: 'भारत सरकार', sat: 'ᱵᱷᱟᱨᱚᱛ ᱥᱚᱨᱠᱟᱨ',
-    ks: 'ہِندوستانُک حۆکوٗمَتھ', en: 'Government of India'
-  };
-  const govPrefix = govPrefixMap[selectedLang] || 'Government of India';
-
-  const defaultDistrictMap = {
-    hi: 'स्थानीय क्षेत्र', bho: 'स्थानीय क्षेत्र', or: 'ସ୍ଥାନୀୟ କ୍ଷେତ୍ର', bn: 'স্থানীয় এলাকা',
-    gu: 'સ્થાનિક વિસ્તાર', pa: 'ਸਥਾਨਕ ਖੇਤਰ', mr: 'स्थानिक क्षेत्र', ta: 'உள்ளூர் பகுதி',
-    te: 'స్థానిక ప్రాంతం', kn: 'ಸ್ಥಳೀಯ ಪ್ರದೇಶ', ml: 'പ്രാദേശിക പ്രദേശം', ur: 'مقامی علاقہ',
-    sd: 'مقامي علائقو', as: 'স্থানীয় এলেকা', mai: 'स्थानीय क्षेत्र', sat: 'ᱴᱚᱴᱷᱟᱠᱤᱭᱟᱹ ᱡᱟᱭᱜᱟ',
-    ks: 'مقامی علاقہٕ', en: 'Local Ward'
-  };
-  const defaultDistrict = defaultDistrictMap[selectedLang] || 'Local Ward';
-
-  const defaultLiveTagMap = {
-    hi: 'लाइव स्थान', bho: 'अबो के लोकेशन', or: 'ବର୍ତ୍ତମାନ ସ୍ଥାନ', bn: 'বর্তমান অবস্থান',
-    gu: 'લાઈવ સ્થાન', pa: 'ਲਾਈਵ ਟਿਕਾਣਾ', mr: 'थेट स्थान', ta: 'நேரலை இருப்பிடம்',
-    te: 'లైవ్ లొకేషన్', kn: 'ಲೈವ್ ಸ್ಥಳ', ml: 'ലൈവ് ലൊക്കേഷൻ', ur: 'لائیو مقام',
-    sd: 'لائيو لوڪيشن', as: 'লাইভ স্থান', mai: 'लाइव स्थान', sat: 'ᱞᱟᱭᱤᱵᱽ ᱡᱟᱭᱜᱟ',
-    ks: 'لائیو لوکیشن', en: 'Live Location'
-  };
-  const defaultLiveTag = defaultLiveTagMap[selectedLang] || 'Live Location';
+  const govPrefix = selectedLang === 'or' ? 'ଭାରତ ସରକାର' : selectedLang === 'bn' ? 'ভারত সরকার' : selectedLang === 'hi' || selectedLang === 'bho' ? 'भारत सरकार' : 'Government of India';
+  const defaultDistrict = selectedLang === 'or' ? 'ସ୍ଥାନୀୟ କ୍ଷେତ୍ର' : selectedLang === 'bn' ? 'স্থানীয় এলাকা' : selectedLang === 'hi' || selectedLang === 'bho' ? 'स्थानीय क्षेत्र' : 'Local Ward';
+  const defaultLiveTag = selectedLang === 'or' ? 'ବର୍ତ୍ତମାନ ସ୍ଥାନ' : selectedLang === 'bn' ? 'বর্তমান অবস্থান' : selectedLang === 'bho' ? 'अबो के लोकेशन' : selectedLang === 'hi' ? 'लाइव स्थान' : 'Live Location';
   const isLocReal = currentLocationName && currentLocationName !== 'Detecting Live Location...' && !currentLocationName.includes('Sundargarh');
   const t = {
     ...rawT,
@@ -2753,26 +2536,26 @@ function CitizenPortalApp() {
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-2 font-medium"
   }, /*#__PURE__*/React.createElement("span", {
-    className: "px-1.5 py-0.5 rounded bg-slate-800 text-white font-black text-[10px] tracking-wider"
-  }, "IN"), /*#__PURE__*/React.createElement("span", {
+    className: "text-sm"
+  }, "🇮🇳"), /*#__PURE__*/React.createElement("span", {
     className: "text-white font-bold tracking-wide"
-  }, t.govIndia || "Government of India • भारत सरकार"), /*#__PURE__*/React.createElement("span", {
-    className: "text-slate-500 hidden sm:inline"
+  }, t.govIndia), /*#__PURE__*/React.createElement("span", {
+    className: "text-[#a19b95] hidden sm:inline"
   }, "|"), /*#__PURE__*/React.createElement("span", {
     className: "text-slate-300 hidden sm:inline"
-  }, t.govState || "Government of Odisha • Sundargarh District (AC-134)")), /*#__PURE__*/React.createElement("div", {
+  }, t.govState)), /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-3 font-medium flex-wrap"
   }, /*#__PURE__*/React.createElement("span", {
-    className: "text-slate-300 hidden md:inline flex items-center gap-1"
-  }, /*#__PURE__*/React.createElement("span", { className: "text-pink-400" }, "📞"), " ", t.helplineNational || "National Helpline: 1947"), /*#__PURE__*/React.createElement("span", {
-    className: "text-slate-500 hidden md:inline"
-  }, "·"), /*#__PURE__*/React.createElement("span", {
-    className: "text-slate-300 hidden lg:inline flex items-center gap-1"
-  }, /*#__PURE__*/React.createElement("span", { className: "text-pink-400" }, "📞"), " ", t.helplineDistrict || "District Helpline: 1800-345-6770"), /*#__PURE__*/React.createElement("div", {
+    className: "text-slate-400 hidden md:inline"
+  }, "📞 ", t.helplineNational), /*#__PURE__*/React.createElement("span", {
+    className: "text-[#8b857f] hidden md:inline"
+  }, "•"), /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-400 hidden lg:inline"
+  }, "📞 ", t.helplineDistrict), /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-1.5 bg-slate-800 border border-slate-700 rounded-lg px-2 py-0.5 text-[10px] font-bold text-slate-200"
   }, /*#__PURE__*/React.createElement("span", {
     className: "text-slate-400"
-  }, t.textZoom || "Text:"), /*#__PURE__*/React.createElement("button", {
+  }, t.textZoom), /*#__PURE__*/React.createElement("button", {
     type: "button",
     onClick: () => document.body.style.fontSize = '90%',
     className: "hover:text-white px-1"
@@ -2817,33 +2600,27 @@ function CitizenPortalApp() {
   }, /*#__PURE__*/React.createElement("button", {
     type: "button",
     onClick: toggleVoiceGuide,
-    className: `h-9 px-3.5 flex items-center gap-1.5 rounded-full border text-xs font-bold cursor-pointer active:scale-95 transition-all shadow-xs voice-guide-toggle-btn ${
-      isVoiceGuideActive
-        ? "border-emerald-500 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:border-emerald-500/60 dark:text-emerald-300 ring-2 ring-emerald-500/20"
-        : "border-slate-200 dark:border-[#423f3b] bg-white hover:bg-slate-50 dark:bg-[#33302d] dark:hover:bg-slate-700 text-slate-500 dark:text-[#a19b95] opacity-80"
-    }`,
-    title: isVoiceGuideActive ? "Voice Assistant is ON - Click to Stop/Disable" : "Voice Assistant is OFF - Click to Enable"
+    className: `h-9 px-3 flex items-center gap-1.5 rounded-[1rem] border text-xs font-bold cursor-pointer active:scale-95 transition-all shadow-xs voice-guide-toggle-btn ${isVoiceGuideActive ? 'bg-[#d48c48] text-white border-emerald-500 ring-2 ring-[#d48c48]/30' : 'bg-[#f7f5f2] hover:bg-[#f0ece6] dark:bg-[#33302d] dark:hover:bg-slate-700 border-[#f0ece6] dark:border-[#423f3b] text-[#5a5551] dark:text-[#d1ccc6]'}`,
+    title: isVoiceGuideActive ? "Voice Assistant Active (Speaks on every click) - Tap to Mute" : "Voice Assistant Muted - Tap to Turn ON Spoken Guidance"
   }, /*#__PURE__*/React.createElement(Icons.Speaker, {
-    className: `w-4 h-4 ${isVoiceGuideActive ? "text-emerald-600 dark:text-emerald-400" : "text-slate-400 dark:text-slate-500"}`
+    className: `w-4 h-4 ${isVoiceGuideActive ? (isSpeaking ? 'text-white animate-bounce' : 'text-white') : 'text-[#d48c48] dark:text-[#e8a361]'}`
   }), /*#__PURE__*/React.createElement("span", {
-    className: `font-semibold ${isVoiceGuideActive ? "text-emerald-800 dark:text-emerald-300" : "text-slate-600 dark:text-slate-400"}`
-  }, isVoiceGuideActive ? "Voice Guide: ON" : "Voice Guide: OFF"), /*#__PURE__*/React.createElement("span", {
-    className: `w-2 h-2 rounded-full ${isVoiceGuideActive ? "bg-emerald-500 animate-pulse" : "bg-slate-300 dark:bg-slate-600"}`
-  })), (ttsPopupMessage || isSpeaking) && isVoiceGuideActive && /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-1"
+  }, isVoiceGuideActive ? (isSpeaking ? "🔊 बोल रहा है..." : "🔊 आवाज गाइड: ऑन") : "🔇 आवाज गाइड: म्यूट")), (ttsPopupMessage || isSpeaking) && /*#__PURE__*/React.createElement("div", {
     className: "fixed top-20 right-4 sm:right-8 z-50 w-[380px] sm:w-[480px] max-w-[94vw] px-4 py-3 rounded-[1.5rem] bg-white/95 dark:bg-[#282624]/95 backdrop-blur-md border-2 border-emerald-500/60 shadow-2xl animate-in slide-in-from-top-2 duration-200 text-left"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center justify-between gap-3"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-2 text-xs font-bold text-[#d48c48] dark:text-[#e8a361] flex-shrink-0"
   }, /*#__PURE__*/React.createElement("span", {
-    className: "w-2 h-2 rounded-full bg-emerald-500 animate-pulse"
+    className: "w-2 h-2 rounded-full bg-[#fff6e5]0 animate-pulse"
   }), /*#__PURE__*/React.createElement("span", null, "🔊 ", t.voiceGuide)), /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-2 flex-shrink-0"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-0.5 h-3"
   }, [0.4, 0.9, 0.6, 1.0, 0.5, 0.8, 0.4].map((f, i) => /*#__PURE__*/React.createElement("span", {
     key: i,
-    className: "w-0.75 bg-emerald-500 rounded-full animate-pulse",
+    className: "w-0.75 bg-[#fff6e5]0 rounded-full animate-pulse",
     style: {
       height: `${Math.round(11 * f)}px`,
       animationDelay: `${i * 100}ms`
@@ -2855,13 +2632,26 @@ function CitizenPortalApp() {
     title: "Dismiss"
   }, "✕"))), /*#__PURE__*/React.createElement("p", {
     className: "mt-1.5 text-xs sm:text-sm font-medium text-[#5a5551] dark:text-[#eae6e1] leading-relaxed"
-  }, "\"", typeof ttsPopupMessage === 'string' ? ttsPopupMessage : ttsPopupMessage?.text || ttsPopupMessage?.display || (t.brandTitle ? `${t.brandTitle} • ${t.voiceGuide}` : "Lok Swar Voice Assistant"), "\""))), currentView === 'citizen' && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("a", {
+  }, "\"", typeof ttsPopupMessage === 'string' ? ttsPopupMessage : ttsPopupMessage?.text || ttsPopupMessage?.display || "लोक स्वर में आपका स्वागत है।", "\""))), currentView === 'citizen' && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("a", {
     href: "index.html",
     className: "hidden md:flex px-3 py-1.5 rounded-[1rem] border border-[#f0ece6] dark:border-[#423f3b] font-bold text-xs bg-[#f7f5f2] hover:bg-[#f0ece6] dark:bg-[#33302d] dark:hover:bg-slate-700 text-[#5a5551] dark:text-[#d1ccc6] items-center gap-1.5 transition-all shadow-xs"
   }, /*#__PURE__*/React.createElement("span", null, t.gateway)), /*#__PURE__*/React.createElement("a", {
     href: "admin.html",
     className: "px-3 py-1.5 rounded-[1rem] font-bold text-xs bg-[#f7f5f2] hover:bg-[#f0ece6] dark:bg-[#33302d] dark:hover:bg-slate-700 text-[#5a5551] dark:text-[#d1ccc6] border border-[#f0ece6] dark:border-[#423f3b] flex items-center gap-1.5 transition-all shadow-xs"
-  }, /*#__PURE__*/React.createElement("span", null, t.adminSuite))), /*#__PURE__*/React.createElement("select", {
+  }, /*#__PURE__*/React.createElement("span", null, t.adminSuite))), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => { playChime('tap'); requestLocationAndAutoSetLanguage(true); },
+    className: "flex items-center gap-1.5 px-3 py-1.5 rounded-[1rem] border bg-[#fff6e5] hover:bg-emerald-100/90 dark:bg-[#3d2c1d]/60 dark:hover:bg-emerald-900/60 border-[#d48c48]/50 dark:border-[#c27a38]/50/80 text-emerald-800 dark:text-emerald-200 text-xs font-bold shadow-xs transition-all cursor-pointer",
+    title: "Click to refresh live GPS location"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "relative flex h-2 w-2 flex-shrink-0"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "relative inline-flex rounded-full h-2 w-2 bg-[#fff6e5]0"
+  })), /*#__PURE__*/React.createElement(Icons.MapPin, { className: "w-3.5 h-3.5 text-[#d48c48] dark:text-[#e8a361] flex-shrink-0" }), /*#__PURE__*/React.createElement("span", {
+    className: "max-w-[150px] truncate"
+  }, isDetectingLocation ? "Detecting GPS..." : (currentLocationName || "Live Location"))), /*#__PURE__*/React.createElement("select", {
     value: selectedLang,
     onChange: e => {
       try {
@@ -2882,31 +2672,31 @@ function CitizenPortalApp() {
     value: "en"
   }, "English (EN)"), /*#__PURE__*/React.createElement("option", {
     value: "ta"
-  }, "தமிழ் (TA)"), /*#__PURE__*/React.createElement("option", {
+  }, "🛕 தமிழ் (TA)"), /*#__PURE__*/React.createElement("option", {
     value: "te"
-  }, "తెలుగు (TE)"), /*#__PURE__*/React.createElement("option", {
+  }, "🏛️ తెలుగు (TE)"), /*#__PURE__*/React.createElement("option", {
     value: "kn"
-  }, "ಕನ್ನಡ (KN)"), /*#__PURE__*/React.createElement("option", {
+  }, "🏰 ಕನ್ನಡ (KN)"), /*#__PURE__*/React.createElement("option", {
     value: "ml"
-  }, "മലയാളം (ML)"), /*#__PURE__*/React.createElement("option", {
+  }, "🌴 മലയാളം (ML)"), /*#__PURE__*/React.createElement("option", {
     value: "mr"
-  }, "मराठी (MR)"), /*#__PURE__*/React.createElement("option", {
+  }, "🚩 मराठी (MR)"), /*#__PURE__*/React.createElement("option", {
     value: "gu"
-  }, "ગુજરાતી (GU)"), /*#__PURE__*/React.createElement("option", {
+  }, "🦁 ગુજરાતી (GU)"), /*#__PURE__*/React.createElement("option", {
     value: "pa"
-  }, "ਪੰਜਾਬੀ (PA)"), /*#__PURE__*/React.createElement("option", {
+  }, "🌾 ਪੰਜਾਬੀ (PA)"), /*#__PURE__*/React.createElement("option", {
     value: "ur"
-  }, "اردو (UR)"), /*#__PURE__*/React.createElement("option", {
+  }, "🌙 اردو (UR)"), /*#__PURE__*/React.createElement("option", {
     value: "as"
-  }, "অসমীয়া (AS)"), /*#__PURE__*/React.createElement("option", {
+  }, "🦏 অসমীয়া (AS)"), /*#__PURE__*/React.createElement("option", {
     value: "mai"
-  }, "मैथिली (MAI)"), /*#__PURE__*/React.createElement("option", {
+  }, "🛕 मैथिली (MAI)"), /*#__PURE__*/React.createElement("option", {
     value: "sat"
-  }, "ᱥᱟᱱᱛᱟᱲᱤ (SAT)"), /*#__PURE__*/React.createElement("option", {
+  }, "🌳 ᱥᱟᱱᱛᱟᱲᱤ (SAT)"), /*#__PURE__*/React.createElement("option", {
     value: "ks"
-  }, "کأشُر (KS)"), /*#__PURE__*/React.createElement("option", {
+  }, "🏔️ کأشُر (KS)"), /*#__PURE__*/React.createElement("option", {
     value: "sd"
-  }, "سنڌي (SD)")), /*#__PURE__*/React.createElement("button", {
+  }, "🏜️ سنڌي (SD)")), /*#__PURE__*/React.createElement("button", {
     type: "button",
     onClick: toggleDarkMode,
     className: "min-w-[36px] min-h-[36px] px-2.5 flex items-center justify-center gap-1.5 rounded-[1rem] border text-xs font-bold cursor-pointer active:scale-95 transition-all shadow-xs bg-[#f7f5f2] hover:bg-[#f0ece6] dark:bg-[#33302d] dark:hover:bg-slate-700 border-[#f0ece6] dark:border-[#423f3b] text-[#706a65] dark:text-amber-300",
@@ -2922,9 +2712,9 @@ function CitizenPortalApp() {
     title: t.notifications
   }, /*#__PURE__*/React.createElement(Icons.Bell, {
     className: "w-4 h-4"
-  }), /*#__PURE__*/React.createElement("span", {
+  }), unreadNotifCount > 0 && /*#__PURE__*/React.createElement("span", {
     className: "absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-600 text-white font-black text-[9px] flex items-center justify-center shadow-xs"
-  }, unreadNotifCount > 0 ? unreadNotifCount : 2)), /*#__PURE__*/React.createElement("a", {
+  }, unreadNotifCount)), /*#__PURE__*/React.createElement("a", {
     href: "profile.html",
     onClick: () => playChime('tap'),
     className: "flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-[1.5rem] bg-[#f7f5f2] hover:bg-[#f0ece6] dark:bg-[#33302d] dark:hover:bg-slate-700 border border-[#f0ece6] dark:border-[#423f3b] text-[#5a5551] dark:text-[#d1ccc6] text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer",
@@ -2939,7 +2729,7 @@ function CitizenPortalApp() {
     className: "absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-[#fff6e5]0 rounded-full border border-white dark:border-slate-900"
   })), /*#__PURE__*/React.createElement("span", {
     className: "truncate max-w-[110px]"
-  }, citizenUser?.name || "Rishav Yadav")))), submitSuccess && /*#__PURE__*/React.createElement("div", {
+  }, (citizenUser?.name && citizenUser?.name !== 'Rishav' && citizenUser?.name !== 'Rishav Yadav' ? citizenUser.name : "Citizen User"))))), submitSuccess && /*#__PURE__*/React.createElement("div", {
     className: "fixed top-18 left-1/2 -translate-x-1/2 z-50 max-w-xl w-[94vw] p-4 rounded-[1.5rem] border bg-[#d48c48] dark:bg-emerald-700 text-white shadow-2xl flex items-center justify-between gap-3 animate-in slide-in-from-top-4 duration-300"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-3 min-w-0"
@@ -2974,7 +2764,32 @@ function CitizenPortalApp() {
     className: "text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-[#4a4643] dark:text-white font-brand uppercase transition-colors"
   }, t.heroTitle), /*#__PURE__*/React.createElement("p", {
     className: "text-xs sm:text-sm font-semibold tracking-widest uppercase text-[#a19b95] dark:text-[#9e9790] transition-colors"
-  }, t.heroSubtitle)), /*#__PURE__*/React.createElement("div", {
+  }, t.heroSubtitle), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-center w-full pt-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "inline-flex items-center gap-2.5 px-5 py-2 rounded-[1.5rem] bg-white/95 dark:bg-[#282624]/95 border-2 border-emerald-500/40 dark:border-emerald-500/50 shadow-md text-xs font-bold text-[#5a5551] dark:text-[#eae6e1] backdrop-blur-md flex-wrap justify-center"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "relative flex h-2.5 w-2.5 flex-shrink-0"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "relative inline-flex rounded-full h-2.5 w-2.5 bg-[#fff6e5]0"
+  })), /*#__PURE__*/React.createElement(Icons.MapPin, { className: "w-4 h-4 text-[#d48c48] dark:text-[#e8a361] flex-shrink-0" }), /*#__PURE__*/React.createElement("span", {
+    className: "text-[#a19b95] dark:text-[#9e9790] font-medium"
+  }, "Live Detected Location:"), /*#__PURE__*/React.createElement("strong", {
+    className: "text-emerald-700 dark:text-emerald-300 font-extrabold text-sm"
+  }, isDetectingLocation ? "Detecting Live Location..." : (currentLocationName || "Detecting Live Location...")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => { playChime('tap'); requestLocationAndAutoSetLanguage(true); },
+    className: "px-2.5 py-1 rounded-lg bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-900/50 dark:hover:bg-emerald-900/80 text-emerald-800 dark:text-emerald-200 text-[11px] font-bold cursor-pointer transition-colors ml-1",
+    title: "Refresh Live GPS / IP Telemetry"
+  }, isDetectingLocation ? "⏳ Refreshing..." : "⟳ Refresh GPS"), /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-300 dark:text-[#706a65]"
+  }, "|"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => { playChime('tap'); setIsLocationSelectModalOpen(true); },
+    className: "text-[11px] font-bold text-[#8b857f] dark:text-[#b8b3ad] hover:text-[#d48c48] dark:hover:text-emerald-400 cursor-pointer"
+  }, "Change Location")))), /*#__PURE__*/React.createElement("div", {
     className: "w-full max-w-3xl z-20 space-y-3"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-2.5 flex-wrap"
@@ -3015,51 +2830,30 @@ function CitizenPortalApp() {
     className: "ml-2 w-6 h-6 rounded-full bg-[#f7f5f2] dark:bg-[#33302d] hover:bg-rose-500 hover:text-white text-[#a19b95] text-xs font-bold flex items-center justify-center cursor-pointer transition-colors",
     title: "Remove voice recording"
   }, "✕"))), isRecording && /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center justify-between gap-2 sm:gap-4 px-4 py-2 rounded-[1.5rem] bg-[#f7f5f2]/95 dark:bg-[#282624]/95 backdrop-blur-md border border-emerald-500/40 dark:border-emerald-500/40 text-[#5a5551] dark:text-[#d1ccc6] shadow-xs animate-in fade-in"
+    className: "flex items-center justify-between gap-3 px-4 py-2 rounded-[1.5rem] bg-[#f7f5f2]/90 dark:bg-[#282624]/90 backdrop-blur-md border border-emerald-500/40 dark:border-emerald-500/40 text-[#5a5551] dark:text-[#d1ccc6] shadow-xs animate-in fade-in"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-2 text-xs sm:text-sm font-semibold flex-shrink-0"
+    className: "flex items-center gap-2 text-xs sm:text-sm font-semibold truncate"
   }, /*#__PURE__*/React.createElement("span", {
-    className: "w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse inline-block flex-shrink-0"
+    className: "w-2.5 h-2.5 rounded-full bg-[#fff6e5]0 animate-pulse inline-block flex-shrink-0"
   }), /*#__PURE__*/React.createElement("span", {
-    className: "font-mono text-xs font-bold px-2 py-0.5 rounded-full bg-[#f0ece6] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#e0dcd5] dark:border-[#423f3b]"
-  }, Math.floor(recordingTimer / 60), ":", (recordingTimer % 60).toString().padStart(2, '0'))), /*#__PURE__*/React.createElement("div", {
-    className: "flex-1 flex items-center justify-center gap-[2.5px] sm:gap-[3px] h-7 px-2 overflow-hidden",
-    title: "Voice frequency pattern"
-  }, voiceWaveform.map((heightPx, idx) => /*#__PURE__*/React.createElement("span", {
-    key: idx,
-    className: "w-[2.5px] sm:w-[3px] rounded-full bg-emerald-500 dark:bg-emerald-400 transition-all duration-75 ease-out inline-block",
-    style: {
-      height: `${heightPx}px`,
-      opacity: heightPx > 5 ? 1 : 0.45
-    }
-  }))), /*#__PURE__*/React.createElement("div", {
+    className: "truncate text-[#706a65] dark:text-[#d1ccc6]"
+  }, "🎙️ ", t.recordingPrompt, " (", selectedLang.toUpperCase(), ")")), /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-2 flex-shrink-0"
   }, /*#__PURE__*/React.createElement("span", {
-    className: "hidden md:inline text-[11px] font-medium text-[#706a65] dark:text-[#b8b3ad]"
-  }, t.recordingPrompt, " (", selectedLang.toUpperCase(), ")"), /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    onClick: stopVoiceRecording,
-    className: "px-2.5 py-1 text-xs font-bold rounded-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs cursor-pointer transition-colors flex items-center gap-1",
-    title: "Finish recording"
-  }, "✓ Done"))), /*#__PURE__*/React.createElement("form", {
+    className: "font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#f0ece6] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#f0ece6] dark:border-[#423f3b]"
+  }, Math.floor(recordingTimer / 60), ":", (recordingTimer % 60).toString().padStart(2, '0')))), /*#__PURE__*/React.createElement("form", {
     onSubmit: handleCitizenReportSubmit,
     className: "w-full"
   }, /*#__PURE__*/React.createElement("div", {
-    className: `w-full rounded-full border shadow-sm hover:shadow-md transition-all px-3 py-1.5 sm:px-4 sm:py-2 flex items-center gap-2 sm:gap-3 bg-white dark:bg-[#282624] ${isRecording ? 'border-emerald-500 dark:border-emerald-500 ring-2 ring-emerald-500/20' : 'border-[#f0ece6] dark:border-[#33302d]'}`
+    className: `w-full rounded-full border shadow-sm hover:shadow-md transition-all px-3 py-1.5 sm:px-4 sm:py-2 flex items-center gap-2 sm:gap-3 bg-white dark:bg-[#282624] ${isRecording ? 'border-emerald-500 dark:border-emerald-500 ring-2 ring-[#d48c48]/20' : 'border-[#f0ece6] dark:border-[#33302d]'}`
   }, /*#__PURE__*/React.createElement("button", {
     type: "button",
     onClick: toggleVoiceRecording,
-    className: `w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer flex-shrink-0 ${isRecording ? "bg-rose-500 text-white animate-pulse ring-4 ring-rose-100 dark:ring-rose-950/60" : "text-[#d48c48] dark:text-[#e8a361] hover:bg-[#fff6e5] dark:hover:bg-slate-800"}`,
+    className: `w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer flex-shrink-0 ${isRecording ? "bg-[#d48c48] text-white animate-pulse ring-4 ring-emerald-100 dark:ring-emerald-950/60" : "text-[#d48c48] dark:text-[#e8a361] hover:bg-[#fff6e5] dark:hover:bg-slate-800"}`,
     title: isRecording ? t.cancelBtn : t.recordingPrompt
   }, /*#__PURE__*/React.createElement(Icons.Mic, {
     className: "w-5 h-5"
-  })), isRecording && /*#__PURE__*/React.createElement("div", {
-    className: "hidden sm:flex items-center gap-[2px] h-5 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-500/20 flex-shrink-0 animate-in fade-in"
-  }, voiceWaveform.slice(0, 12).map((h, i) => /*#__PURE__*/React.createElement("span", {
-    key: i,
-    className: "w-[2px] rounded-full bg-emerald-600 dark:bg-emerald-400 transition-all duration-75",
-    style: { height: `${Math.max(3, Math.min(16, Math.round(h * 0.7)))}px` }
-  }))), /*#__PURE__*/React.createElement("textarea", {
+  })), /*#__PURE__*/React.createElement("textarea", {
     ref: textareaRef,
     rows: 1,
     value: inputText,
@@ -3111,7 +2905,13 @@ function CitizenPortalApp() {
     title: "Attach Photo Evidence"
   }, /*#__PURE__*/React.createElement(Icons.Camera, {
     className: "w-5 h-5"
-  })), /*#__PURE__*/React.createElement("input", {
+  })), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => fetchRealtimeTranslation(inputText, selectedLang, true),
+    disabled: isTranslatingRealtime || !inputText || !inputText.trim(),
+    className: `px-2.5 py-1 rounded-full text-xs font-bold flex items-center justify-center cursor-pointer flex-shrink-0 transition-all border ${isTranslatingRealtime ? 'bg-blue-50 text-blue-600 border-blue-300 animate-pulse' : hasAutoTranslated ? 'bg-emerald-100 text-emerald-700 border-[#d48c48]/50 dark:bg-[#3d2c1d] dark:text-emerald-300 dark:border-[#c27a38]/50' : 'bg-[#f7f5f2] dark:bg-[#33302d] text-[#8b857f] dark:text-[#b8b3ad] border-[#f0ece6] dark:border-[#423f3b] hover:border-emerald-400'}`,
+    title: "Auto-translate input text to English"
+  }, isTranslatingRealtime ? "Translating..." : hasAutoTranslated ? "✓ English" : "A → En"), /*#__PURE__*/React.createElement("input", {
     ref: fileInputRef,
     type: "file",
     accept: "image/*",
@@ -3147,18 +2947,36 @@ function CitizenPortalApp() {
     title: t.submitBtn
   }, isSubmittedButton ? /*#__PURE__*/React.createElement("span", {
     className: "flex items-center gap-1.5 font-black text-white"
-  }, /*#__PURE__*/React.createElement("span", null, "✓"), /*#__PURE__*/React.createElement("span", null, t.submittedBtn || "Submitted")) : isSubmittingAnim ? /*#__PURE__*/React.createElement("span", {
+  }, /*#__PURE__*/React.createElement("span", null, "✓"), /*#__PURE__*/React.createElement("span", null, t.submittedBtn)) : isSubmittingAnim ? /*#__PURE__*/React.createElement("span", {
     className: "flex items-center gap-1.5"
   }, /*#__PURE__*/React.createElement("span", {
     className: "w-3 h-3 border-2 border-white dark:border-slate-900 border-t-transparent rounded-full animate-spin"
-  }), /*#__PURE__*/React.createElement("span", null, t.submitting || "Submitting...")) : /*#__PURE__*/React.createElement("span", null, "Submit Report"))))), /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement("span", null, t.submitting)) : /*#__PURE__*/React.createElement("span", null, t.submitBtn)))), hasAutoTranslated && originalRegionalText && /*#__PURE__*/React.createElement("div", {
+    className: "px-4 py-2 rounded-[1.5rem] bg-blue-50/90 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/70 text-xs text-blue-900 dark:text-blue-200 flex items-center justify-between gap-3 animate-in fade-in shadow-xs backdrop-blur-sm"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 min-w-0"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-sm"
+  }, "🌐"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-[11px] sm:text-xs truncate"
+  }, "Auto-translated to English: ", /*#__PURE__*/React.createElement("span", {
+    className: "font-normal italic text-[#8b857f] dark:text-[#b8b3ad] truncate"
+  }, `"${originalRegionalText}"`))), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => {
+      playChime("tap");
+      setInputText(originalRegionalText);
+      setHasAutoTranslated(false);
+    },
+    className: "text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer flex-shrink-0"
+  }, "↩ Undo to Original"))), /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-10 sm:mt-12 mb-8 w-full max-w-5xl z-20"
   }, /*#__PURE__*/React.createElement("div", {
     onClick: () => {
       setSelectedDepartmentFilter('roads');
       navigateView('admin_overview');
     },
-    className: "p-6 rounded-[1.75rem] flex flex-col justify-between h-48 bg-white dark:bg-[#282624] border border-slate-200/90 dark:border-[#33302d] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer text-[#4a4643] dark:text-white group"
+    className: "p-6 rounded-[2.5rem] flex flex-col justify-between h-44 sm:h-48 bg-white dark:bg-[#282624] border border-[#f0ece6]/80 dark:border-[#33302d] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer text-[#4a4643] dark:text-white group"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-start justify-between"
   }, /*#__PURE__*/React.createElement(Icons.RoadIllustration, {
@@ -3174,7 +2992,7 @@ function CitizenPortalApp() {
       setSelectedDepartmentFilter('all');
       navigateView('admin_overview');
     },
-    className: "p-6 rounded-[1.75rem] flex flex-col justify-between h-48 bg-white dark:bg-[#282624] border border-slate-200/90 dark:border-[#33302d] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer text-[#4a4643] dark:text-white group"
+    className: "p-6 rounded-[2.5rem] flex flex-col justify-between h-44 sm:h-48 bg-white dark:bg-[#282624] border border-[#f0ece6]/80 dark:border-[#33302d] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer text-[#4a4643] dark:text-white group"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-start justify-between"
   }, /*#__PURE__*/React.createElement(Icons.ProgressTicket, {
@@ -3190,7 +3008,7 @@ function CitizenPortalApp() {
       setSelectedDepartmentFilter('all');
       navigateView('gis_map');
     },
-    className: "p-6 rounded-[1.75rem] flex flex-col justify-between h-48 bg-white dark:bg-[#282624] border border-slate-200/90 dark:border-[#33302d] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer text-[#4a4643] dark:text-white group"
+    className: "p-6 rounded-[2.5rem] flex flex-col justify-between h-44 sm:h-48 bg-white dark:bg-[#282624] border border-[#f0ece6]/80 dark:border-[#33302d] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer text-[#4a4643] dark:text-white group"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-start justify-between"
   }, /*#__PURE__*/React.createElement(Icons.GisHotspotMap, {
@@ -3203,7 +3021,7 @@ function CitizenPortalApp() {
     className: "text-xs text-[#a19b95] dark:text-[#9e9790] mt-1 font-medium line-clamp-1"
   }, t.cardGisSubtitle || "Real GPS coordinates & evidence"))), /*#__PURE__*/React.createElement("div", {
     onClick: () => window.location.href = 'profile.html',
-    className: "p-6 rounded-[1.75rem] flex flex-col justify-between h-48 bg-white dark:bg-[#282624] border border-slate-200/90 dark:border-[#33302d] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer text-[#4a4643] dark:text-white group"
+    className: "p-6 rounded-[2.5rem] flex flex-col justify-between h-44 sm:h-48 bg-white dark:bg-[#282624] border border-[#f0ece6]/80 dark:border-[#33302d] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer text-[#4a4643] dark:text-white group"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-start justify-between"
   }, /*#__PURE__*/React.createElement(Icons.CitizenProfileGroup, {
@@ -3412,23 +3230,9 @@ function CitizenPortalApp() {
         className: "px-2 py-0.5 rounded-lg bg-slate-900 dark:bg-[#f7f5f2] text-white dark:text-[#4a4643] font-mono text-[10px] font-black"
       }, "#", rankIdx + 1, " ", t.priorityRank), /*#__PURE__*/React.createElement("span", {
         className: "font-mono text-xs font-bold text-[#a19b95] dark:text-[#9e9790]"
-      }, "#", prob.id)), /*#__PURE__*/React.createElement("div", {
-        className: "space-y-1.5 pt-1"
-      }, /*#__PURE__*/React.createElement("div", {
-        className: "flex items-center gap-1.5 flex-wrap"
-      }, /*#__PURE__*/React.createElement("span", {
-        className: "inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-100/90 dark:bg-blue-950 text-blue-800 dark:text-blue-300 font-mono text-[10px] font-bold border border-blue-200 dark:border-blue-900"
-      }, "🇬🇧 English Translation"), (prob.spokenLanguage || prob.titleOriginal) && /*#__PURE__*/React.createElement("span", {
-        className: "inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-100/90 dark:bg-amber-950 text-amber-800 dark:text-amber-300 font-mono text-[10px] font-bold border border-amber-200 dark:border-amber-900"
-      }, "🗣️ Spoken in ", prob.spokenLanguage || (selectedLang !== 'en' ? selectedLang.toUpperCase() : "Regional Voice"))), /*#__PURE__*/React.createElement("h4", {
-        className: "font-bold text-base text-[#4a4643] dark:text-white leading-snug"
-      }, prob.directEnglishTranslation || prob.title || prob.aiAnalyzedTitle), prob.titleOriginal && prob.titleOriginal !== (prob.directEnglishTranslation || prob.title) && /*#__PURE__*/React.createElement("div", {
-        className: "p-2 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-900/40 text-xs mt-1"
-      }, /*#__PURE__*/React.createElement("div", {
-        className: "text-[10px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300 flex items-center gap-1"
-      }, /*#__PURE__*/React.createElement("span", null, "🗣️ Original Spoken / Regional Text:")), /*#__PURE__*/React.createElement("p", {
-        className: "font-medium text-[#4a4643] dark:text-[#eae6e1] italic mt-0.5 text-xs sm:text-sm"
-      }, "\"", prob.titleOriginal, "\"")))), /*#__PURE__*/React.createElement("div", {
+      }, "#", prob.id)), /*#__PURE__*/React.createElement("h4", {
+        className: "font-bold text-base text-[#4a4643] dark:text-white pt-1"
+      }, selectedLang !== 'en' && prob.titleOriginal ? prob.titleOriginal : prob.title || prob.aiAnalyzedTitle)), /*#__PURE__*/React.createElement("div", {
         className: "flex items-center gap-2 flex-shrink-0"
       }, /*#__PURE__*/React.createElement("button", {
         type: "button",
@@ -3880,7 +3684,89 @@ function CitizenPortalApp() {
   }, t.cancelBtn), /*#__PURE__*/React.createElement("button", {
     type: "submit",
     className: "flex-1 py-3 px-4 rounded-[1.5rem] bg-blue-600 hover:bg-blue-500 text-white font-black text-xs shadow-lg cursor-pointer flex items-center justify-center gap-2 active:scale-95 transition-all"
-  }, /*#__PURE__*/React.createElement("span", null, t.locBtnSubmitManual)))))), /*#__PURE__*/React.createElement("footer", {
+  }, /*#__PURE__*/React.createElement("span", null, t.locBtnSubmitManual)))))), currentView === 'citizen' && /*#__PURE__*/React.createElement("section", {
+    className: "w-full max-w-5xl mx-auto my-12 px-4 animate-in fade-in duration-300"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "relative overflow-hidden rounded-[2.5rem] border p-6 sm:p-8 bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 border-[#f0ece6] dark:border-[#33302d] shadow-xl"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "absolute -top-24 -left-24 w-64 h-64 bg-[#fff6e5]0/10 dark:bg-[#fff6e5]0/15 rounded-full blur-3xl pointer-events-none"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "absolute -bottom-24 -right-24 w-64 h-64 bg-blue-500/10 dark:bg-blue-500/15 rounded-full blur-3xl pointer-events-none"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "relative z-10 text-center space-y-2 mb-8"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-emerald-100 dark:bg-[#3d2c1d]/80 text-emerald-800 dark:text-emerald-300 border border-[#d48c48]/50 dark:border-[#c27a38]/50/60 shadow-xs"
+  }, /*#__PURE__*/React.createElement("span", null, "✨"), /*#__PURE__*/React.createElement("span", null, "CREATORS & ARCHITECTS")), /*#__PURE__*/React.createElement("h2", {
+    className: "text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-[#4a4643] dark:text-white uppercase font-brand"
+  }, "DEVELOPED BY TEAM ARSHRIVA"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs sm:text-sm text-[#a19b95] dark:text-[#9e9790] max-w-xl mx-auto font-medium"
+  }, "Engineered for Next-Gen Civic Intelligence, Automated Governance & Multilingual Real-Time Public Infrastructure.")), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "p-6 rounded-[1.5rem] border transition-all duration-200 hover:shadow-lg hover:-translate-y-1 bg-white/90 dark:bg-[#282624]/90 backdrop-blur-md border-[#f0ece6] dark:border-[#33302d] flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left group"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "relative flex-shrink-0"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-emerald-500 shadow-md ring-4 ring-[#d48c48]/20 group-hover:ring-[#d48c48]/40 transition-all flex items-center justify-center bg-[#f7f5f2] dark:bg-[#33302d]"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "assets/swati_chaudhary.jpg",
+    alt: "Swati Chaudhary",
+    className: "w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110"
+  })), /*#__PURE__*/React.createElement("span", {
+    className: "absolute bottom-0 right-0 w-6 h-6 rounded-full bg-[#fff6e5]0 text-white flex items-center justify-center text-[10px] font-bold shadow border-2 border-white dark:border-slate-900"
+  }, "★")), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2 flex-1"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-center sm:justify-start gap-2 flex-wrap"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-lg sm:text-xl font-black text-[#4a4643] dark:text-white"
+  }, "Swati Chaudhary"), /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-[#3d2c1d] text-emerald-800 dark:text-emerald-300 border border-[#d48c48]/50 dark:border-emerald-800"
+  }, "CSE-2 • 2ND YEAR")), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-bold text-[#d48c48] dark:text-[#e8a361] mt-0.5"
+  }, "Full-Stack Developer & UI Architect")), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-[#8b857f] dark:text-[#b8b3ad] leading-relaxed"
+  }, "Leading Multilingual Indic Natural Language Processing, Interactive React Interface Systems, Aadhaar Sandbox e-KYC Verification, and Community Intelligence Ledgers."), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-center sm:justify-start gap-1.5 flex-wrap pt-1"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#f7f5f2] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#f0ece6] dark:border-[#423f3b]"
+  }, "React Architecture"), /*#__PURE__*/React.createElement("span", {
+    className: "px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#f7f5f2] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#f0ece6] dark:border-[#423f3b]"
+  }, "Indic NLP"), /*#__PURE__*/React.createElement("span", {
+    className: "px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#f7f5f2] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#f0ece6] dark:border-[#423f3b]"
+  }, "Aadhaar e-KYC")))), /*#__PURE__*/React.createElement("div", {
+    className: "p-6 rounded-[1.5rem] border transition-all duration-200 hover:shadow-lg hover:-translate-y-1 bg-white/90 dark:bg-[#282624]/90 backdrop-blur-md border-[#f0ece6] dark:border-[#33302d] flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left group"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "relative flex-shrink-0"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-blue-500 shadow-md ring-4 ring-blue-500/20 group-hover:ring-blue-500/40 transition-all flex items-center justify-center bg-[#f7f5f2] dark:bg-[#33302d]"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "assets/shaurya_sharma.jpg",
+    alt: "Shaurya Sharma",
+    className: "w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110"
+  })), /*#__PURE__*/React.createElement("span", {
+    className: "absolute bottom-0 right-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-[10px] font-bold shadow border-2 border-white dark:border-slate-900"
+  }, "★")), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2 flex-1"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-center sm:justify-start gap-2 flex-wrap"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-lg sm:text-xl font-black text-[#4a4643] dark:text-white"
+  }, "Shaurya Sharma"), /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] font-black px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-800"
+  }, "CSE-2 • 2ND YEAR")), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-bold text-blue-600 dark:text-blue-400 mt-0.5"
+  }, "Lead Systems Engineer & Data Strategist")), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-[#8b857f] dark:text-[#b8b3ad] leading-relaxed"
+  }, "Architecting Multi-Sensor Satellite Grounding, Sentinel-2 Multispectral Telemetry, Leaflet GIS Hotspot Mapping, and Autonomous UAV Drone Inspection Workflows."), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-center sm:justify-start gap-1.5 flex-wrap pt-1"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#f7f5f2] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#f0ece6] dark:border-[#423f3b]"
+  }, "GIS & Telemetry"), /*#__PURE__*/React.createElement("span", {
+    className: "px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#f7f5f2] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#f0ece6] dark:border-[#423f3b]"
+  }, "Sentinel-2 Satellite"), /*#__PURE__*/React.createElement("span", {
+    className: "px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#f7f5f2] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#f0ece6] dark:border-[#423f3b]"
+  }, "Drone Systems"))))))), /*#__PURE__*/React.createElement("footer", {
     className: "w-full text-center py-3 text-[11px] font-semibold text-slate-400"
   }, t.heroTitle, " • ", t.brandSub, " • ", localizeAddress(currentLocationName, selectedLang) || t.constituencyTag));
 }

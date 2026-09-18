@@ -52,6 +52,21 @@
       background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1.2px, transparent 1.2px) !important;
       background-size: 24px 24px !important;
     }
+    @keyframes blob {
+      0% { transform: translate(0px, 0px) scale(1); }
+      33% { transform: translate(30px, -50px) scale(1.1); }
+      66% { transform: translate(-20px, 20px) scale(0.9); }
+      100% { transform: translate(0px, 0px) scale(1); }
+    }
+    .animate-blob {
+      animation: blob 7s infinite;
+    }
+    .animation-delay-2000 {
+      animation-delay: 2s;
+    }
+    .animation-delay-4000 {
+      animation-delay: 4s;
+    }
   </style>
 </head>
 <body class="antialiased bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-emerald-600 selection:text-white relative">
@@ -1457,31 +1472,31 @@ function PortalLandingGateway() {
     value: "bn"
   }, "🌿 বাংলা (BN)"), /*#__PURE__*/React.createElement("option", {
     value: "ta"
-  }, "தமிழ் (TA)"), /*#__PURE__*/React.createElement("option", {
+  }, "🛕 தமிழ் (TA)"), /*#__PURE__*/React.createElement("option", {
     value: "te"
-  }, "తెలుగు (TE)"), /*#__PURE__*/React.createElement("option", {
+  }, "🏛️ తెలుగు (TE)"), /*#__PURE__*/React.createElement("option", {
     value: "kn"
-  }, "ಕನ್ನಡ (KN)"), /*#__PURE__*/React.createElement("option", {
+  }, "🏰 ಕನ್ನಡ (KN)"), /*#__PURE__*/React.createElement("option", {
     value: "ml"
-  }, "മലയാളം (ML)"), /*#__PURE__*/React.createElement("option", {
+  }, "🌴 മലയാളം (ML)"), /*#__PURE__*/React.createElement("option", {
     value: "mr"
-  }, "मराठी (MR)"), /*#__PURE__*/React.createElement("option", {
+  }, "🚩 मराठी (MR)"), /*#__PURE__*/React.createElement("option", {
     value: "gu"
-  }, "ગુજરાતી (GU)"), /*#__PURE__*/React.createElement("option", {
+  }, "🦁 ગુજરાતી (GU)"), /*#__PURE__*/React.createElement("option", {
     value: "pa"
-  }, "ਪੰਜਾਬੀ (PA)"), /*#__PURE__*/React.createElement("option", {
+  }, "🌾 ਪੰਜਾਬੀ (PA)"), /*#__PURE__*/React.createElement("option", {
     value: "ur"
-  }, "اردو (UR)"), /*#__PURE__*/React.createElement("option", {
+  }, "🌙 اردو (UR)"), /*#__PURE__*/React.createElement("option", {
     value: "as"
-  }, "অসমীয়া (AS)"), /*#__PURE__*/React.createElement("option", {
+  }, "🦏 অসমীয়া (AS)"), /*#__PURE__*/React.createElement("option", {
     value: "mai"
-  }, "मैथिली (MAI)"), /*#__PURE__*/React.createElement("option", {
+  }, "🛕 मैथिली (MAI)"), /*#__PURE__*/React.createElement("option", {
     value: "sat"
-  }, "ᱥᱟᱱᱛᱟᱲᱤ (SAT)"), /*#__PURE__*/React.createElement("option", {
+  }, "🌳 ᱥᱟᱱᱛᱟᱲᱤ (SAT)"), /*#__PURE__*/React.createElement("option", {
     value: "ks"
-  }, "کأشُر (KS)"), /*#__PURE__*/React.createElement("option", {
+  }, "🏔️ کأشُر (KS)"), /*#__PURE__*/React.createElement("option", {
     value: "sd"
-  }, "سنڌي (SD)")), /*#__PURE__*/React.createElement("button", {
+  }, "🏜️ سنڌي (SD)")), /*#__PURE__*/React.createElement("button", {
     type: "button",
     onClick: toggleDarkMode,
     className: "min-w-[36px] min-h-[36px] px-2.5 flex items-center justify-center gap-1.5 rounded-xl border text-xs font-bold cursor-pointer active:scale-95 transition-all shadow-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-amber-300",
@@ -1499,7 +1514,11 @@ function PortalLandingGateway() {
     className: "font-black"
   }, t.logout || "Logout")))), /*#__PURE__*/React.createElement("main", {
     className: "flex-1 max-w-4xl w-full mx-auto px-4 py-8 z-10 relative flex flex-col justify-center items-center text-center space-y-6"
-  }, activeSession && /*#__PURE__*/React.createElement("div", {
+  }, 
+  /*#__PURE__*/React.createElement("div", { className: "absolute top-0 -left-12 w-72 sm:w-96 h-72 sm:h-96 bg-emerald-400 rounded-full mix-blend-multiply filter blur-[80px] opacity-40 animate-blob dark:bg-emerald-700 dark:opacity-20 pointer-events-none" }),
+  /*#__PURE__*/React.createElement("div", { className: "absolute top-0 -right-12 w-72 sm:w-96 h-72 sm:h-96 bg-amber-400 rounded-full mix-blend-multiply filter blur-[80px] opacity-40 animate-blob animation-delay-2000 dark:bg-amber-700 dark:opacity-20 pointer-events-none" }),
+  /*#__PURE__*/React.createElement("div", { className: "absolute -bottom-8 left-20 w-72 sm:w-96 h-72 sm:h-96 bg-orange-400 rounded-full mix-blend-multiply filter blur-[80px] opacity-40 animate-blob animation-delay-4000 dark:bg-orange-700 dark:opacity-20 pointer-events-none" }),
+  activeSession && /*#__PURE__*/React.createElement("div", {
     className: "w-full max-w-xl p-3.5 rounded-2xl border bg-emerald-50/90 dark:bg-emerald-950/50 border-emerald-300 dark:border-emerald-700 text-slate-900 dark:text-white flex items-center justify-between gap-3 shadow-md animate-in fade-in slide-in-from-top-2"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-2.5 min-w-0"
@@ -1527,7 +1546,7 @@ function PortalLandingGateway() {
   }, t.title), /*#__PURE__*/React.createElement("p", {
     className: "text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400"
   }, t.subtitle)), /*#__PURE__*/React.createElement("div", {
-    className: "w-full max-w-xl rounded-[2.5rem] p-8 sm:p-10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] bg-white/80 dark:bg-[#282624]/80 border border-white/50 dark:border-[#423f3b]/50 backdrop-blur-2xl text-left space-y-8 transition-all hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)]"
+    className: "w-full max-w-xl rounded-[2.5rem] p-8 sm:p-10 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] bg-white/70 dark:bg-[#1a1918]/70 border border-white/60 dark:border-white/10 backdrop-blur-3xl text-left space-y-8 transition-all hover:shadow-[0_8px_32px_0_rgba(31,38,135,0.1)] relative z-10"
   }, /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-2 p-2 rounded-2xl bg-[#f7f5f2] dark:bg-[#1f1e1c] border border-[#f0ece6] dark:border-[#33302d] gap-2 shadow-inner"
   }, /*#__PURE__*/React.createElement("button", {
@@ -1537,7 +1556,7 @@ function PortalLandingGateway() {
       setActiveTab('citizen');
       setCitizenError('');
     },
-    className: `py-3.5 px-3 rounded-[1rem] text-xs sm:text-sm font-bold transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 ${activeTab === 'citizen' ? 'bg-white dark:bg-[#33302d] text-[#d48c48] dark:text-[#f3d0aa] border border-[#f0ece6] dark:border-[#423f3b] shadow-[0_4px_12px_rgba(0,0,0,0.05)]' : 'text-[#8b857f] dark:text-[#8b857f] hover:text-[#4a4643] dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/5'}`
+    className: `py-3.5 px-3 rounded-[1rem] text-xs sm:text-sm font-bold transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 ${activeTab === 'citizen' ? 'bg-white dark:bg-[#33302d] text-[#d48c48] dark:text-[#f3d0aa] border border-[#f0ece6] dark:border-[#423f3b] shadow-[0_4px_12px_rgba(0,0,0,0.05)]' : 'text-[#8b857f] dark:text-[#8b857f] hover:text-[#4a4643] dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/10'}`
   }, /*#__PURE__*/React.createElement("span", null, t.tabCitizen)), /*#__PURE__*/React.createElement("button", {
     type: "button",
     onClick: () => {
@@ -1545,7 +1564,7 @@ function PortalLandingGateway() {
       setActiveTab('admin');
       setAdminError('');
     },
-    className: `py-3.5 px-3 rounded-[1rem] text-xs sm:text-sm font-bold transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 ${activeTab === 'admin' ? 'bg-white dark:bg-[#33302d] text-[#d48c48] dark:text-[#f3d0aa] border border-[#f0ece6] dark:border-[#423f3b] shadow-[0_4px_12px_rgba(0,0,0,0.05)]' : 'text-[#8b857f] dark:text-[#8b857f] hover:text-[#4a4643] dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/5'}`
+    className: `py-3.5 px-3 rounded-[1rem] text-xs sm:text-sm font-bold transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 ${activeTab === 'admin' ? 'bg-white dark:bg-[#33302d] text-[#d48c48] dark:text-[#f3d0aa] border border-[#f0ece6] dark:border-[#423f3b] shadow-[0_4px_12px_rgba(0,0,0,0.05)]' : 'text-[#8b857f] dark:text-[#8b857f] hover:text-[#4a4643] dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/10'}`
   }, /*#__PURE__*/React.createElement("span", null, t.tabAdmin))), activeTab === 'citizen' && /*#__PURE__*/React.createElement("div", {
     className: "space-y-4 animate-in fade-in-50"
   }, /*#__PURE__*/React.createElement("div", {
@@ -1590,7 +1609,7 @@ function PortalLandingGateway() {
     value: regName,
     onChange: e => setRegName(e.target.value),
     placeholder: "Enter your full name",
-    className: "w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-semibold outline-none focus:border-emerald-500"
+    className: "w-full p-4 rounded-2xl bg-white/50 dark:bg-[#1a1918]/50 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-semibold outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all shadow-inner backdrop-blur-md"
   })), /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-1 sm:grid-cols-2 gap-3"
   }, /*#__PURE__*/React.createElement("div", {
@@ -1608,7 +1627,7 @@ function PortalLandingGateway() {
     value: regMobile,
     onChange: e => setRegMobile(e.target.value.replace(/\D/g, '')),
     placeholder: "Enter 10-digit mobile number",
-    className: "flex-1 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-mono font-bold outline-none focus:border-emerald-500 tracking-wider"
+    className: "flex-1 p-4 rounded-2xl bg-white/50 dark:bg-[#1a1918]/50 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-mono font-bold outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all shadow-inner backdrop-blur-md tracking-wider"
   }))), /*#__PURE__*/React.createElement("div", {
     className: "space-y-1"
   }, /*#__PURE__*/React.createElement("label", {
@@ -1619,7 +1638,7 @@ function PortalLandingGateway() {
     value: regPassword,
     onChange: e => setRegPassword(e.target.value),
     placeholder: "Create password (min 4 characters)",
-    className: "w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-bold outline-none focus:border-emerald-500"
+    className: "w-full p-4 rounded-2xl bg-white/50 dark:bg-[#1a1918]/50 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-bold outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all shadow-inner backdrop-blur-md"
   }))), /*#__PURE__*/React.createElement("div", {
     className: "space-y-1"
   }, /*#__PURE__*/React.createElement("label", {
@@ -1629,11 +1648,11 @@ function PortalLandingGateway() {
     value: regVillage,
     onChange: e => setRegVillage(e.target.value),
     placeholder: "Enter your village, ward, or gram panchayat",
-    className: "w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-semibold outline-none focus:border-emerald-500"
+    className: "w-full p-4 rounded-2xl bg-white/50 dark:bg-[#1a1918]/50 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-semibold outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all shadow-inner backdrop-blur-md"
   })), /*#__PURE__*/React.createElement("button", {
     type: "submit",
     disabled: isSubmittingAuth,
-    className: "w-full py-4 mt-4 rounded-2xl bg-gradient-to-r from-[#d48c48] to-[#c27a38] hover:from-[#c27a38] hover:to-[#b36d2f] text-white font-bold text-sm shadow-[0_8px_20px_-6px_rgba(212,140,72,0.5)] flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 active:scale-95 disabled:opacity-50 border-none"
+    className: "w-full py-4 mt-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-700 hover:from-emerald-400 hover:to-emerald-600 text-white font-bold text-sm shadow-[0_8px_30px_-6px_rgba(16,185,129,0.6)] hover:shadow-[0_12px_40px_-6px_rgba(16,185,129,0.8)] flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-95 disabled:opacity-50 border-none relative overflow-hidden group"
   }, /*#__PURE__*/React.createElement("span", null, isSubmittingAuth ? 'Creating Account...' : '✨ Create Free Account & Enter Portal')), /*#__PURE__*/React.createElement("div", {
     className: "pt-1 text-center text-xs text-slate-500"
   }, /*#__PURE__*/React.createElement("span", null, "Already registered? "), /*#__PURE__*/React.createElement("button", {
@@ -1662,7 +1681,7 @@ function PortalLandingGateway() {
     value: resetIdentifier,
     onChange: e => setResetIdentifier(e.target.value),
     placeholder: "Enter registered 10-digit mobile number",
-    className: "w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-mono font-bold outline-none focus:border-emerald-500"
+    className: "w-full p-4 rounded-2xl bg-white/50 dark:bg-[#1a1918]/50 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-mono font-bold outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all shadow-inner backdrop-blur-md"
   })), /*#__PURE__*/React.createElement("div", {
     className: "space-y-1"
   }, /*#__PURE__*/React.createElement("label", {
@@ -1673,11 +1692,11 @@ function PortalLandingGateway() {
     value: newPassword,
     onChange: e => setNewPassword(e.target.value),
     placeholder: "Enter new password (min 4 characters)",
-    className: "w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-bold outline-none focus:border-emerald-500"
+    className: "w-full p-4 rounded-2xl bg-white/50 dark:bg-[#1a1918]/50 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-bold outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all shadow-inner backdrop-blur-md"
   })), /*#__PURE__*/React.createElement("button", {
     type: "submit",
     disabled: isSubmittingAuth,
-    className: "w-full py-4 rounded-2xl bg-gradient-to-r from-[#d48c48] to-[#c27a38] hover:from-[#c27a38] hover:to-[#b36d2f] text-white font-bold text-sm shadow-[0_8px_20px_-6px_rgba(212,140,72,0.5)] flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 active:scale-95 disabled:opacity-50 border-none"
+    className: "w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-700 hover:from-emerald-400 hover:to-emerald-600 text-white font-bold text-sm shadow-[0_8px_30px_-6px_rgba(16,185,129,0.6)] hover:shadow-[0_12px_40px_-6px_rgba(16,185,129,0.8)] flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-95 disabled:opacity-50 border-none relative overflow-hidden group"
   }, /*#__PURE__*/React.createElement("span", null, isSubmittingAuth ? 'Updating Password...' : '🔒 Reset Password & Sign In')), /*#__PURE__*/React.createElement("div", {
     className: "pt-1 text-center text-xs text-slate-500"
   }, /*#__PURE__*/React.createElement("button", {
@@ -1706,7 +1725,7 @@ function PortalLandingGateway() {
     value: loginIdentifier,
     onChange: e => setLoginIdentifier(e.target.value),
     placeholder: "Enter 10-digit mobile number or email",
-    className: "w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-mono font-bold outline-none focus:border-emerald-500 tracking-wide"
+    className: "w-full p-4 rounded-2xl bg-white/50 dark:bg-[#1a1918]/50 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-mono font-bold outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all shadow-inner backdrop-blur-md tracking-wide"
   })), /*#__PURE__*/React.createElement("div", {
     className: "space-y-1"
   }, /*#__PURE__*/React.createElement("div", {
@@ -1727,11 +1746,11 @@ function PortalLandingGateway() {
     value: loginPassword,
     onChange: e => setLoginPassword(e.target.value),
     placeholder: "Enter your password",
-    className: "w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-bold outline-none focus:border-emerald-500"
+    className: "w-full p-4 rounded-2xl bg-white/50 dark:bg-[#1a1918]/50 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-bold outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all shadow-inner backdrop-blur-md"
   })), /*#__PURE__*/React.createElement("button", {
     type: "submit",
     disabled: isSubmittingAuth,
-    className: "w-full py-4 rounded-2xl bg-gradient-to-r from-[#d48c48] to-[#c27a38] hover:from-[#c27a38] hover:to-[#b36d2f] text-white font-bold text-sm shadow-[0_8px_20px_-6px_rgba(212,140,72,0.5)] flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 active:scale-95 disabled:opacity-50 border-none"
+    className: "w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-700 hover:from-emerald-400 hover:to-emerald-600 text-white font-bold text-sm shadow-[0_8px_30px_-6px_rgba(16,185,129,0.6)] hover:shadow-[0_12px_40px_-6px_rgba(16,185,129,0.8)] flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-95 disabled:opacity-50 border-none relative overflow-hidden group"
   }, /*#__PURE__*/React.createElement("span", null, isSubmittingAuth ? 'Signing In...' : '🚀 Sign In with Credentials')), /*#__PURE__*/React.createElement("div", {
     className: "pt-2 text-center text-xs text-slate-500"
   }, /*#__PURE__*/React.createElement("span", null, "New Citizen User? "), /*#__PURE__*/React.createElement("button", {
@@ -1761,7 +1780,7 @@ function PortalLandingGateway() {
     type: "text",
     value: adminAadhaar,
     onChange: e => setAdminAadhaar(e.target.value),
-    className: "w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-mono font-bold outline-none focus:border-emerald-500"
+    className: "w-full p-4 rounded-2xl bg-white/50 dark:bg-[#1a1918]/50 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-mono font-bold outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all shadow-inner backdrop-blur-md"
   })), /*#__PURE__*/React.createElement("div", {
     className: "space-y-1.5"
   }, /*#__PURE__*/React.createElement("label", {
@@ -1770,11 +1789,11 @@ function PortalLandingGateway() {
     type: "password",
     value: adminPassword,
     onChange: e => setAdminPassword(e.target.value),
-    className: "w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-mono outline-none focus:border-emerald-500"
+    className: "w-full p-4 rounded-2xl bg-white/50 dark:bg-[#1a1918]/50 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-mono outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all shadow-inner backdrop-blur-md"
   })), /*#__PURE__*/React.createElement("button", {
     type: "submit",
     disabled: isLoggingInAdmin,
-    className: "w-full py-4 rounded-2xl bg-gradient-to-r from-[#d48c48] to-[#c27a38] hover:from-[#c27a38] hover:to-[#b36d2f] text-white font-bold text-sm shadow-[0_8px_20px_-6px_rgba(212,140,72,0.5)] flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 active:scale-95 disabled:opacity-50 border-none"
+    className: "w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-700 hover:from-emerald-400 hover:to-emerald-600 text-white font-bold text-sm shadow-[0_8px_30px_-6px_rgba(16,185,129,0.6)] hover:shadow-[0_12px_40px_-6px_rgba(16,185,129,0.8)] flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-95 disabled:opacity-50 border-none relative overflow-hidden group"
   }, /*#__PURE__*/React.createElement("span", null, isLoggingInAdmin ? 'Signing In...' : 'Enter District Command Suite →')), /*#__PURE__*/React.createElement("div", {
     className: "pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2"
   }, /*#__PURE__*/React.createElement("div", {
