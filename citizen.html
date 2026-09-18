@@ -532,6 +532,8 @@ function CitizenPortalApp() {
   const [radarRadius, setRadarRadius] = useState(10); // Radius in km (2, 5, 10, 50)
   const [isRecording, setIsRecording] = useState(false);
   const [audioVolumeLevel, setAudioVolumeLevel] = useState(0);
+  const [voiceWaveform, setVoiceWaveform] = useState(() => Array(24).fill(4));
+  const waveformAnimFrameRef = useRef(null);
   const [isSilenceDetected, setIsSilenceDetected] = useState(false);
   const [silenceProgress, setSilenceProgress] = useState(0);
   const [recordingTimer, setRecordingTimer] = useState(0);
@@ -549,11 +551,15 @@ function CitizenPortalApp() {
   const [ttsPopupMessage, setTtsPopupMessage] = useState(null);
   const [isVoiceGuideActive, setIsVoiceGuideActive] = useState(() => {
     try {
-      return localStorage.getItem('lok_swar_voice_guide_active') !== 'false';
+      return localStorage.getItem('lok_swar_voice_guide_active') === 'true';
     } catch (e) {
-      return true;
+      return false;
     }
   });
+  const isVoiceGuideActiveRef = useRef(isVoiceGuideActive);
+  useEffect(() => {
+    isVoiceGuideActiveRef.current = isVoiceGuideActive;
+  }, [isVoiceGuideActive]);
   const lastSpokenRef = useRef({ key: '', time: 0 });
   const [expandedProblemId, setExpandedProblemId] = useState(null);
 
@@ -1795,6 +1801,11 @@ function CitizenPortalApp() {
       clearInterval(silenceCheckIntervalRef.current);
       silenceCheckIntervalRef.current = null;
     }
+    if (waveformAnimFrameRef.current) {
+      cancelAnimationFrame(waveformAnimFrameRef.current);
+      waveformAnimFrameRef.current = null;
+    }
+    setVoiceWaveform(Array(24).fill(4));
     if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
     if (speechRecRef.current) {
@@ -1841,6 +1852,11 @@ function CitizenPortalApp() {
       silenceCheckIntervalRef.current = null;
     }
     if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+    if (waveformAnimFrameRef.current) {
+      cancelAnimationFrame(waveformAnimFrameRef.current);
+      waveformAnimFrameRef.current = null;
+    }
+    setVoiceWaveform(Array(24).fill(4));
     if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     if (speechRecRef.current) {
       try {
@@ -1907,14 +1923,43 @@ function CitizenPortalApp() {
         });
       }, 1000);
 
+      // Start WhatsApp-style minimal audio frequency pattern animation loop
+      if (waveformAnimFrameRef.current) cancelAnimationFrame(waveformAnimFrameRef.current);
+      const updateWaveformLoop = () => {
+        if (!isRecordingRef.current) return;
+        let bars = [];
+        if (analyserRef.current) {
+          const freqData = new Uint8Array(analyserRef.current.frequencyBinCount);
+          analyserRef.current.getByteFrequencyData(freqData);
+          const numBars = 24;
+          const binStep = Math.max(1, Math.floor(48 / numBars));
+          for (let i = 0; i < numBars; i++) {
+            const val = freqData[2 + i * binStep] || 0;
+            // Map 0-255 into 4px minimal baseline up to 22px peak
+            const h = Math.max(4, Math.min(22, Math.round(4 + (val / 255) * 18)));
+            bars.push(h);
+          }
+        } else {
+          // Clean subtle breathing wave scaled by voice activity
+          const vol = audioVolumeLevel || 0.1;
+          bars = Array.from({ length: 24 }, (_, i) => {
+            const wave = (Math.sin(Date.now() / 140 + i * 0.6) * 0.5 + 0.5);
+            return Math.max(4, Math.min(22, Math.round(4 + vol * 12 + wave * 6)));
+          });
+        }
+        setVoiceWaveform(bars);
+        waveformAnimFrameRef.current = requestAnimationFrame(updateWaveformLoop);
+      };
+      waveformAnimFrameRef.current = requestAnimationFrame(updateWaveformLoop);
+
       // Dedicated Real-Time Voice Activity Detection (VAD) Silence Watchdog Interval (every 80ms)
       if (silenceCheckIntervalRef.current) clearInterval(silenceCheckIntervalRef.current);
       silenceCheckIntervalRef.current = setInterval(() => {
         if (!isRecordingRef.current) return;
         if (hasSpokenRef.current) {
           const silenceMs = Date.now() - lastVoiceTimeRef.current;
-          // User has spoken, and has now been silent for >= 1.3 seconds -> Automatic Stop
-          if (silenceMs >= 1300 && !isAutoStoppingRef.current && isRecordingRef.current) {
+          // Auto-stop when user pauses speaking for >= 2.4 seconds
+          if (silenceMs >= 2400 && !isAutoStoppingRef.current && isRecordingRef.current) {
             isAutoStoppingRef.current = true;
             setIsSilenceDetected(true);
             if (stopVoiceRecordingRef.current) {
@@ -1933,7 +1978,14 @@ function CitizenPortalApp() {
           rec.continuous = true;
           rec.interimResults = true;
           rec.maxAlternatives = 1;
-          if (selectedLang === 'or') rec.lang = 'or-IN';else if (selectedLang === 'bn') rec.lang = 'bn-IN';else if (selectedLang === 'en') rec.lang = 'en-IN';else rec.lang = 'hi-IN';
+          const langMap = {
+            hi: 'hi-IN', bho: 'hi-IN', or: 'or-IN', bn: 'bn-IN',
+            ta: 'ta-IN', te: 'te-IN', kn: 'kn-IN', ml: 'ml-IN',
+            mr: 'mr-IN', gu: 'gu-IN', pa: 'pa-IN', ur: 'ur-IN',
+            sd: 'ur-IN', as: 'as-IN', mai: 'hi-IN', sat: 'hi-IN',
+            ks: 'ur-IN', en: 'en-IN'
+          };
+          rec.lang = langMap[selectedLang] || 'hi-IN';
           rec.onspeechstart = () => {
             hasSpokenRef.current = true;
             lastVoiceTimeRef.current = Date.now();
@@ -1963,19 +2015,14 @@ function CitizenPortalApp() {
             }
           };
           rec.onspeechend = () => {
-            if (hasSpokenRef.current && !isAutoStoppingRef.current) {
-              setTimeout(() => {
-                if (isRecordingRef.current && hasSpokenRef.current && Date.now() - lastVoiceTimeRef.current >= 1200) {
-                  isAutoStoppingRef.current = true;
-                  if (stopVoiceRecordingRef.current) stopVoiceRecordingRef.current();
-                }
-              }, 400);
-            }
+            // Keep listening seamlessly during natural conversational pauses
           };
           rec.onend = () => {
-            if (isRecordingRef.current && hasSpokenRef.current && !isAutoStoppingRef.current) {
-              isAutoStoppingRef.current = true;
-              if (stopVoiceRecordingRef.current) stopVoiceRecordingRef.current();
+            // Continuous auto-restart while user is recording
+            if (isRecordingRef.current && !isAutoStoppingRef.current) {
+              try {
+                rec.start();
+              } catch (err) {}
             }
           };
           rec.onerror = e => {
@@ -2877,7 +2924,7 @@ function CitizenPortalApp() {
   }, /*#__PURE__*/React.createElement("button", {
     type: "button",
     onClick: toggleVoiceRecording,
-    className: `w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer flex-shrink-0 ${isRecording ? "bg-[#d48c48] text-white animate-pulse ring-4 ring-emerald-100 dark:ring-emerald-950/60" : "text-[#d48c48] dark:text-[#e8a361] hover:bg-[#fff6e5] dark:hover:bg-slate-800"}`,
+    className: `w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer flex-shrink-0 ${isRecording ? "bg-rose-500 text-white animate-pulse ring-4 ring-rose-100 dark:ring-rose-950/60" : "text-[#d48c48] dark:text-[#e8a361] hover:bg-[#fff6e5] dark:hover:bg-slate-800"}`,
     title: isRecording ? t.cancelBtn : t.recordingPrompt
   }, /*#__PURE__*/React.createElement(Icons.Mic, {
     className: "w-5 h-5"
