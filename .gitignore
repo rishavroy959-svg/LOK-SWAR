@@ -23,6 +23,7 @@ Thumbs.db
 # Local Uploads (keep directories)
 uploads/audio/*
 !uploads/audio/.gitkeep
+scratch/
 uploads/photos/*
 !uploads/photos/.gitkeep
 uploads/voice-notes/*
