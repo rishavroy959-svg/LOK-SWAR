@@ -1,10 +1,14 @@
 // js/citizen/location_data.js - Geospatial Entities, Translation Gazetteers & Distance Helpers
 (function() {
 const SIMULATED_REGIONS = [
-  { label: "Sundargarh (Odisha)", lang: "or", lat: 22.1245, lng: 84.0321, name: "Sundargarh, Odisha" },
+  { label: "District Central (HQ)", lang: "or", lat: 22.1245, lng: 84.0321, name: "District Central, HQ" },
   { label: "Varanasi (Bhojpuri / UP)", lang: "bho", lat: 25.3176, lng: 82.9739, name: "Varanasi, UP" },
   { label: "Kolkata (West Bengal)", lang: "bn", lat: 22.5726, lng: 88.3639, name: "Kolkata, West Bengal" },
-  { label: "New Delhi (National Grid)", lang: "hi", lat: 28.6139, lng: 77.2090, name: "New Delhi (National Grid)" }
+  { label: "New Delhi (National Grid)", lang: "hi", lat: 28.6139, lng: 77.2090, name: "New Delhi (National Grid)" },
+  { label: "Chennai (Tamil Nadu)", lang: "ta", lat: 13.0827, lng: 80.2707, name: "Chennai, Tamil Nadu" },
+  { label: "Bengaluru (Karnataka)", lang: "kn", lat: 12.9716, lng: 77.5946, name: "Bengaluru, Karnataka" },
+  { label: "Hyderabad (Telangana)", lang: "te", lat: 17.3850, lng: 78.4867, name: "Hyderabad, Telangana" },
+  { label: "Mumbai (Maharashtra)", lang: "mr", lat: 19.0760, lng: 72.8777, name: "Mumbai, Maharashtra" }
 ];
 
 const CIVIC_BACKGROUNDS = ['assets/bg_1_smart_village.jpg', 'assets/bg_2_smart_odisha.jpg', 'assets/bg_3_smart_bengal.jpg'];
@@ -165,19 +169,7 @@ function generateAutoProblemTitle(text, category, voiceMeta) {
     hi: "कटक",
     bn: "কটক",
     bho: "कटक"
-  }, {
-    en: "Sundargarh",
-    or: "ସୁନ୍ଦରଗଡ଼",
-    hi: "सुंदरगढ़",
-    bn: "সুন্দরগড়",
-    bho: "सुंदरगढ़"
-  }, {
-    en: "Sundergarh",
-    or: "ସୁନ୍ଦରଗଡ଼",
-    hi: "सुंदरगढ़",
-    bn: "সুন্দরগড়",
-    bho: "सुंदरगढ़"
-  }, {
+  },   {
     en: "Sambalpur",
     or: "ସମ୍ବଲପୁର",
     hi: "संबलपुर",
@@ -219,12 +211,6 @@ function generateAutoProblemTitle(text, category, voiceMeta) {
     hi: "ब्रह्मपुर",
     bn: "ব্রহ্মপুর",
     bho: "ब्रह्मपुर"
-  }, {
-    en: "Kalyanpur",
-    or: "କଲ୍ୟାଣପୁର",
-    hi: "कल्याणपुर",
-    bn: "কল্যাণপুর",
-    bho: "कल्याणपुर"
   }, {
     en: "Lathikata",
     or: "ଲାଠିକଟା",

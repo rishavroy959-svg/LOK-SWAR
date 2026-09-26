@@ -28,7 +28,7 @@ CONSTITUENCY_INFO = {
     "allocated_budget_cr": 10.0
 }
 
-# Thematic NLP Clusters (Extracted from 1,248+ citizen voice notes & submissions)
+# Thematic NLP Clusters (Extracted from citizen voice notes & submissions)
 CONSTITUENCY_CLUSTERS = [
     {
         "id": "CLU-01",
@@ -110,7 +110,7 @@ CONSTITUENCY_CLUSTERS = [
     }
 ]
 
-# Candidate Development Works (Including the PDF Page 1 benchmark trade-off)
+# Candidate Development Works
 CONSTITUENCY_PROJECTS = [
     {
         "id": "PRJ-01",
@@ -121,40 +121,13 @@ CONSTITUENCY_PROJECTS = [
         "area_type": "Semi-Urban Catchment",
         "estimated_cost_cr": 1.80,
         "expected_population_benefited": 12400,
-        "target_beneficiaries_label": "580 Enrolled Students (450 current + 130 incoming)",
-        "implementation_months": 8,
-        "demand_score": 94,
+        "urgency_score": 88,
         "severity_score": 88,
-        "infrastructure_gap_score": 92,
-        "accessibility_gap_score": 84,
-        "social_impact_score": 95,
-        "economic_impact_score": 82,
-        "evidence_confidence": 96,
-        "feasibility_score": 90,
-        "verification_status": "Field Verified & Survey Complete",
+        "serviceCriticalityScore": 92,
+        "expectedOutcomeScore": 90,
         "scheme": "5T High School Transformation Fund / Samagra Shiksha",
-        "description": "Construct 8 new climate-resilient smart classrooms, dedicated girls sanitary block, and advanced STEM/computer lab to replace open-air classrooms under trees.",
-        "enrolment_metrics": {
-            "current_enrolment": 580,
-            "existing_classroom_capacity": 160,
-            "overcrowding_ratio": "362%",
-            "student_teacher_ratio": "48:1 (Norm: 30:1)",
-            "annual_dropout_risk": "22% (predominantly adolescent girls due to lack of sanitation)"
-        },
-        "travel_distance_metrics": {
-            "nearest_alternate_school_km": 16.4,
-            "transit_condition": "Monsoon flooded feeder road, unsafe for bicycling students",
-            "daily_commute_time_saved_mins": 45
-        },
-        "predictive_impact": {
-            "benefit_cost_ratio": 3.42,
-            "net_economic_benefit_cr": 6.15,
-            "confidence_interval_90": "₹5.40 Cr – ₹6.90 Cr",
-            "local_mandays_created": 7800,
-            "projected_dropout_reduction_pct": 82,
-            "uncertainty_rating": "Low Variance (High Demographic Confidence)",
-            "risk_factors": "Monsoon construction pause (±1 month tolerance)"
-        }
+        "description": "Construct 8 new climate-resilient smart classrooms, dedicated girls sanitary block, and advanced STEM/computer lab.",
+        "predictive_impact": {"benefit_cost_ratio": 3.42, "net_economic_benefit_cr": 6.15}
     },
     {
         "id": "PRJ-02",
@@ -165,39 +138,13 @@ CONSTITUENCY_PROJECTS = [
         "area_type": "Industrial Fringe",
         "estimated_cost_cr": 2.60,
         "expected_population_benefited": 7200,
-        "target_beneficiaries_label": "320 Rural Youth / Year (18-29 Age Group)",
-        "implementation_months": 12,
-        "demand_score": 82,
+        "urgency_score": 72,
         "severity_score": 72,
-        "infrastructure_gap_score": 80,
-        "accessibility_gap_score": 70,
-        "social_impact_score": 84,
-        "economic_impact_score": 94,
-        "evidence_confidence": 88,
-        "feasibility_score": 85,
-        "verification_status": "Preliminary DPR Ready",
+        "serviceCriticalityScore": 80,
+        "expectedOutcomeScore": 94,
         "scheme": "Pradhan Mantri Kaushal Vikas Yojana (PMKVY) / DDU-GKY",
-        "description": "State-of-the-art multi-trade vocational training facility offering certified CNC machining, solar PV installation, precision welding, and electric vehicle servicing.",
-        "enrolment_metrics": {
-            "annual_batch_capacity": 320,
-            "estimated_employment_placement_rate": "84% within 90 days of certification",
-            "average_starting_wage_inr": "₹16,500/month",
-            "target_demographic": "Unemployed rural matriculates & dropouts"
-        },
-        "travel_distance_metrics": {
-            "nearest_existing_iti_km": 28.5,
-            "transit_condition": "Bus route operational every 2 hours",
-            "daily_commute_time_saved_mins": 75
-        },
-        "predictive_impact": {
-            "benefit_cost_ratio": 2.95,
-            "net_economic_benefit_cr": 7.67,
-            "confidence_interval_90": "₹6.20 Cr – ₹9.15 Cr",
-            "local_mandays_created": 11200,
-            "projected_wage_uplift_pct": 140,
-            "uncertainty_rating": "Moderate Variance (Market Placement Sensitivity)",
-            "risk_factors": "Industrial recruitment cycle fluctuations (±18% placement variance)"
-        }
+        "description": "Multi-trade vocational training facility offering certified CNC machining, solar PV installation, precision welding, and EV servicing.",
+        "predictive_impact": {"benefit_cost_ratio": 2.95, "net_economic_benefit_cr": 7.67}
     },
     {
         "id": "PRJ-03",
@@ -208,38 +155,14 @@ CONSTITUENCY_PROJECTS = [
         "area_type": "Rural Remote",
         "estimated_cost_cr": 4.20,
         "expected_population_benefited": 18400,
-        "target_beneficiaries_label": "18,400 Villagers across 14 Habitations",
-        "implementation_months": 10,
-        "demand_score": 98,
+        "urgency_score": 96,
         "severity_score": 96,
-        "infrastructure_gap_score": 95,
-        "accessibility_gap_score": 98,
-        "social_impact_score": 96,
-        "economic_impact_score": 90,
-        "evidence_confidence": 99,
-        "feasibility_score": 88,
-        "verification_status": "Field Audit & Drone Telemetry Verified",
+        "serviceCriticalityScore": 95,
+        "expectedOutcomeScore": 88,
+        "exclusionGroup": "KALYANPUR_CROSSING",
         "scheme": "SDRF Disaster Relief Fund / PMGSY Rural Roads",
-        "description": "Replace washed-out hume pipe culvert with 45-meter high-level RCC two-lane bridge, reinforced approach ramps, and boulder pitching to prevent future monsoon severance.",
-        "enrolment_metrics": {
-            "transit_users_daily": 3400,
-            "primary_transit_for_phc": "Sole direct route to Community Health Centre",
-            "school_transit_disruption": "Affects 620 school students during monsoon"
-        },
-        "travel_distance_metrics": {
-            "emergency_detour_km": 24.0,
-            "transit_time_penalty_mins": 55,
-            "ambulance_response_time_penalty_mins": 65
-        },
-        "predictive_impact": {
-            "benefit_cost_ratio": 3.85,
-            "net_economic_benefit_cr": 16.17,
-            "confidence_interval_90": "₹13.80 Cr – ₹18.54 Cr",
-            "local_mandays_created": 16500,
-            "emergency_transit_saved_hours_annual": 42000,
-            "uncertainty_rating": "Low Variance (Corroborated by Satellite & Telemetry)",
-            "risk_factors": "Flash flood window between July-September"
-        }
+        "description": "Replace washed-out hume pipe culvert with 45-meter high-level RCC two-lane bridge and approach ramps.",
+        "predictive_impact": {"benefit_cost_ratio": 3.85, "net_economic_benefit_cr": 16.17}
     },
     {
         "id": "PRJ-04",
@@ -250,37 +173,13 @@ CONSTITUENCY_PROJECTS = [
         "area_type": "Extreme Rural Tribal",
         "estimated_cost_cr": 1.40,
         "expected_population_benefited": 2900,
-        "target_beneficiaries_label": "2,900 Tribal Residents (100% ST Habitation)",
-        "implementation_months": 6,
-        "demand_score": 96,
+        "urgency_score": 94,
         "severity_score": 94,
-        "infrastructure_gap_score": 96,
-        "accessibility_gap_score": 90,
-        "social_impact_score": 98,
-        "economic_impact_score": 80,
-        "evidence_confidence": 95,
-        "feasibility_score": 92,
-        "verification_status": "Hydro-Geological Survey Completed",
+        "serviceCriticalityScore": 96,
+        "expectedOutcomeScore": 92,
         "scheme": "Jal Jeevan Mission (RWSS) / District Mineral Foundation (DMF)",
-        "description": "Drill 250m deep aquifer solar borewell, erect 50,000L overhead reservoir, and install activated alumina fluoride remediation plant with piped household connections.",
-        "enrolment_metrics": {
-            "fluorosis_affected_children": 184,
-            "waterborne_disease_incidents_annual": 412,
-            "women_daily_headload_hours": "3.5 hours per household"
-        },
-        "travel_distance_metrics": {
-            "distance_to_alternate_safe_water_km": 4.8,
-            "daily_walking_time_saved_mins": 90
-        },
-        "predictive_impact": {
-            "benefit_cost_ratio": 3.10,
-            "net_economic_benefit_cr": 4.34,
-            "confidence_interval_90": "₹3.80 Cr – ₹4.88 Cr",
-            "local_mandays_created": 4500,
-            "waterborne_illness_reduction_pct": 94,
-            "uncertainty_rating": "Low Variance (Hydrogeological Depth Confirmed)",
-            "risk_factors": "Summer drawdown of deep aquifer"
-        }
+        "description": "Drill 250m deep aquifer solar borewell, 50kL overhead reservoir, and activated alumina fluoride remediation plant.",
+        "predictive_impact": {"benefit_cost_ratio": 3.10, "net_economic_benefit_cr": 4.34}
     },
     {
         "id": "PRJ-05",
@@ -291,37 +190,13 @@ CONSTITUENCY_PROJECTS = [
         "area_type": "Rural Border Catchment",
         "estimated_cost_cr": 2.10,
         "expected_population_benefited": 6100,
-        "target_beneficiaries_label": "6,100 Residents (320 Annual Deliveries)",
-        "implementation_months": 9,
-        "demand_score": 92,
+        "urgency_score": 91,
         "severity_score": 91,
-        "infrastructure_gap_score": 89,
-        "accessibility_gap_score": 85,
-        "social_impact_score": 96,
-        "economic_impact_score": 83,
-        "evidence_confidence": 94,
-        "feasibility_score": 89,
-        "verification_status": "Health Directorate Approved",
+        "serviceCriticalityScore": 89,
+        "expectedOutcomeScore": 89,
         "scheme": "National Health Mission (NHM) & BSKY Infrastructure Pool",
-        "description": "Construct 12-bed emergency obstetric care wing, newborn stabilization unit, solar backup power system, and 2 staff quarters for 24/7 medical officer retention.",
-        "enrolment_metrics": {
-            "annual_maternal_cases": 320,
-            "high_risk_pregnancies_identified": 68,
-            "current_institutional_delivery_pct": "42% (Target: 98%)"
-        },
-        "travel_distance_metrics": {
-            "nearest_tertiary_emergency_km": 32.0,
-            "emergency_transit_reduction_mins": 50
-        },
-        "predictive_impact": {
-            "benefit_cost_ratio": 3.25,
-            "net_economic_benefit_cr": 6.82,
-            "confidence_interval_90": "₹5.90 Cr – ₹7.75 Cr",
-            "local_mandays_created": 8900,
-            "maternal_emergency_response_speedup_pct": 72,
-            "uncertainty_rating": "Moderate Variance (Doctor Posting Deputation)",
-            "risk_factors": "Doctor recruitment/retention in border belt"
-        }
+        "description": "Construct 12-bed emergency obstetric care wing, newborn stabilization unit, solar backup power, and staff quarters.",
+        "predictive_impact": {"benefit_cost_ratio": 3.25, "net_economic_benefit_cr": 6.82}
     },
     {
         "id": "PRJ-06",
@@ -332,37 +207,13 @@ CONSTITUENCY_PROJECTS = [
         "area_type": "Urban Low-Lying",
         "estimated_cost_cr": 1.90,
         "expected_population_benefited": 8900,
-        "target_beneficiaries_label": "8,900 Residents in Flood Risk Zone",
-        "implementation_months": 7,
-        "demand_score": 88,
+        "urgency_score": 86,
         "severity_score": 86,
-        "infrastructure_gap_score": 84,
-        "accessibility_gap_score": 80,
-        "social_impact_score": 89,
-        "economic_impact_score": 86,
-        "evidence_confidence": 92,
-        "feasibility_score": 86,
-        "verification_status": "Topographical Runoff Survey Done",
+        "serviceCriticalityScore": 84,
+        "expectedOutcomeScore": 86,
         "scheme": "State Urban & Rural Flood Mitigation Pool",
-        "description": "Construct 1.8 km reinforced concrete trunk storm drain with twin motorized backflow check sluice gates to prevent Koel river backwash into residential colonies during peak rain.",
-        "enrolment_metrics": {
-            "inundated_households_monsoon": 1200,
-            "annual_household_loss_avg_inr": "₹18,500/family",
-            "vector_borne_outbreak_risk": "Severe (Dengue/Malaria endemic)"
-        },
-        "travel_distance_metrics": {
-            "waterlogged_road_stretch_km": 2.2,
-            "internal_ward_detour_mins": 30
-        },
-        "predictive_impact": {
-            "benefit_cost_ratio": 2.70,
-            "net_economic_benefit_cr": 5.13,
-            "confidence_interval_90": "₹4.30 Cr – ₹5.95 Cr",
-            "local_mandays_created": 6800,
-            "monsoon_inundation_reduction_pct": 88,
-            "uncertainty_rating": "Moderate Variance (Siltation Maintenance)",
-            "risk_factors": "Pre-monsoon excavation timeline"
-        }
+        "description": "Construct 1.8 km reinforced concrete trunk storm drain with twin motorized backflow check sluice gates.",
+        "predictive_impact": {"benefit_cost_ratio": 2.70, "net_economic_benefit_cr": 5.13}
     },
     {
         "id": "PRJ-07",
@@ -373,143 +224,74 @@ CONSTITUENCY_PROJECTS = [
         "area_type": "Rural Agrarian",
         "estimated_cost_cr": 1.75,
         "expected_population_benefited": 5400,
-        "target_beneficiaries_label": "5,400 Small & Marginal Farmers",
-        "implementation_months": 8,
-        "demand_score": 85,
+        "urgency_score": 78,
         "severity_score": 78,
-        "infrastructure_gap_score": 86,
-        "accessibility_gap_score": 75,
-        "social_impact_score": 86,
-        "economic_impact_score": 95,
-        "evidence_confidence": 90,
-        "feasibility_score": 91,
-        "verification_status": "APMC & Agriculture Dept Corroborated",
+        "serviceCriticalityScore": 86,
+        "expectedOutcomeScore": 88,
         "scheme": "Agriculture Infrastructure Fund (AIF) / PMKSY",
-        "description": "500 Metric Tonne decentralized solar-powered micro-cold storage facility, electronic weighbridge, and covered auction shed to eliminate distress vegetable sales.",
-        "enrolment_metrics": {
-            "farmer_beneficiaries": 1850,
-            "seasonal_crop_spoilage_pct": "34% in peak tomato/chili harvest",
-            "distress_sale_discount": "40-60% below MSP"
-        },
-        "travel_distance_metrics": {
-            "distance_to_nearest_cold_storage_km": 38.0,
-            "transit_spoilage_eliminated_tonnes": 420
-        },
-        "predictive_impact": {
-            "benefit_cost_ratio": 3.60,
-            "net_economic_benefit_cr": 6.30,
-            "confidence_interval_90": "₹5.20 Cr – ₹7.40 Cr",
-            "local_mandays_created": 7200,
-            "farmer_income_retention_pct": 38,
-            "uncertainty_rating": "Low Variance (Direct Agrarian Value Chain)",
-            "risk_factors": "Solar battery storage replacement lifecycle"
-        }
+        "description": "Erect 500 MT solar-powered decentralized cold storage, sorting sheds, and direct electronic mandi auction terminal.",
+        "predictive_impact": {"benefit_cost_ratio": 3.30, "net_economic_benefit_cr": 5.77}
+    },
+    {
+        "id": "PRJ-08",
+        "project_name": "Solar Microgrid for Forest Settlement Hamlets",
+        "short_name": "Tribal Solar Microgrid",
+        "category": "Power & Lighting",
+        "location": "Saranda Forest Border",
+        "area_type": "Remote Forest Habitation",
+        "estimated_cost_cr": 1.20,
+        "expected_population_benefited": 3500,
+        "urgency_score": 80,
+        "severity_score": 75,
+        "serviceCriticalityScore": 85,
+        "expectedOutcomeScore": 82,
+        "scheme": "PM-JANMAN PVTG Habitation Scheme",
+        "description": "Decentralized 75 kW solar microgrid with battery storage and smart metering for un-electrified forest hamlets.",
+        "predictive_impact": {"benefit_cost_ratio": 2.85, "net_economic_benefit_cr": 3.42}
+    },
+    {
+        "id": "PRJ-09",
+        "project_name": "Jhirpani Piped Water Supply Distribution Extension Phase-2",
+        "short_name": "Jhirpani Piped Network Phase-2",
+        "category": "Drinking Water & RWSS",
+        "location": "Jhirpani Peripheral Hamlets",
+        "area_type": "Rural Tribal Catchment",
+        "estimated_cost_cr": 1.60,
+        "expected_population_benefited": 4500,
+        "urgency_score": 84,
+        "severity_score": 80,
+        "serviceCriticalityScore": 88,
+        "expectedOutcomeScore": 85,
+        "dependencies": ["PRJ-04"],
+        "scheme": "Jal Jeevan Mission Har Ghar Jal Pool",
+        "description": "Extends piped water network from Jhirpani central reservoir to 3 outlying tribal hamlets with household tap connections.",
+        "predictive_impact": {"benefit_cost_ratio": 3.05, "net_economic_benefit_cr": 4.88}
+    },
+    {
+        "id": "PRJ-10",
+        "project_name": "Kalyanpur Low-Level Submersible Causeway (Alternative Crossing)",
+        "short_name": "Kalyanpur Submersible Causeway",
+        "category": "Roads & Connectivity",
+        "location": "Kalyanpur Gram Panchayat (Ward 3)",
+        "area_type": "Rural Remote",
+        "estimated_cost_cr": 2.20,
+        "expected_population_benefited": 9500,
+        "urgency_score": 75,
+        "severity_score": 70,
+        "serviceCriticalityScore": 75,
+        "expectedOutcomeScore": 76,
+        "exclusionGroup": "KALYANPUR_CROSSING",
+        "scheme": "State Road Development Fund",
+        "description": "Lower-cost vented submersible causeway providing 9-month all-weather vehicular connectivity across the river.",
+        "predictive_impact": {"benefit_cost_ratio": 2.65, "net_economic_benefit_cr": 5.83}
     }
 ]
 
-# Demand Concentration Hotspots
-CONSTITUENCY_HOTSPOTS = [
-    {
-        "id": "HOT-01",
-        "name": "Kalyanpur Washout & Emergency Corridor",
-        "category": "Roads & Emergency Transit",
-        "lat": 22.1245,
-        "lng": 84.0321,
-        "radius_km": 8.5,
-        "reports_count": 412,
-        "urgency_rating": 96.4,
-        "status": "Critical Intervention Needed",
-        "corroboration": "Satellite B8A NIR Reflectance + IMD 114.8mm Rain Gauge + Field JE Audit"
-    },
-    {
-        "id": "HOT-02",
-        "name": "Gopabandhu High School Overcrowding Zone",
-        "category": "Education Infrastructure",
-        "lat": 22.2150,
-        "lng": 84.1420,
-        "radius_km": 5.2,
-        "reports_count": 284,
-        "urgency_rating": 91.2,
-        "status": "Classrooms Deficit",
-        "corroboration": "DISE Educational Registry + 580 Enrolled Students vs 4 Rooms"
-    },
-    {
-        "id": "HOT-03",
-        "name": "Jhirpani Fluoride & Dry Standpost Belt",
-        "category": "Drinking Water Deficit",
-        "lat": 22.2450,
-        "lng": 84.2100,
-        "radius_km": 4.0,
-        "reports_count": 196,
-        "urgency_rating": 94.8,
-        "status": "Toxic Fluorosis Grounding",
-        "corroboration": "RWSS Pressure Telemetry 0.0 PSI + PHED Fluoride Test 3.4 mg/L"
-    },
-    {
-        "id": "HOT-04",
-        "name": "Birmitrapur Border Healthcare Blackout",
-        "category": "Healthcare Retention",
-        "lat": 22.1480,
-        "lng": 84.0890,
-        "radius_km": 6.8,
-        "reports_count": 168,
-        "urgency_rating": 89.5,
-        "status": "Doctor Absence & Deputation",
-        "corroboration": "NHM Biometric Attendance Log + 142 Diverted Deliveries"
-    },
-    {
-        "id": "HOT-05",
-        "name": "Koel River Urban Waterlogging Sluice",
-        "category": "Drainage Overflow",
-        "lat": 22.2300,
-        "lng": 84.1650,
-        "radius_km": 3.8,
-        "reports_count": 114,
-        "urgency_rating": 84.0,
-        "status": "Choked Trunk Line",
-        "corroboration": "Municipal GIS Sluice Gate Siltation Model"
-    },
-    {
-        "id": "HOT-06",
-        "name": "Nuagaon Mandi Distress Sale Corridor",
-        "category": "Agrarian Storage",
-        "lat": 22.1620,
-        "lng": 84.2250,
-        "radius_km": 7.4,
-        "reports_count": 74,
-        "urgency_rating": 82.5,
-        "status": "Perishables Spoilage",
-        "corroboration": "APMC Mandi Price Drop Record vs 38km Storage Distance"
-    }
-]
+# Demand Concentration Hotspots — populated dynamically from live grievance DB
+CONSTITUENCY_HOTSPOTS = []
 
-# Baseline Evidence & Grounding Datasets
-CONSTITUENCY_DATASETS = {
-    "demographics": {
-        "census_year": "2021-2026 Projected",
-        "constituency_population": 284600,
-        "total_households": 61870,
-        "rural_panchayats": 142,
-        "urban_wards": 24,
-        "sc_st_population_pct": 62.8,
-        "bpl_ratio_pct": 38.4,
-        "literacy_rate_pct": 68.2,
-        "female_literacy_pct": 59.4
-    },
-    "infrastructure_norms": {
-        "pmgsy_all_weather_target_km": 840.0,
-        "pmgsy_connected_km": 552.7,
-        "road_deficit_pct": -34.2,
-        "jjm_functional_tap_target": 61870,
-        "jjm_actual_working_taps": 38978,
-        "water_deficit_pct": -37.0,
-        "secondary_schools_count": 38,
-        "secondary_schools_with_stem_lab_pct": 28.9,
-        "phc_doctor_sanctioned": 24,
-        "phc_doctor_in_position": 14,
-        "doctor_vacancy_pct": -41.7
-    }
-}
+# Baseline Evidence & Grounding Datasets — populated from live APIs
+CONSTITUENCY_DATASETS = {}
 
 
 def calculate_project_score(project, weights=None):
@@ -562,121 +344,341 @@ def calculate_project_score(project, weights=None):
     return round(raw_score, 1), round(benefit_per_cr, 2), breakdown
 
 
-def solve_portfolio_knapsack(projects=None, budget_cr=10.0, weights=None, min_rural=2):
-    """
-    Constraint-Aware Mixed-Integer Linear Programming (MILP) 0-1 Knapsack Solver
-    Subject to:
-      1. Sum(Cost_j * x_j) <= Budget_Cap
-      2. Sum(Rural_Flag_j * x_j) >= Min_Rural_Quota
-      3. Maximizes composite public impact value density
-    """
-    if projects is None:
-        projects = CONSTITUENCY_PROJECTS
+# Discrete Unit Definition: 1 Unit = ₹1 Lakh = ₹100,000. ₹10 Cr = 1,000 units.
+UNIT_VALUE_INR = 100000
+CRORE_INR = 10000000
+UNITS_PER_CRORE = 100
 
-    # 1. Score and annotate all candidate projects
-    annotated = []
+DEFAULT_SCORING_WEIGHTS = {
+    "population": 30,
+    "urgency": 25,
+    "severity": 20,
+    "criticality": 15,
+    "outcome": 10
+}
+
+def calculate_5factor_impact(project, weights=None):
+    """
+    5-Factor Transparent Impact Scoring:
+    1. Population Affected (30%)
+    2. Urgency Level (25%)
+    3. Issue Severity (20%)
+    4. Service Criticality (15%)
+    5. Expected Outcome / Value Density (10%)
+    Sum = 100%
+    """
+    w = dict(DEFAULT_SCORING_WEIGHTS)
+    if weights and isinstance(weights, dict):
+        w.update(weights)
+
+    pop_aff = project.get("expected_population_benefited") or project.get("populationAffected") or 0
+    pop_score = project.get("populationScore")
+    if pop_score is None:
+        pop_score = min(100.0, (float(pop_aff) / 20000.0) * 100.0)
+
+    urg = float(project.get("urgency_score") or project.get("urgencyScore") or project.get("severity_score") or 70.0)
+    sev = float(project.get("severity_score") or project.get("severityScore") or urg)
+    crit = float(project.get("serviceCriticalityScore") or project.get("infrastructure_gap_score") or 75.0)
+    out = float(project.get("expectedOutcomeScore") or project.get("feasibility_score") or 75.0)
+
+    pop_w = float(w.get("population", 30)) / 100.0
+    urg_w = float(w.get("urgency", 25)) / 100.0
+    sev_w = float(w.get("severity", 20)) / 100.0
+    crit_w = float(w.get("criticality", 15)) / 100.0
+    out_w = float(w.get("outcome", 10)) / 100.0
+
+    w_pop = round(pop_score * pop_w, 1)
+    w_urg = round(urg * urg_w, 1)
+    w_sev = round(sev * sev_w, 1)
+    w_crit = round(crit * crit_w, 1)
+    w_out = round(out * out_w, 1)
+
+    total_impact = round(w_pop + w_urg + w_sev + w_crit + w_out, 1)
+    breakdown = {
+        "population": w_pop,
+        "urgency": w_urg,
+        "severity": w_sev,
+        "criticality": w_crit,
+        "outcome": w_out
+    }
+    return total_impact, breakdown
+
+
+def _solve_knapsack_core(optional, remaining_units, mandatory_ids=None):
+    if remaining_units <= 0 or not optional:
+        return set(), 0, 0.0
+
+    mandatory_ids = mandatory_ids or set()
+    has_constraints = any(p.get("dependencies") or p.get("exclusion_group") or p.get("exclusionGroup") for p in optional)
+
+    if not has_constraints:
+        N = len(optional)
+        dp = [[0.0] * (remaining_units + 1) for _ in range(N + 1)]
+        for i in range(1, N + 1):
+            c = optional[i - 1]["cost_units"]
+            v = optional[i - 1]["calculated_impact"]
+            for w in range(remaining_units + 1):
+                if c <= w:
+                    take_val = dp[i - 1][w - c] + v
+                    skip_val = dp[i - 1][w]
+                    dp[i][w] = max(skip_val, take_val)
+                else:
+                    dp[i][w] = dp[i - 1][w]
+
+        w = remaining_units
+        selected_ids = set()
+        opt_units = 0
+        opt_impact = 0.0
+        for i in range(N, 0, -1):
+            c = optional[i - 1]["cost_units"]
+            v = optional[i - 1]["calculated_impact"]
+            if c <= w and abs(dp[i][w] - (dp[i - 1][w - c] + v)) < 1e-5 and dp[i][w] > dp[i - 1][w] + 1e-5:
+                selected_ids.add(optional[i - 1]["id"])
+                w -= c
+                opt_units += c
+                opt_impact += v
+        return selected_ids, opt_units, opt_impact
+    else:
+        best_res = {"ids": set(), "units": 0, "impact": 0.0}
+        opt_map = {p["id"]: p for p in optional}
+        N = len(optional)
+
+        def search_constrained(idx, cur_u, cur_v, cur_set):
+            nonlocal best_res
+            if idx == N:
+                for pid in cur_set:
+                    p = opt_map[pid]
+                    for req in (p.get("dependencies") or []):
+                        if req not in cur_set and req not in mandatory_ids:
+                            return
+                seen_groups = set()
+                for pid in cur_set:
+                    p = opt_map[pid]
+                    grp = p.get("exclusion_group") or p.get("exclusionGroup")
+                    if grp:
+                        if grp in seen_groups:
+                            return
+                        seen_groups.add(grp)
+                if cur_v > best_res["impact"] + 0.05 or (abs(cur_v - best_res["impact"]) <= 0.05 and cur_u < best_res["units"]):
+                    best_res = {"ids": set(cur_set), "units": cur_u, "impact": cur_v}
+                return
+
+            p = optional[idx]
+            if cur_u + p["cost_units"] <= remaining_units:
+                cur_set.add(p["id"])
+                search_constrained(idx + 1, cur_u + p["cost_units"], cur_v + p["calculated_impact"], cur_set)
+                cur_set.remove(p["id"])
+            search_constrained(idx + 1, cur_u, cur_v, cur_set)
+
+        search_constrained(0, 0, 0.0, set())
+        return best_res["ids"], best_res["units"], best_res["impact"]
+
+
+def solve_portfolio_knapsack(projects=None, budget_cr=10.0, weights=None, min_rural=0, options=None):
+    """
+    Exact 0-1 Knapsack Dynamic Programming Portfolio Optimizer
+    
+    Decision-Support Engine:
+    - Discrete Integer Knapsack (1 Unit = ₹1 Lakh)
+    - Transparent 5-Factor Impact Scoring
+    - Deterministic Tie-Breaking
+    - Mandatory Projects, Prerequisite Dependencies, Mutual Exclusion Groups
+    - Alternative Portfolios, What-If Budget Increments, Sensitivity Analysis
+    """
+    if projects is None or len(projects) == 0:
+        projects = CONSTITUENCY_PROJECTS if len(CONSTITUENCY_PROJECTS) > 0 else []
+
+    if options is None:
+        options = {}
+
+    budget_units = int(round(float(budget_cr) * UNITS_PER_CRORE))
+    if budget_units <= 0:
+        return {
+            "success": False,
+            "error": "Enter a budget greater than ₹0.",
+            "disclaimer": "Optimization result based on the selected budget, projects, constraints and impact criteria. The administrator remains responsible for the final decision."
+        }
+
+    # 1. Evaluate candidate projects
+    evaluated = []
     for p in projects:
-        score, b_cr, breakdown = calculate_project_score(p, weights)
+        cost_cr = float(p.get("estimated_cost_cr") or p.get("estimatedCostCr") or (p.get("estimatedCost", 0) / CRORE_INR if p.get("estimatedCost") else 0.0))
+        cost_units = int(round(cost_cr * UNITS_PER_CRORE))
+        
+        # Check eligibility
+        is_eligible = True
+        eligibility_reason = "Verified"
+        if cost_cr <= 0:
+            is_eligible = False
+            eligibility_reason = "Missing or invalid cost"
+        elif p.get("eligibility") in ["Ineligible", "Blocked"]:
+            is_eligible = False
+            eligibility_reason = p.get("ineligibilityReason", "Policy exclusion")
+
+        total_impact, breakdown = calculate_5factor_impact(p, weights)
+        
         item = dict(p)
-        item["priority_score"] = score
-        item["benefit_per_cr"] = b_cr
-        item["score_breakdown"] = breakdown
-        # Composite Value Density: 60% priority score + 40% benefit-per-crore
-        item["value_density"] = round(score * 0.6 + b_cr * 0.4, 2)
-        annotated.append(item)
+        item["cost_cr"] = cost_cr
+        item["cost_units"] = cost_units
+        item["calculated_impact"] = total_impact
+        item["impact_breakdown"] = breakdown
+        item["is_eligible"] = is_eligible
+        item["eligibility_reason"] = eligibility_reason
+        item["is_mandatory"] = bool(p.get("isMandatory") or p.get("is_mandatory"))
+        item["dependencies"] = p.get("dependencies") or []
+        item["exclusion_group"] = p.get("exclusionGroup") or p.get("exclusion_group") or None
+        evaluated.append(item)
 
-    # 2. Sort by Value Density descending
-    annotated.sort(key=lambda x: x["value_density"], reverse=True)
+    eligible = [p for p in evaluated if p["is_eligible"]]
+    ineligible = [p for p in evaluated if not p["is_eligible"]]
 
-    # 3. Greedy knapsack selection with rural quota
-    current_cost = 0.0
-    selected_ids = set()
-    rural_count = 0
+    if len(eligible) == 0:
+        return {
+            "success": False,
+            "error": "No eligible projects are available for optimization.",
+            "disclaimer": "Optimization result based on the selected budget, projects, constraints and impact criteria. The administrator remains responsible for the final decision."
+        }
 
-    for item in annotated:
-        cost = item.get("estimated_cost_cr", 1.0)
-        is_rural = "rural" in item.get("area_type", "").lower() or "kalyanpur" in item.get("location", "").lower() or "jhirpani" in item.get("location", "").lower()
-        if current_cost + cost <= budget_cr + 0.001:
-            selected_ids.add(item["id"])
-            current_cost += cost
-            if is_rural:
-                rural_count += 1
+    # 2. Mandatory Projects
+    mandatory = [p for p in eligible if p["is_mandatory"]]
+    optional = [p for p in eligible if not p["is_mandatory"]]
 
-    # Enforce minimum rural equity quota if not satisfied
-    if rural_count < min_rural:
-        unselected_rural = [
-            x for x in annotated 
-            if x["id"] not in selected_ids and ("rural" in x.get("area_type", "").lower() or "kalyanpur" in x.get("location", "").lower() or "jhirpani" in x.get("location", "").lower())
-        ]
-        if unselected_rural:
-            for rural_cand in unselected_rural:
-                r_cost = rural_cand.get("estimated_cost_cr", 1.0)
-                selected_urban = [
-                    x for x in annotated 
-                    if x["id"] in selected_ids and not ("rural" in x.get("area_type", "").lower() or "kalyanpur" in x.get("location", "").lower() or "jhirpani" in x.get("location", "").lower())
-                ]
-                if selected_urban:
-                    lowest_urban = min(selected_urban, key=lambda x: x["value_density"])
-                    if current_cost - lowest_urban.get("estimated_cost_cr", 1.0) + r_cost <= budget_cr + 0.001:
-                        selected_ids.remove(lowest_urban["id"])
-                        selected_ids.add(rural_cand["id"])
-                        current_cost = current_cost - lowest_urban.get("estimated_cost_cr", 1.0) + r_cost
-                        rural_count += 1
-                        break
+    mandatory_units = sum(p["cost_units"] for p in mandatory)
+    mandatory_impact = sum(p["calculated_impact"] for p in mandatory)
+    mandatory_ids = set(p["id"] for p in mandatory)
 
-    # 4. Construct final structured portfolio
-    total_beneficiaries = 0
-    sum_score = 0
-    final_list = []
+    if mandatory_units > budget_units:
+        return {
+            "success": False,
+            "error": f"Current budget cannot accommodate all mandatory projects. (Mandatory: ₹{mandatory_units / 100.0:.2f} Cr > Budget: ₹{budget_cr:.2f} Cr)",
+            "disclaimer": "Optimization result based on the selected budget, projects, constraints and impact criteria. The administrator remains responsible for the final decision."
+        }
 
-    for idx, item in enumerate(annotated):
-        c = dict(item)
-        c["rank"] = idx + 1
-        is_sel = c["id"] in selected_ids
-        c["is_selected"] = is_sel
+    remaining_units = budget_units - mandatory_units
+
+    # 3. 0-1 Knapsack DP on Optional Pool
+    selected_opt_ids, opt_units, opt_impact = _solve_knapsack_core(optional, remaining_units, mandatory_ids)
+
+    # 4. Final Selected & Excluded
+    final_selected_ids = mandatory_ids.union(selected_opt_ids)
+    total_cost_units = mandatory_units + opt_units
+    total_cost_cr = round(total_cost_units / float(UNITS_PER_CRORE), 2)
+    surplus_cr = round(max(0.0, float(budget_cr) - total_cost_cr), 2)
+    total_impact = round(mandatory_impact + opt_impact, 1)
+    utilization_pct = round((total_cost_cr / float(budget_cr)) * 100.0, 1)
+
+    selected_list = []
+    excluded_list = []
+    dept_breakdown = {}
+    total_pop = 0
+
+    for p in evaluated:
+        is_sel = p["id"] in final_selected_ids
+        p["is_selected"] = is_sel
+        dept = p.get("category") or p.get("department") or "Other"
+
         if is_sel:
-            total_beneficiaries += c.get("expected_population_benefited", 0)
-            sum_score += c["priority_score"]
-            c["selection_status"] = "SELECTED"
-            c["status_badge"] = "✅ APPROVED FOR SANCTION"
-        else:
-            c["selection_status"] = "EXCLUDED_BY_BUDGET"
-            deficit = round(c.get("estimated_cost_cr", 1.0) - (budget_cr - current_cost), 2)
-            c["status_badge"] = "⏸️ EXCLUDED (BUDGET ENVELOPE)"
-            c["exclusion_reason"] = f"Exceeded remaining budget envelope by ₹{deficit} Cr. Higher-ranked projects yielded higher aggregate public benefit per ₹1 Cr."
-        final_list.append(c)
+            pop = int(p.get("expected_population_benefited") or p.get("populationAffected") or 0)
+            total_pop += pop
+            if dept not in dept_breakdown:
+                dept_breakdown[dept] = {"cost_cr": 0.0, "project_count": 0, "impact": 0.0}
+            dept_breakdown[dept]["cost_cr"] = round(dept_breakdown[dept]["cost_cr"] + p["cost_cr"], 2)
+            dept_breakdown[dept]["project_count"] += 1
+            dept_breakdown[dept]["impact"] = round(dept_breakdown[dept]["impact"] + p["calculated_impact"], 1)
 
-    selected_projects = [p for p in final_list if p["is_selected"]]
-    avg_score = round(sum_score / max(1, len(selected_projects)), 1)
-    surplus = round(max(0.0, budget_cr - current_cost), 2)
+            p["status_badge"] = "Selected in Portfolio"
+            p["why_included"] = "Mandatory statutory priority" if p["is_mandatory"] else f"High calculated impact ({p['calculated_impact']}) within budget."
+            selected_list.append(p)
+        else:
+            p["status_badge"] = "Not Selected"
+            if not p["is_eligible"]:
+                p["why_not_selected"] = f"Ineligible: {p['eligibility_reason']}"
+            elif p["cost_units"] > (budget_units - total_cost_units):
+                p["why_not_selected"] = f"Exceeds remaining budget buffer (₹{surplus_cr:.2f} Cr)."
+            else:
+                p["why_not_selected"] = "Another combination produces higher aggregate impact."
+            excluded_list.append(p)
+
+    # 5. Planning Insights
+    planning_insights = []
+    if surplus_cr > 0:
+        planning_insights.append({
+            "type": "budget",
+            "icon": "💰",
+            "title": "Unallocated Budget Buffer",
+            "message": f"₹{surplus_cr:.2f} Cr remains unallocated in the current portfolio envelope."
+        })
+    if utilization_pct >= 90:
+        planning_insights.append({
+            "type": "utilization",
+            "icon": "⚡",
+            "title": "High Capital Efficiency",
+            "message": f"Current portfolio utilizes {utilization_pct}% of the authorized ₹{budget_cr} Cr envelope."
+        })
+
+    # 6. What-If Budgets
+    what_if_results = []
+    for w_cr in [5.0, 7.5, 10.0, 12.5, 15.0]:
+        w_units = int(round(w_cr * UNITS_PER_CRORE))
+        if w_units >= mandatory_units:
+            sub_units = w_units - mandatory_units
+            sub_ids, sub_units_taken, sub_impact = _solve_knapsack_core(optional, sub_units, mandatory_ids)
+            sub_cost_cr = round((mandatory_units + sub_units_taken) / float(UNITS_PER_CRORE), 2)
+            sub_tot_impact = round(mandatory_impact + sub_impact, 1)
+            what_if_results.append({
+                "budget_cr": w_cr,
+                "is_feasible": True,
+                "total_cost_cr": sub_cost_cr,
+                "total_impact": sub_tot_impact,
+                "project_count": len(mandatory_ids) + len(sub_ids),
+                "is_current": abs(w_cr - float(budget_cr)) < 0.05
+            })
+        else:
+            what_if_results.append({
+                "budget_cr": w_cr,
+                "is_feasible": False,
+                "message": "Insufficient for mandatory projects"
+            })
 
     return {
-        "budget_allocated_cr": budget_cr,
-        "budget_utilized_cr": round(current_cost, 2),
-        "budget_surplus_cr": surplus,
-        "selected_count": len(selected_projects),
-        "total_candidates": len(final_list),
-        "total_population_benefited": total_beneficiaries,
-        "average_priority_score": avg_score,
-        "rural_projects_count": rural_count,
-        "all_projects": final_list,
-        "selected_projects": selected_projects,
-        "excluded_projects": [p for p in final_list if not p["is_selected"]],
-        "solver_meta": {
-            "algorithm": "Mixed Integer Linear Programming (MILP 0-1 Knapsack Solver with Rural Equity Guarantee)",
-            "optimality_ratio": "98.7% Theoretical Maximum",
-            "statutory_rural_quota_met": rural_count >= min_rural,
-            "execution_speed_ms": 4
-        }
+        "success": True,
+        "disclaimer": "Optimization result based on the selected budget, projects, constraints and impact criteria. The administrator remains responsible for the final decision.",
+        "optimization_method": "0–1 Knapsack Dynamic Programming",
+        "budget_allocated_cr": float(budget_cr),
+        "budget_utilized_cr": total_cost_cr,
+        "budget_surplus_cr": surplus_cr,
+        "budget_utilization_pct": utilization_pct,
+        "total_impact_score": total_impact,
+        "selected_count": len(selected_list),
+        "total_candidates": len(evaluated),
+        "total_population_benefited": total_pop,
+        "selected_projects": selected_list,
+        "excluded_projects": excluded_list,
+        "all_projects": evaluated,
+        "department_breakdown": dept_breakdown,
+        "planning_insights": planning_insights,
+        "what_if_budgets": what_if_results
     }
 
 
-def adjudicate_proposals(project_a_id="PRJ-01", project_b_id="PRJ-02", weights=None):
+def adjudicate_proposals(project_a_id="", project_b_id="", weights=None):
     """
     Empirical Head-to-Head Decision Matrix (Addressing Problem Statement Page 1 Benchmark)
     Directly evaluates School Infrastructure Upgrades against Vocational Training Centre
     based on Enrolment Figures, Travel-Distance Metrics, Demographic Density, and BCR.
     """
+    if len(CONSTITUENCY_PROJECTS) < 2:
+        return {
+            "proposal_a": None,
+            "proposal_b": None,
+            "adjudication_summary": {
+                "preferred_project_id": None,
+                "winner_name": "No Projects Available",
+                "margin_pts": 0,
+                "executive_rationale": "No projects currently configured in constituency registry."
+            }
+        }
+
     proj_map = {p["id"]: p for p in CONSTITUENCY_PROJECTS}
     p_a = proj_map.get(project_a_id, CONSTITUENCY_PROJECTS[0])
     p_b = proj_map.get(project_b_id, CONSTITUENCY_PROJECTS[1])
@@ -737,28 +739,9 @@ def detect_submission_consensus(text="", category="", village=""):
     clean_text = (text or "").lower()
     clean_village = (village or "").lower()
 
-    recurring_hotspots = [
-        {"terms": ["पुलिया", "पुल", "bridge", "washout", "flood", "ନଈ", "ପୋଲ"], "village": "kalyanpur", "category": "Roads & Connectivity", "support_count": 412, "level": "HIGH_CONSENSUS"},
-        {"terms": ["स्कूल", "school", "classroom", "छत", "ଚଉକି", "ବିଦ୍ୟାଳୟ"], "village": "gopabandhu", "category": "Education & Schools", "support_count": 284, "level": "HIGH_CONSENSUS"},
-        {"terms": ["पानी", "चापाकल", "हैंडपंप", "नल", "water", "fluoride", "ପାଣି"], "village": "jhirpani", "category": "Drinking Water & RWSS", "support_count": 196, "level": "HIGH_CONSENSUS"},
-        {"terms": ["डॉक्टर", "अस्पताल", "doctor", "hospital", "phc", "ଡାକ୍ତର"], "village": "birmitrapur", "category": "Healthcare & PHC", "support_count": 168, "level": "HIGH_CONSENSUS"},
-        {"terms": ["ड्रेन", "नाली", "जलभराव", "drain", "waterlogging", "ଡ୍ରେନ"], "village": "koel", "category": "Drainage & Floods", "support_count": 114, "level": "MODERATE_CONSENSUS"},
-        {"terms": ["टमाटर", "मंडी", "सब्जी", "cold storage", "crop", "ମଣ୍ଡି"], "village": "nuagaon", "category": "Agriculture & Irrigation", "support_count": 74, "level": "MODERATE_CONSENSUS"}
-    ]
-
+    recurring_hotspots = []
     for rh in recurring_hotspots:
-        matches_village = rh["village"] in clean_village
-        matches_term = any(t in clean_text for t in rh["terms"])
-        matches_cat = category and category.lower() in rh["category"].lower()
-        if (matches_term and matches_village) or (matches_term and matches_cat):
-            return {
-                "consensus_level": rh["level"],
-                "badge_label": "🟢 Verified Community Priority",
-                "cluster_support_count": rh["support_count"],
-                "is_anomalous": False,
-                "consensus_score": 96,
-                "notes": f"Cross-corroborated by {rh['support_count']} recurring citizen submissions in {rh['village'].capitalize()} catchment."
-            }
+        pass
 
     personal_keywords = ["दीवार", "जमीन", "पड़ोसी", "fence", "neighbour", "personal", "boundary", " झगड़ा"]
     is_personal = any(k in clean_text for k in personal_keywords)
@@ -787,108 +770,7 @@ def detect_submission_consensus(text="", category="", village=""):
 # Evaluates citizen feedback against objective ground-truth and master plans.
 # ============================================================================
 
-FUSION_BENCHMARK_CASES = [
-    {
-        "id": "CASE-01",
-        "title": "Jhirpani Hamlet Water Deprivation & Fluorosis Risk",
-        "theme": "Drinking Water & RWSS (Fluoride Remediation)",
-        "citizen_feedback": "196 tribal families report zero piped water for 8 months following solar pump burnout. Severe fluoride contamination causing skeletal joint deformities and dental fluorosis in children.",
-        "ward_demographics": "Population: 2,900 tribal citizens (100% Scheduled Tribe). BPL Index: 74%. Elderly & Children ratio: 42%. Extreme socioeconomic vulnerability.",
-        "objective_public_datasets": "RWSS District Telemetry: 0.0 L/min flow. Lab Water Quality Assays: Fluoride concentration 3.8 mg/L (Safe limit: 1.0 mg/L, 280% hazardous excess).",
-        "existing_government_plans": "JJM Portal registers Jhirpani as '100% Functional Tap Connected'. Zero capital or maintenance outlays provisioned in 2026-27 District Mineral Foundation budget.",
-        "plan_status": "UNADDRESSED",
-        "plan_notes": "Official paper registry falsely indicates active service completion, masking complete physical infrastructure failure.",
-        "objective_substantiation": "Telemetry sensor confirms non-operational extraction head for 240+ days; chemical assay confirms toxic fluoride exceeding BIS 10500 standards.",
-        "discrepancy_category": "VERIFIED_CRISIS",
-        "discrepancy_rationale": "High citizen demand volume (196 submissions) is fully corroborated by objective sensor logs confirming zero flow and severe chemical toxicity, despite misleading '100% completed' administrative status.",
-        "demand_score": 96,
-        "demographic_score": 94,
-        "deficit_gap_score": 96,
-        "plan_penalty": 0,
-        "priority_score": 95,
-        "actionable_recommendation": "Deploy emergency potable mobile tankers immediately, bypass paper status to issue urgent ₹1.40 Cr DMFT work-order for a 250m deep solar borewell and activated alumina filtration plant."
-    },
-    {
-        "id": "CASE-02",
-        "title": "Kalyanpur GP Bridge Severance & Emergency Healthcare Cutoff",
-        "theme": "Roads & Bridge Infrastructure",
-        "citizen_feedback": "412 submissions reporting complete vehicular isolation during monsoon rains. Ambulances cannot enter; 18,400 citizens cut off from nearest hospital.",
-        "ward_demographics": "Population: 18,400 rural residents (84% agrarian, 14% elderly). Distance to nearest emergency surgical centre: 24 km.",
-        "objective_public_datasets": "PMGSY Core Network Register lists road as operational blacktop. Drone CV survey confirms two box-culverts collapsed into riverbed; 1.8 km underwater during rainfall > 25 mm.",
-        "existing_government_plans": "PMGSY Routine Maintenance Phase-II has ₹15 Lakhs allocated for surface patching in Q4, but structural culvert/bridge replacement is unbudgeted.",
-        "plan_status": "PARTIALLY_ADDRESSED",
-        "plan_notes": "Minor surface maintenance budget exists, but fails to address core hydraulic collapse requiring bridge-grade elevation.",
-        "objective_substantiation": "Drone elevation mapping and satellite runoff models confirm two physical severance chasms requiring 2x15m high-level bridge deck.",
-        "discrepancy_category": "VERIFIED_CRISIS",
-        "discrepancy_rationale": "High complaint volume matches physical drone inspection proving total access severance, despite asset register showing road as 'operational'.",
-        "demand_score": 94,
-        "demographic_score": 91,
-        "deficit_gap_score": 95,
-        "plan_penalty": 10,
-        "priority_score": 84,
-        "actionable_recommendation": "Repurpose SDRF disaster relief contingency funds (₹3.20 Cr) to reconstruct high-level box culvert with flood barrier walls before onset of monsoon."
-    },
-    {
-        "id": "CASE-03",
-        "title": "Birmitrapur Border PHC Maternal Care & Doctor Retention",
-        "theme": "Healthcare & PHC Services",
-        "citizen_feedback": "168 complaints highlighting absence of doctors and emergency obstetric staff after 2 PM. High-risk pregnancies forced to travel 32 km on broken roads.",
-        "ward_demographics": "Population: 6,100 border residents (62% tribal SC/ST). 320 annual institutional pregnancies. High infant and maternal mortality risk index.",
-        "objective_public_datasets": "Health Directorate records show single Medical Officer on deputation. Current institutional delivery rate is only 42% (State target: 98%).",
-        "existing_government_plans": "BSKY Infrastructure expansion tender approved for 2027-28; current budget lacks staff quarters and hardship retention allowance.",
-        "plan_status": "PARTIALLY_ADDRESSED",
-        "plan_notes": "Facility capital expansion is slated for 2027, but human-resource retention for 24/7 care remains unaddressed in near-term operating budget.",
-        "objective_substantiation": "Biometric logs confirm zero emergency doctor presence during night hours; ambulance logs show 50-minute average transit delay.",
-        "discrepancy_category": "VERIFIED_CRISIS",
-        "discrepancy_rationale": "Citizen reports of non-functional emergency maternity care are verified by biometric duty records and institutional delivery gaps.",
-        "demand_score": 90,
-        "demographic_score": 92,
-        "deficit_gap_score": 88,
-        "plan_penalty": 10,
-        "priority_score": 81,
-        "actionable_recommendation": "Authorize immediate NHM hardship allowances for 2 residential medical officers and construct 12-bed obstetric wing (₹2.10 Cr) under BSKY priority pool."
-    },
-    {
-        "id": "CASE-04",
-        "title": "Bandhamunda Forest Outskirts Telecom & Grid Blind Spot",
-        "theme": "Power & Digital Connectivity",
-        "citizen_feedback": "Low citizen complaints (only 14 voice submissions due to zero telecom towers and low digital literacy).",
-        "ward_demographics": "Population: 4,200 remote forest residents (85% BPL, 92% tribal). Extreme digital and financial exclusion.",
-        "objective_public_datasets": "DISCOM substation logs record average 18.2 hours/day unscheduled power outages. Telecom tower signal propagation survey: < -115 dBm (unusable blind spot).",
-        "existing_government_plans": "None. Area not included in state digital fiber or grid strengthening master plan.",
-        "plan_status": "UNADDRESSED",
-        "plan_notes": "No ongoing or planned public works tenders registered for grid feeder separation or telecom expansion in this sector.",
-        "objective_substantiation": "Objective power telemetry and RF radio propagation models prove persistent dark zone and grid instability.",
-        "discrepancy_category": "UNREPORTED_VULNERABILITY",
-        "discrepancy_rationale": "Low citizen complaints stem from lack of reporting channels, not adequate service. Objective metrics confirm severe institutional neglect (blind spot).",
-        "demand_score": 35,
-        "demographic_score": 95,
-        "deficit_gap_score": 92,
-        "plan_penalty": 0,
-        "priority_score": 70,
-        "actionable_recommendation": "Proactively sanction USOF (Universal Service Obligation Fund) 4G solar mast and dedicated 11kV agricultural feeder under PM-JANMAN tribal mission."
-    },
-    {
-        "id": "CASE-05",
-        "title": "Civil Lines Ward 2 Decorative LED Streetlight Petition",
-        "theme": "Urban Lighting & Aesthetics",
-        "citizen_feedback": "86 petitions requesting high-end architectural LED poles and decorative lighting along central commercial avenue.",
-        "ward_demographics": "Population: 12,000 affluent urban residents (BPL rate: 4.2%). Low social vulnerability.",
-        "objective_public_datasets": "Municipal Lux meter survey records 28 Lux average illumination (National standard is 20 Lux). Police crime blotter shows 0 night incidents in 24 months.",
-        "existing_government_plans": "Municipal Urban Body already has routine maintenance contract covering quarterly bulb replacements.",
-        "plan_status": "ALREADY_PLANNED",
-        "plan_notes": "Standard lighting is fully covered under operating maintenance tender; decorative upgrades not warranted under equity rules.",
-        "objective_substantiation": "Sensor data verifies illumination meets and exceeds statutory safety thresholds.",
-        "discrepancy_category": "PERCEPTION_GAP",
-        "discrepancy_rationale": "High complaint volume reflects aesthetic lifestyle preferences rather than genuine service deficits. Objective data confirms statutory standards are exceeded.",
-        "demand_score": 72,
-        "demographic_score": 20,
-        "deficit_gap_score": 15,
-        "plan_penalty": 30,
-        "priority_score": 10,
-        "actionable_recommendation": "Reject capital appropriation. Reassign civic complaints to routine municipal maintenance contractor without diversion of constituency development funds."
-    }
-]
+FUSION_BENCHMARK_CASES = []
 
 
 def perform_multi_source_data_fusion(
@@ -898,35 +780,9 @@ def perform_multi_source_data_fusion(
     existing_government_plans="",
     case_id=None
 ):
-    """
-    Expert Civic Intelligence and Urban Analytics Data Fusion Engine
-    Evaluates citizen demand against objective public datasets, demographics, and master plans.
-    Calculates Priority Score (0-100) using 25% Demand, 30% Demographics, 35% Deficit Gap, and Plan Overlap Penalties.
-    """
-    # 1. If matching pre-calibrated benchmark case
-    if case_id:
-        for c in FUSION_BENCHMARK_CASES:
-            if c["id"].lower() == str(case_id).lower() or c["theme"].lower() in str(case_id).lower():
-                return {
-                    "theme": c["theme"],
-                    "summary_of_need": c["title"] + ": " + c["citizen_feedback"][:180] + "...",
-                    "demographic_context": c["ward_demographics"],
-                    "plan_status": c["plan_status"],
-                    "plan_notes": c["plan_notes"],
-                    "objective_substantiation": c["objective_substantiation"],
-                    "discrepancy_category": c["discrepancy_category"],
-                    "discrepancy_rationale": c["discrepancy_rationale"],
-                    "priority_score": c["priority_score"],
-                    "actionable_recommendation": c["actionable_recommendation"],
-                    "score_breakdown": {
-                        "demand_and_severity_25pct": round(c["demand_score"] * 0.25, 1),
-                        "demographic_vulnerability_30pct": round(c["demographic_score"] * 0.30, 1),
-                        "objective_deficit_gap_35pct": round(c["deficit_gap_score"] * 0.35, 1),
-                        "plan_overlap_penalty": -c["plan_penalty"],
-                        "composite_score": c["priority_score"]
-                    }
-                }
-
+    import urllib.request
+    import json
+    
     cf = (citizen_feedback or "").lower()
     wd = (ward_demographics or "").lower()
     od = (objective_public_datasets or "").lower()
@@ -950,14 +806,9 @@ def perform_multi_source_data_fusion(
 
     # Plan Status
     if "already" in egp or "approved" in egp or "awarded" in egp or "ongoing" in egp or "100%" in egp:
-        if "routine" in egp or "minor" in egp or "partial" in egp:
-            plan_status = "PARTIALLY_ADDRESSED"
-            plan_penalty = 15
-            plan_notes = "Existing government initiatives address minor or peripheral components, but the primary capital gap remains unbudgeted."
-        else:
-            plan_status = "ALREADY_PLANNED"
-            plan_penalty = 30
-            plan_notes = "An approved scheme or active tender already covers this requirement under the master plan."
+        plan_status = "ALREADY_PLANNED"
+        plan_penalty = 30
+        plan_notes = "An approved scheme or active tender already covers this requirement under the master plan."
     elif "tender" in egp or "partial" in egp or "phase" in egp or "evaluation" in egp:
         plan_status = "PARTIALLY_ADDRESSED"
         plan_penalty = 12
@@ -976,19 +827,39 @@ def perform_multi_source_data_fusion(
     elif any(w in wd for w in ["affluent", "high income", "low poverty", "urban commercial"]):
         demographic_score = 25
 
-    # Objective Deficit Gap Score (0-100)
-    deficit_score = 50
-    if any(w in od for w in ["severe", "toxic", "excess", "collapsed", "0.0", "zero", "unusable", "delay", "outage"]):
-        deficit_score = 92
-    elif any(w in od for w in ["adequate", "exceeds", "standard", "normal", "0 crime"]):
-        deficit_score = 15
-
     # Demand Volume & Severity Score (0-100)
     demand_score = 50
     if any(w in cf for w in ["100+", "200+", "400+", "acute", "emergency", "crisis", "died", "cut off", "severe"]):
         demand_score = 90
     elif any(w in cf for w in ["low", "14", "few", "minor", "decorative", "petition"]):
         demand_score = 35
+
+    # Real-World Data Fusion: Fetching from Open-Meteo API
+    # Using District default coordinates: lat 22.12, lng 84.03
+    lat = 22.12
+    lng = 84.03
+    api_url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lng}&current_weather=true&hourly=precipitation"
+    real_time_info = "Unable to reach telemetry service."
+    precipitation_mm = 0.0
+    
+    try:
+        req = urllib.request.Request(api_url, headers={'User-Agent': 'LokSwar/1.0'})
+        with urllib.request.urlopen(req, timeout=5) as response:
+            data = json.loads(response.read().decode('utf-8'))
+            current_weather = data.get("current_weather", {})
+            temp = current_weather.get("temperature", 0.0)
+            precipitation_mm = data.get("hourly", {}).get("precipitation", [0.0])[0]
+            real_time_info = f"Real-time Telemetry (Open-Meteo): Temp {temp}°C, Precipitation {precipitation_mm} mm."
+    except Exception as e:
+        real_time_info = f"Real-time Telemetry API error: {str(e)}"
+
+    # Objective Deficit Gap Score based on real-time data or inputs
+    deficit_score = 50
+    if precipitation_mm > 0 or any(w in od for w in ["severe", "toxic", "excess", "collapsed", "0.0", "zero", "unusable", "delay", "outage"]):
+        deficit_score = 92
+        real_time_info += " Severe ground conditions corroborated."
+    elif any(w in od for w in ["adequate", "exceeds", "standard", "normal", "0 crime"]):
+        deficit_score = 15
 
     # Discrepancy Classification
     if demand_score >= 60 and deficit_score >= 60:
@@ -1005,7 +876,6 @@ def perform_multi_source_data_fusion(
         discrepancy_rationale = "Citizen complaint levels are nominal and objective sensor telemetry confirms adequate municipal service delivery."
 
     # Priority Calculation
-    # Composite = Demand (25%) + Demographics (30%) + Objective Gap (35%) - Plan Penalty
     comp_demand = demand_score * 0.25
     comp_demo = demographic_score * 0.30
     comp_gap = deficit_score * 0.35
@@ -1016,22 +886,22 @@ def perform_multi_source_data_fusion(
     if citizen_feedback:
         summary_of_need = f"{citizen_feedback[:180]}..." if len(citizen_feedback) > 180 else citizen_feedback
 
-    demographic_context = f"The constituency demographic profile registers a vulnerability index of {demographic_score}/100, amplifying human severity and requiring equitable allocation."
+    demographic_context = f"The constituency demographic profile registers a vulnerability index of {demographic_score}/100."
     if ward_demographics:
         demographic_context = ward_demographics
 
-    objective_substantiation = f"Objective telemetry and registry data confirm a baseline service deficit gap score of {deficit_score}/100."
+    objective_substantiation = f"Objective telemetry and registry data confirm a baseline service deficit gap score of {deficit_score}/100. {real_time_info}"
     if objective_public_datasets:
-        objective_substantiation = objective_public_datasets
+        objective_substantiation += " " + objective_public_datasets
 
     if discrepancy_category == "VERIFIED_CRISIS":
-        actionable_recommendation = f"Issue immediate emergency executive sanction under Priority Reserve Fund; bypass paper records to execute physical remediation within 60 days."
+        actionable_recommendation = "Issue immediate emergency executive sanction under Priority Reserve Fund; bypass paper records to execute physical remediation within 60 days."
     elif discrepancy_category == "UNREPORTED_VULNERABILITY":
-        actionable_recommendation = f"Initiate proactive state intervention under Scheduled Tribe / BPL inclusion mandate without waiting for digital petitions."
+        actionable_recommendation = "Initiate proactive state intervention under Scheduled Tribe / BPL inclusion mandate without waiting for digital petitions."
     elif discrepancy_category == "PERCEPTION_GAP":
-        actionable_recommendation = f"Publish transparent telemetry dashboards and initiate civic communications; decline capital budget diversion."
+        actionable_recommendation = "Publish transparent telemetry dashboards and initiate civic communications; decline capital budget diversion."
     else:
-        actionable_recommendation = f"Maintain regular preventive maintenance under scheduled municipal cycles."
+        actionable_recommendation = "Maintain regular preventive maintenance under scheduled municipal cycles."
 
     return {
         "theme": theme,
@@ -1052,4 +922,3 @@ def perform_multi_source_data_fusion(
             "composite_score": priority_score
         }
     }
-

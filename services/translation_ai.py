@@ -536,7 +536,7 @@ def is_likely_english(text):
         return False
     return True
 
-def fetch_live_translation_to_english(raw_text, quick_mode=False):
+def fetch_live_translation_to_english(raw_text, quick_mode=False, source_lang_code=None):
     """
     Translates regional text from ANY language (Bihari, Bhojpuri, Odia, Hindi, Bengali, Tamil, Hinglish, etc.)
     directly into clean English for search bar insertion and categorization.
@@ -570,7 +570,14 @@ def fetch_live_translation_to_english(raw_text, quick_mode=False):
         chunks = _chunk_text_by_sentences(text, max_chars=400)
         translated_parts = []
         for chunk in chunks:
-            url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=' + urllib.parse.quote(chunk)
+            iso_map = {
+                "Hindi": "hi", "Hindi/Marathi": "hi", "Bihari / Bhojpuri": "bho", "Bhojpuri": "bho",
+                "Odia": "or", "Bengali": "bn", "Tamil": "ta", "Telugu": "te",
+                "Punjabi": "pa", "Gujarati": "gu", "Kannada": "kn",
+                "Malayalam": "ml", "Marathi": "mr", "Urdu": "ur", "Urdu/Kashmiri/Sindhi": "ur"
+            }
+            sl = iso_map.get(source_lang_code, "auto") if source_lang_code else "auto"
+            url = f'https://translate.googleapis.com/translate_a/single?client=gtx&sl={sl}&tl=en&dt=t&q=' + urllib.parse.quote(chunk)
             req = urllib.request.Request(url, headers={
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
                 'Accept': 'application/json',

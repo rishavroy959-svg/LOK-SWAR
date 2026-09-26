@@ -1836,25 +1836,42 @@
               setSelectedReport(r);
             });
 
+            const photoSrc = r.photoUrl || (r.photoBase64 ? (r.photoBase64.startsWith('data:') ? r.photoBase64 : `data:image/jpeg;base64,${r.photoBase64}`) : null) || r.evidenceImage;
+            const audioSrc = r.audioRecordingUrl || (r.audioBase64 ? (r.audioBase64.startsWith('data:') ? r.audioBase64 : `data:audio/wav;base64,${r.audioBase64}`) : null) || r.audio;
+            
             const popupContent = `
-          <div style="font-family:'Outfit', sans-serif; padding:4px; max-width:240px; color:#f8fafc;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+          <div style="font-family:'Outfit', sans-serif; padding:4px; max-width:280px; color:#f8fafc; display:flex; flex-direction:column; gap:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
               <span style="font-size:10px; font-weight:bold; background:${isSurvival ? '#dc2626' : '#059669'}; color:white; padding:2px 6px; border-radius:6px;">
                 #${r.id} • ${r.urgencyScore || 90}% Urgency
               </span>
+              <span style="font-size:10px; font-weight:bold; color:#cbd5e1;">${r.status || "Pending"}</span>
             </div>
-            <div style="font-weight:bold; font-size:12px; line-height:1.3; color:#ffffff; margin-bottom:4px;">
-              ${r.title || r.aiAnalyzedTitle}
+            
+            <div style="font-weight:bold; font-size:13px; line-height:1.3; color:#ffffff;">
+              ${r.adminEnglishTranslation || r.directEnglishTranslation || r.title || r.aiAnalyzedTitle}
             </div>
-            <div style="font-size:11px; color:#cbd5e1; margin-bottom:4px;">
-              📍 ${r.location || r.village || ""}
+            
+            ${photoSrc ? `<div style="width:100%; max-height:120px; overflow:hidden; border-radius:6px; border:1px solid rgba(255,255,255,0.15);">
+                <img src="${photoSrc}" alt="Evidence" style="width:100%; height:100%; object-fit:cover;" />
+            </div>` : ''}
+            
+            ${audioSrc ? `<div>
+                <audio controls src="${audioSrc}" style="width:100%; height:28px; border-radius:4px;"></audio>
+            </div>` : ''}
+            
+            <div style="background:rgba(255,255,255,0.05); padding:6px; border-radius:6px; font-size:11px;">
+              <div style="color:#94a3b8; display:flex; justify-content:space-between; margin-bottom:2px;">
+                <span>👤 ${r.author || r.citizenName || "Verified Citizen"}</span>
+                <span>📞 ${r.citizenMobile || r.mobile || "N/A"}</span>
+              </div>
+              <div style="color:#cbd5e1; margin-bottom:2px;">📍 ${r.location || r.village || "Current Location"}</div>
+              <div style="color:#38bdf8; font-weight:bold;">🏛️ ${r.category || r.suggestedScheme || "General"}</div>
             </div>
-            <div style="font-size:10px; color:#38bdf8; margin-bottom:6px;">
-              🏛️ ${r.suggestedScheme || "SDRF / PMGSY"}
-            </div>
+            
             <div style="border-top:1px solid rgba(255,255,255,0.15); padding-top:6px; display:flex; gap:4px;">
-              <a href="https://www.google.com/maps/search/?api=1&query=${lat},${lng}" target="_blank" rel="noopener noreferrer" style="background:#0284c7; color:white; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:bold; text-decoration:none; display:inline-flex; align-items:center;">
-                🗺️ Open in Google Maps
+              <a href="https://www.google.com/maps/search/?api=1&query=${lat},${lng}" target="_blank" rel="noopener noreferrer" style="background:#0284c7; color:white; padding:6px; border-radius:6px; font-size:11px; font-weight:bold; text-decoration:none; display:flex; align-items:center; justify-content:center; width:100%; text-align:center;">
+                🗺️ Open in Maps
               </a>
             </div>
           </div>
@@ -1872,11 +1889,10 @@
           if (!data) return;
           const list = data.reports || data.data || [];
           if (Array.isArray(list)) {
-            const cleanList = list.filter(r => !['TKT-101', 'TKT-102', 'TKT-103', 'TKT-104', 'PROB-101', 'PROB-102'].includes(r.id));
-            setReports(cleanList);
+            setReports(list);
             setSelectedReport(prev => {
-              if (!prev) return cleanList[0] || null;
-              return cleanList.find(r => r.id === prev.id) || cleanList[0] || null;
+              if (!prev) return list[0] || null;
+              return list.find(r => r.id === prev.id) || list[0] || null;
             });
           }
         }).catch(() => {
@@ -3529,7 +3545,81 @@
           target: "_blank",
           rel: "noopener noreferrer",
           className: "w-full py-2.5 rounded-[1rem] border border-[#e0dcd5] dark:border-[#423f3b] bg-white dark:bg-[#282624] text-[#5a5551] dark:text-[#d1ccc6] font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-all"
-        }, "🗺️ Turn-by-Turn in Google Maps"))))))) : activeTab === 'data_fusion' ?
+        }, "🗺️ Turn-by-Turn in Google Maps")))),
+        /*#__PURE__*/React.createElement("div", { className: "mt-8 space-y-4" },
+          /*#__PURE__*/React.createElement("div", { className: "flex items-center justify-between gap-2 flex-wrap" },
+            /*#__PURE__*/React.createElement("div", { className: "flex items-center gap-2" },
+              /*#__PURE__*/React.createElement("span", { className: "text-base" }, "🔥"),
+              /*#__PURE__*/React.createElement("h3", { className: "font-black text-sm sm:text-base text-[#4a4643] dark:text-white uppercase tracking-wide" }, "Active Constituency Demand Hotspots"),
+              /*#__PURE__*/React.createElement("span", { className: "px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 font-mono" }, reports.length, " Hotspots")
+            ),
+            /*#__PURE__*/React.createElement("span", { className: "text-[10px] font-mono text-[#a19b95] dark:text-[#9e9790]" }, "Live Multi-Source Telemetry (API)")
+          ),
+          /*#__PURE__*/React.createElement("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5" },
+            reports.slice(0, 12).map(h => {
+              const isSelected = selectedReport?.id === h.id;
+              const cat = (h.category || '').toLowerCase();
+              const isRoad = cat.includes('road') || cat.includes('transit');
+              const isWater = cat.includes('water') || cat.includes('drain');
+              const isPower = cat.includes('power') || cat.includes('elec');
+              const isHealth = cat.includes('health') || cat.includes('doctor');
+              const isEdu = cat.includes('edu') || cat.includes('school');
+              const isAgri = cat.includes('agri') || cat.includes('storage');
+              const hColor = isRoad ? '#dc2626' : isWater ? '#0284c7' : isHealth ? '#ec4899' : isEdu ? '#8b5cf6' : isAgri ? '#10b981' : isPower ? '#f59e0b' : '#ef4444';
+              const hIconChar = isRoad ? '🛣️' : isWater ? '🚰' : isHealth ? '🏥' : isEdu ? '🏫' : isAgri ? '🌾' : isPower ? '⚡' : '🔥';
+              return /*#__PURE__*/React.createElement("div", {
+                key: h.id,
+                className: `p-4 sm:p-5 rounded-[1.5rem] border transition-all space-y-3 shadow-xs ${isSelected ? 'bg-[#f7f5f2]/90 dark:bg-[#282624] border-rose-400 dark:border-rose-700 ring-2 ring-rose-400/40' : 'bg-white dark:bg-[#1f1e1c] border-[#f0ece6] dark:border-[#33302d] hover:border-[#e0dcd5]'}`
+              },
+                /*#__PURE__*/React.createElement("div", { className: "flex items-start justify-between gap-2" },
+                  /*#__PURE__*/React.createElement("div", { className: "space-y-1 flex-1" },
+                    /*#__PURE__*/React.createElement("div", { className: "flex items-center gap-2 flex-wrap" },
+                      /*#__PURE__*/React.createElement("span", { className: "px-2 py-0.5 rounded-lg text-[10px] font-black text-white", style: { backgroundColor: hColor } }, `🔥 #${h.id}`),
+                      /*#__PURE__*/React.createElement("span", { className: "text-[11px] font-bold text-[#706a65] dark:text-[#b8b3ad] flex items-center gap-1" },
+                        /*#__PURE__*/React.createElement("span", null, hIconChar),
+                        /*#__PURE__*/React.createElement("span", null, h.category || 'General')
+                      )
+                    ),
+                    /*#__PURE__*/React.createElement("h4", { className: "font-bold text-sm sm:text-base text-[#4a4643] dark:text-white pt-0.5 line-clamp-1" }, h.title || h.aiAnalyzedTitle),
+                    /*#__PURE__*/React.createElement("div", { className: "flex items-center gap-2 text-xs font-semibold text-amber-600 dark:text-amber-400" },
+                      /*#__PURE__*/React.createElement("span", null, "⚡"),
+                      /*#__PURE__*/React.createElement("span", null, h.status || 'Pending')
+                    )
+                  ),
+                  /*#__PURE__*/React.createElement("div", { className: "text-right font-mono" },
+                    /*#__PURE__*/React.createElement("div", { className: "text-xs font-black text-rose-600 dark:text-rose-400" }, `${h.urgencyScore || 90}% Urgency`),
+                    /*#__PURE__*/React.createElement("div", { className: "text-[10px] text-[#a19b95] dark:text-[#9e9790]" }, `1 Report`)
+                  )
+                ),
+                /*#__PURE__*/React.createElement("div", { className: "p-2.5 rounded-[1rem] bg-[#f7f5f2] dark:bg-[#282624] text-[11px] text-[#5a5551] dark:text-[#cbd5e1] border border-[#f0ece6] dark:border-[#33302d] space-y-1" },
+                  /*#__PURE__*/React.createElement("div", { className: "flex items-center justify-between text-[10px] text-[#a19b95] dark:text-[#9e9790] font-mono" },
+                    /*#__PURE__*/React.createElement("span", null, `Location: ${h.village || h.location || 'Local'}`),
+                    /*#__PURE__*/React.createElement("span", null, h.gpsCoords ? `GPS: ${h.gpsCoords.lat || 22}, ${h.gpsCoords.lng || 84}` : `GPS: 22.12, 84.03`)
+                  ),
+                  /*#__PURE__*/React.createElement("div", { className: "text-[10px] text-blue-600 dark:text-sky-400 leading-snug flex items-center gap-1" },
+                    /*#__PURE__*/React.createElement("span", null, "🛰️"),
+                    /*#__PURE__*/React.createElement("span", null, "Corroborated by Satellite/Ground")
+                  )
+                ),
+                /*#__PURE__*/React.createElement("div", { className: "flex items-center gap-2 pt-1" },
+                  /*#__PURE__*/React.createElement("button", {
+                    type: "button",
+                    onClick: () => {
+                      setSelectedReport(h);
+                      if (window.mapInstance && h.gpsCoords) {
+                        window.mapInstance.panTo([h.gpsCoords.lat || 22.1245, h.gpsCoords.lng || 84.0321]);
+                      }
+                    },
+                    className: "flex-1 py-1.5 px-3 rounded-[1rem] bg-[#f7f5f2] hover:bg-[#f0ece6] dark:bg-[#33302d] dark:hover:bg-slate-700 border border-[#e0dcd5] dark:border-[#423f3b] text-[#5a5551] dark:text-[#d1ccc6] font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all"
+                  },
+                    /*#__PURE__*/React.createElement("span", null, "📍"),
+                    /*#__PURE__*/React.createElement("span", null, "Focus on Map")
+                  )
+                )
+              );
+            })
+          )
+        )))) : activeTab === 'data_fusion' ?
           /*#__PURE__*/
           /* MULTI-SENSOR CONTEXTUAL GROUNDING & FACT CHECK SUITE */
           React.createElement("div", {
@@ -4234,89 +4324,7 @@
               className: "text-base font-bold text-[#4a4643] dark:text-white"
             }, "No Incident Selected"), /*#__PURE__*/React.createElement("p", {
               className: "text-xs text-[#a19b95] dark:text-[#9e9790] max-w-sm mx-auto"
-            }, "Select any real citizen grievance from the queue to review audio recordings, verify ground telemetry, and sanction emergency budget."))))), activeTab === 'overview' && /*#__PURE__*/React.createElement("section", {
-              className: "w-full max-w-7xl mx-auto mt-12 mb-6 animate-in fade-in duration-300"
-            }, /*#__PURE__*/React.createElement("div", {
-              className: "relative overflow-hidden rounded-[2.5rem] border p-6 sm:p-8 bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 border-[#f0ece6] dark:border-[#33302d] shadow-xl"
-            }, /*#__PURE__*/React.createElement("div", {
-              className: "absolute -top-24 -left-24 w-64 h-64 bg-[#fff6e5]0/10 dark:bg-[#fff6e5]0/15 rounded-full blur-3xl pointer-events-none"
-            }), /*#__PURE__*/React.createElement("div", {
-              className: "absolute -bottom-24 -right-24 w-64 h-64 bg-blue-500/10 dark:bg-blue-500/15 rounded-full blur-3xl pointer-events-none"
-            }), /*#__PURE__*/React.createElement("div", {
-              className: "relative z-10 text-center space-y-2 mb-8"
-            }, /*#__PURE__*/React.createElement("div", {
-              className: "inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-emerald-100 dark:bg-[#3d2c1d]/80 text-emerald-800 dark:text-emerald-300 border border-[#d48c48]/50 dark:border-[#c27a38]/50/60 shadow-xs"
-            }, /*#__PURE__*/React.createElement("span", null, "✨"), /*#__PURE__*/React.createElement("span", null, "SYSTEM ARCHITECTS & DEVELOPERS")), /*#__PURE__*/React.createElement("h2", {
-              className: "text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-[#4a4643] dark:text-white uppercase font-brand"
-            }, "DEVELOPED BY TEAM ARSHRIVA"), /*#__PURE__*/React.createElement("p", {
-              className: "text-xs sm:text-sm text-[#a19b95] dark:text-[#9e9790] max-w-xl mx-auto font-medium"
-            }, "District Administration Engine • Geo-Spatial Triage Matrix & Multilingual Citizen Intelligence Infrastructure.")), /*#__PURE__*/React.createElement("div", {
-              className: "grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10"
-            }, /*#__PURE__*/React.createElement("div", {
-              className: "p-6 rounded-[1.5rem] border transition-all duration-200 hover:shadow-lg hover:-translate-y-1 bg-white/90 dark:bg-[#282624]/90 backdrop-blur-md border-[#f0ece6] dark:border-[#33302d] flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left group"
-            }, /*#__PURE__*/React.createElement("div", {
-              className: "relative flex-shrink-0"
-            }, /*#__PURE__*/React.createElement("div", {
-              className: "w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-emerald-500 shadow-md ring-4 ring-[#d48c48]/20 group-hover:ring-[#d48c48]/40 transition-all flex items-center justify-center bg-[#f7f5f2] dark:bg-[#33302d]"
-            }, /*#__PURE__*/React.createElement("img", {
-              src: "assets/swati_chaudhary.jpg",
-              alt: "Swati Chaudhary",
-              className: "w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110"
-            })), /*#__PURE__*/React.createElement("span", {
-              className: "absolute bottom-0 right-0 w-6 h-6 rounded-full bg-[#fff6e5]0 text-white flex items-center justify-center text-[10px] font-bold shadow border-2 border-white dark:border-slate-900"
-            }, "★")), /*#__PURE__*/React.createElement("div", {
-              className: "space-y-2 flex-1"
-            }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-              className: "flex items-center justify-center sm:justify-start gap-2 flex-wrap"
-            }, /*#__PURE__*/React.createElement("h3", {
-              className: "text-lg sm:text-xl font-black text-[#4a4643] dark:text-white"
-            }, "Swati Chaudhary"), /*#__PURE__*/React.createElement("span", {
-              className: "text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-[#3d2c1d] text-emerald-800 dark:text-emerald-300 border border-[#d48c48]/50 dark:border-emerald-800"
-            }, "CSE-2 • 2ND YEAR")), /*#__PURE__*/React.createElement("p", {
-              className: "text-xs font-bold text-[#d48c48] dark:text-[#e8a361] mt-0.5"
-            }, "Full-Stack Developer & UI Architect")), /*#__PURE__*/React.createElement("p", {
-              className: "text-xs text-[#8b857f] dark:text-[#b8b3ad] leading-relaxed"
-            }, "Leading Multilingual Indic Natural Language Processing, Interactive React Interface Systems, Aadhaar Sandbox e-KYC Verification, and Community Intelligence Ledgers."), /*#__PURE__*/React.createElement("div", {
-              className: "flex items-center justify-center sm:justify-start gap-1.5 flex-wrap pt-1"
-            }, /*#__PURE__*/React.createElement("span", {
-              className: "px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#f7f5f2] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#f0ece6] dark:border-[#423f3b]"
-            }, "React Architecture"), /*#__PURE__*/React.createElement("span", {
-              className: "px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#f7f5f2] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#f0ece6] dark:border-[#423f3b]"
-            }, "Indic NLP"), /*#__PURE__*/React.createElement("span", {
-              className: "px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#f7f5f2] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#f0ece6] dark:border-[#423f3b]"
-            }, "Aadhaar e-KYC")))), /*#__PURE__*/React.createElement("div", {
-              className: "p-6 rounded-[1.5rem] border transition-all duration-200 hover:shadow-lg hover:-translate-y-1 bg-white/90 dark:bg-[#282624]/90 backdrop-blur-md border-[#f0ece6] dark:border-[#33302d] flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left group"
-            }, /*#__PURE__*/React.createElement("div", {
-              className: "relative flex-shrink-0"
-            }, /*#__PURE__*/React.createElement("div", {
-              className: "w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-blue-500 shadow-md ring-4 ring-blue-500/20 group-hover:ring-blue-500/40 transition-all flex items-center justify-center bg-[#f7f5f2] dark:bg-[#33302d]"
-            }, /*#__PURE__*/React.createElement("img", {
-              src: "assets/shaurya_sharma.jpg",
-              alt: "Shaurya Sharma",
-              className: "w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110"
-            })), /*#__PURE__*/React.createElement("span", {
-              className: "absolute bottom-0 right-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-[10px] font-bold shadow border-2 border-white dark:border-slate-900"
-            }, "★")), /*#__PURE__*/React.createElement("div", {
-              className: "space-y-2 flex-1"
-            }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-              className: "flex items-center justify-center sm:justify-start gap-2 flex-wrap"
-            }, /*#__PURE__*/React.createElement("h3", {
-              className: "text-lg sm:text-xl font-black text-[#4a4643] dark:text-white"
-            }, "Shaurya Sharma"), /*#__PURE__*/React.createElement("span", {
-              className: "text-[10px] font-black px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-800"
-            }, "CSE-2 • 2ND YEAR")), /*#__PURE__*/React.createElement("p", {
-              className: "text-xs font-bold text-blue-600 dark:text-blue-400 mt-0.5"
-            }, "Lead Systems Engineer & Data Strategist")), /*#__PURE__*/React.createElement("p", {
-              className: "text-xs text-[#8b857f] dark:text-[#b8b3ad] leading-relaxed"
-            }, "Architecting Multi-Sensor Satellite Grounding, Sentinel-2 Multispectral Telemetry, Leaflet GIS Hotspot Mapping, and Autonomous UAV Drone Inspection Workflows."), /*#__PURE__*/React.createElement("div", {
-              className: "flex items-center justify-center sm:justify-start gap-1.5 flex-wrap pt-1"
-            }, /*#__PURE__*/React.createElement("span", {
-              className: "px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#f7f5f2] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#f0ece6] dark:border-[#423f3b]"
-            }, "GIS & Telemetry"), /*#__PURE__*/React.createElement("span", {
-              className: "px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#f7f5f2] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#f0ece6] dark:border-[#423f3b]"
-            }, "Sentinel-2 Satellite"), /*#__PURE__*/React.createElement("span", {
-              className: "px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#f7f5f2] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#f0ece6] dark:border-[#423f3b]"
-            }, "Drone Systems"))))))), /*#__PURE__*/React.createElement("footer", {
+            }, "Select any real citizen grievance from the queue to review audio recordings, verify ground telemetry, and sanction emergency budget."))))), /*#__PURE__*/React.createElement("footer", {
               className: "w-full text-center py-4 text-[11px] font-semibold text-slate-400 border-t border-[#f0ece6] dark:border-[#33302d]"
             }, "National District Command Suite • ", t.nationalTitle || "Government of India", " • ", localizeAddress("", selectedLang))), isStatusModalOpen && selectedReport && /*#__PURE__*/React.createElement("div", {
               className: "fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"

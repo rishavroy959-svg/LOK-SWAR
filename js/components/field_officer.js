@@ -1,17 +1,15 @@
-﻿/**
+/**
  * People's Priorities - Field & Verification Officer Dashboard Component
  * Mobile-ready, offline capable inspection queue, geotagged evidence logger & verification checklists.
  */
 
-import { DEMO_VILLAGES_AND_WARDS } from '../data/constituency_data.js';
-
 export function renderFieldOfficerView(state) {
-  const tasks = [
+  const defaultTasks = [
     {
       id: "TSK-401",
       submission_id: "SUB-1082",
-      title: "Verify  Road Bridge Washout",
-      location: " ()",
+      title: "Verify Road Bridge Washout",
+      location: "Kalyanpur (Ward 3)",
       category: "Roads & Healthcare",
       urgency: "Immediate",
       assigned_to: "Field Officer R. K. Nayak",
@@ -41,6 +39,7 @@ export function renderFieldOfficerView(state) {
       ]
     }
   ];
+  const tasks = (state && state.tasks && state.tasks.length > 0) ? state.tasks : defaultTasks;
 
   return `
     <div style="display: flex; flex-direction: column; gap: 1.5rem; max-width: 960px; margin: 0 auto;">
@@ -63,7 +62,13 @@ export function renderFieldOfficerView(state) {
 
       <!-- Active Assigned Tasks -->
       <div style="display: flex; flex-direction: column; gap: 1rem;">
-        ${tasks.map(t => `
+        ${tasks.length === 0 ? `
+          <div class="card" style="text-align: center; padding: 2.5rem; color: var(--neutral-500);">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📋</div>
+            <div style="font-weight: 600;">No Field Verification Tasks Assigned</div>
+            <div style="font-size: 0.8rem; margin-top: 0.25rem;">New inspection orders will be dispatched here once verified on-site.</div>
+          </div>
+        ` : tasks.map(t => `
           <div class="card" style="border-left: 4px solid var(--accent-rose);">
             <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.75rem;">
               <div>

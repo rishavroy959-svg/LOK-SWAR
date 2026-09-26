@@ -546,13 +546,7 @@ function ProfileApp() {
     hi: "कटक",
     bn: "কটক",
     bho: "कटक"
-  }, {
-    en: "",
-    or: "ସୁନ୍ଦରଗଡ଼",
-    hi: "सुंदरगढ़",
-    bn: "সুন্দরগড়",
-    bho: "सुंदरगढ़"
-  }, {
+  },  {
     en: "Sambalpur",
     or: "ସମ୍ବଲପୁର",
     hi: "संबलपुर",
@@ -808,8 +802,10 @@ function ProfileApp() {
   const notifOverlayRef = useRef(null);
   const dpInputRef = useRef(null);
 
-  // 4. Voice Assistance State
+  // 4. Voice Assistance State (Female Neural Voice & Audio Coordinator)
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const activeAudioRef = useRef(null);
+  const voiceSessionCounterRef = useRef(0);
 
   // 5. Citizen Profile Form State
   const [name, setName] = useState('');
@@ -1025,27 +1021,132 @@ function ProfileApp() {
     }
   };
 
-  // Voice Assistance Reader
+  // Voice Assistance Reader (Strictly Female Voice & Audio Coordinator)
+  const isMaleVoice = v => {
+    const n = ((v.name || '') + ' ' + (v.voiceURI || '')).toLowerCase();
+    return n.includes('male') || n.includes('david') || n.includes('ravi') ||
+           n.includes('hemant') || n.includes('mark') || n.includes('george') ||
+           n.includes('guy') || n.includes('rishi') || n.includes('stefan') ||
+           n.includes('pavel') || n.includes('पुरुष') || n.includes('purush');
+  };
+
+  const isFemaleVoice = v => {
+    const n = ((v.name || '') + ' ' + (v.voiceURI || '')).toLowerCase();
+    return n.includes('female') || n.includes('swara') || n.includes('neerja') ||
+           n.includes('heera') || n.includes('kalpana') || n.includes('zira') ||
+           n.includes('aria') || n.includes('jenny') || n.includes('sonia') ||
+           n.includes('ananya') || n.includes('shruti') || n.includes('priya') ||
+           n.includes('sangeeta') || n.includes('kavya') || n.includes('radha') ||
+           n.includes('pallavi') || n.includes('tanishaa') || n.includes('aarohi') ||
+           n.includes('dhwani') || n.includes('sapna') || n.includes('sobhana') ||
+           n.includes('gul') || n.includes('महिला') || n.includes('स्त्री');
+  };
+
+  const fallbackProfileSpeech = (speechText, lang, thisSession) => {
+    if (thisSession !== voiceSessionCounterRef.current) return;
+    if (!('speechSynthesis' in window)) {
+      setTimeout(() => {
+        if (thisSession === voiceSessionCounterRef.current) setIsSpeaking(false);
+      }, 2000);
+      return;
+    }
+    try {
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.resume();
+      const ut = new SpeechSynthesisUtterance(speechText);
+      ut.rate = 0.94;
+      ut.pitch = 1.05;
+      const profileLangMap = {
+        hi: 'hi-IN', bho: 'hi-IN', or: 'or-IN', bn: 'bn-IN', en: 'en-IN',
+        ta: 'ta-IN', te: 'te-IN', kn: 'kn-IN', ml: 'ml-IN', mr: 'mr-IN',
+        gu: 'gu-IN', pa: 'pa-IN', ur: 'ur-IN', sd: 'ur-IN', as: 'as-IN',
+        mai: 'hi-IN', sat: 'hi-IN', ks: 'ur-IN'
+      };
+      ut.lang = profileLangMap[lang] || 'hi-IN';
+
+      const voices = window.speechSynthesis.getVoices() || [];
+      const nonMaleVoices = voices.filter(v => !isMaleVoice(v));
+      const targetLang = ut.lang.toLowerCase();
+      const matchedVoice = nonMaleVoices.find(v => (v.lang || '').toLowerCase().startsWith(targetLang.slice(0, 2)) && isFemaleVoice(v))
+        || nonMaleVoices.find(v => (v.lang || '').toLowerCase().startsWith(targetLang.slice(0, 2)))
+        || nonMaleVoices.find(isFemaleVoice)
+        || nonMaleVoices[0];
+      if (matchedVoice) ut.voice = matchedVoice;
+
+      ut.onend = () => {
+        if (thisSession === voiceSessionCounterRef.current) setIsSpeaking(false);
+      };
+      ut.onerror = () => {
+        if (thisSession === voiceSessionCounterRef.current) setIsSpeaking(false);
+      };
+      window.speechSynthesis.speak(ut);
+    } catch (err) {
+      if (thisSession === voiceSessionCounterRef.current) setIsSpeaking(false);
+    }
+  };
+
   const handleVoiceGuidance = () => {
     playChime('tap');
     if (isSpeaking) {
-      window.speechSynthesis?.cancel();
+      voiceSessionCounterRef.current += 1;
+      if (window.speechSynthesis) {
+        try { window.speechSynthesis.cancel(); } catch (e) {}
+      }
+      if (activeAudioRef.current) {
+        try {
+          activeAudioRef.current.pause();
+          activeAudioRef.current.currentTime = 0;
+        } catch (e) {}
+        activeAudioRef.current = null;
+      }
       setIsSpeaking(false);
       return;
     }
+
+    const thisSession = ++voiceSessionCounterRef.current;
     setIsSpeaking(true);
-    const speechText = `${t.brandTitle}. ${name}, your citizen profile is verified with UIDAI Aadhaar trust score 99 percent. Manage your DigiLocker address and review your active grievances.`;
-    const ut = new SpeechSynthesisUtterance(speechText);
-    const profileLangMap = {
-      hi: 'hi-IN', bho: 'hi-IN', or: 'or-IN', bn: 'bn-IN', en: 'en-IN',
-      ta: 'ta-IN', te: 'te-IN', kn: 'kn-IN', ml: 'ml-IN', mr: 'mr-IN',
-      gu: 'gu-IN', pa: 'pa-IN', ur: 'ur-IN', sd: 'ur-IN', as: 'as-IN',
-      mai: 'hi-IN', sat: 'hi-IN', ks: 'ur-IN'
-    };
-    ut.lang = profileLangMap[selectedLang] || 'hi-IN';
-    ut.onend = () => setIsSpeaking(false);
-    ut.onerror = () => setIsSpeaking(false);
-    window.speechSynthesis?.speak(ut);
+
+    if (activeAudioRef.current) {
+      try {
+        activeAudioRef.current.pause();
+        activeAudioRef.current.currentTime = 0;
+      } catch (e) {}
+      activeAudioRef.current = null;
+    }
+    if (window.speechSynthesis) {
+      try { window.speechSynthesis.cancel(); } catch (e) {}
+    }
+
+    const citizenName = name || "Citizen";
+    const speechText = `${t.brandTitle}. ${citizenName}, your citizen profile is verified with UIDAI Aadhaar trust score 99 percent. Manage your DigiLocker address and review your active grievances.`;
+
+    try {
+      const ttsAudio = new Audio(`/api/tts?text=${encodeURIComponent(speechText)}&lang=${encodeURIComponent(selectedLang)}`);
+      activeAudioRef.current = ttsAudio;
+
+      ttsAudio.onended = () => {
+        if (thisSession === voiceSessionCounterRef.current) {
+          setIsSpeaking(false);
+          activeAudioRef.current = null;
+        }
+      };
+
+      ttsAudio.onerror = () => {
+        if (thisSession === voiceSessionCounterRef.current) {
+          fallbackProfileSpeech(speechText, selectedLang, thisSession);
+        }
+      };
+
+      const playPromise = ttsAudio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(err => {
+          if (thisSession !== voiceSessionCounterRef.current) return;
+          fallbackProfileSpeech(speechText, selectedLang, thisSession);
+        });
+      }
+    } catch (e) {
+      fallbackProfileSpeech(speechText, selectedLang, thisSession);
+    }
   };
 
   // Handle DP Upload (Real Server Persistence & LocalStorage Sync)

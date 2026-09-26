@@ -1,4 +1,4 @@
-﻿/**
+/**
  * People's Priorities - Multi-Source Data Fusion & Evidence Engine Component
  * Connects Citizen Demand with Objective Registries and Flags Conflicting Realities.
  */
@@ -60,61 +60,46 @@ export function renderDataFusionView(state) {
               Identifies when administrative records look fine on paper, but ground access is physically severed.
             </div>
           </div>
-          <span class="badge badge-discrepancy">3 Hotspots Flagged</span>
+          ${(state.discrepancies && state.discrepancies.length > 0) ? `<span class="badge badge-discrepancy">${state.discrepancies.length} Hotspot${state.discrepancies.length !== 1 ? 's' : ''} Flagged</span>` : ''}
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 1rem;">
-          <!-- Discrepancy Item 1 -->
-          <div style="background: white; border: 1px solid #fef08a; border-radius: var(--radius-md); padding: 1rem;">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-              <div style="font-weight: 700; color: #854d0e; font-size: 0.95rem;">
-                🚨 Discrepancy #1:  Healthcare Access Route (Hotspot #1)
+          ${(state.discrepancies && state.discrepancies.length > 0) ? state.discrepancies.map((d, idx) => `
+            <div style="background: white; border: 1px solid #fef08a; border-radius: var(--radius-md); padding: 1rem;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                <div style="font-weight: 700; color: #854d0e; font-size: 0.95rem;">
+                  🚨 Discrepancy #${idx + 1}: ${d.title || d.hotspot_id || 'Unknown'}
+                </div>
+                <span class="badge badge-critical">${d.discrepancy_type || 'Flagged'}</span>
               </div>
-              <span class="badge badge-critical">Severe Severance</span>
-            </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.82rem; margin-bottom: 0.75rem;">
-              <div style="background: #fee2e2; padding: 0.6rem; border-radius: var(--radius-sm); border: 1px solid #fca5a5;">
-                <strong>Citizen Perception:</strong> "Nearest hospital is 24 km away; road completely blocked in rain."
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.82rem; margin-bottom: 0.75rem;">
+                <div style="background: #fee2e2; padding: 0.6rem; border-radius: var(--radius-sm); border: 1px solid #fca5a5;">
+                  <strong>Citizen Perception:</strong> ${d.citizen_perception || '—'}
+                </div>
+                <div style="background: #e0f2fe; padding: 0.6rem; border-radius: var(--radius-sm); border: 1px solid #bae6fd;">
+                  <strong>Official Record:</strong> ${d.official_registry || '—'}
+                </div>
               </div>
-              <div style="background: #e0f2fe; padding: 0.6rem; border-radius: var(--radius-sm); border: 1px solid #bae6fd;">
-                <strong>Official GIS Record:</strong> "PMGSY Master Plan records operational all-weather BT road to  PHC within 4.2 km."
-              </div>
-            </div>
 
-            <div style="font-size: 0.82rem; color: var(--neutral-700); line-height: 1.4;">
-              <strong>Root-Cause Analysis:</strong> The road is recorded as operational, but two slab culverts washed out during monsoon flash flooding. While physically shown on maps, ambulances cannot cross the ditch.
-            </div>
+              ${d.root_cause_explanation ? `
+              <div style="font-size: 0.82rem; color: var(--neutral-700); line-height: 1.4;">
+                <strong>Root-Cause Analysis:</strong> ${d.root_cause_explanation}
+              </div>` : ''}
 
-            <div style="margin-top: 0.75rem; display: flex; justify-content: flex-end; gap: 0.5rem;">
-              <button class="btn btn-primary nav-tab" data-view="drone_simulator" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;">
-                🚁 Review Drone Video & Evidence →
-              </button>
-            </div>
-          </div>
-
-          <!-- Discrepancy Item 2 -->
-          <div style="background: white; border: 1px solid #fef08a; border-radius: var(--radius-md); padding: 1rem;">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-              <div style="font-weight: 700; color: #854d0e; font-size: 0.95rem;">
-                🚨 Discrepancy #2: Jhirpani Jal Jeevan Mission Tap Coverage
-              </div>
-              <span class="badge badge-medium">Dry Infrastructure</span>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.82rem; margin-bottom: 0.75rem;">
-              <div style="background: #fee2e2; padding: 0.6rem; border-radius: var(--radius-sm); border: 1px solid #fca5a5;">
-                <strong>Citizen Perception:</strong> "No water from taps for 8 months; using muddy contaminated spring."
-              </div>
-              <div style="background: #e0f2fe; padding: 0.6rem; border-radius: var(--radius-sm); border: 1px solid #bae6fd;">
-                <strong>Official IMIS Record:</strong> "JJM Portal lists Jhirpani as '100% Functional Tap Connected'."
+              <div style="margin-top: 0.75rem; display: flex; justify-content: flex-end; gap: 0.5rem;">
+                <button class="btn btn-primary nav-tab" data-view="drone_simulator" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;">
+                  🚁 Review Drone Video &amp; Evidence →
+                </button>
               </div>
             </div>
-
-            <div style="font-size: 0.82rem; color: var(--neutral-700); line-height: 1.4;">
-              <strong>Root-Cause Analysis:</strong> Physical pipes and standposts were installed, but the solar submersible pump burned out. The grid is electrically dead, forcing tribal families onto fluoride-heavy shallow borewells.
+          `).join('') : `
+            <div style="text-align: center; padding: 2rem; color: var(--neutral-400);">
+              <div style="font-size: 2rem; margin-bottom: 0.5rem;">✅</div>
+              <div style="font-size: 0.9rem; font-weight: 600;">No Discrepancies Detected</div>
+              <div style="font-size: 0.8rem; margin-top: 0.25rem;">Citizen data aligns with official government records.</div>
             </div>
-          </div>
+          `}
         </div>
       </div>
 

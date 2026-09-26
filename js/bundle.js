@@ -1,4 +1,4 @@
-﻿// Auto-generated universal bundle for People's Priorities
+// Auto-generated universal bundle for People's Priorities
 
 // --- data/constituency_data.js ---
 /**
@@ -21,10 +21,10 @@ const CONSTITUENCY_INFO = {
 
 const DEMO_VILLAGES_AND_WARDS = [
   { id: "V01", name: "", type: "rural", block: "", population: 4200, lat: 22.1245, lng: 84.0321, vulnerability: "High", literacy_pct: 62 },
-  { id: "V02", name: "Birmitrapur Border Area", type: "rural", block: "Birmitrapur", population: 6100, lat: 22.1480, lng: 84.0890, vulnerability: "High", literacy_pct: 58 },
-  { id: "V03", name: "Gopabandhu Nagar Ward 4", type: "urban", block: "Sector-4 Ward", population: 12400, lat: 22.2150, lng: 84.1420, vulnerability: "Medium", literacy_pct: 84 },
+  { id: "V02", name: "Border Area", type: "rural", block: "Constituency", population: 6100, lat: 22.1480, lng: 84.0890, vulnerability: "High", literacy_pct: 58 },
+  { id: "V03", name: "Ward 4", type: "urban", block: "Sector-4 Ward", population: 12400, lat: 22.2150, lng: 84.1420, vulnerability: "Medium", literacy_pct: 84 },
   { id: "V04", name: "Brahmani Valley Village", type: "rural", block: "Panposh", population: 3800, lat: 22.1890, lng: 84.0150, vulnerability: "Medium", literacy_pct: 69 },
-  { id: "V05", name: "Jhirpani Tribal Hamlet", type: "extreme_rural", block: "Bisra", population: 2900, lat: 22.2450, lng: 84.2100, vulnerability: "Critical", literacy_pct: 44 },
+  { id: "V05", name: "Ward Habitation", type: "extreme_rural", block: "Bisra", population: 2900, lat: 22.2450, lng: 84.2100, vulnerability: "Critical", literacy_pct: 44 },
   { id: "V06", name: "Koel River Colony Ward 8", type: "urban", block: "Koel Ward", population: 8900, lat: 22.2300, lng: 84.1650, vulnerability: "High", literacy_pct: 71 },
   { id: "V07", name: "Mandira Forest Fringe Hamlet", type: "extreme_rural", block: "", population: 1850, lat: 22.0950, lng: 83.9800, vulnerability: "Critical", literacy_pct: 48 },
   { id: "V08", name: "Nuagaon Agricultural Belt", type: "rural", block: "Bisra", population: 5400, lat: 22.1620, lng: 84.2250, vulnerability: "Medium", literacy_pct: 64 },
@@ -34,9 +34,9 @@ const DEMO_VILLAGES_AND_WARDS = [
 
 const DEMO_FACILITIES = [
   { id: "FAC-01", name: " Primary Health Centre", type: "Health (PHC)", lat: 22.1260, lng: 84.0350, capacity: "6 Beds", status: "Operational (Cut off in Monsoon)" },
-  { id: "FAC-02", name: "Birmitrapur Health Sub-Centre", type: "Health (Sub-Centre)", lat: 22.1510, lng: 84.0910, capacity: "OPD Only", status: "Staffing Deficit" },
-  { id: "FAC-03", name: "Gopabandhu Govt High School", type: "Education", lat: 22.2170, lng: 84.1440, capacity: "450 Students (4 Classrooms)", status: "Severe Overcrowding" },
-  { id: "FAC-04", name: "Jhirpani Piped Tap Stand #1", type: "Water", lat: 22.2430, lng: 84.2080, capacity: "Dry / Broken Pump", status: "Non-Functional" },
+  { id: "FAC-02", name: "Constituency Health Sub-Centre", type: "Health (Sub-Centre)", lat: 22.1510, lng: 84.0910, capacity: "OPD Only", status: "Staffing Deficit" },
+  { id: "FAC-03", name: "District Govt High School", type: "Education", lat: 22.2170, lng: 84.1440, capacity: "450 Students (4 Classrooms)", status: "Severe Overcrowding" },
+  { id: "FAC-04", name: "Habitation Piped Tap Stand #1", type: "Water", lat: 22.2430, lng: 84.2080, capacity: "Dry / Broken Pump", status: "Non-Functional" },
   { id: "FAC-05", name: "Koel Outfall Storm Sluice Gate", type: "Drainage", lat: 22.2280, lng: 84.1680, capacity: "Silted Canal", status: "Choked / Flooding Risk" },
   { id: "FAC-06", name: "Nuagaon Mandi Aggregation Yard", type: "Agriculture", lat: 22.1600, lng: 84.2230, capacity: "Open Shed (No Chilling)", status: "Perishables Spoilage" },
   { id: "FAC-07", name: "Rourkela Govt District Hospital", type: "Health (Tertiary)", lat: 22.2400, lng: 84.1500, capacity: "400 Beds", status: "Tertiary Referral Hub" }
@@ -50,24 +50,24 @@ const MULTILINGUAL_SAMPLE_PHRASES = [
     category: "Roads & Healthcare",
     severity: "Critical",
     location: "",
-    impact: "Severe healthcare access blockage for 18,400 residents during monsoon emergency."
+    impact: "Severe healthcare access blockage for 0 residents during monsoon emergency."
   },
   {
     lang: "Hindi",
     text: "हमारे गांव झिरपानी में पीने का पानी बहुत खारा और लाल आ रहा है। हैंडपंप खराब है और बच्चे बीमार पड़ रहे हैं।",
-    translation: "In our village Jhirpani, the drinking water is saline and reddish with heavy fluoride. The handpump is broken and children are falling sick.",
+    translation: "In our village Habitation, the drinking water is saline and reddish with heavy fluoride. The handpump is broken and children are falling sick.",
     category: "Water",
     severity: "High",
-    location: "Jhirpani Tribal Hamlet",
+    location: "Ward Habitation",
     impact: "Fluoride and waterborne contamination affecting 2,900 tribal villagers."
   },
   {
     lang: "English",
-    text: "Gopabandhu High School has only 4 classrooms for 450 students. Classes are being taken under trees.",
-    translation: "Gopabandhu High School has only 4 classrooms for 450 students. Classes are being taken under trees.",
+    text: "District High School has only 4 classrooms for 450 students. Classes are being taken under trees.",
+    translation: "District High School has only 4 classrooms for 450 students. Classes are being taken under trees.",
     category: "Education",
     severity: "High",
-    location: "Gopabandhu Nagar Ward 4",
+    location: "Ward 4",
     impact: "Acute classroom shortage causing 18% student drop-out and safety hazard during heatwaves."
   },
   {
@@ -424,7 +424,7 @@ class AudioAIEngine {
         severity: "Critical",
         location: " ()",
         affected_population_estimate: 18400,
-        potential_impact: "Emergency medical access cutoff for 18,400 citizens; 24 km detour required to reach district hospital.",
+        potential_impact: "Emergency medical access cutoff for 0 citizens; 24 km detour required to reach district hospital.",
         confidence: 0.94,
         normalized_issue: "Critical road surface washout and culvert obstruction impeding primary healthcare access."
       };
@@ -438,7 +438,7 @@ class AudioAIEngine {
         category: "Water",
         sub_category: "Safe Piped Drinking Water & Fluoride Filtration",
         severity: "High",
-        location: "Jhirpani Tribal Hamlet (Bisra Block)",
+        location: "Ward Habitation (Bisra Block)",
         affected_population_estimate: 7800,
         potential_impact: "Fluorosis and chronic waterborne illnesses among 7,800 forest-fringe tribal villagers.",
         confidence: 0.91,
@@ -454,7 +454,7 @@ class AudioAIEngine {
         category: "Education",
         sub_category: "Classroom Infrastructure & STEM Laboratories",
         severity: "High",
-        location: "Gopabandhu Nagar Ward 4",
+        location: "Ward 4",
         affected_population_estimate: 4200,
         potential_impact: "High secondary dropout rate (18%) and student safety risks in overcrowded school premises.",
         confidence: 0.89,
@@ -527,11 +527,32 @@ class AudioAIEngine {
     const utterance = new SpeechSynthesisUtterance(speechText);
     utterance.lang = targetLangCode;
     utterance.rate = isOdia ? 0.88 : 0.92;
-    utterance.pitch = 1.02;
+    utterance.pitch = 1.05;
 
-    const matchedVoice = voices.find(v => v.lang === targetLangCode || v.lang.startsWith(targetLangCode.split('-')[0]))
-      || voices.find(v => v.lang.includes('IN'))
-      || voices.find(v => v.name.includes('Natural'));
+    const isMaleVoice = v => {
+      const n = ((v.name || '') + ' ' + (v.voiceURI || '')).toLowerCase();
+      return n.includes('male') || n.includes('david') || n.includes('ravi') ||
+             n.includes('hemant') || n.includes('mark') || n.includes('george') ||
+             n.includes('guy') || n.includes('rishi') || n.includes('stefan') ||
+             n.includes('pavel') || n.includes('पुरुष') || n.includes('purush');
+    };
+    const isFemaleVoice = v => {
+      const n = ((v.name || '') + ' ' + (v.voiceURI || '')).toLowerCase();
+      return n.includes('female') || n.includes('swara') || n.includes('neerja') ||
+             n.includes('heera') || n.includes('kalpana') || n.includes('zira') ||
+             n.includes('aria') || n.includes('jenny') || n.includes('sonia') ||
+             n.includes('ananya') || n.includes('shruti') || n.includes('priya') ||
+             n.includes('sangeeta') || n.includes('kavya') || n.includes('radha') ||
+             n.includes('pallavi') || n.includes('tanishaa') || n.includes('aarohi') ||
+             n.includes('dhwani') || n.includes('sapna') || n.includes('sobhana') ||
+             n.includes('gul') || n.includes('महिला') || n.includes('स्त्री');
+    };
+
+    const nonMaleVoices = voices.filter(v => !isMaleVoice(v));
+    const matchedVoice = nonMaleVoices.find(v => (v.lang === targetLangCode || v.lang.startsWith(targetLangCode.split('-')[0])) && isFemaleVoice(v))
+      || nonMaleVoices.find(v => v.lang === targetLangCode || v.lang.startsWith(targetLangCode.split('-')[0]))
+      || nonMaleVoices.find(isFemaleVoice)
+      || nonMaleVoices[0];
     if (matchedVoice) utterance.voice = matchedVoice;
 
     window.speechSynthesis.speak(utterance);
@@ -656,38 +677,11 @@ class EvidenceFusionEngine {
 
   /**
    * Discrepancy Detection Engine
-   * Cross-references citizen inputs with official government datasets to identify discrepancies
+   * Cross-references citizen inputs with official government datasets to identify discrepancies.
+   * Returns live discrepancy data passed in, or empty array if none available.
    */
   evaluateDiscrepancies(hotspotId, citizenClaim, govtRecord) {
-    const discrepancies = [
-      {
-        hotspot_id: "HOT-01",
-        title: " Road Access to Primary Health Centre",
-        citizen_perception: "412 citizens report hospital is 24 km away and inaccessible during monsoon emergency.",
-        official_registry: "PMGSY GIS records show an operational Bituminous Road connecting to  PHC within 4.2 km.",
-        discrepancy_type: "Physical Infrastructure Severance / Monsoon Inundation",
-        root_cause_explanation: "The road physically exists in registry records, but 2 bridge culverts collapsed during flash floods. The road is impassable for ambulances, forcing a 24 km detour via highway.",
-        recommendation: "PRIORITY VERIFICATION MISSION: Deploy Drone / Field Engineer to map culvert structural damage and update road network graph."
-      },
-      {
-        hotspot_id: "HOT-02",
-        title: "Birmitrapur Health Centre Medical Officer Availability",
-        citizen_perception: "327 citizens report no doctor available after 2 PM; pregnant women transferred 28 km.",
-        official_registry: "National Health Portal (NHP) lists 2 sanctioned Medical Officers on duty.",
-        discrepancy_type: "Functional Operational Deficit vs Administrative Sanction",
-        root_cause_explanation: "Administrative records reflect sanctioned posts, but biometric audit reveals both officers on extended deputation. Sub-centre operating with single auxiliary nurse midwife.",
-        recommendation: "Administrative Human Resource intervention and CHC upgradation project."
-      },
-      {
-        hotspot_id: "HOT-03",
-        title: "Jhirpani Forest Fringe Drinking Water Coverage",
-        citizen_perception: "186 citizens report heavy fluoride contamination and broken handpumps.",
-        official_registry: "Jal Jeevan Mission IMIS shows '100% Habitation Covered under Piped Grid'.",
-        discrepancy_type: "Piped Infrastructure Dry-Run / Source Failure",
-        root_cause_explanation: "Pipes and tap stands were physically laid, but overhead solar pump burned out 8 months ago. Citizens reverted to toxic shallow handpumps.",
-        recommendation: "Hydro-geological deep solar borewell and fluoride filtration unit project."
-      }
-    ];
+    const discrepancies = [];
 
     if (hotspotId) {
       return discrepancies.find(d => d.hotspot_id === hotspotId) || null;
@@ -1840,14 +1834,14 @@ function renderGISMapView(state) {
               <div style="background: var(--neutral-50); padding: 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
                 <div style="color: var(--neutral-500); font-size: 0.72rem; text-transform: uppercase;">Citizen Demand Intensity</div>
                 <div style="font-weight: 700; color: var(--primary-600); font-size: 1.1rem;">
-                  ${selectedHotspot ? selectedHotspot.reports_count : 412} Reports
+                  ${selectedHotspot ? selectedHotspot.reports_count : 0} Reports
                 </div>
               </div>
 
               <div style="background: var(--neutral-50); padding: 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
                 <div style="color: var(--neutral-500); font-size: 0.72rem; text-transform: uppercase;">Estimated Population Impact</div>
                 <div style="font-weight: 700; color: var(--neutral-800); font-size: 1.1rem;">
-                  ${selectedHotspot ? selectedHotspot.population_affected?.toLocaleString() : '18,400'} Citizens
+                  ${selectedHotspot ? selectedHotspot.population_affected?.toLocaleString() : '0'} Citizens
                 </div>
               </div>
 
@@ -2036,7 +2030,7 @@ function renderDataFusionView(state) {
           <div class="evidence-box">
             <div style="font-size: 0.75rem; font-weight: 700; color: var(--neutral-500); text-transform: uppercase;">Factor A: Citizen Demand</div>
             <div class="evidence-score-gauge">91/100</div>
-            <div style="font-size: 0.8rem; color: var(--neutral-600);">412 Voice & Text Submissions</div>
+            <div style="font-size: 0.8rem; color: var(--neutral-600);">0 Voice & Text Submissions</div>
             <div style="font-size: 0.72rem; color: var(--neutral-400); margin-top: 0.25rem;">Weight: 35% in Evidence Index</div>
           </div>
 
@@ -2104,7 +2098,7 @@ function renderDataFusionView(state) {
           <div style="background: white; border: 1px solid #fef08a; border-radius: var(--radius-md); padding: 1rem;">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
               <div style="font-weight: 700; color: #854d0e; font-size: 0.95rem;">
-                🚨 Discrepancy #2: Jhirpani Jal Jeevan Mission Tap Coverage
+                🚨 Discrepancy #2: Habitation Jal Jeevan Mission Tap Coverage
               </div>
               <span class="badge badge-medium">Dry Infrastructure</span>
             </div>
@@ -2114,7 +2108,7 @@ function renderDataFusionView(state) {
                 <strong>Citizen Perception:</strong> "No water from taps for 8 months; using muddy contaminated spring."
               </div>
               <div style="background: #e0f2fe; padding: 0.6rem; border-radius: var(--radius-sm); border: 1px solid #bae6fd;">
-                <strong>Official IMIS Record:</strong> "JJM Portal lists Jhirpani as '100% Functional Tap Connected'."
+                <strong>Official IMIS Record:</strong> "JJM Portal lists Habitation as '100% Functional Tap Connected'."
               </div>
             </div>
 
@@ -2187,7 +2181,7 @@ function renderFieldOfficerView(state) {
       urgency: "Immediate",
       assigned_to: "Field Officer R. K. Nayak",
       status: "In Progress",
-      citizen_notes: "412 reports received stating ambulance cannot cross river culvert.",
+      citizen_notes: "0 reports received stating ambulance cannot cross river culvert.",
       checklist: [
         { label: "Inspect culvert foundation & wingwalls", done: true },
         { label: "Measure water depth & carriage width", done: true },
@@ -2198,8 +2192,8 @@ function renderFieldOfficerView(state) {
     {
       id: "TSK-402",
       submission_id: "SUB-1115",
-      title: "Inspect Jhirpani Deep Borewell Fluoride Levels",
-      location: "Jhirpani Tribal Hamlet (Bisra Block)",
+      title: "Inspect Habitation Deep Borewell Fluoride Levels",
+      location: "Ward Habitation (Bisra Block)",
       category: "Water",
       urgency: "High",
       assigned_to: "PHED Junior Engineer S. Mohanty",
@@ -2576,8 +2570,8 @@ function renderExplainabilityModal(state) {
               ✅ Positive Contribution Factors:
             </div>
             <ul style="padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.35rem; color: var(--neutral-700);">
-              <li><strong>High Citizen Demand:</strong> 412 direct citizen submissions in thematic cluster (Score: 94/100).</li>
-              <li><strong>Life-Safety & Health Impact:</strong> Restores 365-day ambulance link for 18,400 residents (Score: 92/100).</li>
+              <li><strong>High Citizen Demand:</strong> 0 direct citizen submissions in thematic cluster (Score: 94/100).</li>
+              <li><strong>Life-Safety & Health Impact:</strong> Restores 365-day ambulance link for 0 residents (Score: 92/100).</li>
               <li><strong>Verified Ground Reality:</strong> Autonomous drone photogrammetry & Field Officer verified bridge washout (Confidence: 91%).</li>
               <li><strong>High Cost-Effectiveness:</strong> 38.5 beneficiaries per ₹1 lakh invested.</li>
             </ul>
@@ -2880,9 +2874,9 @@ const DEMO_STEPS = [
   {
     step: 2,
     id: "step-cluster",
-    title: "2. AI Semantic Clustering (412 Reports)",
+    title: "2. AI Semantic Clustering (0 Reports)",
     target_view: "thematic_clusters",
-    desc: "The Multilingual Embedding Pipeline groups 412 distinct reports submitted across Odia, Hindi, and English into the 'Road Infrastructure & Healthcare Connectivity' theme.",
+    desc: "The Multilingual Embedding Pipeline groups 0 distinct reports submitted across Odia, Hindi, and English into the 'Road Infrastructure & Healthcare Connectivity' theme.",
     action_label: "View Semantic Clusters 🧠",
     badge: "NLP Intelligence"
   },
@@ -2891,7 +2885,7 @@ const DEMO_STEPS = [
     id: "step-hotspot",
     title: "3. Spatial GIS Hotspot Detection",
     target_view: "gis_map",
-    desc: "GIS engine identifies a critical demand density hotspot in  affecting 18,400 citizens with a 24 km detour to tertiary care.",
+    desc: "GIS engine identifies a critical demand density hotspot in  affecting 0 citizens with a 24 km detour to tertiary care.",
     action_label: "Inspect GIS Hotspot 🗺️",
     badge: "Spatial Analytics"
   },

@@ -467,6 +467,21 @@ const GUIDANCE_DICTIONARY = {
       "spoken": "भाषा अनुवाद बटन। क्षेत्रीय भाषा को अंग्रेज़ी में बदलने के लिए यहाँ क्लिक करें।",
       "enSub": "Translate regional text into English."
     },
+    "bho": {
+      "display": "भाषा अनुवाद: क्षेत्रीय भाषा के अंग्रेजी में बदले खातिर इहाँ क्लिक करीं।",
+      "spoken": "भाषा अनुवाद बटन। क्षेत्रीय भाषा के अंग्रेजी में बदले खातिर इहाँ क्लिक करीं।",
+      "enSub": "Translate regional text into English."
+    },
+    "or": {
+      "display": "ଭାଷା ଅନୁବାଦ: ଆପଣଙ୍କ ଆଞ୍ଚଳିକ ଭାଷାକୁ ଇଂରାଜୀରେ ପରିବର୍ତ୍ତନ କରିବା ପାଇଁ ଏଠାରେ କ୍ଲିକ୍ କରନ୍ତୁ।",
+      "spoken": "ଭାଷା ଅନୁବାଦ ବଟନ୍। ଆଞ୍ଚଳିକ ଭାଷାକୁ ଇଂରାଜୀରେ ପରିବର୍ତ୍ତନ କରିବା ପାଇଁ ଏଠାରେ କ୍ଲିକ୍ କରନ୍ତୁ।",
+      "enSub": "Translate regional text into English."
+    },
+    "bn": {
+      "display": "ভাষা অনুবাদ: আপনার আঞ্চলিক ভাষা ইংরেজিতে পরিবর্তন করতে এখানে ক্লিক করুন।",
+      "spoken": "ভাষা অনুবাদ বাটন। আঞ্চলিক ভাষা ইংরেজিতে রূপান্তর করতে এখানে ক্লিক করুন।",
+      "enSub": "Translate regional text into English."
+    },
     "ta": {
       "display": "மொழிபெயர்ப்பு: பிராந்திய மொழியை ஆங்கிலத்தில் மாற்ற இங்கே கிளிக் செய்யவும்.",
       "spoken": "மொழிபெயர்ப்பு பொத்தான். பிராந்திய மொழியை ஆங்கிலத்தில் மாற்ற இங்கே கிளிக் செய்யவும்.",
@@ -543,6 +558,21 @@ const GUIDANCE_DICTIONARY = {
       "display": "पूर्ववत करें: अनुवाद हटाकर मूल क्षेत्रीय शब्दों पर वापस जाने के लिए क्लिक करें।",
       "spoken": "पूर्ववत करें बटन। अनुवाद हटाकर अपने मूल क्षेत्रीय शब्दों पर वापस जाने के लिए क्लिक करें।",
       "enSub": "Revert back to your original regional input."
+    },
+    "bho": {
+      "display": "वापस करीं: अनुवाद हटा के मूल क्षेत्रीय शब्द पर लवटे खातिर क्लिक करीं।",
+      "spoken": "वापस करीं बटन। अनुवाद हटा के आपन मूल क्षेत्रीय शब्द पर लवटे खातिर क्लिक करीं।",
+      "enSub": "Revert back to original regional text."
+    },
+    "or": {
+      "display": "ପୂର୍ବବତ କରନ୍ତୁ: ଅନୁବାଦ ହଟାଇ ନିଜର ମୂଳ ଆଞ୍ଚଳିକ ଶବ୍ଦକୁ ଫେରିବା ପାଇଁ କ୍ଲିକ୍ କରନ୍ତୁ।",
+      "spoken": "ପୂର୍ବବତ କରନ୍ତୁ ବଟନ୍। ଅନୁବାଦ ହଟାଇ ନିଜର ମୂଳ ଆଞ୍ଚଳିକ ଶବ୍ଦକୁ ଫେରିବା ପାଇଁ କ୍ଲିକ୍ କରନ୍ତୁ।",
+      "enSub": "Revert back to original regional text."
+    },
+    "bn": {
+      "display": "পূর্বাবস্থায় ফেরান: অনুবাদ সরিয়ে মূল আঞ্চলিক শব্দে ফিরে যেতে ক্লিক করুন।",
+      "spoken": "পূর্বাবস্থায় ফেরান বাটন। অনুবাদ সরিয়ে মূল আঞ্চলিক শব্দে ফিরে যেতে ক্লিক করুন।",
+      "enSub": "Revert back to original regional text."
     },
     "ta": {
       "display": "செயல்தவிர்: உங்கள் அசல் பிராந்திய உரைக்குத் திரும்ப இங்கே கிளிக் செய்யவும்.",
@@ -989,6 +1019,21 @@ const GUIDANCE_DICTIONARY = {
       "spoken": "लाइव स्थान। यह आपका वर्तमान जीपीएस क्षेत्र प्रदर्शित कर रहा है।",
       "enSub": "Live Location: Displays your verified GPS detected location."
     },
+    "bho": {
+      "display": "लाइव लोकेशन: ई राउर वर्तमान जीपीएस क्षेत्र देखावत बा।",
+      "spoken": "लाइव स्थान। ई राउर वर्तमान जीपीएस इलाका देखावत बा।",
+      "enSub": "Live Location. Displays your verified GPS detected location."
+    },
+    "or": {
+      "display": "ଲାଇଭ୍ ସ୍ଥାନ: ଏହା ଆପଣଙ୍କର ବର୍ତ୍ତମାନର ଜିପିଏସ୍ ଅଞ୍ଚଳ ପ୍ରଦର୍ଶନ କରୁଛି।",
+      "spoken": "ଲାଇଭ୍ ସ୍ଥାନ। ଏହା ଆପଣଙ୍କର ବର୍ତ୍ତମାନର ଜିପିଏସ୍ ଅଞ୍ଚଳ ପ୍ରଦର୍ଶନ କରୁଛି।",
+      "enSub": "Live Location. Displays your verified GPS detected location."
+    },
+    "bn": {
+      "display": "লাইভ অবস্থান: এটি আপনার বর্তমান জিপিএস এলাকা প্রদর্শন করছে।",
+      "spoken": "লাইভ অবস্থান। এটি আপনার বর্তমান জিপিএস এলাকা প্রদর্শন করছে।",
+      "enSub": "Live Location. Displays your verified GPS detected location."
+    },
     "ta": {
       "display": "நேரலை இருப்பிடம்: சரிபார்க்கப்பட்ட ஜிபிஎஸ் பகுதியைக் காட்டுகிறது.",
       "spoken": "நேரலை இருப்பிடம். இது உங்கள் தற்போதைய ஜிபிஎஸ் இருப்பிடத்தைக் காட்டுகிறது.",
@@ -1065,6 +1110,21 @@ const GUIDANCE_DICTIONARY = {
       "display": "जीपीएस रिफ्रेश: उपग्रह जीपीएस निर्देशांक पुनः प्राप्त किए जा रहे हैं।",
       "spoken": "जीपीएस रिफ्रेश बटन। वर्तमान उपग्रह जीपीएस निर्देशांक पुनः प्राप्त करने के लिए क्लिक किया गया।",
       "enSub": "Refreshing live GPS satellite telemetry."
+    },
+    "bho": {
+      "display": "जीपीएस रिफ्रेश: उपग्रह जीपीएस निर्देशांक दोबारा लेवे खातिर क्लिक कइल गइल।",
+      "spoken": "जीपीएस रिफ्रेश बटन। उपग्रह जीपीएस निर्देशांक दोबारा हासिल कइल जा रहल बा।",
+      "enSub": "Refresh GPS button. Updating live satellite coordinates."
+    },
+    "or": {
+      "display": "ଜିପିଏସ୍ ରିଫ୍ରେଶ୍: ଉପଗ୍ରହ ଜିପିଏସ୍ ସ୍ଥାନାଙ୍କ ପୁନଃପ୍ରାପ୍ତ କରିବା ପାଇଁ କ୍ଲିକ୍ କରାଯାଇଛି।",
+      "spoken": "ଜିପିଏସ୍ ରିଫ୍ରେଶ୍ ବଟନ୍। ବର୍ତ୍ତମାନର ଉପଗ୍ରହ ଜିପିଏସ୍ ସ୍ଥାନାଙ୍କ ପୁନଃପ୍ରାପ୍ତ କରାଯାଉଛି।",
+      "enSub": "Refresh GPS button. Updating live satellite coordinates."
+    },
+    "bn": {
+      "display": "জিপিএস রিফ্রেশ: উপগ্রহ জিপিএস স্থানাঙ্ক পুনরায় প্রাপ্ত করা হচ্ছে।",
+      "spoken": "জিপিএস রিফ্রেশ বাটন। বর্তমান উপগ্রহ জিপিএস স্থানাঙ্ক আপডেট করা হচ্ছে।",
+      "enSub": "Refresh GPS button. Updating live satellite coordinates."
     },
     "ta": {
       "display": "ஜிபிஎஸ் புதுப்பிப்பு: செயற்கைக்கோள் ஜிபிஎஸ் மீண்டும் பெறப்படுகிறது.",
@@ -1143,6 +1203,21 @@ const GUIDANCE_DICTIONARY = {
       "spoken": "स्थान बदलने का विकल्प। अपनी ग्राम पंचायत, वार्ड या जिला मैन्युअल रूप से चुनने के लिए क्लिक करें।",
       "enSub": "Change Location: Select your Gram Panchayat or Ward manually."
     },
+    "bho": {
+      "display": "लोकेशन बदलीं: ग्राम पंचायत, वार्ड चाहे जिला हाथ से चुने खातिर क्लिक करीं।",
+      "spoken": "लोकेशन बदले के विकल्प। आपन ग्राम पंचायत, वार्ड चाहे जिला हाथ से चुने खातिर क्लिक करीं।",
+      "enSub": "Change Location. Select Gram Panchayat, Ward, or District manually."
+    },
+    "or": {
+      "display": "ସ୍ଥାନ ପରିବର୍ତ୍ତନ: ଗ୍ରାମ ପଞ୍ଚାୟତ, ୱାର୍ଡ କିମ୍ବା ଜିଲ୍ଲା ମାନୁଆଲ୍ ବାଛିବା ପାଇଁ କ୍ଲିକ୍ କରନ୍ତୁ।",
+      "spoken": "ସ୍ଥାନ ପରିବର୍ତ୍ତନ ବିକଳ୍ପ। ନିଜର ଗ୍ରାମ ପଞ୍ଚାୟତ, ୱାର୍ଡ କିମ୍ବା ଜିଲ୍ଲା ମାନୁଆଲ୍ ଭାବରେ ବାଛନ୍ତୁ।",
+      "enSub": "Change Location. Select Gram Panchayat, Ward, or District manually."
+    },
+    "bn": {
+      "display": "অবস্থান পরিবর্তন: গ্রাম পঞ্চায়েত, ওয়ার্ড বা জেলা ম্যানুয়ালি নির্বাচন করতে ক্লিক করুন।",
+      "spoken": "অবস্থান পরিবর্তনের বিকল্প। আপনার গ্রাম পঞ্চায়েত, ওয়ার্ড বা জেলা ম্যানুয়ালি বেছে নিন।",
+      "enSub": "Change Location. Select Gram Panchayat, Ward, or District manually."
+    },
     "ta": {
       "display": "இருப்பிடத்தை மாற்று: கிராம பஞ்சாயத்து, வார்டு அல்லது மாவட்டத்தை தேர்ந்தெடுக்கவும்.",
       "spoken": "இருப்பிடத்தை மாற்றும் விருப்பம். உங்கள் பஞ்சாயத்து அல்லது வார்டை கைமுறையாக தேர்ந்தெடுக்க கிளிக் செய்யவும்.",
@@ -1219,6 +1294,21 @@ const GUIDANCE_DICTIONARY = {
       "display": "भाषा चयन: अपनी पसंदीदा भाषा हिन्दी, ओडिया, भोजपुरी, बांग्ला या अंग्रेजी चुनें।",
       "spoken": "भाषा बदलने का मेनू। हिन्दी, ओडिया, भोजपुरी, बांग्ला या अंग्रेजी का चयन करें।",
       "enSub": "Language selector: Choose Hindi, Odia, Bhojpuri, Bengali, or English."
+    },
+    "bho": {
+      "display": "भाषा मेनू: भोजपुरी, हिन्दी, ओडिया, बांग्ला चाहे अंग्रेजी पसंद करीं।",
+      "spoken": "भाषा बदले के मेनू। भोजपुरी, हिन्दी, ओडिया, बांग्ला चाहे अंग्रेजी के चुनाव करीं।",
+      "enSub": "Language selector. Choose your preferred language."
+    },
+    "or": {
+      "display": "ଭାଷା ମେନୁ: ଓଡ଼ିଆ, ହିନ୍ଦୀ, ବଙ୍ଗଳା କିମ୍ବା ଇଂରାଜୀ ଭାଷା ବାଛନ୍ତୁ।",
+      "spoken": "ଭାଷା ବଦଳାଇବା ମେନୁ। ଓଡ଼ିଆ, ହିନ୍ଦୀ, ବଙ୍ଗଳା କିମ୍ବା ଇଂରାଜୀ ଭାଷା ଚୟନ କରନ୍ତୁ।",
+      "enSub": "Language selector. Choose your preferred language."
+    },
+    "bn": {
+      "display": "ভাষা মেনু: বাংলা, হিন্দি, ওড়িয়া বা ইংরেজি ভাষা নির্বাচন করুন।",
+      "spoken": "ভাষা পরিবর্তনের মেনু। বাংলা, হিন্দি, ওড়িয়া বা ইংরেজি ভাষা বেছে নিন।",
+      "enSub": "Language selector. Choose your preferred language."
     },
     "ta": {
       "display": "மொழி தேர்வு: உங்கள் விருப்பமான மொழியைத் தேர்ந்தெடுக்கவும்.",
@@ -1297,6 +1387,21 @@ const GUIDANCE_DICTIONARY = {
       "spoken": "थीम बदलने का बटन। डार्क मोड या लाइट मोड पर स्विच करें।",
       "enSub": "Theme toggle: Switch between dark mode and light mode."
     },
+    "bho": {
+      "display": "थीम बदलीं: डार्क मोड चाहे लाइट मोड पर स्विच करीं।",
+      "spoken": "थीम बदले के बटन। डार्क मोड चाहे लाइट मोड में बदलीं।",
+      "enSub": "Theme toggle. Switch between dark and light modes."
+    },
+    "or": {
+      "display": "ଥିମ୍ ପରିବର୍ତ୍ତନ: ଡାର୍କ ମୋଡ୍ କିମ୍ବା ଲାଇଟ୍ ମୋଡ୍ ମଧ୍ୟରେ ସୁଇଚ୍ କରନ୍ତୁ।",
+      "spoken": "ଥିମ୍ ବଦଳାଇବା ବଟନ୍। ଡାର୍କ ମୋଡ୍ କିମ୍ବା ଲାଇଟ୍ ମୋଡ୍ ମଧ୍ୟରେ ସୁଇଚ୍ କରନ୍ତୁ।",
+      "enSub": "Theme toggle. Switch between dark and light modes."
+    },
+    "bn": {
+      "display": "থিম পরিবর্তন: ডার্ক মোড বা লাইট মোডে পরিবর্তন করুন।",
+      "spoken": "থিম পরিবর্তনের বাটন। ডার্ক মোড বা লাইট মোডে সুইচ করুন।",
+      "enSub": "Theme toggle. Switch between dark and light modes."
+    },
     "ta": {
       "display": "தீம் பொத்தான்: டார்க் மோட் அல்லது லைட் மோடுக்கு மாற்றவும்.",
       "spoken": "தீம் மாற்றும் பொத்தான். டார்க் மோட் அல்லது லைட் மோடுக்கு மாற்றவும்.",
@@ -1373,6 +1478,21 @@ const GUIDANCE_DICTIONARY = {
       "display": "सूचनाएं: आपकी शिकायतों पर हुई प्रशासनिक कार्रवाई की ताज़ा सूचनाएं।",
       "spoken": "सूचनाएं। आपकी शिकायतों पर हुई ताज़ा प्रशासनिक कार्रवाई की सूचनाएं यहाँ देखें।",
       "enSub": "Notifications: Real-time action alerts on your complaints."
+    },
+    "bho": {
+      "display": "सूचना: राउर शिकायत पर भइल ताजा प्रशासनिक कार्रवाई के खबर इहाँ देखीं।",
+      "spoken": "सूचना। राउर शिकायत पर भइल ताजा प्रशासनिक कार्रवाई के खबर इहाँ देखीं।",
+      "enSub": "Notifications. Status updates and administrative actions."
+    },
+    "or": {
+      "display": "ବିଜ୍ଞପ୍ତି: ଆପଣଙ୍କ ଅଭିଯୋଗ ଉପରେ ହୋଇଥିବା ପ୍ରଶାସନିକ କାର୍ଯ୍ୟାନୁଷ୍ଠାନ ଏଠାରେ ଦେଖନ୍ତୁ।",
+      "spoken": "ବିଜ୍ଞପ୍ତି ସୂଚୀ। ଆପଣଙ୍କ ଅଭିଯୋଗ ଉପରେ ହୋଇଥିବା ତାଜା ପ୍ରଶାସନିକ କାର୍ଯ୍ୟାନୁଷ୍ଠାନ ଏଠାରେ ଦେଖନ୍ତୁ।",
+      "enSub": "Notifications. Status updates and administrative actions."
+    },
+    "bn": {
+      "display": "বিজ্ঞপ্তি: আপনার অভিযোগের উপর সাম্প্রতিক প্রশাসনিক পদক্ষেপ এখানে দেখুন।",
+      "spoken": "বিজ্ঞপ্তি সমূহ। আপনার অভিযোগের ওপর সাম্প্রতিক প্রশাসনিক পদক্ষেপ এখানে দেখুন।",
+      "enSub": "Notifications. Status updates and administrative actions."
     },
     "ta": {
       "display": "அறிவிப்புகள்: உங்கள் புகார்கள் மீதான நிர்வாக நடவடிக்கைகளின் அறிவிப்புகள்.",
@@ -1451,6 +1571,21 @@ const GUIDANCE_DICTIONARY = {
       "spoken": "नागरिक प्रोफ़ाइल। आपकी व्यक्तिगत जानकारी और डिजीलॉकर सत्यापन रिकॉर्ड।",
       "enSub": "Citizen Profile: Account credentials and DigiLocker credentials."
     },
+    "bho": {
+      "display": "नागरिक प्रोफाइल: राउर निजी जानकारी आ डिजिलॉकर सत्यापन रिकॉर्ड।",
+      "spoken": "नागरिक प्रोफाइल। राउर निजी जानकारी आ डिजिलॉकर सत्यापन रिकॉर्ड।",
+      "enSub": "Citizen Profile. Access personal details and DigiLocker records."
+    },
+    "or": {
+      "display": "ନାଗରିକ ପ୍ରୋଫାଇଲ୍: ଆପଣଙ୍କ ବ୍ୟକ୍ତିଗତ ବିବରଣୀ ଓ ଡିଜିଲକର ଯାଞ୍ଚ ରେକର୍ଡ।",
+      "spoken": "ନାଗରିକ ପ୍ରୋଫାଇଲ୍। ଆପଣଙ୍କ ବ୍ୟକ୍ତିଗତ ବିବରଣୀ ଓ ଡିଜିଲକର ଯାଞ୍ଚ ରେକର୍ଡ।",
+      "enSub": "Citizen Profile. Access personal details and DigiLocker records."
+    },
+    "bn": {
+      "display": "নাগরিক প্রোফাইল: আপনার ব্যক্তিগত তথ্য এবং ডিজিলকার যাচাই রেকর্ড।",
+      "spoken": "নাগরিক প্রোফাইল। আপনার ব্যক্তিগত তথ্য এবং ডিজিলকার যাচাই রেকর্ড।",
+      "enSub": "Citizen Profile. Access personal details and DigiLocker records."
+    },
     "ta": {
       "display": "குடிமக்கள் சுயவிவரம்: உங்கள் தனிப்பட்ட விவரங்கள் மற்றும் டிஜிலாக்கர் கணக்கு.",
       "spoken": "குடிமக்கள் சுயவிவரம். உங்கள் தனிப்பட்ட கணக்கு மற்றும் டிஜிலாக்கர் பதிவுகளை அணுகவும்.",
@@ -1527,6 +1662,21 @@ const GUIDANCE_DICTIONARY = {
       "display": "हेल्पलाइन: राष्ट्रीय सेवा 1947 या जिला सेवा पर सीधे संपर्क करें।",
       "spoken": "सरकारी आपातकालीन हेल्पलाइन नंबर। राष्ट्रीय सेवा 1947 या जिला सेवा पर सीधे संपर्क करें।",
       "enSub": "Official emergency helplines: National 1947 & District support."
+    },
+    "bho": {
+      "display": "सरकारी हेल्पलाइन: राष्ट्रीय सेवा 1947 चाहे जिला सेवा पर सोझे संपर्क करीं।",
+      "spoken": "सरकारी इमरजेंसी हेल्पलाइन नंबर। राष्ट्रीय सेवा 1947 चाहे जिला सेवा पर सोझे संपर्क करीं।",
+      "enSub": "Official emergency helplines. National helpline 1947."
+    },
+    "or": {
+      "display": "ସରକାରୀ ହେଲ୍ପଲାଇନ୍: ଜାତୀୟ ସେବା ୧୯୪୭ କିମ୍ବା ଜିଲ୍ଲା ସେବାରେ ସିଧାସଳଖ ଯୋଗାଯୋଗ କରନ୍ତୁ।",
+      "spoken": "ସରକାରୀ ଜରୁରୀକାଳୀନ ହେଲ୍ପଲାଇନ୍। ଜାତୀୟ ସେବା ୧୯୪୭ କିମ୍ବା ଜିଲ୍ଲା ସେବା ସହିତ ସିଧାସଳଖ ଯୋଗାଯୋଗ କରନ୍ତୁ।",
+      "enSub": "Official emergency helplines. National helpline 1947."
+    },
+    "bn": {
+      "display": "সরকারি হেল্পলাইন: জাতীয় সেবা ১৯৪৭ বা জেলা সেবায় সরাসরি যোগাযোগ করুন।",
+      "spoken": "সরকারি জরুরি হেল্পলাইন। জাতীয় সেবা ১৯৪৭ বা জেলা সেবায় সরাসরি যোগাযোগ করুন।",
+      "enSub": "Official emergency helplines. National helpline 1947."
     },
     "ta": {
       "display": "அதிகாரப்பூர்வ உதவி எண்கள்: தேசிய சேவை 1947 மற்றும் மாவட்ட உதவி.",
@@ -1605,6 +1755,21 @@ const GUIDANCE_DICTIONARY = {
       "spoken": "फ़ॉन्ट आकार विकल्प। स्क्रीन के अक्षरों को बड़ा या छोटा करें।",
       "enSub": "Font size adjustment for comfortable reading."
     },
+    "bho": {
+      "display": "फॉन्ट साइज: स्क्रीन के अक्षर के बड़ चाहे छोट करीं।",
+      "spoken": "फॉन्ट साइज के विकल्प। स्क्रीन के अक्षर के बड़ चाहे छोट करके पढ़े खातिर सेट करीं।",
+      "enSub": "Font size controls. Adjust text size for comfortable reading."
+    },
+    "or": {
+      "display": "ଫଣ୍ଟ ଆକାର: ସ୍କ୍ରିନର ଅକ୍ଷରଗୁଡ଼ିକୁ ବଡ଼ କିମ୍ବା ଛୋଟ କରନ୍ତୁ।",
+      "spoken": "ଫଣ୍ଟ ଆକାର ନିୟନ୍ତ୍ରଣ। ସ୍କ୍ରିନର ଅକ୍ଷରଗୁଡ଼ିକୁ ବଡ଼ କିମ୍ବା ଛୋଟ କରି ସହଜରେ ପଢ଼ନ୍ତୁ।",
+      "enSub": "Font size controls. Adjust text size for comfortable reading."
+    },
+    "bn": {
+      "display": "ফন্ট সাইজ: স্ক্রিনের লেখা বড় বা ছোট করুন।",
+      "spoken": "ফন্ট সাইজ নিয়ন্ত্রণ। স্ক্রিনের লেখা বড় বা ছোট করে সুবিধাজনকভাবে পড়ুন।",
+      "enSub": "Font size controls. Adjust text size for comfortable reading."
+    },
     "ta": {
       "display": "எழுத்து அளவு: வசதியாக படிக்க எழுத்துரு அளவை சரிசெய்யவும்.",
       "spoken": "எழுத்துரு அளவு கட்டுப்பாடுகள். திரையில் எழுத்துக்களை பெரிதாக்க அல்லது சிறிதாக்க சரிசெய்யவும்.",
@@ -1682,6 +1847,21 @@ const GUIDANCE_DICTIONARY = {
       "spoken": "दूरी दायरा। अपने आस-पास के चुने हुए दायरे की समस्याएं देखें।",
       "enSub": "Distance radar filter: View issues within your selected radius."
     },
+    "bho": {
+      "display": "दूरी दायरा: आपन आसपास के चुनल गइल दायरा के समस्या देखीं।",
+      "spoken": "दूरी दायरा। आपन आसपास के चुनल गइल दायरा के समस्या देखीं।",
+      "enSub": "Distance radar filter. View issues within selected radius."
+    },
+    "or": {
+      "display": "ଦୂରତା ପରିସୀମା: ଆପଣଙ୍କ ଚାରିପାଖର ମନୋନୀତ ଦୂରତାର ସମସ୍ୟାଗୁଡ଼ିକ ଦେଖନ୍ତୁ।",
+      "spoken": "ଦୂରତା ରାଡାର ଫିଲ୍ଟର୍। ଆପଣଙ୍କ ଚାରିପାଖର ମନୋନୀତ ଦୂରତା ମଧ୍ୟରେ ଥିବା ସମସ୍ୟାଗୁଡ଼ିକ ଦେଖନ୍ତୁ।",
+      "enSub": "Distance radar filter. View issues within selected radius."
+    },
+    "bn": {
+      "display": "দূরত্ব রাডার: আপনার চারপাশের নির্বাচিত দূরত্বের সমস্যাগুলি দেখুন।",
+      "spoken": "দূরত্ব রাডার ফিল্টার। আপনার চারপাশের নির্বাচিত দূরত্বের মধ্যকার সমস্যাগুলি দেখুন।",
+      "enSub": "Distance radar filter. View issues within selected radius."
+    },
     "ta": {
       "display": "தொலைவு ரேடார்: உங்களைச் சுற்றியுள்ள 2 கி.மீ, 5 கி.மீ புகார்களை வடிகட்டவும்.",
       "spoken": "தொலைவு ரேடார் வடிகட்டி. நீங்கள் தேர்ந்தெடுத்த தூரத்திற்குள் உள்ள புகார்களைப் பாருங்கள்.",
@@ -1758,6 +1938,21 @@ const GUIDANCE_DICTIONARY = {
       "display": "डेटा संलयन: उपग्रह चित्रों और जमीनी साक्ष्यों का एआई मिलान।",
       "spoken": "डेटा संलयन विश्लेषण। उपग्रह चित्रों और जमीनी साक्ष्यों का एआई मिलान।",
       "enSub": "Multi-Source Ground Truth Data Fusion Suite."
+    },
+    "bho": {
+      "display": "डेटा फ्यूजन: उपग्रह फोटो आ जमीनी सबूतन के एआई मिलान।",
+      "spoken": "डेटा फ्यूजन विश्लेषण। उपग्रह फोटो आ जमीनी सबूतन के एआई मिलान।",
+      "enSub": "Data Fusion analysis. AI verification across satellite and field evidence."
+    },
+    "or": {
+      "display": "ଡାଟା ଫ୍ୟୁଜନ୍: ଉପଗ୍ରହ ଚିତ୍ର ଏବଂ କ୍ଷେତ୍ର ପ୍ରମାଣର ଏଆଇ ମିଳନ।",
+      "spoken": "ଡାଟା ଫ୍ୟୁଜନ୍ ବିଶ୍ଳେଷଣ। ଉପଗ୍ରହ ଚିତ୍ର, ଡ୍ରୋନ୍ ଟେଲିମେଟ୍ରି ଏବଂ ଜନ ଅଭିଯୋଗର ଏଆଇ ମିଳନ।",
+      "enSub": "Data Fusion analysis. AI verification across satellite and field evidence."
+    },
+    "bn": {
+      "display": "ডাটা ফিউশন: স্যাটেলাইট চিত্র এবং মাঠের প্রমাণের এআই যাচাইকরণ।",
+      "spoken": "ডাটা ফিউশন বিশ্লেষণ। স্যাটেলাইট চিত্র এবং নাগরিক প্রমাণের এআই সমন্বয়।",
+      "enSub": "Data Fusion analysis. AI verification across satellite and field evidence."
     },
     "ta": {
       "display": "தரவு இணைப்பு: செயற்கைக்கோள் படங்கள் மற்றும் கள ஆதாரங்களின் AI சரிபார்ப்பு.",
@@ -2112,6 +2307,21 @@ const GUIDANCE_DICTIONARY = {
       "spoken": "कृपया अपनी समस्या रिकॉर्ड करने के लिए माइक बटन दबाएं, या सर्च बार में लिखें।",
       "enSub": "Please tap the microphone button to record your issue, or type in the search bar."
     },
+    "bho": {
+      "display": "कृपा कऽ आपन समस्या रिकॉर्ड करे खातिर माइक बटन दबाईं, चाहे सर्च बार में लिखीं।",
+      "spoken": "कृपा कऽ आपन समस्या रिकॉर्ड करे खातिर माइक बटन दबाईं, चाहे सर्च बार में लिखीं।",
+      "enSub": "Voice or text input is required before submitting."
+    },
+    "or": {
+      "display": "ଦୟାକରି ନିଜର ସମସ୍ୟା ରେକର୍ଡ କରିବା ପାଇଁ ମାଇକ୍ ବଟନ୍ ଦବାନ୍ତୁ, କିମ୍ବା ସର୍ଚ୍ଚ ବାରରେ ଲେଖନ୍ତୁ।",
+      "spoken": "ଦୟାକରି ନିଜର ସମସ୍ୟା ରେକର୍ଡ କରିବା ପାଇଁ ମାଇକ୍ ବଟନ୍ ଦବାନ୍ତୁ, କିମ୍ବା ସର୍ଚ୍ଚ ବାରରେ ଲେଖନ୍ତୁ।",
+      "enSub": "Voice or text input is required before submitting."
+    },
+    "bn": {
+      "display": "অনুগ্রহ করে আপনার সমস্যা রেকর্ড করতে মাইক বাটন চাপুন, বা সার্চ বারে লিখুন।",
+      "spoken": "অনুগ্রহ করে আপনার সমস্যা রেকর্ড করতে মাইক বাটন চাপুন, বা সার্চ বারে লিখুন।",
+      "enSub": "Voice or text input is required before submitting."
+    },
     "ta": {
       "display": "உங்கள் புகாரைப் பதிவு செய்ய மைக் பொத்தானை அழுத்தவும், அல்லது தேடல் பட்டியில் தட்டச்சு செய்யவும்.",
       "spoken": "உங்கள் புகாரைப் பதிவு செய்ய மைக் பொத்தானை அழுத்தவும், அல்லது தேடல் பட்டியில் தட்டச்சு செய்யவும்.",
@@ -2206,6 +2416,27 @@ const GUIDANCE_DICTIONARY = {
     en: 'en-IN'
   };
 
+  // Female Voice Filtering Engine: Excludes all male voices, strictly prioritizes female voices
+  const isMaleVoice = v => {
+    const n = ((v.name || '') + ' ' + (v.voiceURI || '')).toLowerCase();
+    return n.includes('male') || n.includes('david') || n.includes('ravi') ||
+           n.includes('hemant') || n.includes('mark') || n.includes('george') ||
+           n.includes('guy') || n.includes('rishi') || n.includes('stefan') ||
+           n.includes('pavel') || n.includes('पुरुष') || n.includes('purush');
+  };
+
+  const isFemaleVoice = v => {
+    const n = ((v.name || '') + ' ' + (v.voiceURI || '')).toLowerCase();
+    return n.includes('female') || n.includes('swara') || n.includes('neerja') ||
+           n.includes('heera') || n.includes('kalpana') || n.includes('zira') ||
+           n.includes('aria') || n.includes('jenny') || n.includes('sonia') ||
+           n.includes('ananya') || n.includes('shruti') || n.includes('priya') ||
+           n.includes('sangeeta') || n.includes('kavya') || n.includes('radha') ||
+           n.includes('pallavi') || n.includes('tanishaa') || n.includes('aarohi') ||
+           n.includes('dhwani') || n.includes('sapna') || n.includes('sobhana') ||
+           n.includes('gul') || n.includes('महिला') || n.includes('स्त्री');
+  };
+
   // Instant Native Browser Speech Synthesis Engine with Safe Lifecycle Callbacks
   const fallbackBrowserSpeech = (spokenText, currentLang, onEnd, onError) => {
     if (!('speechSynthesis' in window)) {
@@ -2216,30 +2447,52 @@ const GUIDANCE_DICTIONARY = {
       window.speechSynthesis.cancel();
       window.speechSynthesis.resume();
       const utterance = new SpeechSynthesisUtterance(spokenText);
-      utterance.rate = 0.96;
-      utterance.pitch = 1.0;
+      utterance.rate = 0.94;
+      utterance.pitch = 1.05; // Slightly higher natural pitch for female voice
       utterance.lang = BCP47_LANG_MAP[currentLang] || 'hi-IN';
 
       const voices = window.speechSynthesis.getVoices() || [];
-      // Strict voice matching: only match voices that truly support the target language/script.
-      // Languages like Odia, Assamese, Sindhi, Kashmiri should NOT fall back to Hindi/Urdu/Bengali
-      // browser voices — if no matching voice, return false so /api/tts handles it instead.
-      const matchedVoice = voices.find(v => {
+      // STRICT FILTER: completely ban and delete any male voice!
+      const nonMaleVoices = voices.filter(v => !isMaleVoice(v));
+
+      const langCode = (BCP47_LANG_MAP[currentLang] || currentLang).toLowerCase();
+      const langPrefix = currentLang.toLowerCase();
+
+      // Priority 1: A female voice matching the exact language
+      let matchedVoice = nonMaleVoices.find(v => {
         const vl = (v.lang || '').toLowerCase();
-        return vl.startsWith(currentLang) ||
-               vl.startsWith(BCP47_LANG_MAP[currentLang]?.toLowerCase() || currentLang) ||
+        const matchesLang = vl.startsWith(langPrefix) || vl.startsWith(langCode) ||
                (currentLang === 'bho' && vl.startsWith('hi')) ||
                (currentLang === 'mai' && vl.startsWith('hi')) ||
                (currentLang === 'sat' && vl.startsWith('hi')) ||
                (currentLang === 'ks' && vl.startsWith('ur')) ||
                (currentLang === 'sd' && vl.startsWith('ur'));
+        return matchesLang && isFemaleVoice(v);
       });
 
-      // If non-English selected and browser OS lacks native Indian voice for this language:
-      // Return false to prevent English OS voice attempting to pronounce Indic text
+      // Priority 2: Any non-male voice matching the language
+      if (!matchedVoice) {
+        matchedVoice = nonMaleVoices.find(v => {
+          const vl = (v.lang || '').toLowerCase();
+          return vl.startsWith(langPrefix) || vl.startsWith(langCode) ||
+                 (currentLang === 'bho' && vl.startsWith('hi')) ||
+                 (currentLang === 'mai' && vl.startsWith('hi')) ||
+                 (currentLang === 'sat' && vl.startsWith('hi')) ||
+                 (currentLang === 'ks' && vl.startsWith('ur')) ||
+                 (currentLang === 'sd' && vl.startsWith('ur'));
+        });
+      }
+
+      // If non-English and browser OS has no native non-male voice for this language:
+      // Return false to prevent incorrect OS voice from speaking Indic text
       if (!matchedVoice && currentLang !== 'en') {
-        if (typeof onError === 'function') onError(new Error('No matching voice for ' + currentLang));
+        if (typeof onError === 'function') onError(new Error('No non-male voice for ' + currentLang));
         return false;
+      }
+
+      // Priority 3: for English or generic, pick any female voice
+      if (!matchedVoice) {
+        matchedVoice = nonMaleVoices.find(isFemaleVoice) || nonMaleVoices[0];
       }
 
       if (matchedVoice) {
@@ -2272,6 +2525,8 @@ const GUIDANCE_DICTIONARY = {
     // Ignore clicks inside the speech popup, mute toggles, and typing inputs/textareas
     if (target.closest('.tts-mute-toggle-btn, .tts-dismiss-btn, .voice-guide-toggle-btn, .tts-popup, audio, .audio-player')) return null;
     if (target.closest('textarea, input, select, [contenteditable="true"]')) return null;
+    if (target.closest('.leaflet-container, .leaflet-control, .leaflet-popup, .modal-backdrop, .dialog, .no-voice-guide')) return null;
+    if (target.tagName === 'HTML' || target.tagName === 'BODY' || target.tagName === 'MAIN' || target.tagName === 'SECTION') return null;
     // Mic button & recording controls: do NOT speak over recording
     if (target.closest('button[title*="record"], button[title*="माइक"], button[title*="रिकॉर्ड"], button[title*="Recording"], button[title*="Mic"], button[title*="mic"], button[title*="Cancel"], button[title*="Done"]') || target.closest('.mic-btn')) {
       return null;

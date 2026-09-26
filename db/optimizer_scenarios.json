@@ -1,0 +1,33 @@
+[
+  {
+    "id": "SCN-TEST-1789809615155",
+    "name": "E2E Automated Verification Scenario (₹10 Cr)",
+    "notes": "Testing full backend scenario persistence from portfolio optimizer",
+    "createdAt": "2026-09-19T09:20:15.155Z",
+    "budgetCr": 10,
+    "preset": "BALANCED",
+    "selectedCount": 6,
+    "totalCostCr": 10,
+    "totalImpactScore": 430,
+    "selectedProjectIds": [
+      "PRJ-01",
+      "PRJ-04",
+      "PRJ-05",
+      "PRJ-06",
+      "PRJ-08",
+      "PRJ-09"
+    ],
+    "overridesCount": 0,
+    "updatedAt": "2026-09-19T14:50:15.177790"
+  },
+  {
+    "name": "Fiscal Year 2026-27 Base Case",
+    "budgetCr": 10,
+    "selectedCount": 6,
+    "totalCostCr": 10,
+    "totalImpact": 423.5,
+    "notes": "Standard baseline allocation under Balanced Governance weights",
+    "id": "SCN-1789808572",
+    "updatedAt": "2026-09-19T14:32:52.300498"
+  }
+]

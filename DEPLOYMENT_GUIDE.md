@@ -39,10 +39,10 @@ Administrators can login via 12-digit Aadhaar ID or official email:
 
 | Official Role | 12-Digit Aadhaar ID / Username | Password | Jurisdiction |
 | :--- | :--- | :--- | :--- |
-| **District Magistrate (IAS)** | `8899 1122 3344` or `admin@sundargarh.gov.in` | `admin123` | Entire AC-134 Constituency |
-| **District Planning Coordinator (DPC)** | `5566 7788 9900` or `dpc.planner@sundargarh.gov.in` | `admin123` | 142 Gram Panchayats |
-| **Executive Engineer (R&B Works)** | `1234 5678 9012` or `ee.roads@sundargarh.gov.in` | `admin123` | Lathikata & Bisra Blocks |
-| **Aerial Drone Telemetry Commander** | `9988 7766 5544` or `drone.commander@sundargarh.gov.in` | `admin123` | UAV Flight Grid |
+| **District Magistrate (IAS)** | `8899 1122 3344` or `admin@lokswar.gov.in` | `admin123` | District Administrative Jurisdiction |
+| **District Planning Coordinator (DPC)** | `5566 7788 9900` or `dpc.planner@lokswar.gov.in` | `admin123` | 142 Gram Panchayats |
+| **Executive Engineer (R&B Works)** | `1234 5678 9012` or `ee.roads@lokswar.gov.in` | `admin123` | Lathikata & Bisra Blocks |
+| **Aerial Drone Telemetry Commander** | `9988 7766 5544` or `drone.commander@lokswar.gov.in` | `admin123` | UAV Flight Grid |
 
 ---
 

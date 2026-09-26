@@ -154,9 +154,9 @@ export class AudioAIEngine {
         category: "Roads",
         sub_category: "Healthcare Access & All-Weather Road Connectivity",
         severity: "Critical",
-        location: " ()",
-        affected_population_estimate: 18400,
-        potential_impact: "Emergency medical access cutoff for 18,400 citizens; 24 km detour required to reach district hospital.",
+        location: "Constituency Ward (Roads Sector)",
+        affected_population_estimate: 2500,
+        potential_impact: "Emergency medical access cutoff for local residents; detour required to reach district hospital.",
         confidence: 0.94,
         normalized_issue: "Critical road surface washout and culvert obstruction impeding primary healthcare access."
       };
@@ -170,9 +170,9 @@ export class AudioAIEngine {
         category: "Water",
         sub_category: "Safe Piped Drinking Water & Fluoride Filtration",
         severity: "High",
-        location: "Jhirpani Tribal Hamlet (Bisra Block)",
-        affected_population_estimate: 7800,
-        potential_impact: "Fluorosis and chronic waterborne illnesses among 7,800 forest-fringe tribal villagers.",
+        location: "Constituency Ward (Water Sector)",
+        affected_population_estimate: 1500,
+        potential_impact: "Waterborne illness risks among local residents requiring clean piped supply.",
         confidence: 0.91,
         normalized_issue: "Heavy water contamination in shallow aquifer requiring deep solar-powered borewell scheme."
       };
@@ -186,11 +186,11 @@ export class AudioAIEngine {
         category: "Education",
         sub_category: "Classroom Infrastructure & STEM Laboratories",
         severity: "High",
-        location: "Gopabandhu Nagar Ward 4",
-        affected_population_estimate: 4200,
-        potential_impact: "High secondary dropout rate (18%) and student safety risks in overcrowded school premises.",
+        location: "Constituency Ward (Education Sector)",
+        affected_population_estimate: 850,
+        potential_impact: "Classroom deficit affecting local students.",
         confidence: 0.89,
-        normalized_issue: "Severe pupil-classroom ratio deficit (1:112) requiring additional 8-room multi-storey wing."
+        normalized_issue: "Pupil-classroom ratio deficit requiring additional classroom capacity."
       };
     }
 
@@ -251,11 +251,32 @@ export class AudioAIEngine {
     const utterance = new SpeechSynthesisUtterance(speechText);
     utterance.lang = targetLangCode;
     utterance.rate = 0.92;
-    utterance.pitch = 1.02;
+    utterance.pitch = 1.05;
 
-    const matchedVoice = voices.find(v => v.lang === targetLangCode || v.lang.startsWith(targetLangCode.split('-')[0]))
-      || voices.find(v => v.lang.includes('IN'))
-      || voices.find(v => v.name.includes('Natural'));
+    const isMaleVoice = v => {
+      const n = ((v.name || '') + ' ' + (v.voiceURI || '')).toLowerCase();
+      return n.includes('male') || n.includes('david') || n.includes('ravi') ||
+             n.includes('hemant') || n.includes('mark') || n.includes('george') ||
+             n.includes('guy') || n.includes('rishi') || n.includes('stefan') ||
+             n.includes('pavel') || n.includes('पुरुष') || n.includes('purush');
+    };
+    const isFemaleVoice = v => {
+      const n = ((v.name || '') + ' ' + (v.voiceURI || '')).toLowerCase();
+      return n.includes('female') || n.includes('swara') || n.includes('neerja') ||
+             n.includes('heera') || n.includes('kalpana') || n.includes('zira') ||
+             n.includes('aria') || n.includes('jenny') || n.includes('sonia') ||
+             n.includes('ananya') || n.includes('shruti') || n.includes('priya') ||
+             n.includes('sangeeta') || n.includes('kavya') || n.includes('radha') ||
+             n.includes('pallavi') || n.includes('tanishaa') || n.includes('aarohi') ||
+             n.includes('dhwani') || n.includes('sapna') || n.includes('sobhana') ||
+             n.includes('gul') || n.includes('महिला') || n.includes('स्त्री');
+    };
+
+    const nonMaleVoices = voices.filter(v => !isMaleVoice(v));
+    const matchedVoice = nonMaleVoices.find(v => (v.lang === targetLangCode || v.lang.startsWith(targetLangCode.split('-')[0])) && isFemaleVoice(v))
+      || nonMaleVoices.find(v => v.lang === targetLangCode || v.lang.startsWith(targetLangCode.split('-')[0]))
+      || nonMaleVoices.find(isFemaleVoice)
+      || nonMaleVoices[0];
     if (matchedVoice) utterance.voice = matchedVoice;
 
     window.speechSynthesis.speak(utterance);

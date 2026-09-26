@@ -190,7 +190,63 @@ class LokSwarDB:
         # Only real user-submitted data will be stored.
         # Migrate any locally cached grievances (from local_store.json) into MongoDB Atlas
         self._migrate_local_grievances_to_mongo()
+        self.purge_demo_grievances()
         print("[MongoDB] Seeding complete with default data.")
+
+    def is_under_consideration(self, grievance):
+        """Check if grievance is under active review/consideration/resolution and locked from withdrawal"""
+        if not grievance or not isinstance(grievance, dict):
+            return False
+        raw_stage = grievance.get("statusStage", 1)
+        stage = 1
+        if isinstance(raw_stage, (int, float)):
+            stage = int(raw_stage)
+        elif isinstance(raw_stage, str):
+            m = re.search(r'\d+', raw_stage)
+            if m:
+                stage = int(m.group(0))
+        status = str(grievance.get("status", "")).strip().lower()
+        locked_keywords = ["consideration", "progress", "review", "sanction", "resolved", "inspection", "assigned", "action"]
+        return stage > 1 or any(k in status for k in locked_keywords)
+
+    def can_withdraw_grievance(self, grievance_id):
+        """Return (can_withdraw: bool, reason: str)"""
+        g = self.get_grievance(grievance_id)
+        if not g:
+            return False, "Grievance not found"
+        if self.is_under_consideration(g):
+            return False, "Grievance is currently under active administrative consideration and cannot be withdrawn"
+        return True, "Grievance is eligible for withdrawal"
+
+    def purge_demo_grievances(self):
+        """Purge known fake / demo / test grievances from MongoDB Atlas and local store"""
+        demo_patterns = [
+            "^TKT-9999", "^MSG-5127", "^PROB-5661", "^TKT-880", "^TKT-10", "^PROB-10", "^TEST-"
+        ]
+        self.ensure_connected()
+        purged_count = 0
+        if self.is_connected:
+            try:
+                for pat in demo_patterns:
+                    res = self.db.grievances.delete_many({"id": {"$regex": pat}})
+                    purged_count += res.deleted_count
+                    if self.alt_db is not None:
+                        self.alt_db.grievances.delete_many({"id": {"$regex": pat}})
+                if purged_count > 0:
+                    print(f"[MongoDB Atlas] Purged {purged_count} demo / test grievance(s).")
+            except Exception as e:
+                print(f"[MongoDB Demo Purge Error]: {e}")
+        
+        # Also clean local store
+        local_grievances = self.local_data.get("grievances", {})
+        keys_to_del = [k for k in list(local_grievances.keys()) if any(re.match(pat, k) for pat in demo_patterns)]
+        for k in keys_to_del:
+            del local_grievances[k]
+            purged_count += 1
+        if keys_to_del:
+            self.save_local_cache()
+            print(f"[LocalStore] Purged {len(keys_to_del)} local demo grievance(s).")
+        return purged_count
 
     # -------------------------------------------------------------
     # Fallback Local Persistence Engine
@@ -365,15 +421,19 @@ class LokSwarDB:
 
     def get_grievances(self):
         if self.is_connected:
-            mongo_grievances = list(self.db.grievances.find({}, {"_id": 0}).sort([("createdAt", DESCENDING), ("id", DESCENDING)]))
-            # Merge with local cache as a safety net to catch any sync-gap submissions
-            local_grievances = self.local_data.get("grievances", {})
-            if local_grievances:
-                mongo_ids = {g.get("id") for g in mongo_grievances}
-                for gid, grievance in local_grievances.items():
-                    if gid and gid not in mongo_ids and isinstance(grievance, dict):
-                        mongo_grievances.insert(0, grievance)
-            return mongo_grievances
+            try:
+                mongo_grievances = list(self.db.grievances.find({}, {"_id": 0}).sort([("createdAt", DESCENDING), ("id", DESCENDING)]))
+                # Merge with local cache as a safety net to catch any sync-gap submissions
+                local_grievances = self.local_data.get("grievances", {})
+                if local_grievances:
+                    mongo_ids = {g.get("id") for g in mongo_grievances}
+                    for gid, grievance in local_grievances.items():
+                        if gid and gid not in mongo_ids and isinstance(grievance, dict):
+                            mongo_grievances.insert(0, grievance)
+                return mongo_grievances
+            except Exception as e:
+                print(f"[MongoDB get_grievances Error]: {e}, falling back to local cache")
+        
         return sorted(
             list(self.local_data.get("grievances", {}).values()),
             key=lambda x: (x.get("createdAt") or x.get("timestamp") or "", x.get("id") or ""),
@@ -382,9 +442,12 @@ class LokSwarDB:
 
     def get_grievance(self, grievance_id):
         if self.is_connected:
-            g = self.db.grievances.find_one({"id": grievance_id}, {"_id": 0})
-            if g:
-                return g
+            try:
+                g = self.db.grievances.find_one({"id": grievance_id}, {"_id": 0})
+                if g:
+                    return g
+            except Exception as e:
+                print(f"[MongoDB get_grievance Error]: {e}, falling back to local cache")
         # Fallback to local cache
         return self.local_data.get("grievances", {}).get(grievance_id)
 
@@ -410,6 +473,20 @@ class LokSwarDB:
         self.local_data.setdefault("grievances", {})[gid] = grievance_dict
         self.save_local_cache()
         return True
+
+    def withdraw_grievance(self, grievance_id):
+        """Withdraw a grievance only if it has not advanced past initial review"""
+        if not grievance_id:
+            return False, "Grievance ID is required"
+        g = self.get_grievance(grievance_id)
+        if not g:
+            return False, "Grievance not found"
+        if self.is_under_consideration(g):
+            return False, "Grievance is currently under active administrative consideration and cannot be withdrawn."
+        deleted = self.delete_grievance(grievance_id)
+        if deleted:
+            return True, f"Grievance {grievance_id} withdrawn and purged successfully"
+        return False, "Failed to withdraw grievance from database"
 
     def delete_grievance(self, grievance_id):
         if not grievance_id:

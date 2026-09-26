@@ -1,4 +1,4 @@
-﻿/**
+/**
  * People's Priorities - Interactive GIS Demand Hotspot Map Component
  * Powered by Leaflet GIS with layer controls (Citizen Reports, Density Heatmap, Facilities, Gaps & Drone Paths)
  */
@@ -12,17 +12,17 @@ export function renderGISMapView(state) {
       <div class="card" style="padding: 1rem 1.5rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
         <div>
           <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; color: var(--neutral-900);">
-            🗺️ Interactive GIS Demand Hotspot & Infrastructure Map
+            🗺️ Interactive GIS Demand Hotspot &amp; Infrastructure Map
           </h2>
           <div style="font-size: 0.8rem; color: var(--neutral-500);">
-            Spatial fusion of 1,248 citizen geo-records, government facility registries, and high-priority development zones.
+            Spatial fusion of citizen geo-records, government facility registries, and high-priority development zones.
           </div>
         </div>
 
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
           <select id="select-map-category-filter" style="padding: 0.45rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-medium); font-size: 0.82rem;">
             <option value="All">All Categories</option>
-            <option value="Roads">Roads & Connectivity</option>
+            <option value="Roads">Roads &amp; Connectivity</option>
             <option value="Healthcare">Healthcare</option>
             <option value="Education">Education</option>
             <option value="Water">Water Supply</option>
@@ -30,7 +30,7 @@ export function renderGISMapView(state) {
           </select>
 
           <select id="select-map-area-filter" style="padding: 0.45rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-medium); font-size: 0.82rem;">
-            <option value="All">All Wards & Villages</option>
+            <option value="All">All Wards &amp; Villages</option>
             <option value="rural">Rural Blocks Only</option>
             <option value="extreme_rural">Extreme Rural Hamlets</option>
             <option value="urban">Urban Wards</option>
@@ -61,43 +61,44 @@ export function renderGISMapView(state) {
         <!-- Sidebar: Hotspot Inspector -->
         <div class="map-sidebar">
           <div class="card" style="padding: 1.25rem;">
+            ${selectedHotspot ? `
             <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-rose); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
               Critical Hotspot Selected
             </div>
             <div style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: var(--neutral-900); margin-bottom: 0.5rem;">
-              ${selectedHotspot ? selectedHotspot.title : '- Corridor'}
+              ${selectedHotspot.title || ''}
             </div>
 
             <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.82rem;">
               <div style="background: var(--neutral-50); padding: 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
                 <div style="color: var(--neutral-500); font-size: 0.72rem; text-transform: uppercase;">Citizen Demand Intensity</div>
                 <div style="font-weight: 700; color: var(--primary-600); font-size: 1.1rem;">
-                  ${selectedHotspot ? selectedHotspot.reports_count : 412} Reports
+                  ${selectedHotspot.reports_count} Reports
                 </div>
               </div>
 
               <div style="background: var(--neutral-50); padding: 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
                 <div style="color: var(--neutral-500); font-size: 0.72rem; text-transform: uppercase;">Estimated Population Impact</div>
                 <div style="font-weight: 700; color: var(--neutral-800); font-size: 1.1rem;">
-                  ${selectedHotspot ? selectedHotspot.population_affected?.toLocaleString() : '18,400'} Citizens
+                  ${selectedHotspot.population_affected?.toLocaleString()} Citizens
                 </div>
               </div>
 
               <div>
                 <strong>Infrastructure Gap:</strong>
                 <div style="color: var(--neutral-600); margin-top: 0.15rem;">
-                  ${selectedHotspot ? selectedHotspot.infrastructure_gap : 'Road washed out; culvert collapsed.'}
+                  ${selectedHotspot.infrastructure_gap || '—'}
                 </div>
               </div>
 
               <div>
                 <strong>Nearest Govt Facility:</strong>
                 <div style="color: var(--neutral-600); margin-top: 0.15rem;">
-                  ${selectedHotspot ? selectedHotspot.nearest_facility : ' PHC (4.2 km) / Hospital (24 km)'}
+                  ${selectedHotspot.nearest_facility || '—'}
                 </div>
               </div>
 
-              ${selectedHotspot && selectedHotspot.discrepancy_alert ? `
+              ${selectedHotspot.discrepancy_alert ? `
                 <div style="background: #fefce8; border: 1px solid #fde047; padding: 0.6rem; border-radius: var(--radius-sm); color: #854d0e; font-size: 0.78rem;">
                   <strong>⚠️ Discrepancy:</strong> ${selectedHotspot.discrepancy_alert}
                 </div>
@@ -107,6 +108,13 @@ export function renderGISMapView(state) {
                 🚁 Create Drone Mission for this Hotspot
               </button>
             </div>
+            ` : `
+            <div style="text-align: center; padding: 2rem 1rem; color: var(--neutral-400);">
+              <div style="font-size: 2rem; margin-bottom: 0.5rem;">🗺️</div>
+              <div style="font-size: 0.85rem; font-weight: 600;">No Hotspot Selected</div>
+              <div style="font-size: 0.78rem; margin-top: 0.25rem;">Select a hotspot from the map or the list below.</div>
+            </div>
+            `}
           </div>
 
           <!-- All Hotspots List -->
@@ -115,7 +123,9 @@ export function renderGISMapView(state) {
               Constituency Hotspots (${hotspots.length})
             </div>
             <div style="display: flex; flex-direction: column; gap: 0.4rem; max-height: 200px; overflow-y: auto;">
-              ${hotspots.map(h => `
+              ${hotspots.length === 0 ? `
+                <div style="text-align: center; padding: 1rem; color: var(--neutral-400); font-size: 0.78rem;">No hotspots identified yet.</div>
+              ` : hotspots.map(h => `
                 <div class="hotspot-list-item ${h.id === selectedHotspot?.id ? 'active' : ''}" data-hotspot-id="${h.id}" style="padding: 0.5rem; border-radius: var(--radius-sm); font-size: 0.78rem; cursor: pointer; background: ${h.id === selectedHotspot?.id ? 'var(--primary-100)' : 'var(--neutral-50)'}; border: 1px solid ${h.id === selectedHotspot?.id ? 'var(--primary-500)' : 'var(--border-subtle)'};">
                   <strong>${h.title}</strong>
                   <div style="color: var(--neutral-500); font-size: 0.72rem;">${h.reports_count} reports | ${h.population_affected?.toLocaleString()} pop</div>

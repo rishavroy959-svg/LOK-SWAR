@@ -40,7 +40,7 @@ def run_tests():
     assert code == 404, f"Expected 404, got {code}"
     
     # 2. Reject wrong password for existing user
-    code, res = post("/api/auth/citizen/login", {"identifier": "", "password": "wrongpassword999"})
+    code, res = post("/api/auth/citizen/login", {"identifier": "9861234567", "password": "wrongpassword999"})
     print(f"[TEST 2] Wrong password for existing user: HTTP {code}, Result: {res}")
     assert code == 401, f"Expected 401, got {code}"
 
@@ -97,7 +97,7 @@ def run_tests():
     code, citizen_list = get(f"/api/grievances/list?userId=")
     print(f"[TEST 6B] citizen grievances count: {citizen_list.get('count')}")
     for item in citizen_list.get('data', []):
-        assert item.get('citizenMobile') == "" or item.get('userId') == "", "Data leak from other users!"
+        assert (item.get('citizenMobile') or "") == "" or (item.get('userId') or "") == "", f"Data leak from other users: {item}"
 
     # 7. Officer Authentication Tests
     code, res = post("/api/auth/admin/login", {"aadhaar": "999999999999", "password": "wrongpassword"})

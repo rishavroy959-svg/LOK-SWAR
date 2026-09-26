@@ -25,7 +25,6 @@
   <script src="js/citizen/location_data.js"></script>
   <script src="js/citizen/voice_engine.js"></script>
   <script src="js/citizen/i18n.js"></script>
-  <script src="js/citizen/data_fusion_view.js"></script>
 
   <!-- Google Fonts: Montserrat, Rochester, Inter & Outfit -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -233,7 +232,7 @@ function CitizenPortalApp() {
   const [currentLocationName, setCurrentLocationName] = useState(() => {
     try {
       const savedLoc = localStorage.getItem('lok_swar_user_location_name') || localStorage.getItem('lok_swar_detected_region');
-      if (savedLoc && (savedLoc.includes('Sundargarh') || savedLoc.includes('Janla'))) {
+      if (savedLoc && savedLoc.includes('Janla')) {
         try {
           localStorage.removeItem('lok_swar_user_location_name');
           localStorage.removeItem('lok_swar_detected_region');
@@ -289,126 +288,11 @@ function CitizenPortalApp() {
   });
   const [isDetectingLocation, setIsDetectingLocation] = useState(false);
   const [locationAlertToast, setLocationAlertToast] = useState(null);
-
-  // Multi-Source Civic Intelligence & Data Fusion State
-  const [fusionBenchmarkCases, setFusionBenchmarkCases] = useState([]);
-  const [fusionActiveCaseId, setFusionActiveCaseId] = useState('CASE-01');
-  const [fusionMode, setFusionMode] = useState('benchmarks'); // 'benchmarks' | 'custom'
-  const [fusionCustomInputs, setFusionCustomInputs] = useState({
-    citizen_feedback: "196 tribal families report zero piped water for 8 months following solar pump burnout. Severe fluoride contamination causing skeletal joint deformities and dental fluorosis in children.",
-    ward_demographics: "Population: 2,900 tribal citizens (100% Scheduled Tribe). BPL Index: 74%. Elderly & Children ratio: 42%. Extreme socioeconomic vulnerability.",
-    objective_public_datasets: "RWSS District Telemetry: 0.0 L/min flow. Lab Water Quality Assays: Fluoride concentration 3.8 mg/L (Safe limit: 1.0 mg/L, 280% hazardous excess).",
-    existing_government_plans: "JJM Portal registers Jhirpani as '100% Functional Tap Connected'. Zero capital or maintenance outlays provisioned in 2026-27 District Mineral Foundation budget."
-  });
-  const [fusionAnalysisResult, setFusionAnalysisResult] = useState(null);
-  const [isAnalyzingFusion, setIsAnalyzingFusion] = useState(false);
-  const [fusionCopied, setFusionCopied] = useState(false);
-
-  // Load benchmark cases from server
-  useEffect(() => {
-    const loadCases = async () => {
-      try {
-        const res = await fetch('/api/data-fusion/cases');
-        if (res.ok) {
-          const d = await res.json();
-          if (d && d.cases && d.cases.length > 0) {
-            setFusionBenchmarkCases(d.cases);
-            const first = d.cases[0];
-            setFusionAnalysisResult({
-              theme: first.theme,
-              summary_of_need: first.title + ": " + first.citizen_feedback,
-              demographic_context: first.ward_demographics,
-              plan_status: first.plan_status,
-              plan_notes: first.plan_notes,
-              objective_substantiation: first.objective_substantiation,
-              discrepancy_category: first.discrepancy_category,
-              discrepancy_rationale: first.discrepancy_rationale,
-              priority_score: first.priority_score,
-              actionable_recommendation: first.actionable_recommendation,
-              score_breakdown: {
-                demand_and_severity_25pct: Math.round(first.demand_score * 0.25 * 10) / 10,
-                demographic_vulnerability_30pct: Math.round(first.demographic_score * 0.30 * 10) / 10,
-                objective_deficit_gap_35pct: Math.round(first.deficit_gap_score * 0.35 * 10) / 10,
-                plan_overlap_penalty: -first.plan_penalty,
-                composite_score: first.priority_score
-              }
-            });
-          }
-        }
-      } catch(e) {}
-    };
-    loadCases();
-  }, []);
-
-  const handleSelectFusionCase = c => {
-    playChime('tap');
-    setFusionActiveCaseId(c.id);
-    setFusionAnalysisResult({
-      theme: c.theme,
-      summary_of_need: c.title + ": " + c.citizen_feedback,
-      demographic_context: c.ward_demographics,
-      plan_status: c.plan_status,
-      plan_notes: c.plan_notes,
-      objective_substantiation: c.objective_substantiation,
-      discrepancy_category: c.discrepancy_category,
-      discrepancy_rationale: c.discrepancy_rationale,
-      priority_score: c.priority_score,
-      actionable_recommendation: c.actionable_recommendation,
-      score_breakdown: {
-        demand_and_severity_25pct: Math.round(c.demand_score * 0.25 * 10) / 10,
-        demographic_vulnerability_30pct: Math.round(c.demographic_score * 0.30 * 10) / 10,
-        objective_deficit_gap_35pct: Math.round(c.deficit_gap_score * 0.35 * 10) / 10,
-        plan_overlap_penalty: -c.plan_penalty,
-        composite_score: c.priority_score
-      }
-    });
-    setFusionCustomInputs({
-      citizen_feedback: c.citizen_feedback,
-      ward_demographics: c.ward_demographics,
-      objective_public_datasets: c.objective_public_datasets,
-      existing_government_plans: c.existing_government_plans
-    });
+  const showToast = (msg, duration = 4000) => {
+    setLocationAlertToast(msg);
+    setTimeout(() => setLocationAlertToast(null), duration);
   };
 
-  const handleRunFusionAnalysis = async (customPayload = null) => {
-    setIsAnalyzingFusion(true);
-    playChime('tap');
-    try {
-      const payload = customPayload || fusionCustomInputs;
-      const res = await fetch('/api/data-fusion/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setFusionAnalysisResult(data);
-      }
-    } catch(e) {
-      console.warn("Fusion analysis error:", e);
-    }
-    setIsAnalyzingFusion(false);
-  };
-
-  const handleCopyFusionJson = () => {
-    playChime('tap');
-    if (!fusionAnalysisResult) return;
-    const jsonStr = JSON.stringify({
-      theme: fusionAnalysisResult.theme,
-      summary_of_need: fusionAnalysisResult.summary_of_need,
-      demographic_context: fusionAnalysisResult.demographic_context,
-      plan_status: fusionAnalysisResult.plan_status,
-      plan_notes: fusionAnalysisResult.plan_notes,
-      objective_substantiation: fusionAnalysisResult.objective_substantiation,
-      discrepancy_category: fusionAnalysisResult.discrepancy_category,
-      discrepancy_rationale: fusionAnalysisResult.discrepancy_rationale,
-      priority_score: fusionAnalysisResult.priority_score,
-      actionable_recommendation: fusionAnalysisResult.actionable_recommendation
-    }, null, 2);
-    navigator.clipboard.writeText(jsonStr);
-    setFusionCopied(true);
-    setTimeout(() => setFusionCopied(false), 2500);
-  };
 
   // Pre-load natural speech voices on browser startup
   useEffect(() => {
@@ -481,23 +365,32 @@ function CitizenPortalApp() {
       return next;
     });
   };
+  const normalizeView = v => {
+    if (!v || v === 'home' || v === 'citizen_home' || v === '#') return 'citizen';
+    return v;
+  };
   const [currentView, setCurrentView] = useState(() => {
-    const hash = window.location.hash.replace('#/', '') || 'citizen';
-    return hash;
+    const hash = window.location.hash.replace('#/', '').replace('#', '') || 'citizen';
+    return normalizeView(hash);
   });
   useEffect(() => {
     const handlePopState = () => {
-      const hash = window.location.hash.replace('#/', '') || 'citizen';
-      setCurrentView(hash);
+      const hash = window.location.hash.replace('#/', '').replace('#', '') || 'citizen';
+      setCurrentView(normalizeView(hash));
     };
     window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+    window.addEventListener('hashchange', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('hashchange', handlePopState);
+    };
   }, []);
   const navigateView = viewName => {
-    setCurrentView(viewName);
+    const target = normalizeView(viewName);
+    setCurrentView(target);
     window.history.pushState({
-      view: viewName
-    }, '', `#/${viewName}`);
+      view: target
+    }, '', `#/${target}`);
     window.scrollTo({
       top: 0,
       behavior: 'smooth'
@@ -555,9 +448,10 @@ function CitizenPortalApp() {
   const [ttsPopupMessage, setTtsPopupMessage] = useState(null);
   const [isVoiceGuideActive, setIsVoiceGuideActive] = useState(() => {
     try {
-      return localStorage.getItem('lok_swar_voice_guide_active') === 'true';
+      const stored = localStorage.getItem('lok_swar_voice_guide_active');
+      return stored === null ? true : stored === 'true';
     } catch (e) {
-      return false;
+      return true;
     }
   });
   const isVoiceGuideActiveRef = useRef(isVoiceGuideActive);
@@ -569,26 +463,21 @@ function CitizenPortalApp() {
 
   // Haversine GPS Distance Helper Calculation (KM)
   const parseGpsCoords = gpsStr => {
-    if (!gpsStr) return {
-      lat: 22.1245,
-      lng: 84.0321
-    };
-    if (typeof gpsStr === 'object' && gpsStr.lat && gpsStr.lng) return gpsStr;
-    const matches = String(gpsStr).match(/([\d.]+)[^\d,]*([NSns])?[^\d]+([\d.]+)[^\d,]*([EWew])?/);
-    if (matches) {
-      let lat = parseFloat(matches[1]);
-      if (matches[2] && matches[2].toUpperCase() === 'S') lat = -lat;
-      let lng = parseFloat(matches[3]);
-      if (matches[4] && matches[4].toUpperCase() === 'W') lng = -lng;
-      if (!isNaN(lat) && !isNaN(lng)) return {
-        lat,
-        lng
-      };
+    if (!gpsStr) return { lat: 22.1245, lng: 84.0321 };
+    if (typeof gpsStr === 'object') {
+      const lat = parseFloat(gpsStr.lat || gpsStr.latitude);
+      const lng = parseFloat(gpsStr.lng || gpsStr.longitude);
+      if (!isNaN(lat) && !isNaN(lng)) return { lat, lng };
+      return { lat: 22.1245, lng: 84.0321 };
     }
-    return {
-      lat: 22.1245,
-      lng: 84.0321
-    };
+    const cleanStr = String(gpsStr).replace(/°/g, '').replace(/[NSnsEWew]/g, ' ');
+    const matches = cleanStr.match(/([-+]?[\d.]+)[^\d+-]+([-+]?[\d.]+)/);
+    if (matches) {
+      const lat = parseFloat(matches[1]);
+      const lng = parseFloat(matches[2]);
+      if (!isNaN(lat) && !isNaN(lng)) return { lat, lng };
+    }
+    return { lat: 22.1245, lng: 84.0321 };
   };
   const getDistanceKm = (loc1, loc2) => {
     if (!loc1 || !loc2) return 0.5;
@@ -602,6 +491,7 @@ function CitizenPortalApp() {
 
   const activeAudioElementRef = useRef(null);
   const voiceSessionCounterRef = useRef(0);
+  const lastSpeechTimeRef = useRef(0);
 
   // Mute helper: completely stops all voice guidance (both Web Speech and server audio)
   const muteAllSpeech = () => {
@@ -638,6 +528,14 @@ function CitizenPortalApp() {
       muteAllSpeech();
       return;
     }
+
+    const now = Date.now();
+    // Debounce rapid triggering (at least 650ms between spoken instructions)
+    if (now - lastSpeechTimeRef.current < 650) {
+      return;
+    }
+    lastSpeechTimeRef.current = now;
+
     // Cancel any current speech completely before starting new one
     muteAllSpeech();
 
@@ -665,20 +563,26 @@ function CitizenPortalApp() {
         if (voiceSessionCounterRef.current === thisSession) {
           setTtsPopupMessage(prev => (prev && prev.display === displayText ? null : prev));
         }
-      }, 2000);
+      }, 1500);
     };
 
-    // Primary High-Precision Neural Voice Stream via /api/tts (Google Neural TTS)
+    // Primary High-Precision Female Neural Voice Stream via /api/tts (Edge Neural & Google Female TTS)
     // Plays cleanly with 100% native pronunciation in the exact target language.
     // NEVER overlaps with browser speech synthesis.
     try {
       const ttsAudio = new Audio(`/api/tts?text=${encodeURIComponent(spokenText)}&lang=${encodeURIComponent(currentLang)}`);
       activeAudioElementRef.current = ttsAudio;
 
-      ttsAudio.onended = onSpeechEnd;
+      ttsAudio.onended = () => {
+        if (voiceSessionCounterRef.current !== thisSession) return;
+        onSpeechEnd();
+      };
+
       ttsAudio.onerror = () => {
         if (voiceSessionCounterRef.current !== thisSession) return;
-        activeAudioElementRef.current = null;
+        if (activeAudioElementRef.current === ttsAudio) {
+          activeAudioElementRef.current = null;
+        }
         // Last-resort fallback: only if server audio failed
         fallbackBrowserSpeech(spokenText, currentLang, onSpeechEnd, () => {
           if (voiceSessionCounterRef.current === thisSession) setIsSpeaking(false);
@@ -687,9 +591,15 @@ function CitizenPortalApp() {
 
       const playPromise = ttsAudio.play();
       if (playPromise !== undefined) {
-        playPromise.catch(() => {
+        playPromise.catch((err) => {
           if (voiceSessionCounterRef.current !== thisSession) return;
-          activeAudioElementRef.current = null;
+          try {
+            ttsAudio.pause();
+            ttsAudio.src = '';
+          } catch(e) {}
+          if (activeAudioElementRef.current === ttsAudio) {
+            activeAudioElementRef.current = null;
+          }
           fallbackBrowserSpeech(spokenText, currentLang, onSpeechEnd, () => {
             if (voiceSessionCounterRef.current === thisSession) setIsSpeaking(false);
           });
@@ -737,7 +647,15 @@ function CitizenPortalApp() {
       if (target.closest('textarea, input, select, audio, [contenteditable="true"], .voice-guide-toggle-btn, button[title*="Voice"], button[title*="voice"], button[title*="Mic"], button[title*="mic"], button[title*="Cancel"], button[title*="Done"], button[title*="Dismiss"], .tts-popup, form')) return;
 
       const guideInfo = getVoiceGuideForElement(target);
-      if (!guideInfo) return;
+      if (!guideInfo) {
+        try {
+          if (!sessionStorage.getItem('lok_swar_session_welcomed')) {
+            sessionStorage.setItem('lok_swar_session_welcomed', 'true');
+            speakGuidance('welcome');
+          }
+        } catch(e) {}
+        return;
+      }
 
       const now = Date.now();
       const clickKey = guideInfo.key || guideInfo.customTitle || '';
@@ -800,70 +718,195 @@ function CitizenPortalApp() {
     return result.trim();
   };
 
-  // Dialect Detection Engine (Maps States & Districts to Regional Language)
-  const detectDialectFromLocation = (state = '', district = '', lat = null, lng = null) => {
+  // Comprehensive Dialect Detection Engine (Maps States, Districts & Coordinates to Regional Language)
+  const detectDialectFromLocation = (state = '', district = '', lat = null, lng = null, fullAddress = '') => {
     const s = String(state || '').toLowerCase();
     const d = String(district || '').toLowerCase();
+    const addr = String(fullAddress || '').toLowerCase();
+    const combined = `${s} ${d} ${addr}`.trim();
 
-    // 1. Odisha / Orissa -> Odia ('or')
-    if (s.includes('odisha') || s.includes('orissa') || s.includes('odia') || d.includes('sundargarh') || d.includes('sundergarh') || d.includes('sambalpur') || d.includes('rourkela') || d.includes('cuttack') || d.includes('bhubaneswar') || d.includes('khordha') || d.includes('khurda') || d.includes('puri') || d.includes('balasore') || d.includes('baleshwar') || d.includes('berhampur') || d.includes('brahmapur') || d.includes('angul') || d.includes('balangir') || d.includes('bolangir') || d.includes('bhadrak') || d.includes('kalahandi') || d.includes('koraput') || d.includes('mayurbhanj') || d.includes('ganjam') || d.includes('kendujhar') || d.includes('keonjhar') || d.includes('jharsuguda')) {
-      return {
-        lang: 'or',
-        label: 'Odisha (ଓଡ଼ିଆ)'
-      };
+    // 1. Karnataka & Bengaluru (Checked early to avoid collision with Bengal)
+    if (combined.includes('karnataka') || d.includes('bengaluru') || d.includes('bangalore') || 
+        d.includes('mysuru') || d.includes('mysore') || d.includes('hubballi') || d.includes('hubli') || 
+        d.includes('mangaluru') || d.includes('mangalore') || d.includes('belagavi') || d.includes('belgaum') || 
+        d.includes('kalaburagi') || d.includes('gulbarga') || d.includes('davanagere') || d.includes('bellary') || 
+        d.includes('shivamogga') || d.includes('shimoga') || d.includes('tumakuru') || d.includes('udupi')) {
+      return { lang: 'kn', label: 'Karnataka (ಕನ್ನಡ)' };
     }
 
-    // 2. Bihar / Purvanchal -> Bhojpuri ('bho')
-    if (s.includes('bihar') || s.includes('purvanchal') || d.includes('bhojpur') || d.includes('patna') || d.includes('gaya') || d.includes('muzaffarpur') || d.includes('siwan') || d.includes('chapra') || d.includes('saran') || d.includes('rohtas') || d.includes('buxar') || d.includes('nalanda') || d.includes('darbhanga') || d.includes('samastipur') || d.includes('vaishali') || d.includes('arrah') || d.includes('ara') || d.includes('gopalganj') || d.includes('begusarai') || d.includes('bhagalpur')) {
-      return {
-        lang: 'bho',
-        label: 'Bihar (भोजपुरी)'
-      };
+    // 2. Andhra Pradesh & Telangana (Checked before Bihar to prevent Visakhapatnam matching patna)
+    if (combined.includes('andhra') || combined.includes('telangana') || 
+        d.includes('hyderabad') || d.includes('visakhapatnam') || d.includes('vizag') || 
+        d.includes('vijayawada') || d.includes('guntur') || d.includes('warangal') || 
+        d.includes('tirupati') || d.includes('kakinada') || d.includes('nellore') || 
+        d.includes('kurnool') || d.includes('rajahmundry') || d.includes('kadapa') || 
+        d.includes('nizamabad') || d.includes('khammam') || d.includes('karimnagar')) {
+      return { lang: 'te', label: 'Andhra / Telangana (తెలుగు)' };
     }
 
-    // 3. West Bengal -> Bengali ('bn')
-    if (s.includes('bengal') || s.includes('bangla') || d.includes('kolkata') || d.includes('howrah') || d.includes('asansol') || d.includes('durgapur') || d.includes('siliguri') || d.includes('bardhaman') || d.includes('burdwan') || d.includes('hooghly') || d.includes('north 24 parganas') || d.includes('south 24 parganas') || d.includes('nadia') || d.includes('murshidabad')) {
-      return {
-        lang: 'bn',
-        label: 'West Bengal (বাংলা)'
-      };
+    // 3. Kerala & Lakshadweep
+    if (combined.includes('kerala') || combined.includes('lakshadweep') || 
+        d.includes('thiruvananthapuram') || d.includes('trivandrum') || d.includes('kochi') || 
+        d.includes('cochin') || d.includes('kozhikode') || d.includes('calicut') || d.includes('thrissur') || 
+        d.includes('kannur') || d.includes('kollam') || d.includes('alappuzha') || d.includes('palakkad') || 
+        d.includes('malappuram') || d.includes('kottayam') || d.includes('kasaragod')) {
+      return { lang: 'ml', label: 'Kerala (മലയാളം)' };
     }
 
-    // 4. North Indian Hindi Belt (UP, Delhi, MP, Rajasthan, Haryana, Jharkhand, Chhattisgarh, HP, UK)
-    if (s.includes('uttar pradesh') || s.includes('delhi') || s.includes('madhya pradesh') || s.includes('rajasthan') || s.includes('haryana') || s.includes('jharkhand') || s.includes('chhattisgarh') || s.includes('himachal') || s.includes('uttarakhand') || s.includes('chandigarh')) {
-      return {
-        lang: 'hi',
-        label: `${state || 'North India'} (हिन्दी)`
-      };
+    // 4. Tamil Nadu & Puducherry
+    if (combined.includes('tamil') || combined.includes('puducherry') || combined.includes('pondicherry') || 
+        d.includes('chennai') || d.includes('madras') || d.includes('coimbatore') || d.includes('madurai') || 
+        d.includes('tiruchirappalli') || d.includes('trichy') || d.includes('salem') || d.includes('tirunelveli') || 
+        d.includes('tiruppur') || d.includes('vellore') || d.includes('erode') || d.includes('thoothukudi') || 
+        d.includes('thanjavur') || d.includes('dindigul') || d.includes('kanchipuram')) {
+      return { lang: 'ta', label: 'Tamil Nadu (தமிழ்)' };
     }
 
-    // 5. High-Precision Coordinate Bounding Box Fallback
+    // 5. Odisha / Orissa -> Odia ('or')
+    if (combined.includes('odisha') || combined.includes('orissa') || combined.includes('odia') || 
+        d.includes('sambalpur') || d.includes('rourkela') || d.includes('cuttack') || d.includes('bhubaneswar') || 
+        d.includes('khordha') || d.includes('khurda') || d.includes('puri') || d.includes('balasore') || 
+        d.includes('baleshwar') || d.includes('berhampur') || d.includes('brahmapur') || d.includes('angul') || 
+        d.includes('balangir') || d.includes('bolangir') || d.includes('bhadrak') || d.includes('kalahandi') || 
+        d.includes('koraput') || d.includes('mayurbhanj') || d.includes('ganjam') || d.includes('kendujhar') || 
+        d.includes('keonjhar') || d.includes('jharsuguda') || d.includes('dhenkanal') || d.includes('jajpur') || 
+        d.includes('jagatsinghpur') || d.includes('kendrapara') || d.includes('malkangiri') || d.includes('bargarh') || 
+        d.includes('deogarh') || d.includes('nuapada') || d.includes('rayagada') || d.includes('nayagarh') || 
+        d.includes('sonepur') || d.includes('subarnapur') || d.includes('kandhamal') || d.includes('boudh') || 
+        d.includes('nabarangpur')) {
+      return { lang: 'or', label: 'Odisha (ଓଡ଼ିଆ)' };
+    }
+
+    // 6. Mithila / Northern Bihar -> Maithili ('mai')
+    if (d.includes('madhubani') || d.includes('darbhanga') || d.includes('sitamarhi') || 
+        d.includes('sheohar') || d.includes('supaul') || d.includes('araria') || 
+        d.includes('kishanganj') || d.includes('madhepura') || d.includes('saharsa') || 
+        d.includes('purnia') || d.includes('purnea')) {
+      return { lang: 'mai', label: 'Mithila / North Bihar (मैथिली)' };
+    }
+
+    // 7. Bihar / Purvanchal (Eastern UP) -> Bhojpuri ('bho')
+    if (combined.includes('bihar') || combined.includes('purvanchal') || combined.includes('bhojpur') || 
+        /\bpatna\b/.test(d) || /\bpatna\b/.test(combined) || d.includes('gaya') || d.includes('muzaffarpur') || d.includes('siwan') || 
+        d.includes('chapra') || d.includes('saran') || d.includes('rohtas') || d.includes('buxar') || 
+        d.includes('nalanda') || d.includes('samastipur') || d.includes('vaishali') || d.includes('arrah') || 
+        d.includes('ara') || d.includes('gopalganj') || d.includes('begusarai') || d.includes('bhagalpur') || 
+        d.includes('jehanabad') || d.includes('aurangabad') || d.includes('nawada') || d.includes('jamui') || 
+        d.includes('banka') || d.includes('munger') || d.includes('khagaria') || d.includes('katihar') || 
+        d.includes('varanasi') || d.includes('banaras') || d.includes('kashi') || d.includes('gorakhpur') || 
+        d.includes('ballia') || d.includes('deoria') || d.includes('azamgarh') || d.includes('ghazipur') || 
+        d.includes('mirzapur') || d.includes('chandauli') || d.includes('mau') || d.includes('kushinagar') || 
+        d.includes('maharajganj') || d.includes('sant kabir nagar') || d.includes('basti') || 
+        d.includes('siddharthnagar') || d.includes('jaunpur')) {
+      return { lang: 'bho', label: 'Bihar / Purvanchal (भोजपुरी)' };
+    }
+
+    // 8. West Bengal -> Bengali ('bn')
+    if (combined.includes('bengal') || combined.includes('bangla') || combined.includes('paschim banga') || 
+        d.includes('kolkata') || d.includes('calcutta') || d.includes('howrah') || d.includes('asansol') || 
+        d.includes('durgapur') || d.includes('siliguri') || d.includes('bardhaman') || d.includes('burdwan') || 
+        d.includes('hooghly') || d.includes('north 24 parganas') || d.includes('south 24 parganas') || 
+        d.includes('nadia') || d.includes('murshidabad') || d.includes('malda') || d.includes('jalpaiguri') || 
+        d.includes('cooch behar') || d.includes('alipurduar') || d.includes('darjeeling') || d.includes('kalimpong') || 
+        d.includes('bankura') || d.includes('birbhum') || d.includes('purulia') || d.includes('jhargram') || 
+        d.includes('medinipur') || d.includes('midnapore')) {
+      return { lang: 'bn', label: 'West Bengal (বাংলা)' };
+    }
+
+    // 9. Assam -> Assamese ('as')
+    if (combined.includes('assam') || combined.includes('asom') || d.includes('guwahati') || 
+        d.includes('kamrup') || d.includes('dibrugarh') || d.includes('silchar') || d.includes('jorhat') || 
+        d.includes('nagaon') || d.includes('tezpur') || d.includes('tinsukia')) {
+      return { lang: 'as', label: 'Assam (অসমীয়া)' };
+    }
+
+    // 10. Santhal Parganas / Tribal Jharkhand -> Santhali ('sat')
+    if (d.includes('dumka') || d.includes('deoghar') || d.includes('godda') || 
+        d.includes('jamtara') || d.includes('sahibganj') || d.includes('pakur') || d.includes('santhal')) {
+      return { lang: 'sat', label: 'Santhal Pargana (ᱥᱟᱱᱛᱟᱲᱤ)' };
+    }
+
+    // 11. Maharashtra / Goa -> Marathi ('mr')
+    if (combined.includes('maharashtra') || combined.includes('goa') || 
+        d.includes('mumbai') || d.includes('bombay') || d.includes('pune') || d.includes('nagpur') || 
+        d.includes('nashik') || d.includes('aurangabad') || d.includes('sambhajinagar') || d.includes('solapur') || 
+        d.includes('thane') || d.includes('amravati') || d.includes('navi mumbai') || d.includes('kolhapur') || 
+        d.includes('nanded') || d.includes('sangli') || d.includes('jalgaon') || d.includes('akola') || 
+        d.includes('latur') || d.includes('panaji')) {
+      return { lang: 'mr', label: 'Maharashtra (मराठी)' };
+    }
+
+    // 12. Gujarat / Daman / Diu -> Gujarati ('gu')
+    if (combined.includes('gujarat') || combined.includes('daman') || combined.includes('diu') || 
+        d.includes('ahmedabad') || d.includes('surat') || d.includes('vadodara') || d.includes('baroda') || 
+        d.includes('rajkot') || d.includes('bhavnagar') || d.includes('jamnagar') || d.includes('gandhinagar') || 
+        d.includes('junagadh') || d.includes('anand') || d.includes('navsari') || d.includes('morbi') || 
+        d.includes('nadiad') || d.includes('surendranagar') || d.includes('bharuch') || d.includes('mehsana') || 
+        d.includes('bhuj') || d.includes('porbandar')) {
+      return { lang: 'gu', label: 'Gujarat (ગુજરાતી)' };
+    }
+
+    // 13. Punjab / Chandigarh -> Punjabi ('pa')
+    if (combined.includes('punjab') || combined.includes('chandigarh') || 
+        d.includes('amritsar') || d.includes('ludhiana') || d.includes('jalandhar') || 
+        d.includes('patiala') || d.includes('bathinda') || d.includes('mohali') || 
+        d.includes('hoshiarpur') || d.includes('pathankot') || d.includes('moga') || 
+        d.includes('batala') || d.includes('ferozepur')) {
+      return { lang: 'pa', label: 'Punjab (ਪੰਜਾਬੀ)' };
+    }
+
+    // 14. Jammu & Kashmir / Ladakh -> Kashmiri ('ks')
+    if (combined.includes('kashmir') || combined.includes('ladakh') || 
+        d.includes('srinagar') || d.includes('anantnag') || d.includes('baramulla') || 
+        d.includes('kupwara') || d.includes('pulwama') || d.includes('budgam') || 
+        d.includes('ganderbal') || d.includes('kulgam') || d.includes('leh') || d.includes('kargil')) {
+      return { lang: 'ks', label: 'Jammu & Kashmir (کٲشُر)' };
+    }
+
+    // 15. North Indian Hindi Belt (UP, Delhi, MP, Rajasthan, Haryana, Jharkhand, Chhattisgarh, HP, UK)
+    if (combined.includes('uttar pradesh') || combined.includes('delhi') || combined.includes('madhya pradesh') || 
+        combined.includes('rajasthan') || combined.includes('haryana') || combined.includes('jharkhand') || 
+        combined.includes('chhattisgarh') || combined.includes('himachal') || combined.includes('uttarakhand') || 
+        d.includes('lucknow') || d.includes('kanpur') || d.includes('agra') || d.includes('prayagraj') || 
+        d.includes('noida') || d.includes('ghaziabad') || d.includes('meerut') || d.includes('bareilly') || 
+        d.includes('aligarh') || d.includes('jaipur') || d.includes('jodhpur') || d.includes('kota') || 
+        d.includes('bikaner') || d.includes('ajmer') || d.includes('udaipur') || d.includes('bhopal') || 
+        d.includes('indore') || d.includes('gwalior') || d.includes('jabalpur') || d.includes('ujjain') || 
+        d.includes('ranchi') || d.includes('jamshedpur') || d.includes('dhanbad') || d.includes('raipur') || 
+        d.includes('bilaspur') || d.includes('gurugram') || d.includes('gurgaon') || d.includes('faridabad') || 
+        d.includes('panipat') || d.includes('ambala') || d.includes('dehradun') || d.includes('haridwar') || 
+        d.includes('shimla')) {
+      return { lang: 'hi', label: `${state || 'North India'} (हिन्दी)` };
+    }
+
+    // 16. Coordinate Bounding Box Fallbacks (When reverse geocoding text is not returned)
     if (lat !== null && lng !== null) {
-      if (lat >= 24.0 && lat <= 27.8 && lng >= 83.0 && lng <= 88.3) {
-        return {
-          lang: 'bho',
-          label: 'Bihar (भोजपुरी)'
-        };
-      }
-      if (lat >= 17.5 && lat <= 23.0 && lng >= 81.0 && lng <= 87.6) {
-        return {
-          lang: 'or',
-          label: 'Odisha (ଓଡ଼ିଆ)'
-        };
-      }
-      if (lat >= 21.5 && lat <= 27.5 && lng >= 86.5 && lng <= 90.0) {
-        return {
-          lang: 'bn',
-          label: 'West Bengal (বাংলা)'
-        };
-      }
-      if (lat >= 21.0 && lat <= 32.0 && lng >= 68.0 && lng <= 88.0) {
-        return {
-          lang: 'hi',
-          label: 'North India (हिन्दी)'
-        };
-      }
+      // Kerala (West coast southwest): lat 8.2-12.8, lng 74.8-77.2
+      if (lat >= 8.2 && lat <= 12.8 && lng >= 74.8 && lng <= 77.2) return { lang: 'ml', label: 'Kerala (മലയാളം)' };
+      // Karnataka: lat 11.5-18.5, lng 74.0-77.8 (Bengaluru at 12.97, 77.59)
+      if (lat >= 11.5 && lat <= 18.5 && lng >= 74.0 && lng <= 77.8) return { lang: 'kn', label: 'Karnataka (ಕನ್ನಡ)' };
+      // Tamil Nadu (Southeast): lat 8.0-13.5, lng 77.3-80.4
+      if (lat >= 8.0 && lat <= 13.5 && lng >= 77.3 && lng <= 80.4) return { lang: 'ta', label: 'Tamil Nadu (தமிழ்)' };
+      // Odisha: lat 17.5-22.8, lng 81.2-87.6
+      if (lat >= 17.5 && lat <= 22.8 && lng >= 81.2 && lng <= 87.6) return { lang: 'or', label: 'Odisha (ଓଡ଼ିଆ)' };
+      // Bihar / Purvanchal: lat 24.2-27.6, lng 83.0-88.3
+      if (lat >= 24.2 && lat <= 27.6 && lng >= 83.0 && lng <= 88.3) return { lang: 'bho', label: 'Bihar (भोजपुरी)' };
+      // West Bengal: lat 21.5-27.3, lng 85.8-89.9
+      if (lat >= 21.5 && lat <= 27.3 && lng >= 85.8 && lng <= 89.9) return { lang: 'bn', label: 'West Bengal (বাংলা)' };
+      // Andhra / Telangana: lat 13.5-19.9, lng 77.0-84.8
+      if (lat >= 13.5 && lat <= 19.9 && lng >= 77.0 && lng <= 84.8) return { lang: 'te', label: 'Andhra / Telangana (తెలుగు)' };
+      // Maharashtra / Goa: lat 15.0-22.0, lng 72.6-80.9
+      if (lat >= 15.0 && lat <= 22.0 && lng >= 72.6 && lng <= 80.9) return { lang: 'mr', label: 'Maharashtra (मराठी)' };
+      // Gujarat: lat 20.1-24.7, lng 68.1-74.5
+      if (lat >= 20.1 && lat <= 24.7 && lng >= 68.1 && lng <= 74.5) return { lang: 'gu', label: 'Gujarat (ગુજરાતી)' };
+      // Punjab / Chandigarh: lat 29.5-32.5, lng 73.8-76.9
+      if (lat >= 29.5 && lat <= 32.5 && lng >= 73.8 && lng <= 76.9) return { lang: 'pa', label: 'Punjab (ਪੰਜਾਬੀ)' };
+      // Assam / North East: lat 24.0-28.2, lng 89.7-96.1
+      if (lat >= 24.0 && lat <= 28.2 && lng >= 89.7 && lng <= 96.1) return { lang: 'as', label: 'Assam (অসমীয়া)' };
+      // Broad North / Central Hindi Belt: lat 21.0-32.5, lng 68.0-88.5
+      if (lat >= 21.0 && lat <= 32.5 && lng >= 68.0 && lng <= 88.5) return { lang: 'hi', label: 'North India (हिन्दी)' };
     }
+
     return {
       lang: 'en',
       label: `${state || 'India'} (English)`
@@ -876,7 +919,8 @@ function CitizenPortalApp() {
     longitude,
     detectedRegion,
     detectedLang,
-    areaLabel
+    areaLabel,
+    isInteractive = false
   }) => {
     const coords = {
       lat: latitude,
@@ -889,12 +933,22 @@ function CitizenPortalApp() {
       localStorage.setItem('lok_swar_user_gps', JSON.stringify(coords));
       localStorage.setItem('lok_swar_user_location_name', canonicalRegion);
       localStorage.setItem('lok_swar_detected_region', canonicalRegion);
-      localStorage.setItem('lok_swar_location_permission_decided', 'true');
+      if (isInteractive) {
+        localStorage.setItem('lok_swar_location_permission_decided', 'true');
+      }
     } catch (e) {}
 
-    // AUTOMATICALLY SWITCH ENTIRE UI TEXT TO THE DETECTED LOCATION'S LANGUAGE
-    handleLanguageChange(detectedLang);
-    setSelectedLang(detectedLang);
+    // AUTOMATICALLY SWITCH ENTIRE UI TEXT TO THE DETECTED LOCATION'S LANGUAGE UPON LOCATION FETCH
+    if (detectedLang) {
+      try {
+        localStorage.removeItem('lok_swar_user_explicit_lang');
+        localStorage.setItem('lok_swar_selected_language', detectedLang);
+        window.dispatchEvent(new Event('storage'));
+      } catch (e) {}
+      setSelectedLang(detectedLang);
+      handleLanguageChange(detectedLang);
+    }
+
     setCitizenUser(prev => ({
       ...prev,
       village: canonicalRegion || prev?.village || "Current Location",
@@ -925,17 +979,43 @@ function CitizenPortalApp() {
       });
     }
     setIsDetectingLocation(false);
-    setIsLocationPermissionModalOpen(false);
-    const displayLoc = localizeAddress(canonicalRegion, detectedLang);
+    if (isInteractive) {
+      setIsLocationPermissionModalOpen(false);
+    }
+
+    const activeLangForToast = detectedLang || selectedLang;
+    const displayLoc = localizeAddress(canonicalRegion, activeLangForToast);
     let toastMsg = "";
-    if (detectedLang === 'or') {
-      toastMsg = `📍 ସ୍ଥାନ ଚିହ୍ନଟ: ${displayLoc} • ଭାଷା: ଓଡ଼ିଆ କୁ ପରିବର୍ତ୍ତନ କରାଗଲା`;
-    } else if (detectedLang === 'bho') {
-      toastMsg = `📍 लोकेशन मिल गइल: ${displayLoc} • भाषा: भोजपुरी में बदल दिहल गइल`;
-    } else if (detectedLang === 'bn') {
-      toastMsg = `📍 অবস্থান সনাক্ত: ${displayLoc} • ভাষা: বাংলায় পরিবর্তিত হয়েছে`;
-    } else if (detectedLang === 'hi') {
-      toastMsg = `📍 स्थान पहचाना गया: ${displayLoc} • भाषा: हिन्दी में सेट की गई`;
+    if (activeLangForToast === 'or') {
+      toastMsg = `📍 ସ୍ଥାନ ଚିହ୍ନଟ: ${displayLoc} • ଭାଷା: ଓଡ଼ିଆ କୁ ସ୍ୱୟଂଚାଳିତ ଭାବେ ପରିବର୍ତ୍ତନ କରାଗଲା`;
+    } else if (activeLangForToast === 'bho') {
+      toastMsg = `📍 लोकेशन मिल गइल: ${displayLoc} • भाषा: भोजपुरी में अपने-आप बदल दिहल गइल`;
+    } else if (activeLangForToast === 'bn') {
+      toastMsg = `📍 অবস্থান সনাক্ত: ${displayLoc} • ভাষা: স্বয়ংক্রিয়ভাবে বাংলায় পরিবর্তিত হয়েছে`;
+    } else if (activeLangForToast === 'hi') {
+      toastMsg = `📍 स्थान पहचाना गया: ${displayLoc} • भाषा: हिन्दी में स्वचालित रूप से सेट की गई`;
+    } else if (activeLangForToast === 'ta') {
+      toastMsg = `📍 இருப்பிடம் கண்டறியப்பட்டது: ${displayLoc} • மொழி: தமிழ்`;
+    } else if (activeLangForToast === 'te') {
+      toastMsg = `📍 స్థానం గుర్తించబడింది: ${displayLoc} • భాష: తెలుగు`;
+    } else if (activeLangForToast === 'kn') {
+      toastMsg = `📍 ಸ್ಥಳ ಪತ್ತೆಯಾಗಿದೆ: ${displayLoc} • ಭಾಷೆ: ಕನ್ನಡ`;
+    } else if (activeLangForToast === 'ml') {
+      toastMsg = `📍 സ്ഥലം കണ്ടെത്തി: ${displayLoc} • ഭാഷ: മലയാളം`;
+    } else if (activeLangForToast === 'mr') {
+      toastMsg = `📍 स्थान ओळखले: ${displayLoc} • भाषा: मराठी`;
+    } else if (activeLangForToast === 'gu') {
+      toastMsg = `📍 સ્થાન મળ્યું: ${displayLoc} • ભાષા: ગુજરાતી`;
+    } else if (activeLangForToast === 'pa') {
+      toastMsg = `📍 ਟਿਕਾਣਾ ਲੱਭਿਆ: ${displayLoc} • ਭਾਸ਼ਾ: ਪੰਜਾਬੀ`;
+    } else if (activeLangForToast === 'as') {
+      toastMsg = `📍 স্থান চিনাক্ত: ${displayLoc} • ভাষা: অসমীয়া`;
+    } else if (activeLangForToast === 'mai') {
+      toastMsg = `📍 स्थान चिन्हित: ${displayLoc} • भाषा: मैथिली`;
+    } else if (activeLangForToast === 'sat') {
+      toastMsg = `📍 ᱴᱷᱟᱶ: ${displayLoc} • ᱯᱟᱹᱨᱥᱤ: ᱥᱟᱱᱛᱟᱲᱤ`;
+    } else if (activeLangForToast === 'ks') {
+      toastMsg = `📍 جاے لبنہٕ آمٕژ: ${displayLoc} • زَبان: کٲشُر`;
     } else {
       toastMsg = `📍 Location detected: ${displayLoc} • Language: English`;
     }
@@ -1069,7 +1149,7 @@ function CitizenPortalApp() {
     if (coords && coords.lat && coords.lng) {
       const { lat, lng } = coords;
       const geo = await fetchReverseGeocode(lat, lng);
-      const dialectInfo = detectDialectFromLocation(geo.state, geo.district, lat, lng);
+      const dialectInfo = detectDialectFromLocation(geo.state, geo.district, lat, lng, geo.displayName);
       
       const locParts = [geo.village, geo.district, geo.state].filter(Boolean);
       const uniqueParts = [...new Set(locParts)];
@@ -1080,7 +1160,8 @@ function CitizenPortalApp() {
         longitude: lng,
         detectedRegion: cleanLocationString,
         detectedLang: dialectInfo.lang,
-        areaLabel: dialectInfo.label
+        areaLabel: dialectInfo.label,
+        isInteractive: interactive
       });
 
       setSubmitGpsDetails({
@@ -1095,7 +1176,9 @@ function CitizenPortalApp() {
     }
 
     setIsDetectingLocation(false);
-    setIsLocationPermissionModalOpen(false);
+    if (interactive) {
+      setIsLocationPermissionModalOpen(false);
+    }
   };
   // Automatic GPS & Nominatim dialect detection on load
   useEffect(() => {
@@ -1105,9 +1188,10 @@ function CitizenPortalApp() {
   // Helper to distinguish true English from Romanized Indian vernacular (Hinglish)
   const isLikelyEnglish = text => {
     if (!text || !text.trim()) return true;
-    for (let i = 0; i < text.length; i++) {
-      if (text.charCodeAt(i) > 127) return false;
-    }
+    const clean = text.trim();
+    // Support all Indian + Arabic/Urdu scripts + Sinhala
+    const hasRegionalChars = /[\u0600-\u06FF\u0900-\u0DFF]/.test(clean);
+    if (hasRegionalChars) return false;
     const lower = text.toLowerCase();
     const hinglishMarkers = [
       "humare", "hamare", "gaon", "gao", "mein", "me", "pani", "paani", "bijli", "sadak",
@@ -1136,7 +1220,14 @@ function CitizenPortalApp() {
       // 1. FASTEST CLIENT-SIDE ENGINE: Google GTX Neural Translation
       // Takes ~40-70ms, supports 100+ languages + Hinglish + Odia + Bhojpuri + Bengali with 0 server latency
       try {
-        const gUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(clean)}`;
+        const isoMap = {
+          "Hindi": "hi", "Hindi/Marathi": "hi", "Bihari / Bhojpuri": "bho", "Bhojpuri": "bho",
+          "Odia": "or", "Bengali": "bn", "Tamil": "ta", "Telugu": "te",
+          "Punjabi": "pa", "Gujarati": "gu", "Kannada": "kn",
+          "Malayalam": "ml", "Marathi": "mr", "Urdu": "ur", "Urdu/Kashmiri/Sindhi": "ur"
+        };
+        const slCode = isoMap[lang] || "auto";
+        const gUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${slCode}&tl=en&dt=t&q=${encodeURIComponent(clean)}`;
         const gRes = await fetch(gUrl);
         if (gRes.ok) {
           const gData = await gRes.json();
@@ -1180,7 +1271,7 @@ function CitizenPortalApp() {
           setInputText(finalEng);
           if (textareaRef.current) {
             textareaRef.current.style.height = 'auto';
-            textareaRef.current.style.height = Math.min(140, Math.max(38, textareaRef.current.scrollHeight)) + 'px';
+            textareaRef.current.style.height = Math.min(200, Math.max(54, textareaRef.current.scrollHeight)) + 'px';
           }
         }
 
@@ -1219,7 +1310,10 @@ function CitizenPortalApp() {
   const getInitialProblems = () => {
     try {
       const saved = JSON.parse(localStorage.getItem('lok_swar_custom_grievances') || '[]');
-      const realReports = Array.isArray(saved) ? saved.filter(p => p && p.id && !p.id.startsWith('TKT-880') && !p.id.startsWith('TKT-10') && !p.id.startsWith('PROB-10')) : [];
+      const realReports = Array.isArray(saved) ? saved.filter(p => p && p.id && 
+        !p.id.startsWith('TKT-880') && !p.id.startsWith('TKT-10') && !p.id.startsWith('PROB-10') &&
+        !p.id.startsWith('TKT-9999') && !p.id.startsWith('MSG-5127') && !p.id.startsWith('TEST-')
+      ) : [];
       try {
         localStorage.setItem('lok_swar_custom_grievances', JSON.stringify(realReports));
       } catch (err) {}
@@ -1230,6 +1324,8 @@ function CitizenPortalApp() {
   };
   const [problems, setProblems] = useState(getInitialProblems);
   const [selectedHotspotId, setSelectedHotspotId] = useState(null);
+  const [gisHotspots, setGisHotspots] = useState([]);
+  const [selectedHotspot, setSelectedHotspot] = useState(null);
   const [selectedDepartmentFilter, setSelectedDepartmentFilter] = useState('all');
   const [userEndorsements, setUserEndorsements] = useState(() => {
     try {
@@ -1239,6 +1335,26 @@ function CitizenPortalApp() {
       return {};
     }
   });
+
+  // Hotspots filtering helper by sector/category
+  const filterHotspotsByDept = (items, deptId) => {
+    if (!items || !Array.isArray(items)) return [];
+    if (!deptId || deptId === 'all') return items;
+    const d = deptId.toLowerCase();
+    return items.filter(h => {
+      const cat = (h.category || '').toLowerCase();
+      const name = (h.name || '').toLowerCase();
+      const corr = (h.corroboration || '').toLowerCase();
+      const full = `${cat} ${name} ${corr}`;
+      if (d === 'roads') return full.includes('road') || full.includes('transit') || full.includes('bridge') || full.includes('washout');
+      if (d === 'water') return full.includes('water') || full.includes('fluoride') || full.includes('standpost') || full.includes('drain');
+      if (d === 'power') return full.includes('power') || full.includes('elec') || full.includes('grid') || full.includes('33kv');
+      if (d === 'health') return full.includes('health') || full.includes('doctor') || full.includes('hospital');
+      if (d === 'agri') return full.includes('agri') || full.includes('crop') || full.includes('mandi') || full.includes('paddy') || full.includes('storage');
+      if (d === 'edu') return full.includes('edu') || full.includes('school') || full.includes('classroom');
+      return true;
+    });
+  };
 
   // Sector filtering helper
   const filterProblemsByDept = (items, deptId) => {
@@ -1313,25 +1429,89 @@ function CitizenPortalApp() {
   const fetchLiveGrievances = () => {
     fetch('/api/grievances/list').then(res => res.json()).then(data => {
       if (data && Array.isArray(data.data)) {
-        const realOnly = data.data.filter(p => p && p.id && !p.id.startsWith('TKT-880') && !p.id.startsWith('TKT-10') && !p.id.startsWith('PROB-10'));
+        const realOnly = data.data.filter(p => p && p.id && 
+          !p.id.startsWith('TKT-880') && !p.id.startsWith('TKT-10') && !p.id.startsWith('PROB-10') &&
+          !p.id.startsWith('TKT-9999') && !p.id.startsWith('MSG-5127') && !p.id.startsWith('TEST-')
+        );
+        setProblems(realOnly);
         try {
-          const custom = JSON.parse(localStorage.getItem('lok_swar_custom_grievances') || '[]');
-          const merged = [...custom, ...realOnly.filter(r => !custom.some(c => c.id === r.id))];
-          setProblems(merged);
-        } catch (e) {
-          setProblems(realOnly);
-        }
+          localStorage.setItem('lok_swar_custom_grievances', JSON.stringify(realOnly));
+        } catch (e) {}
       }
     }).catch(err => {
       const localData = getInitialProblems();
       setProblems(localData);
     });
   };
+
+  const fetchGisHotspots = () => {
+    const v = encodeURIComponent(citizenUser?.village || "");
+    fetch(`/api/hotspots?userId=${citizenUser?.mobile || ""}&village=${v}`).then(res => res.json()).then(data => {
+      if (data && (Array.isArray(data.data) || Array.isArray(data.hotspots))) {
+        const list = data.data || data.hotspots;
+        setGisHotspots(list);
+        if (list.length > 0) {
+          setSelectedHotspot(prev => prev || list[0]);
+        }
+      }
+    }).catch(err => {
+      console.warn("Could not fetch GIS hotspots from /api/hotspots:", err);
+    });
+  };
+
   useEffect(() => {
     fetchLiveGrievances();
-    const pollTimer = setInterval(fetchLiveGrievances, 4000);
+    fetchGisHotspots();
+    const pollTimer = setInterval(() => {
+      fetchLiveGrievances();
+      fetchGisHotspots();
+    }, 4000);
     return () => clearInterval(pollTimer);
   }, []);
+
+  // Window triggers for interactive Hotspot actions from Map popups & Cards
+  useEffect(() => {
+    window.triggerSelectHotspot = (hid) => {
+      const target = gisHotspots.find(h => h.id === hid);
+      if (target) {
+        setSelectedHotspot(target);
+        setSelectedHotspotId(target.id);
+        if (leafletMapRef.current) {
+          leafletMapRef.current.flyTo([target.lat, target.lng], 15, { duration: 1.2 });
+          if (markersRef.current && markersRef.current[target.id]) {
+            setTimeout(() => {
+              try { markersRef.current[target.id].openPopup(); } catch(e) {}
+            }, 1300);
+          }
+        }
+      }
+    };
+
+    window.triggerReportInHotspot = (hid, categoryName) => {
+      const target = gisHotspots.find(h => h.id === hid);
+      if (target) {
+        setSelectedHotspot(target);
+      }
+      navigateView('citizen');
+      setInputText(`Reporting demand in Hotspot #${hid} (${target ? target.name : ''}): `);
+      window.scrollTo({ top: 350, behavior: 'smooth' });
+    };
+
+    window.triggerViewDetails = (probId) => {
+      setSelectedDepartmentFilter('all');
+      setExpandedProblemId(probId === expandedProblemId ? null : probId);
+      setTimeout(() => {
+        const el = document.getElementById(`prob-${probId}`);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    };
+
+    return () => {
+      delete window.triggerSelectHotspot;
+      delete window.triggerReportInHotspot;
+      delete window.triggerViewDetails;
+    };
+  }, [gisHotspots, expandedProblemId]);
   const leafletMapRef = useRef(null);
   const markersRef = useRef({});
   const canvasRef = useRef(null);
@@ -1361,7 +1541,7 @@ function CitizenPortalApp() {
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = Math.min(140, Math.max(38, textareaRef.current.scrollHeight)) + 'px';
+      textareaRef.current.style.height = Math.min(200, Math.max(54, textareaRef.current.scrollHeight)) + 'px';
     }
   }, [inputText, liveSpokenText]);
   const drawerRef = useRef(null);
@@ -1491,17 +1671,50 @@ function CitizenPortalApp() {
   };
   window.triggerCivicEndorse = handleUpvoteGrievance;
 
-  // Withdraw user grievance handler
-  const handleWithdrawGrievance = async problemId => {
-    playChime('tap');
-    setProblems(prev => prev.filter(p => p.id !== problemId));
+  // Helper to determine if a grievance was submitted by the current user
+  const isOwnGrievance = prob => {
+    if (!prob) return false;
+    const userMobile = (citizenUser && citizenUser.mobile) ? String(citizenUser.mobile).replace(/\D/g, '') : '';
+    const userName = (citizenUser && citizenUser.name) ? citizenUser.name.trim().toLowerCase() : '';
+    const probMobile = String(prob.citizenMobile || prob.userId || prob.authorMobile || '').replace(/\D/g, '');
+    const probAuthor = String(prob.author || '').trim().toLowerCase();
+
+    if (userMobile && probMobile && (probMobile.includes(userMobile) || userMobile.includes(probMobile))) return true;
+    if (userName && probAuthor && (userName === probAuthor || probAuthor.includes(userName))) return true;
+    
     try {
-      const saved = JSON.parse(localStorage.getItem('lok_swar_custom_grievances') || '[]');
-      const filtered = saved.filter(p => p.id !== problemId);
-      localStorage.setItem('lok_swar_custom_grievances', JSON.stringify(filtered));
+      const myIds = JSON.parse(localStorage.getItem('lok_swar_my_grievance_ids') || '[]');
+      if (myIds.includes(prob.id)) return true;
     } catch (e) {}
+    return false;
+  };
+
+  // Helper to determine if a grievance is under official administrative consideration
+  const isGrievanceUnderConsideration = prob => {
+    if (!prob) return false;
+    if (prob.canWithdraw === false || prob.isUnderConsideration === true) return true;
+    const stage = Number(prob.statusStage || 1);
+    const status = String(prob.status || '').toLowerCase().trim();
+    const lockedKeywords = ["consideration", "progress", "review", "sanction", "resolved", "inspection", "assigned", "action"];
+    return stage > 1 || lockedKeywords.some(k => status.includes(k));
+  };
+
+  // Withdraw user grievance handler with conditional consideration validation
+  const handleWithdrawGrievance = async problemId => {
+    const targetProb = problems.find(p => p.id === problemId);
+    if (targetProb && isGrievanceUnderConsideration(targetProb)) {
+      playChime('error');
+      alert("This grievance is currently under active administrative consideration by authorities and cannot be withdrawn.");
+      return;
+    }
+
+    if (!window.confirm("Are you sure you want to withdraw this grievance? This will permanently remove it from the public ledger.")) {
+      return;
+    }
+
+    playChime('tap');
     try {
-      await fetch('/api/grievances/withdraw', {
+      const res = await fetch('/api/grievances/withdraw', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -1511,7 +1724,24 @@ function CitizenPortalApp() {
           citizenMobile: citizenUser?.mobile
         })
       });
-    } catch (e) {}
+      const data = await res.json();
+      if (res.status === 403 || (data && !data.success)) {
+        playChime('error');
+        alert(data.error || "Cannot withdraw this grievance as it is currently under consideration.");
+        fetchLiveGrievances();
+        return;
+      }
+      playChime('success');
+      setProblems(prev => prev.filter(p => p.id !== problemId));
+      try {
+        const saved = JSON.parse(localStorage.getItem('lok_swar_custom_grievances') || '[]');
+        localStorage.setItem('lok_swar_custom_grievances', JSON.stringify(saved.filter(p => p.id !== problemId)));
+        const myIds = JSON.parse(localStorage.getItem('lok_swar_my_grievance_ids') || '[]');
+        localStorage.setItem('lok_swar_my_grievance_ids', JSON.stringify(myIds.filter(id => id !== problemId)));
+      } catch (e) {}
+    } catch (e) {
+      setProblems(prev => prev.filter(p => p.id !== problemId));
+    }
   };
 
   // Profile Save Handler
@@ -1546,14 +1776,14 @@ function CitizenPortalApp() {
   // Simulate Location Region Handler
   const simulateLocationRegion = region => {
     playChime('tap');
-    setSelectedLang(region.lang);
-    setCurrentLocationName(region.name);
-    setUserLocation({ lat: region.lat, lng: region.lng });
-    setIsLocationPermissionModalOpen(false);
-    try {
-      localStorage.setItem('lok_swar_location_permission_decided', 'true');
-    } catch (e) {}
-    showToast(`Switched region to ${region.name}`);
+    applyLocationAndDialect({
+      latitude: region.lat,
+      longitude: region.lng,
+      detectedRegion: region.name,
+      detectedLang: region.lang,
+      areaLabel: region.label,
+      isInteractive: true
+    });
   };
 
   // Live GPS Telemetry Fetcher for Grievance Submission
@@ -1565,7 +1795,7 @@ function CitizenPortalApp() {
     }
     navigator.geolocation.getCurrentPosition(async pos => {
       const { latitude, longitude, accuracy } = pos.coords;
-      let detectedArea = currentLocationName && !currentLocationName.includes('Sundargarh') ? currentLocationName : "Detecting Location...";
+      let detectedArea = currentLocationName && currentLocationName !== "Detecting Live Location..." ? currentLocationName : "Detecting Location...";
       let detState = "Local State";
       let detDist = "Local District";
       try {
@@ -1574,6 +1804,15 @@ function CitizenPortalApp() {
           detState = geo.state || detState;
           detDist = geo.district || detDist;
           detectedArea = geo.displayName || [geo.village, detDist, detState].filter(Boolean).join(', ');
+          const dialectInfo = detectDialectFromLocation(detState, detDist, latitude, longitude, detectedArea);
+          applyLocationAndDialect({
+            latitude,
+            longitude,
+            detectedRegion: detectedArea,
+            detectedLang: dialectInfo.lang,
+            areaLabel: dialectInfo.label,
+            isInteractive: true
+          });
         }
       } catch (e) {}
       setSubmitGpsDetails({
@@ -1812,7 +2051,7 @@ function CitizenPortalApp() {
         setIsTypingAnim(false);
         if (textareaRef.current) {
           textareaRef.current.style.height = 'auto';
-          textareaRef.current.style.height = Math.min(140, Math.max(38, textareaRef.current.scrollHeight)) + 'px';
+          textareaRef.current.style.height = Math.min(200, Math.max(54, textareaRef.current.scrollHeight)) + 'px';
         }
       }
     } catch (err) {
@@ -1934,7 +2173,7 @@ function CitizenPortalApp() {
     setIsSilenceDetected(false);
     setSilenceProgress(0);
     if (textareaRef.current) {
-      textareaRef.current.style.height = '38px';
+      textareaRef.current.style.height = '54px';
     }
     playChime('tap');
   };
@@ -2071,7 +2310,7 @@ function CitizenPortalApp() {
                 setRealtimeTranslation(currentSpoken);
                 if (textareaRef.current) {
                   textareaRef.current.style.height = 'auto';
-                  textareaRef.current.style.height = Math.min(140, Math.max(38, textareaRef.current.scrollHeight)) + 'px';
+                  textareaRef.current.style.height = Math.min(200, Math.max(54, textareaRef.current.scrollHeight)) + 'px';
                 }
               } else {
                 // If local language or Hinglish, stream English translation in real-time!
@@ -2241,7 +2480,7 @@ function CitizenPortalApp() {
       hasVoted: true,
       votedUsers: [userObj.mobile || "9861234567"],
       similarReportsCount: 1,
-      status: "Under Review",
+      status: "Pending",
       statusStage: 1,
       officialResponse: "Grievance registered in Lok Swar live civic ledger. Auto-routed to Junior Engineer for geo-verified inspection.",
       assignedOfficer: "Pending Assignment",
@@ -2269,10 +2508,14 @@ function CitizenPortalApp() {
     setIsSubmittedButton(true);
     setTimeout(() => setIsSubmittedButton(false), 3000);
 
-    // Save locally
+    // Save locally and track under user's submissions
     try {
       const existing = JSON.parse(localStorage.getItem('lok_swar_custom_grievances') || '[]');
       localStorage.setItem('lok_swar_custom_grievances', JSON.stringify([newGrievance, ...existing]));
+      const myIds = JSON.parse(localStorage.getItem('lok_swar_my_grievance_ids') || '[]');
+      if (!myIds.includes(newGid)) {
+        localStorage.setItem('lok_swar_my_grievance_ids', JSON.stringify([newGid, ...myIds]));
+      }
       window.dispatchEvent(new Event('storage'));
     } catch (e) {}
 
@@ -2289,7 +2532,7 @@ function CitizenPortalApp() {
     pcmChunksRef.current = [];
     audioChunksRef.current = [];
     if (textareaRef.current) {
-      textareaRef.current.style.height = '38px';
+      textareaRef.current.style.height = '54px';
     }
     setIsSubmittingAnim(false);
     setSubmitSuccess(true);
@@ -2332,6 +2575,12 @@ function CitizenPortalApp() {
       if (saved) {
         setProblems(prev => [saved, ...prev.filter(p => p.id !== newGid && p.id !== saved.id)]);
         setLastSubmittedTicket(saved);
+        try {
+          const myIds = JSON.parse(localStorage.getItem('lok_swar_my_grievance_ids') || '[]');
+          if (!myIds.includes(saved.id)) {
+            localStorage.setItem('lok_swar_my_grievance_ids', JSON.stringify([saved.id, ...myIds]));
+          }
+        } catch (e) {}
       }
     }).catch(err => {});
 
@@ -2391,8 +2640,23 @@ function CitizenPortalApp() {
       const mapContainer = document.getElementById('lok-swar-leaflet-map');
       if (!mapContainer) return;
       let map = leafletMapRef.current;
+      // If map exists but was bound to a previous or detached container, remove it cleanly first
+      if (map && (map.getContainer() !== mapContainer || !document.body.contains(map.getContainer()))) {
+        try {
+          map.remove();
+        } catch (e) {}
+        map = null;
+        leafletMapRef.current = null;
+        markersLayerGroupRef.current = null;
+      }
+
+      // If container has a stale _leaflet_id, delete it
+      if (mapContainer._leaflet_id) {
+        delete mapContainer._leaflet_id;
+      }
+
       if (!map) {
-        map = L.map('lok-swar-leaflet-map', {
+        map = L.map(mapContainer, {
           center: [userLocation.lat, userLocation.lng],
           zoom: mapZoomLevelRef.current || (radarRadius <= 2 ? 16 : radarRadius <= 5 ? 15 : 14),
           minZoom: 3,
@@ -2412,6 +2676,18 @@ function CitizenPortalApp() {
         });
         markersLayerGroupRef.current = L.layerGroup().addTo(map);
       }
+
+      // Recalculate dimensions so Leaflet renders tiles immediately without blank grey box
+      setTimeout(() => {
+        if (leafletMapRef.current) {
+          try { leafletMapRef.current.invalidateSize(); } catch(e) {}
+        }
+      }, 100);
+      setTimeout(() => {
+        if (leafletMapRef.current) {
+          try { leafletMapRef.current.invalidateSize(); } catch(e) {}
+        }
+      }, 350);
 
       // Tile Layer with Max Zoom 20 Support
       const tileUrl = isDarkMode ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -2472,6 +2748,7 @@ function CitizenPortalApp() {
       const rankedList = getRankedProblems(problems, userLocation, selectedDepartmentFilter, radarRadius);
       rankedList.forEach(prob => {
         const coords = prob.parsedCoords;
+        if (!coords || isNaN(coords.lat) || isNaN(coords.lng)) return;
         const isSurvival = prob.isSurvivalDisaster;
         const cat = (prob.category || '').toLowerCase();
         const catIcon = isSurvival ? '🚨' : cat.includes('road') ? '🛣️' : cat.includes('water') ? '🚰' : cat.includes('power') || cat.includes('elec') ? '⚡' : cat.includes('health') ? '🏥' : cat.includes('school') || cat.includes('edu') ? '🏫' : cat.includes('agri') ? '🌾' : '📍';
@@ -2492,7 +2769,12 @@ function CitizenPortalApp() {
           iconSize: [markerSize, markerSize],
           iconAnchor: [markerSize / 2, markerSize / 2]
         });
-        const m = L.marker([coords.lat, coords.lng], {
+        
+        // Add slight jitter to prevent overlapping
+        const jitterLat = coords.lat + (Math.random() - 0.5) * 0.0004;
+        const jitterLng = coords.lng + (Math.random() - 0.5) * 0.0004;
+
+        const m = L.marker([jitterLat, jitterLng], {
           icon
         }).addTo(layerGroup || map);
         markersRef.current[prob.id] = m;
@@ -2514,7 +2796,9 @@ function CitizenPortalApp() {
                   🏛️ ${prob.suggestedScheme || "SDRF / PMGSY"}
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.15); padding-top:6px;">
-                  <span style="font-size:11px; font-weight:bold; color:#ffffff;">${prob.votes || 1} Supports</span>
+                  <button onclick="window.triggerViewDetails('${prob.id}')" style="background:#2563eb; color:white; border:none; padding:5px 12px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer; letter-spacing:0.3px;">
+                    View Details
+                  </button>
                   <button onclick="window.triggerCivicEndorse('${prob.id}')" style="background:#059669; color:white; border:none; padding:5px 12px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer; letter-spacing:0.3px;">
                     Support (+1)
                   </button>
@@ -2523,8 +2807,108 @@ function CitizenPortalApp() {
             `;
         m.bindPopup(popupContent);
       });
+
+      // Render Constituency Demand Hotspots from /api/hotspots
+      const filteredHotspots = filterHotspotsByDept(gisHotspots, selectedDepartmentFilter);
+      filteredHotspots.forEach(h => {
+        if (!h.lat || !h.lng || isNaN(h.lat) || isNaN(h.lng)) return;
+        const cat = (h.category || '').toLowerCase();
+        const isRoad = cat.includes('road') || cat.includes('transit') || cat.includes('bridge') || cat.includes('washout');
+        const isWater = cat.includes('water') || cat.includes('fluoride') || cat.includes('standpost') || cat.includes('drain');
+        const isPower = cat.includes('power') || cat.includes('elec') || cat.includes('grid');
+        const isHealth = cat.includes('health') || cat.includes('doctor') || cat.includes('hospital');
+        const isEdu = cat.includes('edu') || cat.includes('school');
+        const isAgri = cat.includes('agri') || cat.includes('storage') || cat.includes('mandi');
+
+        const hColor = isRoad ? '#dc2626' : isWater ? '#0284c7' : isHealth ? '#ec4899' : isEdu ? '#8b5cf6' : isAgri ? '#10b981' : isPower ? '#f59e0b' : '#ef4444';
+        const hIconChar = isRoad ? '🛣️' : isWater ? '🚰' : isHealth ? '🏥' : isEdu ? '🏫' : isAgri ? '🌾' : isPower ? '⚡' : '🔥';
+
+        // Hotspot Demand Intensity Heatmap Ring
+        const radiusM = Math.max(800, (h.radius_km || 4) * 450);
+        L.circle([h.lat, h.lng], {
+          color: hColor,
+          fillColor: hColor,
+          fillOpacity: 0.18,
+          weight: 2,
+          dashArray: '5, 5',
+          radius: radiusM
+        }).addTo(layerGroup || map).bindPopup(`
+          <div style="font-family:'Montserrat', sans-serif; padding:4px; min-width:180px; color:#f8fafc;">
+            <div style="font-weight:bold; color:${hColor}; font-size:12px;">🔥 Hotspot Zone: ${h.name}</div>
+            <div style="font-size:11px; color:#e2e8f0; margin-top:3px;">${h.status || 'High Demand'}</div>
+            <div style="font-size:10px; color:#94a3b8; margin-top:2px;">Reports: ${h.reports_count} • Urgency: ${h.urgency_rating}%</div>
+          </div>
+        `);
+
+        // Hotspot High-Visibility Pin Marker
+        const hDivIcon = L.divIcon({
+          className: 'gis-hotspot-pin',
+          html: `
+            <div style="position:relative; width:38px; height:38px; display:flex; align-items:center; justify-content:center;">
+              <div style="position:absolute; width:44px; height:44px; border-radius:50%; background:${hColor}55; animation:ping 1.8s cubic-bezier(0,0,0.2,1) infinite;"></div>
+              <div style="background:${hColor}; color:white; border-radius:50%; width:34px; height:34px; display:flex; align-items:center; justify-content:center; border:2.5px solid #ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.5); font-size:15px; font-weight:bold; cursor:pointer;">
+                ${hIconChar}
+              </div>
+            </div>
+          `,
+          iconSize: [38, 38],
+          iconAnchor: [19, 19]
+        });
+
+        const hMarker = L.marker([h.lat, h.lng], { icon: hDivIcon }).addTo(layerGroup || map);
+        markersRef.current[h.id] = hMarker;
+
+        const safeCategory = (h.category || '').replace(/'/g, "\\'");
+        const hPopupHtml = `
+          <div style="font-family:'Montserrat', sans-serif; padding:4px; max-width:260px; color:#f8fafc;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <span style="font-size:10px; font-weight:bold; background:${hColor}; color:white; padding:2px 6px; border-radius:6px;">
+                🔥 #${h.id} • ${h.urgency_rating}% Urgency
+              </span>
+              <span style="font-size:10px; font-weight:bold; color:#fde047;">${h.reports_count} Demands</span>
+            </div>
+            <div style="font-weight:bold; font-size:13px; line-height:1.3; color:#ffffff; margin-bottom:4px;">
+              ${h.name}
+            </div>
+            <div style="font-size:11px; color:#cbd5e1; margin-bottom:4px;">
+              <span style="color:#a1a1aa;">Category:</span> ${h.category}
+            </div>
+            <div style="font-size:11px; color:#fbbf24; margin-bottom:4px; font-weight:600;">
+              ⚡ ${h.status}
+            </div>
+            <div style="font-size:10px; color:#38bdf8; margin-bottom:8px; line-height:1.3; background:rgba(56,189,248,0.1); padding:4px 6px; border-radius:4px;">
+              🛰️ <strong>Telemetry:</strong> ${h.corroboration}
+            </div>
+            <div style="display:flex; gap:6px; border-top:1px solid rgba(255,255,255,0.15); padding-top:6px;">
+              <button onclick="window.triggerSelectHotspot('${h.id}')" style="flex:1; background:${hColor}; color:white; border:none; padding:5px 8px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">
+                Focus Hotspot
+              </button>
+              <button onclick="window.triggerReportInHotspot('${h.id}', '${safeCategory}')" style="background:#0f172a; color:#38bdf8; border:1px solid #38bdf8; padding:5px 8px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">
+                ✍️ Report Here
+              </button>
+            </div>
+          </div>
+        `;
+        hMarker.bindPopup(hPopupHtml);
+      });
+
+      // Framing: If navigating to GIS map and hotspots exist, frame map nicely around hotspots
+      if (currentView === 'gis_map' && filteredHotspots.length > 0 && !map._userHasPanned) {
+        try {
+          const pts = filteredHotspots.map(h => [h.lat, h.lng]);
+          map.fitBounds(L.latLngBounds(pts), { padding: [40, 40], maxZoom: 14 });
+        } catch(e) {}
+      }
+    } else {
+      if (leafletMapRef.current) {
+        try {
+          leafletMapRef.current.remove();
+        } catch (e) {}
+        leafletMapRef.current = null;
+        markersLayerGroupRef.current = null;
+      }
     }
-  }, [currentView, userLocation, radarRadius, selectedDepartmentFilter, problems, isDarkMode]);
+  }, [currentView, userLocation, radarRadius, selectedDepartmentFilter, problems, gisHotspots, isDarkMode]);
 
   // Multilingual UI Strings loaded via js/citizen/i18n.js
   const i18n = window.CITIZEN_I18N;
@@ -2533,7 +2917,7 @@ function CitizenPortalApp() {
   const govPrefix = selectedLang === 'or' ? 'ଭାରତ ସରକାର' : selectedLang === 'bn' ? 'ভারত সরকার' : selectedLang === 'hi' || selectedLang === 'bho' ? 'भारत सरकार' : 'Government of India';
   const defaultDistrict = selectedLang === 'or' ? 'ସ୍ଥାନୀୟ କ୍ଷେତ୍ର' : selectedLang === 'bn' ? 'স্থানীয় এলাকা' : selectedLang === 'hi' || selectedLang === 'bho' ? 'स्थानीय क्षेत्र' : 'Local Ward';
   const defaultLiveTag = selectedLang === 'or' ? 'ବର୍ତ୍ତମାନ ସ୍ଥାନ' : selectedLang === 'bn' ? 'বর্তমান অবস্থান' : selectedLang === 'bho' ? 'अबो के लोकेशन' : selectedLang === 'hi' ? 'लाइव स्थान' : 'Live Location';
-  const isLocReal = currentLocationName && currentLocationName !== 'Detecting Live Location...' && !currentLocationName.includes('Sundargarh');
+  const isLocReal = currentLocationName && currentLocationName !== 'Detecting Live Location...';
   const t = {
     ...rawT,
     govState: isLocReal ? `${govPrefix} • ${currentLocationName}` : rawT.govState,
@@ -2594,6 +2978,7 @@ function CitizenPortalApp() {
     className: "flex-1 py-3 rounded-[1rem] border border-[#e0dcd5] dark:border-[#423f3b] text-[#706a65] dark:text-[#b8b3ad] font-bold text-xs hover:bg-[#f7f5f2] dark:hover:bg-slate-800 cursor-pointer transition-all"
   }, t.useDefaultBtn), /*#__PURE__*/React.createElement("button", {
     type: "button",
+    id: "modal-allow-location-btn",
     onClick: () => requestLocationAndAutoSetLanguage(true),
     disabled: isDetectingLocation,
     className: "flex-1 py-3 rounded-[1rem] bg-[#d48c48] hover:bg-[#fff6e5]0 text-white font-bold text-xs shadow-md cursor-pointer transition-all flex items-center justify-center gap-1.5"
@@ -2800,8 +3185,6 @@ function CitizenPortalApp() {
     className: "text-[9px] font-bold text-[#a19b95] dark:text-[#9e9790] uppercase tracking-wider"
   }, t.brandSub)))), /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-2 flex-wrap"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "relative"
   }, /*#__PURE__*/React.createElement("button", {
     type: "button",
     onClick: toggleVoiceGuide,
@@ -2811,33 +3194,7 @@ function CitizenPortalApp() {
     className: `w-4 h-4 ${isVoiceGuideActive ? (isSpeaking ? 'text-white animate-bounce' : 'text-white') : 'text-[#d48c48] dark:text-[#e8a361]'}`
   }), /*#__PURE__*/React.createElement("span", {
     className: "flex items-center gap-1"
-  }, isVoiceGuideActive ? (isSpeaking ? "🔊 बोल रहा है..." : "🔊 आवाज गाइड: ऑन") : "🔇 आवाज गाइड: म्यूट")), (ttsPopupMessage || isSpeaking) && /*#__PURE__*/React.createElement("div", {
-    className: "fixed top-20 right-4 sm:right-8 z-50 w-[380px] sm:w-[480px] max-w-[94vw] px-4 py-3 rounded-[1.5rem] bg-white/95 dark:bg-[#282624]/95 backdrop-blur-md border-2 border-emerald-500/60 shadow-2xl animate-in slide-in-from-top-2 duration-200 text-left"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center justify-between gap-3"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-2 text-xs font-bold text-[#d48c48] dark:text-[#e8a361] flex-shrink-0"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "w-2 h-2 rounded-full bg-[#fff6e5]0 animate-pulse"
-  }), /*#__PURE__*/React.createElement("span", null, "🔊 ", t.voiceGuide)), /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-2 flex-shrink-0"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-0.5 h-3"
-  }, [0.4, 0.9, 0.6, 1.0, 0.5, 0.8, 0.4].map((f, i) => /*#__PURE__*/React.createElement("span", {
-    key: i,
-    className: "w-0.75 bg-[#fff6e5]0 rounded-full animate-pulse",
-    style: {
-      height: `${Math.round(11 * f)}px`,
-      animationDelay: `${i * 100}ms`
-    }
-  }))), /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    onClick: muteAllSpeech,
-    className: "text-slate-400 hover:text-[#8b857f] dark:hover:text-slate-200 text-xs font-bold px-1.5 py-0.5 rounded-md hover:bg-[#f7f5f2] dark:hover:bg-slate-800 transition-colors cursor-pointer",
-    title: "Dismiss"
-  }, "✕"))), /*#__PURE__*/React.createElement("p", {
-    className: "mt-1.5 text-xs sm:text-sm font-medium text-[#5a5551] dark:text-[#eae6e1] leading-relaxed"
-  }, "\"", typeof ttsPopupMessage === 'string' ? ttsPopupMessage : ttsPopupMessage?.text || ttsPopupMessage?.display || "लोक स्वर में आपका स्वागत है।", "\""))), currentView === 'citizen' && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("a", {
+  }, isVoiceGuideActive ? (isSpeaking ? ("🔊 " + (t.speaking || "बोल रही हैं...")) : ("🔊 " + (t.voiceGuideOn || "आवाज गाइड: ऑन"))) : ("🔇 " + (t.voiceGuideMute || "आवाज गाइड: म्यूट")))), currentView === 'citizen' && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("a", {
     href: "index.html",
     className: "hidden md:flex px-3 py-1.5 rounded-[1rem] border border-[#f0ece6] dark:border-[#423f3b] font-bold text-xs bg-[#f7f5f2] hover:bg-[#f0ece6] dark:bg-[#33302d] dark:hover:bg-slate-700 text-[#5a5551] dark:text-[#d1ccc6] items-center gap-1.5 transition-all shadow-xs"
   }, /*#__PURE__*/React.createElement("span", null, t.gateway)), /*#__PURE__*/React.createElement("a", {
@@ -2845,7 +3202,8 @@ function CitizenPortalApp() {
     className: "px-3 py-1.5 rounded-[1rem] font-bold text-xs bg-[#f7f5f2] hover:bg-[#f0ece6] dark:bg-[#33302d] dark:hover:bg-slate-700 text-[#5a5551] dark:text-[#d1ccc6] border border-[#f0ece6] dark:border-[#423f3b] flex items-center gap-1.5 transition-all shadow-xs"
   }, /*#__PURE__*/React.createElement("span", null, t.adminSuite))), /*#__PURE__*/React.createElement("button", {
     type: "button",
-    onClick: () => { playChime('tap'); requestLocationAndAutoSetLanguage(true); },
+    id: 'header-location-btn',
+    onClick: () => { playChime('tap'); setIsLocationPermissionModalOpen(true); },
     className: "flex items-center gap-1.5 px-3 py-1.5 rounded-[1rem] border bg-[#fff6e5] hover:bg-emerald-100/90 dark:bg-[#3d2c1d]/60 dark:hover:bg-emerald-900/60 border-[#d48c48]/50 dark:border-[#c27a38]/50/80 text-emerald-800 dark:text-emerald-200 text-xs font-bold shadow-xs transition-all cursor-pointer",
     title: "Click to refresh live GPS location"
   }, /*#__PURE__*/React.createElement("span", {
@@ -3038,7 +3396,7 @@ function CitizenPortalApp() {
     onSubmit: handleCitizenReportSubmit,
     className: "w-full"
   }, /*#__PURE__*/React.createElement("div", {
-    className: `w-full rounded-full border shadow-sm hover:shadow-md transition-all px-3 py-1.5 sm:px-4 sm:py-2 flex items-center gap-2 sm:gap-3 bg-white dark:bg-[#282624] ${isRecording ? 'border-rose-500 dark:border-rose-500 ring-2 ring-rose-500/20' : 'border-[#f0ece6] dark:border-[#33302d]'}`
+    className: `w-full rounded-3xl border shadow-sm hover:shadow-md transition-all px-3 py-3 sm:px-4 sm:py-4 flex items-center gap-2 sm:gap-3 bg-white dark:bg-[#282624] ${isRecording ? 'border-rose-500 dark:border-rose-500 ring-2 ring-rose-500/20' : 'border-[#f0ece6] dark:border-[#33302d]'}`
   }, /*#__PURE__*/React.createElement("button", {
     type: "button",
     onClick: toggleVoiceRecording,
@@ -3075,7 +3433,7 @@ function CitizenPortalApp() {
       }
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto';
-        textareaRef.current.style.height = Math.min(140, Math.max(38, textareaRef.current.scrollHeight)) + 'px';
+        textareaRef.current.style.height = Math.min(200, Math.max(54, textareaRef.current.scrollHeight)) + 'px';
       }
       if (translateDebounceTimeoutRef.current) clearTimeout(translateDebounceTimeoutRef.current);
       if (val && val.trim().length > 1) {
@@ -3103,13 +3461,13 @@ function CitizenPortalApp() {
     },
     name: "grievance_text",
     placeholder: isRecording ? `🎙️ ${t.recordingPrompt} (${selectedLang.toUpperCase()})` : t.placeholder,
-    className: "flex-1 bg-transparent text-sm sm:text-base font-normal px-2 outline-none border-none leading-normal text-[#4a4643] dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#a19b95] resize-none overflow-y-auto grievance-input-box self-center",
+    className: "flex-1 bg-transparent text-lg sm:text-xl font-medium px-2 outline-none border-none leading-normal text-[#4a4643] dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#a19b95] resize-none overflow-y-auto grievance-input-box self-center",
     style: {
-      minHeight: '38px',
-      maxHeight: '140px',
-      lineHeight: '22px',
-      paddingTop: '8px',
-      paddingBottom: '8px',
+      minHeight: '54px',
+      maxHeight: '200px',
+      lineHeight: '28px',
+      paddingTop: '12px',
+      paddingBottom: '12px',
       boxSizing: 'border-box'
     }
   }), /*#__PURE__*/React.createElement("button", {
@@ -3340,37 +3698,37 @@ function CitizenPortalApp() {
       id: 'all',
       icon: '🏛️',
       name: t.allSectors,
-      count: problems.length
+      count: problems.length + gisHotspots.length
     }, {
       id: 'roads',
       icon: '🛣️',
       name: t.sectorRoads,
-      count: filterProblemsByDept(problems, 'roads').length
+      count: filterProblemsByDept(problems, 'roads').length + filterHotspotsByDept(gisHotspots, 'roads').length
     }, {
       id: 'water',
       icon: '🚰',
       name: t.sectorWater,
-      count: filterProblemsByDept(problems, 'water').length
+      count: filterProblemsByDept(problems, 'water').length + filterHotspotsByDept(gisHotspots, 'water').length
     }, {
       id: 'power',
       icon: '⚡',
       name: t.sectorPower,
-      count: filterProblemsByDept(problems, 'power').length
+      count: filterProblemsByDept(problems, 'power').length + filterHotspotsByDept(gisHotspots, 'power').length
     }, {
       id: 'health',
       icon: '🏥',
       name: t.sectorHealth,
-      count: filterProblemsByDept(problems, 'health').length
+      count: filterProblemsByDept(problems, 'health').length + filterHotspotsByDept(gisHotspots, 'health').length
     }, {
       id: 'agri',
       icon: '🌾',
       name: t.sectorAgri,
-      count: filterProblemsByDept(problems, 'agri').length
+      count: filterProblemsByDept(problems, 'agri').length + filterHotspotsByDept(gisHotspots, 'agri').length
     }, {
       id: 'edu',
       icon: '🏫',
       name: t.sectorEdu,
-      count: filterProblemsByDept(problems, 'edu').length
+      count: filterProblemsByDept(problems, 'edu').length + filterHotspotsByDept(gisHotspots, 'edu').length
     }].map(sec => {
       const isSelected = selectedDepartmentFilter === sec.id;
       return /*#__PURE__*/React.createElement("div", {
@@ -3388,29 +3746,17 @@ function CitizenPortalApp() {
       }, sec.name), /*#__PURE__*/React.createElement("div", {
         className: `text-[10px] font-mono font-semibold ${isSelected ? 'text-emerald-400 dark:text-emerald-700' : 'text-[#a19b95] dark:text-[#9e9790]'}`
       }, sec.count, " ", t.reportsCount));
-    })), /*#__PURE__*/React.createElement("div", {
-      className: "space-y-3 pt-4"
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "flex items-center justify-between pb-2 border-b border-slate-100 dark:border-[#33302d] flex-wrap gap-2"
-    }, /*#__PURE__*/React.createElement("h3", {
-      className: "font-black text-base text-[#4a4643] dark:text-white flex items-center gap-2"
-    }, /*#__PURE__*/React.createElement("span", null, "📊"), /*#__PURE__*/React.createElement("span", null, t.demandsRankedTitle)), /*#__PURE__*/React.createElement("span", {
-      className: "text-xs font-mono font-bold text-[#a19b95] dark:text-[#9e9790]"
-    }, rankedProblems.length, " ", t.activeDemands)), rankedProblems.length === 0 ? /*#__PURE__*/React.createElement("div", {
-      className: "p-8 text-center rounded-[1.5rem] border border-dashed border-[#e0dcd5] dark:border-[#33302d] space-y-2 bg-[#fdfbfb] dark:bg-[#1f1e1c]"
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "text-3xl"
-    }, "📍"), /*#__PURE__*/React.createElement("h4", {
-      className: "font-bold text-sm text-[#5a5551] dark:text-[#d1ccc6]"
-    }, t.noGrievancesTitle), /*#__PURE__*/React.createElement("p", {
-      className: "text-xs text-[#a19b95]"
-    }, t.noGrievancesSub)) : /*#__PURE__*/React.createElement("div", {
-      className: "space-y-3"
-    }, rankedProblems.map((prob, rankIdx) => {
+    })), (() => {
+    const activeHotspotCards = filterHotspotsByDept(gisHotspots, selectedDepartmentFilter);
+    const myGrievances = rankedProblems.filter(isOwnGrievance);
+    const regionalGrievances = rankedProblems.filter(p => !isOwnGrievance(p));
+
+    const renderGrievanceCard = (prob, isMyGrievance, rankIdx) => {
       const isExpanded = expandedProblemId === prob.id;
       const isEndorsed = userEndorsements[prob.id] || prob.hasVoted;
-      const isOwnReport = prob.citizenMobile === citizenUser?.mobile || prob.author === citizenUser?.name;
       const isSurvival = prob.isSurvivalDisaster;
+      const underConsideration = isGrievanceUnderConsideration(prob);
+
       return /*#__PURE__*/React.createElement("div", {
         key: prob.id,
         className: `p-4 sm:p-5 rounded-[1.5rem] border transition-all shadow-xs space-y-3 ${isSurvival ? 'bg-red-50/40 dark:bg-red-950/20 border-red-300 dark:border-red-800/60 ring-1 ring-red-300/60 dark:ring-red-800/40' : isExpanded ? 'bg-[#f7f5f2]/90 dark:bg-[#282624] border-[#e0dcd5] dark:border-[#423f3b] ring-2 ring-slate-300 dark:ring-slate-700' : 'bg-white dark:bg-[#1f1e1c] border-[#f0ece6] dark:border-[#33302d] hover:border-[#e0dcd5] dark:hover:border-slate-700'}`
@@ -3423,14 +3769,18 @@ function CitizenPortalApp() {
       }, isSurvival ? /*#__PURE__*/React.createElement("span", {
         className: "px-2.5 py-0.5 rounded-lg bg-rose-600 text-white font-mono text-[10px] font-black tracking-wide flex items-center gap-1 shadow-xs"
       }, /*#__PURE__*/React.createElement("span", null, t.survivalPriority)) : /*#__PURE__*/React.createElement("span", {
-        className: "px-2 py-0.5 rounded-lg bg-slate-900 dark:bg-[#f7f5f2] text-white dark:text-[#4a4643] font-mono text-[10px] font-black"
-      }, "#", rankIdx + 1, " ", t.priorityRank), /*#__PURE__*/React.createElement("span", {
+        className: `px-2 py-0.5 rounded-lg font-mono text-[10px] font-black ${isMyGrievance ? 'bg-blue-600 text-white' : 'bg-slate-900 dark:bg-[#f7f5f2] text-white dark:text-[#4a4643]'}`
+      }, isMyGrievance ? "MY TICKET" : `#${rankIdx + 1} ${t.priorityRank}`), /*#__PURE__*/React.createElement("span", {
         className: "font-mono text-xs font-bold text-[#a19b95] dark:text-[#9e9790]"
-      }, "#", prob.id)), /*#__PURE__*/React.createElement("h4", {
+      }, "#", prob.id), isMyGrievance && /*#__PURE__*/React.createElement("span", {
+        className: "px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-[10px] font-bold"
+      }, "Your Report")), /*#__PURE__*/React.createElement("h4", {
         className: "font-bold text-base text-[#4a4643] dark:text-white pt-1"
       }, prob.title || prob.aiAnalyzedTitle || prob.titleOriginal), prob.titleOriginal && prob.titleOriginal !== (prob.title || prob.aiAnalyzedTitle) && /*#__PURE__*/React.createElement("p", {
         className: "text-xs italic text-[#706a65] dark:text-[#b8b3ad] pt-0.5 line-clamp-1"
-      }, `"${prob.titleOriginal}"`)), /*#__PURE__*/React.createElement("div", {
+      }, `"${prob.titleOriginal}"`), !isMyGrievance && /*#__PURE__*/React.createElement("p", {
+        className: "text-[11px] text-[#706a65] dark:text-[#b8b3ad] font-medium pt-0.5 flex items-center gap-1"
+      }, /*#__PURE__*/React.createElement("span", null, "👤"), /*#__PURE__*/React.createElement("span", null, "Submitted by ", prob.author || "Verified Citizen", " • ", localizeAddress(prob.village) || currentLocationName || "Local Region"))), /*#__PURE__*/React.createElement("div", {
         className: "flex items-center gap-2 flex-shrink-0"
       }, /*#__PURE__*/React.createElement("button", {
         type: "button",
@@ -3443,7 +3793,7 @@ function CitizenPortalApp() {
         },
         className: "px-2.5 py-1.5 rounded-[1rem] text-xs font-bold text-[#706a65] dark:text-[#b8b3ad] bg-[#f7f5f2] hover:bg-[#f0ece6] dark:bg-[#33302d] dark:hover:bg-slate-700 border border-[#f0ece6] dark:border-[#423f3b] transition-all cursor-pointer flex items-center gap-1 active:scale-95",
         title: t.viewOnMap
-      }, /*#__PURE__*/React.createElement("span", null, t.viewOnMap)), /*#__PURE__*/React.createElement("button", {
+      }, /*#__PURE__*/React.createElement("span", null, t.viewOnMap)), !isMyGrievance && /*#__PURE__*/React.createElement("button", {
         type: "button",
         onClick: () => handleUpvoteGrievance(prob.id),
         className: `px-3.5 py-1.5 rounded-[1rem] text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 shadow-xs ${isEndorsed ? 'bg-[#d48c48] text-white hover:bg-[#c27a38] ring-2 ring-[#d48c48]/30' : 'bg-[#f7f5f2] hover:bg-[#f0ece6] dark:bg-[#33302d] dark:hover:bg-slate-700 text-[#5a5551] dark:text-[#d1ccc6] border border-[#f0ece6] dark:border-[#423f3b] shadow-xs'}`,
@@ -3452,7 +3802,7 @@ function CitizenPortalApp() {
         className: `px-1.5 py-0.2 rounded font-mono text-[10px] font-bold ${isEndorsed ? 'bg-emerald-800 text-white' : 'bg-slate-800 dark:bg-slate-700 text-slate-200'}`
       }, prob.votes || 1)))), isExpanded && /*#__PURE__*/React.createElement("div", {
         className: "pt-3 border-t border-[#f0ece6] dark:border-[#33302d] space-y-2.5 animate-in fade-in duration-150"
-      }, (prob.photoUrl || prob.evidenceImage) && /*#__PURE__*/React.createElement("div", {
+      }, (prob.photoUrl || prob.photoBase64 || prob.evidenceImage) && /*#__PURE__*/React.createElement("div", {
         className: "p-3 rounded-[1rem] bg-[#fdfbfb] dark:bg-[#282624] border border-[#f0ece6] dark:border-[#33302d] space-y-1.5"
       }, /*#__PURE__*/React.createElement("div", {
         className: "text-[10px] text-[#a19b95] dark:text-[#9e9790] font-bold uppercase tracking-wider flex items-center gap-1"
@@ -3461,7 +3811,7 @@ function CitizenPortalApp() {
       }), /*#__PURE__*/React.createElement("span", null, "📷 Photographic / Field Evidence")), /*#__PURE__*/React.createElement("div", {
         className: "rounded-lg overflow-hidden border border-[#f0ece6] dark:border-[#33302d] max-h-60 bg-black/5 flex items-center justify-center"
       }, /*#__PURE__*/React.createElement("img", {
-        src: prob.photoUrl || prob.evidenceImage,
+        src: prob.photoUrl || (prob.photoBase64 ? (prob.photoBase64.startsWith('data:') ? prob.photoBase64 : `data:image/jpeg;base64,${prob.photoBase64}`) : null) || prob.evidenceImage,
         alt: "Grievance Evidence",
         className: "max-h-60 w-auto object-contain rounded-lg shadow-xs"
       }))), /*#__PURE__*/React.createElement("div", {
@@ -3478,7 +3828,7 @@ function CitizenPortalApp() {
         className: "font-semibold text-[#4a4643] dark:text-white mt-0.5"
       }, localizeAddress(prob.village) || currentLocationName || "Local Ward"), /*#__PURE__*/React.createElement("div", {
         className: "font-mono text-[10px] text-[#d48c48] dark:text-[#e8a361] font-bold mt-0.5"
-      }, prob.gps || "20.1834° N, 85.7123° E")), (prob.audioRecordingUrl || prob.audio) && /*#__PURE__*/React.createElement("div", {
+      }, prob.gps || "20.1834° N, 85.7123° E")), (prob.audioRecordingUrl || prob.audioBase64 || prob.audio) && /*#__PURE__*/React.createElement("div", {
         className: "p-3 rounded-[1rem] bg-[#fdfbfb] dark:bg-[#282624] border border-[#f0ece6] dark:border-[#33302d] flex items-center justify-between gap-3 flex-wrap"
       }, /*#__PURE__*/React.createElement("div", {
         className: "text-xs font-bold text-[#d48c48] dark:text-[#e8a361] flex items-center gap-1.5"
@@ -3486,7 +3836,7 @@ function CitizenPortalApp() {
         className: "w-4 h-4"
       }), /*#__PURE__*/React.createElement("span", null, t.audioPlayback || "Real Spoken Voice")), /*#__PURE__*/React.createElement("audio", {
         controls: true,
-        src: prob.audioRecordingUrl || prob.audio,
+        src: prob.audioRecordingUrl || (prob.audioBase64 ? (prob.audioBase64.startsWith('data:') ? prob.audioBase64 : `data:audio/wav;base64,${prob.audioBase64}`) : null) || prob.audio,
         className: "h-8 max-w-[240px] rounded-lg"
       }))), /*#__PURE__*/React.createElement("div", {
         className: "pt-2 border-t flex items-center justify-between gap-2 flex-wrap text-xs border-slate-100 dark:border-[#33302d]"
@@ -3498,20 +3848,164 @@ function CitizenPortalApp() {
         className: "px-2 py-0.5 rounded-full bg-[#f7f5f2] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] text-[10px]"
       }, "🏛️ ", prob.category || "General"), /*#__PURE__*/React.createElement("span", {
         className: `px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${prob.statusStage === 5 || prob.status === 'Resolved' ? 'bg-emerald-100 dark:bg-[#3d2c1d] text-emerald-800 dark:text-emerald-300 border-[#d48c48]/50 dark:border-[#c27a38]/50' : prob.statusStage === 3 || prob.status === 'Budget Sanctioned' ? 'bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-300 border-purple-300 dark:border-purple-700' : 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-700'}`
-      }, prob.status === 'Resolved' ? t.statusResolved : prob.status === 'Budget Sanctioned' ? t.statusBudgetSanctioned : t.statusUnderReview)), /*#__PURE__*/React.createElement("div", {
+      }, prob.status === 'Resolved' ? t.statusResolved : prob.status === 'Budget Sanctioned' ? t.statusBudgetSanctioned : (underConsideration ? "Under Consideration" : (t.statusUnderReview || "Pending")))), /*#__PURE__*/React.createElement("div", {
         className: "flex items-center gap-2"
       }, /*#__PURE__*/React.createElement("button", {
         type: "button",
         onClick: () => setExpandedProblemId(isExpanded ? null : prob.id),
         className: "px-2.5 py-1.5 rounded-[1rem] text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 transition-all cursor-pointer flex items-center gap-1 active:scale-95"
-      }, /*#__PURE__*/React.createElement("span", null, isExpanded ? t.detailsLess : t.detailsMore)), isOwnReport && /*#__PURE__*/React.createElement("button", {
+      }, /*#__PURE__*/React.createElement("span", null, isExpanded ? t.detailsLess : t.detailsMore)), isMyGrievance && (
+        underConsideration ? /*#__PURE__*/React.createElement("div", {
+          className: "inline-flex items-center gap-1 px-2.5 py-1 rounded-[1rem] bg-amber-100/90 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-300 text-[10px] font-bold cursor-not-allowed select-none shadow-xs",
+          title: "This grievance is currently under active administrative consideration and cannot be withdrawn."
+        }, /*#__PURE__*/React.createElement("span", null, "🔒"), /*#__PURE__*/React.createElement("span", null, "Under Consideration (Locked)")) : /*#__PURE__*/React.createElement("button", {
+          type: "button",
+          onClick: () => handleWithdrawGrievance(prob.id),
+          className: "px-2.5 py-1 rounded-[1rem] text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 border border-red-200 dark:border-red-800/50 transition-all cursor-pointer flex items-center gap-1 active:scale-95 shadow-xs",
+          title: t.withdrawBtn || "Withdraw Grievance"
+        }, /*#__PURE__*/React.createElement("span", null, "🗑️"), /*#__PURE__*/React.createElement("span", null, t.withdrawBtn || "Withdraw"))
+      ))));
+    };
+
+    return /*#__PURE__*/React.createElement("div", {
+      className: "space-y-6 pt-2"
+    }, activeHotspotCards.length > 0 && /*#__PURE__*/React.createElement("div", {
+      className: "space-y-3"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center justify-between gap-2 flex-wrap"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-2"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "text-base"
+    }, "🔥"), /*#__PURE__*/React.createElement("h3", {
+      className: "font-black text-sm sm:text-base text-[#4a4643] dark:text-white uppercase tracking-wide"
+    }, "Active Constituency Demand Hotspots"), /*#__PURE__*/React.createElement("span", {
+      className: "px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 font-mono"
+    }, activeHotspotCards.length, " Hotspots")), /*#__PURE__*/React.createElement("span", {
+      className: "text-[10px] font-mono text-[#a19b95] dark:text-[#9e9790]"
+    }, "Live Multi-Source Telemetry (API)")), /*#__PURE__*/React.createElement("div", {
+      className: "grid grid-cols-1 md:grid-cols-2 gap-3.5"
+    }, activeHotspotCards.map(h => {
+      const isSelected = selectedHotspotId === h.id || selectedHotspot?.id === h.id;
+      const cat = (h.category || '').toLowerCase();
+      const isRoad = cat.includes('road') || cat.includes('transit') || cat.includes('bridge') || cat.includes('washout');
+      const isWater = cat.includes('water') || cat.includes('fluoride') || cat.includes('standpost') || cat.includes('drain');
+      const isPower = cat.includes('power') || cat.includes('elec') || cat.includes('grid');
+      const isHealth = cat.includes('health') || cat.includes('doctor') || cat.includes('hospital');
+      const isEdu = cat.includes('edu') || cat.includes('school');
+      const isAgri = cat.includes('agri') || cat.includes('storage') || cat.includes('mandi');
+      const hColor = isRoad ? '#dc2626' : isWater ? '#0284c7' : isHealth ? '#ec4899' : isEdu ? '#8b5cf6' : isAgri ? '#10b981' : isPower ? '#f59e0b' : '#ef4444';
+      const hIconChar = isRoad ? '🛣️' : isWater ? '🚰' : isHealth ? '🏥' : isEdu ? '🏫' : isAgri ? '🌾' : isPower ? '⚡' : '🔥';
+      return /*#__PURE__*/React.createElement("div", {
+        key: h.id,
+        className: `p-4 sm:p-5 rounded-[1.5rem] border transition-all space-y-3 shadow-xs ${isSelected ? 'bg-[#f7f5f2]/90 dark:bg-[#282624] border-rose-400 dark:border-rose-700 ring-2 ring-rose-400/40' : 'bg-white dark:bg-[#1f1e1c] border-[#f0ece6] dark:border-[#33302d] hover:border-[#e0dcd5]'}`
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "flex items-start justify-between gap-2"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "space-y-1 flex-1"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "flex items-center gap-2 flex-wrap"
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "px-2 py-0.5 rounded-lg text-[10px] font-black text-white",
+        style: { backgroundColor: hColor }
+      }, `🔥 #${h.id}`), /*#__PURE__*/React.createElement("span", {
+        className: "text-[11px] font-bold text-[#706a65] dark:text-[#b8b3ad] flex items-center gap-1"
+      }, /*#__PURE__*/React.createElement("span", null, hIconChar), /*#__PURE__*/React.createElement("span", null, h.category))), /*#__PURE__*/React.createElement("h4", {
+        className: "font-bold text-sm sm:text-base text-[#4a4643] dark:text-white pt-0.5"
+      }, h.name), /*#__PURE__*/React.createElement("div", {
+        className: "flex items-center gap-2 text-xs font-semibold text-amber-600 dark:text-amber-400"
+      }, /*#__PURE__*/React.createElement("span", null, "⚡"), /*#__PURE__*/React.createElement("span", null, h.status))), /*#__PURE__*/React.createElement("div", {
+        className: "text-right font-mono"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "text-xs font-black text-rose-600 dark:text-rose-400"
+      }, `${h.urgency_rating}% Urgency`), /*#__PURE__*/React.createElement("div", {
+        className: "text-[10px] text-[#a19b95] dark:text-[#9e9790]"
+      }, `${h.reports_count} Demands`))), /*#__PURE__*/React.createElement("div", {
+        className: "p-2.5 rounded-[1rem] bg-[#f7f5f2] dark:bg-[#282624] text-[11px] text-[#5a5551] dark:text-[#cbd5e1] border border-[#f0ece6] dark:border-[#33302d] space-y-1"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "flex items-center justify-between text-[10px] text-[#a19b95] dark:text-[#9e9790] font-mono"
+      }, /*#__PURE__*/React.createElement("span", null, `Coverage: ${h.radius_km} km radius`), /*#__PURE__*/React.createElement("span", null, `GPS: ${h.lat.toFixed(3)}° N, ${h.lng.toFixed(3)}° E`)), /*#__PURE__*/React.createElement("div", {
+        className: "text-[10px] text-blue-600 dark:text-sky-400 leading-snug flex items-center gap-1"
+      }, /*#__PURE__*/React.createElement("span", null, "🛰️"), /*#__PURE__*/React.createElement("span", null, h.corroboration))), /*#__PURE__*/React.createElement("div", {
+        className: "flex items-center gap-2 pt-1"
+      }, /*#__PURE__*/React.createElement("button", {
         type: "button",
-        onClick: () => handleWithdrawGrievance(prob.id),
-        className: "px-2 py-1 rounded-[1rem] text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 border border-red-200 dark:border-red-800/50 transition-all cursor-pointer flex items-center gap-1",
-        title: t.withdrawBtn
-      }, /*#__PURE__*/React.createElement("span", null, t.withdrawBtn)))));
-    }))));
-  })())) : currentView === 'portfolio_optimizer' ?
+        onClick: () => {
+          playChime('tap');
+          if (window.triggerSelectHotspot) window.triggerSelectHotspot(h.id);
+        },
+        className: "flex-1 py-1.5 px-3 rounded-[1rem] bg-[#f7f5f2] hover:bg-[#f0ece6] dark:bg-[#33302d] dark:hover:bg-slate-700 border border-[#e0dcd5] dark:border-[#423f3b] text-[#5a5551] dark:text-[#d1ccc6] font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all"
+      }, /*#__PURE__*/React.createElement("span", null, "📍"), /*#__PURE__*/React.createElement("span", null, t.viewOnMap || "Focus on Map")), /*#__PURE__*/React.createElement("button", {
+        type: "button",
+        onClick: () => {
+          playChime('tap');
+          if (window.triggerReportInHotspot) window.triggerReportInHotspot(h.id, h.category);
+        },
+        className: "flex-1 py-1.5 px-3 rounded-[1rem] bg-slate-900 hover:bg-slate-800 dark:bg-[#f7f5f2] dark:hover:bg-white text-white dark:text-[#4a4643] font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-xs"
+      }, /*#__PURE__*/React.createElement("span", null, "✍️"), /*#__PURE__*/React.createElement("span", null, "Report in this Hotspot"))));
+    }))), /*#__PURE__*/React.createElement("div", {
+      className: "grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2 items-start"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "space-y-3 flex flex-col bg-[#fdfbfb]/60 dark:bg-[#1f1e1c]/60 p-4 sm:p-5 rounded-[2rem] border border-[#f0ece6] dark:border-[#33302d]"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center justify-between pb-2 border-b border-slate-100 dark:border-[#33302d] flex-wrap gap-2"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-2"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "p-1.5 rounded-lg bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 text-sm"
+    }, "👤"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+      className: "font-black text-sm sm:text-base text-[#4a4643] dark:text-white"
+    }, "My Reported Grievances"), /*#__PURE__*/React.createElement("p", {
+      className: "text-[10px] text-[#a19b95] dark:text-[#9e9790]"
+    }, "Live tracking & withdrawal control"))), /*#__PURE__*/React.createElement("span", {
+      className: "px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 font-mono text-xs font-bold border border-blue-200 dark:border-blue-900"
+    }, myGrievances.length, " Active")), myGrievances.length === 0 ? /*#__PURE__*/React.createElement("div", {
+      className: "p-6 text-center rounded-[1.5rem] border border-dashed border-[#e0dcd5] dark:border-[#33302d] space-y-2 bg-[#fdfbfb] dark:bg-[#1f1e1c] my-auto"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "text-2xl"
+    }, "📝"), /*#__PURE__*/React.createElement("h4", {
+      className: "font-bold text-xs sm:text-sm text-[#5a5551] dark:text-[#d1ccc6]"
+    }, "No Grievances Reported Yet"), /*#__PURE__*/React.createElement("p", {
+      className: "text-[11px] text-[#a19b95] max-w-xs mx-auto"
+    }, "You have not lodged any issues from this profile. Speak or type in the input box on Home to register public issues."), /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      onClick: () => {
+        playChime('tap');
+        navigateView('home');
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      },
+      className: "mt-2 px-3 py-1.5 rounded-xl bg-[#d48c48] text-white text-xs font-bold hover:bg-[#c27a38] transition-all cursor-pointer shadow-xs inline-flex items-center gap-1.5"
+    }, /*#__PURE__*/React.createElement("span", null, "🎙️"), /*#__PURE__*/React.createElement("span", null, "Report an Issue Now"))) : /*#__PURE__*/React.createElement("div", {
+      className: "space-y-3"
+    }, myGrievances.map((prob, idx) => renderGrievanceCard(prob, true, idx)))), /*#__PURE__*/React.createElement("div", {
+      className: "space-y-3 flex flex-col bg-[#fdfbfb]/60 dark:bg-[#1f1e1c]/60 p-4 sm:p-5 rounded-[2rem] border border-[#f0ece6] dark:border-[#33302d]"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center justify-between pb-2 border-b border-slate-100 dark:border-[#33302d] flex-wrap gap-2"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-2"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "p-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 text-sm"
+    }, "📍"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+      className: "font-black text-sm sm:text-base text-[#4a4643] dark:text-white"
+    }, "Regional Grievances (From Your Area)"), /*#__PURE__*/React.createElement("p", {
+      className: "text-[10px] text-[#a19b95] dark:text-[#9e9790]"
+    }, `Reports lodged by nearby citizens within ${radarRadius}km`))), /*#__PURE__*/React.createElement("span", {
+      className: "px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 font-mono text-xs font-bold border border-emerald-200 dark:border-emerald-900"
+    }, regionalGrievances.length, " Reports")), regionalGrievances.length === 0 ? /*#__PURE__*/React.createElement("div", {
+      className: "p-6 text-center rounded-[1.5rem] border border-dashed border-[#e0dcd5] dark:border-[#33302d] space-y-2 bg-[#fdfbfb] dark:bg-[#1f1e1c] my-auto"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "text-2xl"
+    }, "🏘️"), /*#__PURE__*/React.createElement("h4", {
+      className: "font-bold text-xs sm:text-sm text-[#5a5551] dark:text-[#d1ccc6]"
+    }, "No Nearby Grievances In This Radius"), /*#__PURE__*/React.createElement("p", {
+      className: "text-[11px] text-[#a19b95] max-w-xs mx-auto"
+    }, `No other community grievances recorded within ${radarRadius}km. Try expanding the radar radius slider above.`)) : /*#__PURE__*/React.createElement("div", {
+      className: "space-y-3"
+    }, regionalGrievances.map((prob, idx) => renderGrievanceCard(prob, false, idx))))))})()
+  ); })())) : currentView === 'portfolio_optimizer' ?
   /*#__PURE__*/
   /* 6. KNAPSACK PORTFOLIO OPTIMIZATION */
   React.createElement("main", {
@@ -3563,16 +4057,6 @@ function CitizenPortalApp() {
   }, "₹2.22 Cr"), /*#__PURE__*/React.createElement("div", {
     className: "text-[10px] text-amber-600 dark:text-amber-400 mt-0.5"
   }, "Emergency Reserve"))))) :
-  /*#__PURE__*/
-  /* CIVIC INTELLIGENCE & DATA FUSION DASHBOARD (Modular View) */
-  currentView === 'data_fusion' ?
-  React.createElement(window.DataFusionView, {
-    navigateView: navigateView,
-    handleCopyFusionJson: handleCopyFusionJson,
-    fusionCopied: fusionCopied,
-    fusionAnalysisResult: fusionAnalysisResult,
-    playChime: playChime
-  }) :
   /*#__PURE__*/
     /* GENERIC SUBPAGE */
   React.createElement("main", {
@@ -3778,6 +4262,7 @@ function CitizenPortalApp() {
     },
     className: "py-3 px-4 rounded-[1.5rem] font-bold text-xs cursor-pointer bg-[#f7f5f2] dark:bg-[#33302d] hover:bg-[#f0ece6] dark:hover:bg-slate-700 text-[#706a65] dark:text-[#b8b3ad] transition-all border border-[#f0ece6] dark:border-[#423f3b] shadow-xs"
   }, t.cancelBtn), /*#__PURE__*/React.createElement("button", {
+    id: "confirm-submit-location-btn",
     type: "button",
     onClick: () => handleConfirmGrievanceLocation('auto'),
     className: "flex-1 py-3 px-4 rounded-[1.5rem] bg-[#d48c48] hover:bg-[#fff6e5]0 text-white font-black text-xs shadow-lg cursor-pointer flex items-center justify-center gap-2 active:scale-95 transition-all"
@@ -3882,91 +4367,58 @@ function CitizenPortalApp() {
   }, t.cancelBtn), /*#__PURE__*/React.createElement("button", {
     type: "submit",
     className: "flex-1 py-3 px-4 rounded-[1.5rem] bg-blue-600 hover:bg-blue-500 text-white font-black text-xs shadow-lg cursor-pointer flex items-center justify-center gap-2 active:scale-95 transition-all"
-  }, /*#__PURE__*/React.createElement("span", null, t.locBtnSubmitManual)))))), currentView === 'citizen' && /*#__PURE__*/React.createElement("section", {
-    className: "w-full max-w-5xl mx-auto my-12 px-4 animate-in fade-in duration-300"
+  }, /*#__PURE__*/React.createElement("span", null, t.locBtnSubmitManual)))))), Boolean(ttsPopupMessage && (ttsPopupMessage.display || ttsPopupMessage.text)) && /*#__PURE__*/React.createElement("div", {
+    className: "fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[92vw] sm:w-[540px] max-w-xl px-4 py-3.5 sm:px-5 sm:py-4 rounded-[2rem] bg-white/95 dark:bg-[#201e1c]/95 backdrop-blur-xl border-2 border-[#d48c48]/60 dark:border-[#c27a38]/60 shadow-[0_20px_50px_rgba(0,0,0,0.25)] animate-in slide-in-from-bottom-3 duration-200 text-left pointer-events-auto"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "relative overflow-hidden rounded-[2.5rem] border p-6 sm:p-8 bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 border-[#f0ece6] dark:border-[#33302d] shadow-xl"
+    className: "flex items-center justify-between gap-2 pb-1.5 border-b border-slate-100 dark:border-[#33302d]"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "absolute -top-24 -left-24 w-64 h-64 bg-[#fff6e5]0/10 dark:bg-[#fff6e5]0/15 rounded-full blur-3xl pointer-events-none"
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "absolute -bottom-24 -right-24 w-64 h-64 bg-blue-500/10 dark:bg-blue-500/15 rounded-full blur-3xl pointer-events-none"
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "relative z-10 text-center space-y-2 mb-8"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-emerald-100 dark:bg-[#3d2c1d]/80 text-emerald-800 dark:text-emerald-300 border border-[#d48c48]/50 dark:border-[#c27a38]/50/60 shadow-xs"
-  }, /*#__PURE__*/React.createElement("span", null, "✨"), /*#__PURE__*/React.createElement("span", null, "CREATORS & ARCHITECTS")), /*#__PURE__*/React.createElement("h2", {
-    className: "text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-[#4a4643] dark:text-white uppercase font-brand"
-  }, "DEVELOPED BY TEAM ARSHRIVA"), /*#__PURE__*/React.createElement("p", {
-    className: "text-xs sm:text-sm text-[#a19b95] dark:text-[#9e9790] max-w-xl mx-auto font-medium"
-  }, "Engineered for Next-Gen Civic Intelligence, Automated Governance & Multilingual Real-Time Public Infrastructure.")), /*#__PURE__*/React.createElement("div", {
-    className: "grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "p-6 rounded-[1.5rem] border transition-all duration-200 hover:shadow-lg hover:-translate-y-1 bg-white/90 dark:bg-[#282624]/90 backdrop-blur-md border-[#f0ece6] dark:border-[#33302d] flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left group"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "relative flex-shrink-0"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-emerald-500 shadow-md ring-4 ring-[#d48c48]/20 group-hover:ring-[#d48c48]/40 transition-all flex items-center justify-center bg-[#f7f5f2] dark:bg-[#33302d]"
-  }, /*#__PURE__*/React.createElement("img", {
-    src: "assets/swati_chaudhary.jpg",
-    alt: "Swati Chaudhary",
-    className: "w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110"
-  })), /*#__PURE__*/React.createElement("span", {
-    className: "absolute bottom-0 right-0 w-6 h-6 rounded-full bg-[#fff6e5]0 text-white flex items-center justify-center text-[10px] font-bold shadow border-2 border-white dark:border-slate-900"
-  }, "★")), /*#__PURE__*/React.createElement("div", {
-    className: "space-y-2 flex-1"
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center justify-center sm:justify-start gap-2 flex-wrap"
-  }, /*#__PURE__*/React.createElement("h3", {
-    className: "text-lg sm:text-xl font-black text-[#4a4643] dark:text-white"
-  }, "Swati Chaudhary"), /*#__PURE__*/React.createElement("span", {
-    className: "text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-[#3d2c1d] text-emerald-800 dark:text-emerald-300 border border-[#d48c48]/50 dark:border-emerald-800"
-  }, "CSE-2 • 2ND YEAR")), /*#__PURE__*/React.createElement("p", {
-    className: "text-xs font-bold text-[#d48c48] dark:text-[#e8a361] mt-0.5"
-  }, "Full-Stack Developer & UI Architect")), /*#__PURE__*/React.createElement("p", {
-    className: "text-xs text-[#8b857f] dark:text-[#b8b3ad] leading-relaxed"
-  }, "Leading Multilingual Indic Natural Language Processing, Interactive React Interface Systems, Aadhaar Sandbox e-KYC Verification, and Community Intelligence Ledgers."), /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center justify-center sm:justify-start gap-1.5 flex-wrap pt-1"
+    className: "flex items-center gap-2 flex-wrap"
   }, /*#__PURE__*/React.createElement("span", {
-    className: "px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#f7f5f2] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#f0ece6] dark:border-[#423f3b]"
-  }, "React Architecture"), /*#__PURE__*/React.createElement("span", {
-    className: "px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#f7f5f2] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#f0ece6] dark:border-[#423f3b]"
-  }, "Indic NLP"), /*#__PURE__*/React.createElement("span", {
-    className: "px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#f7f5f2] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#f0ece6] dark:border-[#423f3b]"
-  }, "Aadhaar e-KYC")))), /*#__PURE__*/React.createElement("div", {
-    className: "p-6 rounded-[1.5rem] border transition-all duration-200 hover:shadow-lg hover:-translate-y-1 bg-white/90 dark:bg-[#282624]/90 backdrop-blur-md border-[#f0ece6] dark:border-[#33302d] flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left group"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "relative flex-shrink-0"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-blue-500 shadow-md ring-4 ring-blue-500/20 group-hover:ring-blue-500/40 transition-all flex items-center justify-center bg-[#f7f5f2] dark:bg-[#33302d]"
-  }, /*#__PURE__*/React.createElement("img", {
-    src: "assets/shaurya_sharma.jpg",
-    alt: "Shaurya Sharma",
-    className: "w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110"
-  })), /*#__PURE__*/React.createElement("span", {
-    className: "absolute bottom-0 right-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-[10px] font-bold shadow border-2 border-white dark:border-slate-900"
-  }, "★")), /*#__PURE__*/React.createElement("div", {
-    className: "space-y-2 flex-1"
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center justify-center sm:justify-start gap-2 flex-wrap"
-  }, /*#__PURE__*/React.createElement("h3", {
-    className: "text-lg sm:text-xl font-black text-[#4a4643] dark:text-white"
-  }, "Shaurya Sharma"), /*#__PURE__*/React.createElement("span", {
-    className: "text-[10px] font-black px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-800"
-  }, "CSE-2 • 2ND YEAR")), /*#__PURE__*/React.createElement("p", {
-    className: "text-xs font-bold text-blue-600 dark:text-blue-400 mt-0.5"
-  }, "Lead Systems Engineer & Data Strategist")), /*#__PURE__*/React.createElement("p", {
-    className: "text-xs text-[#8b857f] dark:text-[#b8b3ad] leading-relaxed"
-  }, "Architecting Multi-Sensor Satellite Grounding, Sentinel-2 Multispectral Telemetry, Leaflet GIS Hotspot Mapping, and Autonomous UAV Drone Inspection Workflows."), /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center justify-center sm:justify-start gap-1.5 flex-wrap pt-1"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#f7f5f2] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#f0ece6] dark:border-[#423f3b]"
-  }, "GIS & Telemetry"), /*#__PURE__*/React.createElement("span", {
-    className: "px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#f7f5f2] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#f0ece6] dark:border-[#423f3b]"
-  }, "Sentinel-2 Satellite"), /*#__PURE__*/React.createElement("span", {
-    className: "px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#f7f5f2] dark:bg-[#33302d] text-[#706a65] dark:text-[#b8b3ad] border border-[#f0ece6] dark:border-[#423f3b]"
-  }, "Drone Systems"))))))), /*#__PURE__*/React.createElement("footer", {
+    className: "text-base leading-none"
+  }, "👩‍💼"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-black tracking-tight text-[#8c501e] dark:text-[#f8d7b3]"
+  }, ((() => {
+        const al = (ttsPopupMessage.lang || selectedLang || 'hi').toLowerCase();
+        if (al === 'or') return "ମହିଳା ଭଏସ୍ ଆସିଷ୍ଟାଣ୍ଟ • Female Voice Assistant";
+        if (al === 'bn') return "মহিলা ভয়েস সহকারী • Female Voice Assistant";
+        if (al === 'ta') return "பெண் குரல் உதவியாளர் • Female Voice Assistant";
+        if (al === 'te') return "మహిళా వాయిస్ అసిస్టెంట్ • Female Voice Assistant";
+        if (al === 'kn') return "ಮಹಿಳಾ ಧ್ವನಿ ಸಹಾಯಕರು • Female Voice Assistant";
+        if (al === 'ml') return "വനിതാ വോയ്‌സ് അസിസ്റ്റന്റ് • Female Voice Assistant";
+        if (al === 'mr') return "महिला आवाज सहाय्यक • Female Voice Assistant";
+        if (al === 'gu') return "મહિલા અવાજ સહાયક • Female Voice Assistant";
+        if (al === 'pa') return "ਮਹਿਲਾ ਵੌਇਸ ਅਸਿਸਟੈਂਟ • Female Voice Assistant";
+        if (al === 'ur') return "خاتون وائس اسسٹنٹ • Female Voice Assistant";
+        if (al === 'as') return "মহিলা ভয়েচ সহায়ক • Female Voice Assistant";
+        if (al === 'en') return "Female Voice Assistant • Humanoid Guide";
+        return "महिला आवाज सहायक • Female Voice Assistant";
+      })()), /*#__PURE__*/React.createElement("span", {
+    className: "px-2 py-0.5 rounded-full text-[10px] font-mono font-black bg-[#fff6e5] dark:bg-[#3d2c1d] text-[#d48c48] dark:text-[#e8a361] border border-[#d48c48]/40"
+  }, ttsPopupMessage.lang || selectedLang.toUpperCase())), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 flex-shrink-0"
+  }, isSpeaking && /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-0.5 h-3"
+  }, [0.3, 0.9, 0.5, 1.0, 0.6, 0.8, 0.4].map((f, i) => /*#__PURE__*/React.createElement("span", {
+    key: i,
+    className: "w-0.75 bg-[#d48c48] dark:bg-[#e8a361] rounded-full animate-pulse",
+    style: {
+      height: `${Math.round(11 * f)}px`,
+      animationDelay: `${i * 100}ms`
+    }
+  }))), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: muteAllSpeech,
+    className: "p-1 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 text-xs font-bold transition-colors cursor-pointer rounded-full",
+    title: "Dismiss voice guidance"
+  }, "✕"))), /*#__PURE__*/React.createElement("div", {
+    className: "pt-2 space-y-1"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs sm:text-sm font-bold text-[#38332f] dark:text-white leading-relaxed tracking-tight"
+  }, ttsPopupMessage.display || ttsPopupMessage.text), ttsPopupMessage.enSub && ttsPopupMessage.enSub !== (ttsPopupMessage.display || ttsPopupMessage.text) && /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] text-[#8b857f] dark:text-[#a8a29e] italic font-medium leading-normal"
+  }, `“${ttsPopupMessage.enSub}”`))), /*#__PURE__*/React.createElement("footer", {
     className: "w-full text-center py-3 text-[11px] font-semibold text-slate-400"
-  }, t.heroTitle, " • ", t.brandSub, " • ", localizeAddress(currentLocationName, selectedLang) || t.constituencyTag));
+  }, t.heroTitle, " • ", t.brandSub, " • ", localizeAddress(currentLocationName, selectedLang) || t.constituencyTag)));
 }
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(/*#__PURE__*/React.createElement(CitizenPortalApp, null));

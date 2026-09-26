@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lok Swar — Complete Master Technical & Architectural Reference Manual</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --card-hover: #1e293b;
+      --accent: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.2);
+      --accent-secondary: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      --badge-bg: rgba(16, 185, 129, 0.15);
+      --badge-border: rgba(16, 185, 129, 0.35);
+      --code-bg: #030712;
+      --sidebar-w: 300px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      display: flex;
+      min-height: 100vh;
+    }
+    /* SIDEBAR NAVIGATION */
+    aside {
+      width: var(--sidebar-w);
+      background: #0d121f;
+      border-right: 1px solid var(--card-border);
+      position: fixed;
+      top: 0; bottom: 0; left: 0;
+      overflow-y: auto;
+      padding: 1.5rem 1rem;
+      z-index: 100;
+    }
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 1.25rem;
+    }
+    .logo-badge {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1rem; color: #fff;
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+    .brand-title { font-weight: 800; font-size: 1.15rem; color: #fff; letter-spacing: -0.02em; }
+    .brand-sub { font-size: 0.72rem; color: var(--accent); text-transform: uppercase; font-weight: 700; letter-spacing: 0.08em; }
+    
+    .nav-section-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      font-weight: 700;
+      margin: 1.25rem 0 0.5rem 0.5rem;
+    }
+    .nav-link {
+      display: block;
+      padding: 0.5rem 0.75rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.15s ease;
+      margin-bottom: 2px;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: #fff;
+      background: var(--card-border);
+      padding-left: 1rem;
+      border-left: 3px solid var(--accent);
+    }
+
+    /* MAIN CONTENT */
+    main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      padding: 2.5rem 3.5rem;
+      max-width: 1200px;
+    }
+    header.doc-header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .doc-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      background: var(--badge-bg);
+      border: 1px solid var(--badge-border);
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.75rem; color: #fff; }
+    .lead { font-size: 1.1rem; color: var(--text-muted); max-width: 850px; font-weight: 400; }
+
+    section {
+      margin-bottom: 3.5rem;
+      scroll-margin-top: 2rem;
+    }
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #fff;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.75rem;
+    }
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #e5e7eb;
+      margin: 1.5rem 0 0.75rem 0;
+    }
+    p { margin-bottom: 1rem; color: #cbd5e1; }
+    ul, ol { margin-left: 1.5rem; margin-bottom: 1.25rem; color: #cbd5e1; }
+    li { margin-bottom: 0.4rem; }
+
+    /* CARDS & GRIDS */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      transition: all 0.2s ease;
+    }
+    .card:hover {
+      border-color: rgba(16, 185, 129, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* BADGES */
+    .tag {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      margin-right: 0.4rem;
+      margin-bottom: 0.4rem;
+    }
+    .tag-green { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .tag-blue { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .tag-purple { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
+    .tag-amber { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .tag-red { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+    /* TABLES */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      background: var(--card-bg);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+    th {
+      background: #141c2e;
+      color: #e2e8f0;
+      font-weight: 700;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--card-border);
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+    }
+    td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--card-border);
+      color: #cbd5e1;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+    /* CODE BLOCKS */
+    pre, code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    code:not(pre code) {
+      background: rgba(255, 255, 255, 0.08);
+      color: #38bdf8;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.84em;
+    }
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+    }
+
+    /* CALLOUT BOXES */
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: rgba(16, 185, 129, 0.08);
+      border-radius: 0 10px 10px 0;
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .callout-title {
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+    }
+    .callout-blue {
+      border-left-color: var(--accent-secondary);
+      background: rgba(59, 130, 246, 0.08);
+    }
+    .callout-blue .callout-title { color: var(--accent-secondary); }
+
+    @media (max-width: 1024px) {
+      body { flex-direction: column; }
+      aside { position: relative; width: 100%; height: auto; }
+      main { margin-left: 0; padding: 2rem 1.5rem; }
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        display: block !important;
+        font-size: 10pt;
+      }
+      aside {
+        display: none !important;
+      }
+      main {
+        margin-left: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+      }
+      header.doc-header {
+        border-bottom: 2px solid #059669 !important;
+        margin-bottom: 1.5rem !important;
+      }
+      h1 {
+        color: #0f172a !important;
+        font-size: 20pt !important;
+      }
+      h2 {
+        color: #0f172a !important;
+        border-bottom: 1.5px solid #cbd5e1 !important;
+        page-break-after: avoid;
+        margin-top: 1.5rem !important;
+      }
+      h3 {
+        color: #1e293b !important;
+        page-break-after: avoid;
+      }
+      p, li {
+        color: #1e293b !important;
+      }
+      .card {
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+        margin-bottom: 0.75rem;
+      }
+      .card-title {
+        color: #0f172a !important;
+      }
+      .card-desc {
+        color: #334155 !important;
+      }
+      .table-container {
+        border: 1px solid #cbd5e1 !important;
+        background: #ffffff !important;
+        page-break-inside: auto;
+      }
+      th {
+        background: #f1f5f9 !important;
+        color: #0f172a !important;
+        border-bottom: 2px solid #cbd5e1 !important;
+      }
+      td {
+        color: #1e293b !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+      }
+      pre {
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #0f172a !important;
+        page-break-inside: avoid;
+      }
+      code:not(pre code) {
+        background: #f1f5f9 !important;
+        color: #0369a1 !important;
+      }
+      .callout {
+        background: #f0fdf4 !important;
+        border-left: 4px solid #10b981 !important;
+        color: #0f172a !important;
+        page-break-inside: avoid;
+      }
+      .callout-blue {
+        background: #eff6ff !important;
+        border-left: 4px solid #3b82f6 !important;
+      }
+      .callout-title {
+        color: #0f172a !important;
+      }
+      .tag {
+        border: 1px solid #94a3b8 !important;
+        color: #0f172a !important;
+      }
+      section {
+        page-break-inside: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR NAVIGATION -->
+  <aside>
+    <div class="brand-logo">
+      <div class="logo-badge">LS</div>
+      <div>
+        <div class="brand-title">LOK SWAR</div>
+        <div class="brand-sub">Technical Master Spec</div>
+      </div>
+    </div>
+
+    <div class="nav-section-title">Core Architecture</div>
+    <a href="#executive-overview" class="nav-link">1. Executive Overview</a>
+    <a href="#system-features" class="nav-link">2. Feature Catalog (Citizen/Admin)</a>
+    <a href="#ai-ml-engines" class="nav-link">3. AI & NLP Engines</a>
+    
+    <div class="nav-section-title">Backend & APIs</div>
+    <a href="#api-endpoints" class="nav-link">4. All 49 REST Endpoints</a>
+    <a href="#data-fusion" class="nav-link">5. Multi-Sensor Data Fusion</a>
+    <a href="#optimization" class="nav-link">6. Knapsack Resource Solver</a>
+
+    <div class="nav-section-title">Telephony & Hardware</div>
+    <a href="#ivr-telephony" class="nav-link">7. Keypad Phone IVR System</a>
+    <a href="#drone-gis" class="nav-link">8. Autonomous UAV Drones & GIS</a>
+    <a href="#android-mobile" class="nav-link">9. Android APK & Mobile Sensors</a>
+
+    <div class="nav-section-title">Hackathon Defense</div>
+    <a href="#tech-stack-summary" class="nav-link">10. Complete Tech Stack</a>
+    <a href="#judge-qa" class="nav-link">11. Judge Cross-Question Defense</a>
+  </aside>
+
+  <!-- MAIN DOCUMENT -->
+  <main>
+    <header class="doc-header">
+      <div class="doc-pill">⚡ Hackathon Viva & Technical Defense Specification</div>
+      <h1>Lok Swar: Comprehensive Architecture, APIs, AI Models & Software Stack</h1>
+      <p class="lead">
+        A deep-dive technical blueprint covering every feature, internal/external API, artificial intelligence pipeline, data fusion engine, and zero-literacy interface built for <strong>Lok Swar</strong>.
+      </p>
+    </header>
+
+    <!-- SECTION 1: OVERVIEW -->
+    <section id="executive-overview">
+      <h2>1. Executive Overview & The Problem Solved</h2>
+      <p>
+        <strong>Lok Swar</strong> ("The Voice of the People") is a decentralized, multimodal civic grievance, participatory democracy, and public infrastructure audit platform tailored for rural and semi-urban India.
+      </p>
+      
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title">🚨 The Rural Barrier</div>
+          <div class="card-desc">
+            Over 280 million rural citizens in India face illiteracy or digital hesitation. Existing portals (CPGRAMS, district grievance forms) require typed English/Hindi text and complex dropdown trees, excluding ground reality.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">💡 The Lok Swar Paradigm</div>
+          <div class="card-desc">
+            <strong>Zero-Literacy Voice-First UX</strong>: Tap anywhere to listen. Speak in raw regional dialect (Bhojpuri, Odia, Bengali, Hindi). Automatic satellite GPS sync. Multi-sensor verification against ghost work and corruption.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: SYSTEM FEATURES -->
+    <section id="system-features">
+      <h2>2. Comprehensive Feature Breakdown</h2>
+      
+      <h3>A. Citizen Portal Features (<code>citizen.html</code>)</h3>
+      <ul>
+        <li><strong>Every-Click Spoken Guidance (Zero-Literacy Engine)</strong>: Illiterate citizens tapping anywhere on the screen trigger immediate conversational speech orientation in their native tongue without needing to read instructions.</li>
+        <li><strong>Automatic GPS & Telemetry Sync</strong>: Completely eliminates manual "Refresh GPS" buttons. Automatically acquires satellite coordinates on load, reverse geocodes locality down to Ward/Gram Panchayat, and maintains live movement telemetry via <code>navigator.geolocation.watchPosition</code>.</li>
+        <li><strong>Location-Driven UI Language Adaptation</strong>: Automatically detects geographic state/district from GPS/IP and transforms the entire interface (titles, cards, badges, spoken speech) to the local language:
+          <span class="tag tag-green">Bihar &rarr; Bhojpuri</span>
+          <span class="tag tag-blue">Odisha &rarr; Odia</span>
+          <span class="tag tag-purple">West Bengal &rarr; Bengali</span>
+          <span class="tag tag-amber">North India &rarr; Hindi</span>
+        </li>
+        <li><strong>Continuous Search Bar Auto-Translation</strong>: As citizens speak or type in their local dialect, a dual-layer NMT pipeline continuously translates colloquial sentences into polished Administrative English in real time directly inside the search bar.</li>
+        <li><strong>Multimodal Grievance Submission</strong>: Supports simultaneous submission of raw voice audio recordings (base64 WAV/WebM), camera-captured photo evidence, GPS coordinates, and Aadhaar identity verification.</li>
+        <li><strong>Democratic Civic Upvoting & Crowdsourced Verification</strong>: Citizens living in the same Gram Panchayat can view nearby grievances on an interactive Leaflet map and endorse ("Upvote") them, boosting priority without filing redundant duplicate reports.</li>
+        <li><strong>Profile & DigiLocker Identity Integration</strong>: Seamless Aadhaar/Voter ID verification fetching simulated verified credentials while preserving citizen privacy through SHA-256 mobile salting.</li>
+      </ul>
+
+      <h3>B. Executive & Administrative Dashboard (<code>admin.html</code>)</h3>
+      <ul>
+        <li><strong>Multi-Dimensional Spatial Heatmaps</strong>: Real-time GIS rendering with Leaflet.js showcasing high-density infrastructure breakdown clusters using spatial clustering algorithms.</li>
+        <li><strong>Autonomous UAV Drone Surveillance Dispatch</strong>: Administrative dispatch of drone recon missions to verify high-urgency road washouts, electrical hazards, or school roof collapses before allocating state budget.</li>
+        <li><strong>Algorithmic Treasury Budget Allocation</strong>: Interactive budget ledger matching civic grievances directly against official state and central funding schemes (e.g. <em>Jal Jeevan Mission, PMGSY, SDRF Disaster Relief, 5T Transformation</em>).</li>
+        <li><strong>Multi-Sensor Data Fusion Center</strong>: Correlates citizen reports against independent ground sensors, weather satellite feeds, and satellite SAR to detect false or exaggerated claims.</li>
+        <li><strong>Contractor Adjudication & Accountability Matrix</strong>: Automated tracking of maintenance SLAs, breach penalties, and public contractor resolution logs.</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 3: AI & ML PIPELINES -->
+    <section id="ai-ml-engines">
+      <h2>3. Artificial Intelligence, NLP & Audio Models</h2>
+      <p>Lok Swar utilizes a multi-tier AI pipeline engineered to handle dialect variation, noisy village audio, and official administrative synthesis.</p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>AI Engine / Tool</th>
+              <th>Underlying Model / Tech</th>
+              <th>Input</th>
+              <th>Output</th>
+              <th>Fail-Safe Fallback</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Automatic Speech Recognition (ASR)</strong></td>
+              <td>Google Speech API & Web Speech API (<code>SpeechRecognition</code>)</td>
+              <td>Raw citizen voice audio (Odia, Bhojpuri, Hindi, Bengali)</td>
+              <td>UTF-8 Devanagari / Odia text transcript</td>
+              <td>Server Python <code>speech_recognition</code> with PyAudio / soundfile</td>
+            </tr>
+            <tr>
+              <td><strong>Colloquial Dialect Normalizer</strong></td>
+              <td>Rule-Based Regex & Tokenized Grammatical Transducers</td>
+              <td>Raw dialect phrases (e.g. <em>"पुलवा बह गइल बा", "लाइन नइखे"</em>)</td>
+              <td>Normalized concept representation</td>
+              <td>Exact phonetic match lexicon</td>
+            </tr>
+            <tr>
+              <td><strong>Neural Machine Translation (NMT)</strong></td>
+              <td>Google Translate GTX + MyMemory Multi-Lingual API</td>
+              <td>Colloquial regional speech text</td>
+              <td>Concise Administrative English for executive triage</td>
+              <td>Domain-specific infrastructure bilingual phrasebook</td>
+            </tr>
+            <tr>
+              <td><strong>NLP Automatic Categorization</strong></td>
+              <td>Multilingual Keyword Token Matcher + Semantic Scorer</td>
+              <td>Combined raw speech + English translated text</td>
+              <td>1 of 7 Civic Categories (Power, Roads, Water, School, PHC, Drain, Canal)</td>
+              <td>Default to Roads & Connectivity</td>
+            </tr>
+            <tr>
+              <td><strong>Urgency & Priority Scoring Engine</strong></td>
+              <td>Dynamic Risk Heuristic with Hazard Boosts</td>
+              <td>Incident category, emergency keywords (<em>collapse, flood, blast</em>), verification status</td>
+              <td>Priority Urgency Score (0.0 to 100.0)</td>
+              <td>Default category baseline (e.g. PHC: 95.0, Roads: 92.5)</td>
+            </tr>
+            <tr>
+              <td><strong>Government Scheme Matcher</strong></td>
+              <td>Deterministic Scheme Knowledge Base</td>
+              <td>Incident category and administrative jurisdiction</td>
+              <td>Official Scheme (PMGSY, JJM, DDUGJY, 5T, SDRF, NHM)</td>
+              <td>District Collector Discretionary Fund</td>
+            </tr>
+            <tr>
+              <td><strong>Text-to-Speech (TTS)</strong></td>
+              <td>Web Speech Synthesis API + Server Base64 Audio Generator</td>
+              <td>Structured guidance prompt in citizen's active dialect</td>
+              <td>High-fidelity spoken audio waveform</td>
+              <td>Visual floating transcript dialog modal with animated equalizer</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 4: ALL 49 REST ENDPOINTS -->
+    <section id="api-endpoints">
+      <h2>4. Complete Backend REST API Architecture (49 Endpoints)</h2>
+      <p>All endpoints are served from <code>server.py</code> (Python REST server) and mirrored in <code>backend/server.js</code> (Node.js/Express).</p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>HTTP Method</th>
+              <th>Endpoint Route</th>
+              <th>Primary Function</th>
+              <th>Payload / Parameters</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>GET</code></td><td><code>/api/tts</code></td><td>Generates streamed or synthesized speech audio</td><td><code>?text=...&lang=...</code></td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/grievances/nearby</code></td><td>Haversine geo-spatial query for issues within 5-10km radius</td><td><code>?lat=...&lng=...&radius=...</code></td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/geo/location</code></td><td>Server-side IP telemetry lookup fallback</td><td>None</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/geo/reverse</code></td><td>High-precision reverse geocoding to village/ward level</td><td><code>?lat=...&lon=...</code></td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/auth/me</code></td><td>Inspects active session cookie or bearer token</td><td>Authorization Header</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/grievances/list</code></td><td>Returns paginated grievances with category & status filters</td><td><code>?status=...&category=...</code></td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/grievances/{id}</code></td><td>Detailed case report, drone footage, citizen upvotes</td><td>URL parameter</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/admin/budget/overview</code></td><td>Real-time treasury balance, allocated vs expended ledger</td><td>None</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/drone/missions</code></td><td>Active, completed, and pending autonomous UAV flights</td><td>None</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/voice-notes/my-notes/{mobile}</code></td><td>Returns citizen's personal audio submissions</td><td>Mobile number</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/voice-notes/admin/all</code></td><td>Administrative officer voice queue</td><td>None</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/constituency</code></td><td>Gram Panchayat, Ward, and Block administrative hierarchy</td><td>None</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/projects</code></td><td>Active public works, sanctioned tenders, and contractors</td><td>None</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/clusters</code></td><td>Spatial density clustering coordinates for map overlays</td><td>None</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/hotspots</code></td><td>Critical risk nodes and chronic infrastructure failure zones</td><td>None</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/datasets</code></td><td>Open Government Data (OGD) integration metrics</td><td>None</td></tr>
+            <tr><td><code>GET</code></td><td><code>/api/data-fusion/cases</code></td><td>Multi-sensor fusion case list with confidence scores</td><td>None</td></tr>
+            <tr><td><code>GET</code></td><td><code>/uploads/audio/{filename}</code></td><td>Streams stored citizen audio recordings</td><td>Filename</td></tr>
+            <tr><td><code>GET</code></td><td><code>/uploads/photos/{filename}</code></td><td>Serves citizen-captured photographic evidence</td><td>Filename</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/data-fusion/analyze</code></td><td>Runs automated verification across satellite + weather + reports</td><td>Case ID</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/auth/citizen/register</code></td><td>Registers new citizen with mobile & password</td><td>JSON credentials</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/auth/citizen/login</code></td><td>Authenticates citizen and issues session cookie</td><td>JSON credentials</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/auth/citizen/send-otp</code></td><td>Dispatches mobile SMS OTP via Fast2SMS / Twilio</td><td><code>{ "mobile": "..." }</code></td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/auth/citizen/verify-otp</code></td><td>Validates 6-digit OTP code</td><td><code>{ "mobile": "...", "otp": "..." }</code></td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/auth/citizen/send-email-otp</code></td><td>Sends verification code to citizen email</td><td><code>{ "email": "..." }</code></td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/auth/citizen/verify-email-otp</code></td><td>Validates email verification code</td><td><code>{ "email": "...", "otp": "..." }</code></td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/auth/citizen/reset-password</code></td><td>Changes password after OTP verification</td><td>New credentials</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/auth/citizen/upload-avatar</code></td><td>Uploads citizen profile picture</td><td>Multipart / base64 image</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/auth/citizen/profile</code></td><td>Updates citizen name, village, Aadhaar hash</td><td>JSON profile data</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/auth/citizen/digilocker-fetch</code></td><td>Simulates verified document sync from DigiLocker API</td><td>Aadhaar number</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/auth/admin/login</code></td><td>Officer/collector login authentication</td><td>Executive credentials</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/auth/logout</code></td><td>Terminates session and clears cookies</td><td>None</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/grievances/endorse</code></td><td>Records citizen upvote / civic endorsement</td><td><code>{ "problemId": "..." }</code></td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/grievances/ai-categorize</code></td><td>Returns real-time NLP classification & urgency score</td><td><code>{ "text": "...", "lang": "..." }</code></td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/grievances/submit</code></td><td>Primary multi-modal submission endpoint</td><td>Text, voice, photo, GPS, user data</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/admin/drone/dispatch</code></td><td>Orders immediate autonomous UAV surveillance flight</td><td><code>{ "problemId": "...", "lat": ..., "lng": ... }</code></td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/admin/budget/allocate</code></td><td>Authorizes treasury expenditure for scheme tender</td><td><code>{ "problemId": "...", "amount": ... }</code></td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/translate</code></td><td>Live translation from dialect to English</td><td><code>{ "text": "...", "spokenLanguage": "..." }</code></td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/speech-to-text</code></td><td>Transcribes raw WAV/WebM audio bytes into text</td><td>Binary audio or base64</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/voice-notes/upload</code></td><td>Uploads voice note file to server storage</td><td>Multipart audio</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/webhook/messaging</code></td><td>Twilio / WhatsApp incoming message webhook</td><td>Inbound payload</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/optimizer/solve</code></td><td>Solves Knapsack optimization for state budget allocation</td><td>Budget limit & candidate list</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/adjudicate</code></td><td>Applies contractor breach penalty or closes dispute</td><td><code>{ "problemId": "...", "verdict": "..." }</code></td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/grievances/clear-all</code></td><td>Test/demo reset of grievance ledger</td><td>Admin key</td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/grievances/{id}/status</code></td><td>Updates lifecycle status (Pending, In Progress, Resolved)</td><td><code>{ "status": "..." }</code></td></tr>
+            <tr><td><code>POST</code></td><td><code>/api/voice-notes/admin/{id}/status</code></td><td>Updates voice note triage status</td><td><code>{ "status": "..." }</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 5: DATA FUSION -->
+    <section id="data-fusion">
+      <h2>5. Multi-Sensor Data Fusion Architecture</h2>
+      <p>
+        To prevent corruption and "ghost works" (contractors billing for unperformed repairs), Lok Swar introduces an automated <strong>Cross-Verification Matrix</strong>:
+      </p>
+      
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title">📡 Satellite Imagery Feed</div>
+          <div class="card-desc">
+            Compares historical satellite baselines with current surface reflectance to verify road inundation, river overflows, and structural bridge collapses.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">🛰️ Autonomous UAV Drone Recon</div>
+          <div class="card-desc">
+            Dispatches automated drone missions to capture 4K geotagged video and high-resolution still frames, feeding directly into administrative verification tickets.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">🌧️ Weather & Rain Telemetry</div>
+          <div class="card-desc">
+            Cross-references IMD rain telemetry to confirm whether reported flash floods or drainage overflows match real-time precipitation in that Gram Panchayat.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">👥 Civic Endorsement Quorum</div>
+          <div class="card-desc">
+            Requires minimum threshold of peer citizen upvotes from residents living within 2km, creating an immune system against fraudulent single-actor reports.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: OPTIMIZATION -->
+    <section id="optimization">
+      <h2>6. Knapsack Resource Optimizer</h2>
+      <p>
+        When government budgets are constrained (e.g. ₹50,00,000 available vs ₹3,20,00,000 needed), the <strong>Lok Swar Optimizer</strong> solves a <em>0/1 Multi-Criteria Knapsack Problem</em>:
+      </p>
+      <pre><code>Maximize: Z = &sum; [ Urgency_Score_i &times; Affected_Population_i &times; Risk_Multiplier_i &times; X_i ]
+Subject to: &sum; [ Cost_i &times; X_i ] &le; Total_Allocated_Treasury_Budget
+Where: X_i &isin; {0, 1} (Whether project 'i' is funded in current tranche)</code></pre>
+      <p>
+        This replaces political bias with mathematically optimal resource allocation, ensuring projects that save the most human lives and protect critical transit arteries are funded first.
+      </p>
+    </section>
+
+    <!-- SECTION 7: IVR TELEPHONY -->
+    <section id="ivr-telephony">
+      <h2>7. Keypad Phone IVR Telephony System (<code>ivr/</code>)</h2>
+      <p>
+        Recognizing that millions of citizens own ₹800 basic feature phones (Nokia/JioPhone with physical numeric keypads and no internet), Lok Swar includes an independent toll-free IVR engine:
+      </p>
+      <ul>
+        <li><strong>Architecture</strong>: FastAPI asynchronous server (<code>ivr.main:app</code>) running on port 8001, integrated with Twilio Voice APIs and TwiML response generators.</li>
+        <li><strong>DTMF Dialpad Menu</strong>:
+          <ul>
+            <li><code>Press 1</code> &rarr; ଓଡ଼ିଆ (Odia)</li>
+            <li><code>Press 2</code> &rarr; हिन्दी (Hindi)</li>
+            <li><code>Press 3</code> &rarr; भोजपुरी (Bhojpuri)</li>
+            <li><code>Press 4</code> &rarr; বাংলা (Bengali)</li>
+          </ul>
+        </li>
+        <li><strong>Voice Recording & Audio Pipeline</strong>: The citizen speaks their grievance after the beep. Twilio records the call audio, posts the URL to <code>/ivr/voice-end</code>, and the AI engine automatically transcribes the audio, generates a ticket ID, and sends an SMS receipt back to their keypad phone.</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 8: DRONE GIS -->
+    <section id="drone-gis">
+      <h2>8. Autonomous Drone Reconnaissance & GIS Geofencing</h2>
+      <p>
+        The <code>admin.html</code> GIS engine utilizes <strong>Leaflet.js</strong> with customized OpenStreetMap CartoDB dark/light tiles:
+      </p>
+      <ul>
+        <li><strong>GeoJSON Constituency Boundaries</strong>: Visualizes district administrative sectors (Sundargarh, Hemgir, Lephripara, Tangarpali, Bargaon) with color-coded risk envelopes.</li>
+        <li><strong>Drone Flight Dispatch Simulator</strong>: Calculates straight-line distance, battery consumption, estimated arrival time (ETA), and generates automated UAV flight waypoints.</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 9: ANDROID APK -->
+    <section id="android-mobile">
+      <h2>9. Native Android Application Wrapper (<code>android/</code>)</h2>
+      <ul>
+        <li><strong>Architecture</strong>: Native Android Gradle project (<code>android/app/build.gradle</code>) featuring an optimized hardware-accelerated <code>WebView</code> shell.</li>
+        <li><strong>Device Permissions Granted</strong>:
+          <ul>
+            <li><code>android.permission.ACCESS_FINE_LOCATION</code>: Satellite GPS telemetry.</li>
+            <li><code>android.permission.RECORD_AUDIO</code>: High-quality microphone recording.</li>
+            <li><code>android.permission.CAMERA</code>: Live photographic evidence capture.</li>
+            <li><code>android.permission.INTERNET</code>: Full duplex synchronization with backend.</li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+
+    <!-- SECTION 10: COMPLETE TECH STACK -->
+    <section id="tech-stack-summary">
+      <h2>10. Complete Software Stack & Tool Reference</h2>
+      
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Layer</th>
+              <th>Technologies Used</th>
+              <th>Why Chosen</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Frontend Core</strong></td>
+              <td>React 18, Babel Standalone, Vanilla CSS3, Tailwind CSS</td>
+              <td>Zero build-step instant portability; ultra-lightweight client bundle running effortlessly on cheap ₹5,000 Android Go smartphones.</td>
+            </tr>
+            <tr>
+              <td><strong>Mapping & GIS</strong></td>
+              <td>Leaflet.js 1.9.4, CartoDB Positron & Dark Matter tiles</td>
+              <td>Open-source, no Google Maps billing quota dependencies, superior offline caching support.</td>
+            </tr>
+            <tr>
+              <td><strong>Backend Services</strong></td>
+              <td>Python 3.10+ (FastAPI, Uvicorn, standard HTTP), Node.js Express fallback</td>
+              <td>High-concurrency async I/O with native scientific Python ecosystem for NLP and optimization solvers.</td>
+            </tr>
+            <tr>
+              <td><strong>Database & Storage</strong></td>
+              <td>MongoDB Atlas, Motor async driver, Local JSON ACID atomic fallback</td>
+              <td>Dual-layer durability: cloud-scale document flexibility with zero-dependency offline local store.</td>
+            </tr>
+            <tr>
+              <td><strong>Telephony & SMS</strong></td>
+              <td>Twilio Voice API, TwiML, Fast2SMS Gateway</td>
+              <td>Enables keypad phone access across India with automated SMS status receipt generation.</td>
+            </tr>
+            <tr>
+              <td><strong>Browser Web APIs</strong></td>
+              <td><code>SpeechRecognition</code>, <code>SpeechSynthesis</code>, <code>AudioContext</code>, <code>navigator.geolocation</code>, <code>MediaDevices</code></td>
+              <td>Direct zero-latency access to smartphone hardware without heavy external SDK overhead.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 11: JUDGE QA DEFENSE -->
+    <section id="judge-qa">
+      <h2>11. Hackathon Cross-Question Defense Strategies</h2>
+      
+      <div class="callout">
+        <div class="callout-title">Q1: "How do you prevent duplicate grievances from spamming the system?"</div>
+        <p>
+          <strong>Answer:</strong> Lok Swar uses a <strong>Spatial-Semantic Deduplication Filter</strong>. When a grievance is submitted, the backend runs a spatial query within a 500-meter radius (using Haversine distance) and computes word embedding cosine similarity on the category and text. If a match is found, instead of creating a duplicate ticket, the system automatically converts the submission into a <em>Civic Endorsement (+1 Upvote)</em> on the existing active ticket.
+        </p>
+      </div>
+
+      <div class="callout callout-blue">
+        <div class="callout-title">Q2: "What if there is no internet in remote rural hamlets?"</div>
+        <p>
+          <strong>Answer:</strong> Lok Swar is built on a <strong>Tri-Tier Connectivity Fallback</strong>:
+          <ol>
+            <li><strong>Full Internet</strong>: Citizen smartphone portal with live map and camera.</li>
+            <li><strong>Intermittent Internet</strong>: LocalStorage offline queue that records grievances locally and auto-synchronizes as soon as 2G/3G connectivity is detected.</li>
+            <li><strong>Zero Internet / Keypad Phones</strong>: Toll-free IVR telephony server (<code>ivr/</code>) where citizens dial in via standard GSM voice network, speak in their native tongue, and receive an SMS tracking ID.</li>
+          </ol>
+        </p>
+      </div>
+
+      <div class="callout">
+        <div class="callout-title">Q3: "How do you handle illiterate citizens who cannot read error messages or submit forms?"</div>
+        <p>
+          <strong>Answer:</strong> The <strong>Every-Click Spoken Assistant</strong>. Every element on the screen has an audio mapping in <code>js/citizen/voice_engine.js</code>. The moment an illiterate citizen taps anywhere, the Web Audio engine speaks clear instructions in their local dialect (Bhojpuri, Odia, Bengali, Hindi), accompanied by high-contrast visual icons and audio chimes.
+        </p>
+      </div>
+
+      <div class="callout callout-blue">
+        <div class="callout-title">Q4: "Is Aadhaar number storage secure and legal?"</div>
+        <p>
+          <strong>Answer:</strong> Yes. Lok Swar strictly adheres to the Aadhaar Act guidelines. We <strong>never store raw 12-digit Aadhaar numbers</strong> in plaintext. All identity entries are processed through an irreversible <strong>SHA-256 cryptographic salt</strong>, and only the masked format (e.g. <code>•••• •••• 9012</code>) is displayed on the UI for citizen confirmation.
+        </p>
+      </div>
+    </section>
+
+  </main>
+</body>
+</html>

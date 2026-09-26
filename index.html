@@ -226,8 +226,8 @@ const i18n = {
     enterOtpLabel: "୬-ଅଙ୍କ ବିଶିଷ୍ଟ ଓଟିପି ପ୍ରବେଶ କରନ୍ତୁ:"
   },
   bho: {
-    tagline: "ओडिशा राज्य नागरिक आ प्रशासनिक मंच",
-    constituency: "सुंदरगढ़ ()",
+    tagline: "नागरिक आ प्रशासनिक मंच",
+    constituency: "जिला प्रशासनिक क्षेत्र",
     title: "लोक स्वर प्रवेश द्वार",
     subtitle: "नागरिक आ प्रशासनिक अधिकारी खातिर सुरक्षित रीयल-टाइम पोर्टल",
     tabCitizen: "📱 नागरिक प्रमाणीकरण (Mobile OTP)",
@@ -637,16 +637,80 @@ function PortalLandingGateway() {
     });
   };
 
-  // 4. Voice Guidance Engine
+  // 4. Voice Guidance Engine (Strictly Female Voice & Clean Single-Audio Playback)
   const [isSpeaking, setIsSpeaking] = useState(false);
   const activeAudioRef = useRef(null);
+  const voiceSessionCounterRef = useRef(0);
+
+  const isMaleVoice = v => {
+    const n = ((v.name || '') + ' ' + (v.voiceURI || '')).toLowerCase();
+    return n.includes('male') || n.includes('david') || n.includes('ravi') ||
+           n.includes('hemant') || n.includes('mark') || n.includes('george') ||
+           n.includes('guy') || n.includes('rishi') || n.includes('stefan') ||
+           n.includes('pavel') || n.includes('पुरुष') || n.includes('purush');
+  };
+
+  const isFemaleVoice = v => {
+    const n = ((v.name || '') + ' ' + (v.voiceURI || '')).toLowerCase();
+    return n.includes('female') || n.includes('swara') || n.includes('neerja') ||
+           n.includes('heera') || n.includes('kalpana') || n.includes('zira') ||
+           n.includes('aria') || n.includes('jenny') || n.includes('sonia') ||
+           n.includes('ananya') || n.includes('shruti') || n.includes('priya') ||
+           n.includes('sangeeta') || n.includes('kavya') || n.includes('radha') ||
+           n.includes('pallavi') || n.includes('tanishaa') || n.includes('aarohi') ||
+           n.includes('dhwani') || n.includes('sapna') || n.includes('sobhana') ||
+           n.includes('gul') || n.includes('महिला') || n.includes('स्त्री');
+  };
+
+  const fallbackGatewaySpeech = (speechText, lang, thisSession) => {
+    if (thisSession !== voiceSessionCounterRef.current) return;
+    if (!('speechSynthesis' in window)) {
+      setTimeout(() => {
+        if (thisSession === voiceSessionCounterRef.current) setIsSpeaking(false);
+      }, 2000);
+      return;
+    }
+    try {
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.resume();
+      const ut = new SpeechSynthesisUtterance(speechText);
+      ut.rate = 0.94;
+      ut.pitch = 1.05;
+      const bcpMap = {
+        hi: 'hi-IN', bho: 'hi-IN', or: 'or-IN', bn: 'bn-IN', ta: 'ta-IN',
+        te: 'te-IN', kn: 'kn-IN', ml: 'ml-IN', mr: 'mr-IN', gu: 'gu-IN',
+        pa: 'pa-IN', ur: 'ur-IN', as: 'as-IN', mai: 'hi-IN', sat: 'hi-IN',
+        ks: 'ur-IN', sd: 'ur-IN', en: 'en-IN'
+      };
+      ut.lang = bcpMap[lang] || 'hi-IN';
+
+      const voices = window.speechSynthesis.getVoices() || [];
+      const nonMaleVoices = voices.filter(v => !isMaleVoice(v));
+      const targetLang = ut.lang.toLowerCase();
+      const matchedVoice = nonMaleVoices.find(v => (v.lang || '').toLowerCase().startsWith(targetLang.slice(0, 2)) && isFemaleVoice(v))
+        || nonMaleVoices.find(v => (v.lang || '').toLowerCase().startsWith(targetLang.slice(0, 2)))
+        || nonMaleVoices.find(isFemaleVoice)
+        || nonMaleVoices[0];
+      if (matchedVoice) ut.voice = matchedVoice;
+
+      ut.onend = () => {
+        if (thisSession === voiceSessionCounterRef.current) setIsSpeaking(false);
+      };
+      ut.onerror = () => {
+        if (thisSession === voiceSessionCounterRef.current) setIsSpeaking(false);
+      };
+      window.speechSynthesis.speak(ut);
+    } catch (err) {
+      if (thisSession === voiceSessionCounterRef.current) setIsSpeaking(false);
+    }
+  };
+
   const handleVoiceGuidance = () => {
     playChime('tap');
     if (isSpeaking) {
+      voiceSessionCounterRef.current += 1;
       if ('speechSynthesis' in window) {
-        try {
-          window.speechSynthesis.cancel();
-        } catch (e) {}
+        try { window.speechSynthesis.cancel(); } catch (e) {}
       }
       if (activeAudioRef.current) {
         try {
@@ -658,42 +722,49 @@ function PortalLandingGateway() {
       setIsSpeaking(false);
       return;
     }
+
+    const thisSession = ++voiceSessionCounterRef.current;
     setIsSpeaking(true);
+
+    if (activeAudioRef.current) {
+      try {
+        activeAudioRef.current.pause();
+        activeAudioRef.current.currentTime = 0;
+      } catch (e) {}
+      activeAudioRef.current = null;
+    }
+    if ('speechSynthesis' in window) {
+      try { window.speechSynthesis.cancel(); } catch (e) {}
+    }
+
     const speechText = `${t.title}. ${t.subtitle}.`;
     try {
       const ttsAudio = new Audio(`/api/tts?text=${encodeURIComponent(speechText)}&lang=${encodeURIComponent(selectedLang)}`);
       activeAudioRef.current = ttsAudio;
+
       ttsAudio.onended = () => {
-        setIsSpeaking(false);
-        activeAudioRef.current = null;
+        if (thisSession === voiceSessionCounterRef.current) {
+          setIsSpeaking(false);
+          activeAudioRef.current = null;
+        }
       };
+
       ttsAudio.onerror = () => {
-        fallbackGatewaySpeech(speechText, selectedLang);
+        if (thisSession === voiceSessionCounterRef.current) {
+          fallbackGatewaySpeech(speechText, selectedLang, thisSession);
+        }
       };
+
       const playPromise = ttsAudio.play();
       if (playPromise !== undefined) {
-        playPromise.catch(() => fallbackGatewaySpeech(speechText, selectedLang));
+        playPromise.catch(err => {
+          // If aborted because a new session started, ignore
+          if (thisSession !== voiceSessionCounterRef.current) return;
+          fallbackGatewaySpeech(speechText, selectedLang, thisSession);
+        });
       }
     } catch (e) {
-      fallbackGatewaySpeech(speechText, selectedLang);
-    }
-  };
-  const fallbackGatewaySpeech = (speechText, lang) => {
-    if (!('speechSynthesis' in window)) {
-      setTimeout(() => setIsSpeaking(false), 3000);
-      return;
-    }
-    try {
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.resume();
-      const ut = new SpeechSynthesisUtterance(speechText);
-      ut.rate = 0.90;
-      ut.lang = lang === 'hi' || lang === 'bho' ? 'hi-IN' : lang === 'or' ? 'or-IN' : lang === 'bn' ? 'bn-IN' : 'en-IN';
-      ut.onend = () => setIsSpeaking(false);
-      ut.onerror = () => setIsSpeaking(false);
-      window.speechSynthesis.speak(ut);
-    } catch (err) {
-      setIsSpeaking(false);
+      fallbackGatewaySpeech(speechText, selectedLang, thisSession);
     }
   };
 
@@ -826,7 +897,7 @@ function PortalLandingGateway() {
           name: "Sunita Soren",
           password: "password123",
           email: "sunita.soren@gmail.com",
-          village: "Jhirpani Tribal Hamlet (Sector 2)",
+          village: "Ward 7 Habitation (Sector 2)",
           aadhaarMasked: "XXXX-XXXX-4812",
           isAadhaarVerified: true,
           trustScore: 99,

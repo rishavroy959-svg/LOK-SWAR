@@ -1,4 +1,4 @@
-﻿/**
+/**
  * People's Priorities - Interactive End-to-End Guided Demo Walkthrough
  * 1-Click step-by-step interactive demonstration of the core civic intelligence pipeline:
  * Voice Input -> AI Clustering -> GIS Hotspot -> Discrepancy Alert -> Drone Mission -> Verification -> Score Recalculation -> ₹10 Cr Portfolio Optimization.
@@ -17,9 +17,9 @@ export const DEMO_STEPS = [
   {
     step: 2,
     id: "step-cluster",
-    title: "2. AI Semantic Clustering (412 Reports)",
+    title: "2. AI Semantic Clustering Engine",
     target_view: "thematic_clusters",
-    desc: "The Multilingual Embedding Pipeline groups 412 distinct reports submitted across Odia, Hindi, and English into the 'Road Infrastructure & Healthcare Connectivity' theme.",
+    desc: "The Multilingual Embedding Pipeline groups distinct reports submitted across regional languages into prioritized thematic infrastructure clusters.",
     action_label: "View Semantic Clusters 🧠",
     badge: "NLP Intelligence"
   },
@@ -28,7 +28,7 @@ export const DEMO_STEPS = [
     id: "step-hotspot",
     title: "3. Spatial GIS Hotspot Detection",
     target_view: "gis_map",
-    desc: "GIS engine identifies a critical demand density hotspot in  affecting 18,400 citizens with a 24 km detour to tertiary care.",
+    desc: "GIS engine dynamically identifies critical demand density hotspots across Gram Panchayats with real-time geospatial telemetry.",
     action_label: "Inspect GIS Hotspot 🗺️",
     badge: "Spatial Analytics"
   },

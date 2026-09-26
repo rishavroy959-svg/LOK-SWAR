@@ -149,8 +149,8 @@ function renderExplainabilityModal(state) {
               ✅ Positive Contribution Factors:
             </div>
             <ul style="padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.35rem; color: var(--neutral-700);">
-              <li><strong>High Citizen Demand:</strong> 412 direct citizen submissions in thematic cluster (Score: 94/100).</li>
-              <li><strong>Life-Safety & Health Impact:</strong> Restores 365-day ambulance link for 18,400 residents (Score: 92/100).</li>
+              <li><strong>Citizen Demand:</strong> Direct citizen submissions in thematic cluster (Score: ${project.score_breakdown?.citizen_demand_raw || 90}/100).</li>
+              <li><strong>Life-Safety & Health Impact:</strong> Restores vital connectivity for ${project.expected_population_benefited ? project.expected_population_benefited.toLocaleString() : 'affected'} residents.</li>
               <li><strong>Verified Ground Reality:</strong> Autonomous drone photogrammetry & Field Officer verified bridge washout (Confidence: 91%).</li>
               <li><strong>High Cost-Effectiveness:</strong> 38.5 beneficiaries per ₹1 lakh invested.</li>
             </ul>

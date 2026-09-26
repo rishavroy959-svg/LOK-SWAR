@@ -1,4 +1,4 @@
-/**
+﻿/**
  * People's Priorities - Constituency Master & Demo Data
  * Synthetic Ground Truth & Registry for 
  */
@@ -89,7 +89,7 @@ export function generateLocalSubmissions() {
     { cat: "Electricity", subcat: "Transformer & Power Feeder Upgrades", w: 0.05, sev: "Low" }
   ];
 
-  const langs = ["Odia", "Hindi", "English", "Bengali", "Bhojpuri", "Tamil", "Telugu", "Kannada", "Malayalam", "Marathi", "Gujarati", "Punjabi", "Urdu", "Assamese", "Maithili", "Santali", "Kashmiri", "Sindhi"];
+  const langs = ["Odia", "Hindi", "English", "Bengali", "Santali"];
   const types = ["voice", "text", "photo", "assisted_field"];
   const list = [];
 

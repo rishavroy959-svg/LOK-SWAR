@@ -1,0 +1,21 @@
+{
+  "name": "lok-swar-platform",
+  "version": "1.0.0",
+  "description": "Lok Swar - People's Priorities Civic Platform",
+  "scripts": {
+    "start": "py server.py",
+    "dev": "py server.py",
+    "server": "py server.py",
+    "ivr": "py -m uvicorn ivr.main:app --reload --port 8001 --host 0.0.0.0",
+    "backend": "npm --prefix backend start",
+    "backend:dev": "npm --prefix backend run dev"
+  },
+  "keywords": [
+    "lok-swar",
+    "civic-tech",
+    "python",
+    "ivr"
+  ],
+  "author": "",
+  "license": "ISC"
+}
