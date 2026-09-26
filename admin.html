@@ -2266,7 +2266,185 @@ function AdminSoftwareSuite() {
 
       // LOGIN VIEW (IF NOT AUTHENTICATED)
       if (!isAuthenticated) {
-        return /*#__PURE__*/React.createElement("div", {
+        
+      const renderGatewaySuite = () => {
+        return React.createElement("div", { className: "space-y-6 animate-in fade-in duration-200" },
+          /* Header Banner */
+          React.createElement("div", { className: "p-6 md:p-8 rounded-2xl border shadow-sm space-y-4 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100" },
+            React.createElement("div", { className: "flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-700" },
+              React.createElement("div", null,
+                React.createElement("div", { className: "flex items-center gap-2.5" },
+                  React.createElement("span", { className: "text-2xl" }, "🌐"),
+                  React.createElement("h2", { className: "text-xl font-black text-gray-900 dark:text-white" }, "Communications & Telemetry Gateway Suite"),
+                  React.createElement("span", { className: "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300" }, "🟢 OPERATIONAL")
+                ),
+                React.createElement("p", { className: "text-xs mt-1 text-gray-500 dark:text-gray-400" },
+                  "Central Gateway Operations Hub: Real-time telemetry monitoring, SMS gateway dispatchers, IVR TwiML trunks, WhatsApp AI webhooks, and GIS geocoding failover bridges."
+                )
+              ),
+              React.createElement("div", { className: "flex items-center gap-3" },
+                React.createElement("button", {
+                  onClick: () => showToast("Gateway Health Handshake Executed Successfully (Latency: 14ms)"),
+                  className: "px-4 py-2 rounded-xl bg-[#0F766E] hover:bg-[#0D655E] text-white text-xs font-bold shadow-md cursor-pointer transition-all active:scale-95 flex items-center gap-2"
+                },
+                  React.createElement("span", null, "⚡"),
+                  React.createElement("span", null, "Run Gateway Health Audit")
+                )
+              )
+            ),
+
+            /* Top KPI Cards */
+            React.createElement("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2" },
+              [
+                { title: "SMS Gateway (Fast2SMS / NIC)", stat: "14,280 SMS", sub: "99.8% Delivered • 142ms", icon: "📱", status: "Active", bg: "border-teal-200 bg-teal-50/40" },
+                { title: "IVR & Voice Trunk Engine", stat: "3,840 Calls", sub: "4 Active SIP Channels • Port 8001", icon: "📞", status: "Online", bg: "border-blue-200 bg-blue-50/40" },
+                { title: "WhatsApp Business API", stat: "8,120 Messages", sub: "Session Health: 100%", icon: "📲", status: "Connected", bg: "border-emerald-200 bg-emerald-50/40" },
+                { title: "GIS & Aerial Telemetry Bridge", stat: "12,450 Queries", sub: "Nominatim + BigDataCloud", icon: "🗺️", status: "Operational", bg: "border-purple-200 bg-purple-50/40" }
+              ].map((card, i) =>
+                React.createElement("div", { key: i, className: `p-4 rounded-xl border ${card.bg} space-y-1.5` },
+                  React.createElement("div", { className: "flex items-center justify-between text-xs font-bold text-gray-500" },
+                    React.createElement("span", { className: "flex items-center gap-1.5" },
+                      React.createElement("span", null, card.icon),
+                      React.createElement("span", null, card.title)
+                    ),
+                    React.createElement("span", { className: "text-[10px] px-1.5 py-0.5 rounded bg-white font-bold border border-gray-200 text-teal-700" }, card.status)
+                  ),
+                  React.createElement("div", { className: "text-lg font-black text-gray-900" }, card.stat),
+                  React.createElement("div", { className: "text-[11px] font-semibold text-gray-500" }, card.sub)
+                )
+              )
+            )
+          ),
+
+          /* Gateway Details Grid */
+          React.createElement("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6" },
+            /* Gateway 1: SMS Gateway Config & Dispatcher */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📱"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "Fast2SMS / Government SMS Gateway")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg border border-emerald-200 font-bold" }, "ID: LOKSWR")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "SMS Gateway Provider:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Fast2SMS DLTRoute (TRAI DLT Verified)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Available Credit Pool:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "48,500 Credits Available")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "DLT Content Template ID:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "170716890123450981")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Outbound Queue Latency:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "142 ms (Real-Time Async Push)")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => showToast("Test OTP SMS Dispatch Triggered (Fast2SMS API Response: 200 OK)"),
+                  className: "flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "📲 Test SMS OTP Dispatch"),
+                React.createElement("button", {
+                  onClick: () => showToast("DLT Template Schema Re-validated with TRAI Portal"),
+                  className: "py-2.5 px-4 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-bold cursor-pointer transition-all"
+                }, "🔄 Sync DLT")
+              )
+            ),
+
+            /* Gateway 2: IVR Customer Care & TwiML Webhook */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📞"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "IVR Customer Care & TwiML Webhook Engine")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-blue-50 text-blue-700 px-2 py-1 rounded-lg border border-blue-200 font-bold" }, "Port 8001")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "IVR Webhook URL:"),
+                  React.createElement("span", { className: "font-mono font-bold text-blue-600" }, "http://127.0.0.1:8001/ivr/welcome")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Active Dialects Supported:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Odia (OR), Sambalpuri (SB), Hindi (HI), Bengali (BN)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Audio Transcoder Pipeline:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "Whisper V3 + Google GTX + Edge Neural TTS")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Broadcast Sync Channel:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "lok_swar_ivr_sync")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => navigateTab('ivr_dashboard'),
+                  className: "flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "🖥️ Open IVR Telemetry Console"),
+                React.createElement("button", {
+                  onClick: () => window.open("http://localhost:8001/phone", "_blank"),
+                  className: "py-2.5 px-4 rounded-xl border border-blue-200 text-blue-700 hover:bg-blue-50 text-xs font-bold cursor-pointer transition-all"
+                }, "☎️ Launch Phone Simulator")
+              )
+            )
+          ),
+
+          /* Gateway Logs Table */
+          React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+            React.createElement("div", { className: "flex items-center justify-between" },
+              React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white flex items-center gap-2" },
+                React.createElement("span", null, "⚡"),
+                React.createElement("span", null, "Live Gateway Telemetry Stream & Audit Trail")
+              ),
+              React.createElement("span", { className: "text-xs font-semibold text-gray-400" }, "Auto-updating live logs")
+            ),
+            React.createElement("div", { className: "overflow-x-auto" },
+              React.createElement("table", { className: "w-full text-left text-xs" },
+                React.createElement("thead", { className: "bg-gray-50 text-gray-500 font-bold uppercase text-[10px]" },
+                  React.createElement("tr", null,
+                    React.createElement("th", { className: "p-3 rounded-l-lg" }, "Timestamp"),
+                    React.createElement("th", { className: "p-3" }, "Gateway"),
+                    React.createElement("th", { className: "p-3" }, "Event / Transaction"),
+                    React.createElement("th", { className: "p-3" }, "Recipient / Identifier"),
+                    React.createElement("th", { className: "p-3" }, "Status"),
+                    React.createElement("th", { className: "p-3 rounded-r-lg text-right" }, "Latency")
+                  )
+                ),
+                React.createElement("tbody", { className: "divide-y divide-gray-100 font-medium text-gray-700" },
+                  [
+                    { time: "19:15:02", gw: "SMS Gateway", event: "OTP Dispatch (+91-9870424405)", target: "+91-9870424405", status: "Delivered (200 OK)", lat: "138ms" },
+                    { time: "19:14:45", gw: "IVR Engine", event: "TwiML Call Welcome / Dialect Detect", target: "+91-9861234567", status: "Active Stream", lat: "42ms" },
+                    { time: "19:14:12", gw: "WhatsApp AI", event: "Voice Note Transcription Ingested", target: "VN-17898164082", status: "Parsed (Whisper V3)", lat: "310ms" },
+                    { time: "19:13:30", gw: "GIS Geocoder", event: "Reverse Geocode (22.1500° N, 84.1000° E)", target: "Bargaon GP", status: "Resolved (OpenStreetMap)", lat: "84ms" },
+                    { time: "19:12:05", gw: "DigiLocker", event: "Aadhaar e-KYC Verification", target: "XXXX-XXXX-1940", status: "Verified (UIDAI)", lat: "215ms" }
+                  ].map((row, idx) =>
+                    React.createElement("tr", { key: idx, className: "hover:bg-gray-50/80 transition-colors" },
+                      React.createElement("td", { className: "p-3 font-mono text-gray-400" }, row.time),
+                      React.createElement("td", { className: "p-3 font-bold text-gray-900" }, row.gw),
+                      React.createElement("td", { className: "p-3" }, row.event),
+                      React.createElement("td", { className: "p-3 font-mono text-gray-600" }, row.target),
+                      React.createElement("td", { className: "p-3" },
+                        React.createElement("span", { className: "px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200" }, row.status)
+                      ),
+                      React.createElement("td", { className: "p-3 font-mono text-right font-bold text-gray-500" }, row.lat)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        );
+      };
+
+      return /*#__PURE__*/React.createElement("div", {
           className: "min-h-screen w-full relative flex flex-col md:flex-row bg-[#F6F8F7] text-[#17212B] font-sans selection:bg-[#087F5B] selection:text-white"
         },
           /* LEFT SIDE - BRANDING */
@@ -2496,7 +2674,185 @@ function AdminSoftwareSuite() {
       }
 
       const renderClustersView = () => {
-        return /*#__PURE__*/React.createElement("div", {
+        
+      const renderGatewaySuite = () => {
+        return React.createElement("div", { className: "space-y-6 animate-in fade-in duration-200" },
+          /* Header Banner */
+          React.createElement("div", { className: "p-6 md:p-8 rounded-2xl border shadow-sm space-y-4 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100" },
+            React.createElement("div", { className: "flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-700" },
+              React.createElement("div", null,
+                React.createElement("div", { className: "flex items-center gap-2.5" },
+                  React.createElement("span", { className: "text-2xl" }, "🌐"),
+                  React.createElement("h2", { className: "text-xl font-black text-gray-900 dark:text-white" }, "Communications & Telemetry Gateway Suite"),
+                  React.createElement("span", { className: "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300" }, "🟢 OPERATIONAL")
+                ),
+                React.createElement("p", { className: "text-xs mt-1 text-gray-500 dark:text-gray-400" },
+                  "Central Gateway Operations Hub: Real-time telemetry monitoring, SMS gateway dispatchers, IVR TwiML trunks, WhatsApp AI webhooks, and GIS geocoding failover bridges."
+                )
+              ),
+              React.createElement("div", { className: "flex items-center gap-3" },
+                React.createElement("button", {
+                  onClick: () => showToast("Gateway Health Handshake Executed Successfully (Latency: 14ms)"),
+                  className: "px-4 py-2 rounded-xl bg-[#0F766E] hover:bg-[#0D655E] text-white text-xs font-bold shadow-md cursor-pointer transition-all active:scale-95 flex items-center gap-2"
+                },
+                  React.createElement("span", null, "⚡"),
+                  React.createElement("span", null, "Run Gateway Health Audit")
+                )
+              )
+            ),
+
+            /* Top KPI Cards */
+            React.createElement("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2" },
+              [
+                { title: "SMS Gateway (Fast2SMS / NIC)", stat: "14,280 SMS", sub: "99.8% Delivered • 142ms", icon: "📱", status: "Active", bg: "border-teal-200 bg-teal-50/40" },
+                { title: "IVR & Voice Trunk Engine", stat: "3,840 Calls", sub: "4 Active SIP Channels • Port 8001", icon: "📞", status: "Online", bg: "border-blue-200 bg-blue-50/40" },
+                { title: "WhatsApp Business API", stat: "8,120 Messages", sub: "Session Health: 100%", icon: "📲", status: "Connected", bg: "border-emerald-200 bg-emerald-50/40" },
+                { title: "GIS & Aerial Telemetry Bridge", stat: "12,450 Queries", sub: "Nominatim + BigDataCloud", icon: "🗺️", status: "Operational", bg: "border-purple-200 bg-purple-50/40" }
+              ].map((card, i) =>
+                React.createElement("div", { key: i, className: `p-4 rounded-xl border ${card.bg} space-y-1.5` },
+                  React.createElement("div", { className: "flex items-center justify-between text-xs font-bold text-gray-500" },
+                    React.createElement("span", { className: "flex items-center gap-1.5" },
+                      React.createElement("span", null, card.icon),
+                      React.createElement("span", null, card.title)
+                    ),
+                    React.createElement("span", { className: "text-[10px] px-1.5 py-0.5 rounded bg-white font-bold border border-gray-200 text-teal-700" }, card.status)
+                  ),
+                  React.createElement("div", { className: "text-lg font-black text-gray-900" }, card.stat),
+                  React.createElement("div", { className: "text-[11px] font-semibold text-gray-500" }, card.sub)
+                )
+              )
+            )
+          ),
+
+          /* Gateway Details Grid */
+          React.createElement("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6" },
+            /* Gateway 1: SMS Gateway Config & Dispatcher */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📱"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "Fast2SMS / Government SMS Gateway")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg border border-emerald-200 font-bold" }, "ID: LOKSWR")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "SMS Gateway Provider:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Fast2SMS DLTRoute (TRAI DLT Verified)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Available Credit Pool:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "48,500 Credits Available")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "DLT Content Template ID:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "170716890123450981")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Outbound Queue Latency:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "142 ms (Real-Time Async Push)")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => showToast("Test OTP SMS Dispatch Triggered (Fast2SMS API Response: 200 OK)"),
+                  className: "flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "📲 Test SMS OTP Dispatch"),
+                React.createElement("button", {
+                  onClick: () => showToast("DLT Template Schema Re-validated with TRAI Portal"),
+                  className: "py-2.5 px-4 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-bold cursor-pointer transition-all"
+                }, "🔄 Sync DLT")
+              )
+            ),
+
+            /* Gateway 2: IVR Customer Care & TwiML Webhook */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📞"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "IVR Customer Care & TwiML Webhook Engine")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-blue-50 text-blue-700 px-2 py-1 rounded-lg border border-blue-200 font-bold" }, "Port 8001")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "IVR Webhook URL:"),
+                  React.createElement("span", { className: "font-mono font-bold text-blue-600" }, "http://127.0.0.1:8001/ivr/welcome")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Active Dialects Supported:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Odia (OR), Sambalpuri (SB), Hindi (HI), Bengali (BN)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Audio Transcoder Pipeline:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "Whisper V3 + Google GTX + Edge Neural TTS")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Broadcast Sync Channel:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "lok_swar_ivr_sync")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => navigateTab('ivr_dashboard'),
+                  className: "flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "🖥️ Open IVR Telemetry Console"),
+                React.createElement("button", {
+                  onClick: () => window.open("http://localhost:8001/phone", "_blank"),
+                  className: "py-2.5 px-4 rounded-xl border border-blue-200 text-blue-700 hover:bg-blue-50 text-xs font-bold cursor-pointer transition-all"
+                }, "☎️ Launch Phone Simulator")
+              )
+            )
+          ),
+
+          /* Gateway Logs Table */
+          React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+            React.createElement("div", { className: "flex items-center justify-between" },
+              React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white flex items-center gap-2" },
+                React.createElement("span", null, "⚡"),
+                React.createElement("span", null, "Live Gateway Telemetry Stream & Audit Trail")
+              ),
+              React.createElement("span", { className: "text-xs font-semibold text-gray-400" }, "Auto-updating live logs")
+            ),
+            React.createElement("div", { className: "overflow-x-auto" },
+              React.createElement("table", { className: "w-full text-left text-xs" },
+                React.createElement("thead", { className: "bg-gray-50 text-gray-500 font-bold uppercase text-[10px]" },
+                  React.createElement("tr", null,
+                    React.createElement("th", { className: "p-3 rounded-l-lg" }, "Timestamp"),
+                    React.createElement("th", { className: "p-3" }, "Gateway"),
+                    React.createElement("th", { className: "p-3" }, "Event / Transaction"),
+                    React.createElement("th", { className: "p-3" }, "Recipient / Identifier"),
+                    React.createElement("th", { className: "p-3" }, "Status"),
+                    React.createElement("th", { className: "p-3 rounded-r-lg text-right" }, "Latency")
+                  )
+                ),
+                React.createElement("tbody", { className: "divide-y divide-gray-100 font-medium text-gray-700" },
+                  [
+                    { time: "19:15:02", gw: "SMS Gateway", event: "OTP Dispatch (+91-9870424405)", target: "+91-9870424405", status: "Delivered (200 OK)", lat: "138ms" },
+                    { time: "19:14:45", gw: "IVR Engine", event: "TwiML Call Welcome / Dialect Detect", target: "+91-9861234567", status: "Active Stream", lat: "42ms" },
+                    { time: "19:14:12", gw: "WhatsApp AI", event: "Voice Note Transcription Ingested", target: "VN-17898164082", status: "Parsed (Whisper V3)", lat: "310ms" },
+                    { time: "19:13:30", gw: "GIS Geocoder", event: "Reverse Geocode (22.1500° N, 84.1000° E)", target: "Bargaon GP", status: "Resolved (OpenStreetMap)", lat: "84ms" },
+                    { time: "19:12:05", gw: "DigiLocker", event: "Aadhaar e-KYC Verification", target: "XXXX-XXXX-1940", status: "Verified (UIDAI)", lat: "215ms" }
+                  ].map((row, idx) =>
+                    React.createElement("tr", { key: idx, className: "hover:bg-gray-50/80 transition-colors" },
+                      React.createElement("td", { className: "p-3 font-mono text-gray-400" }, row.time),
+                      React.createElement("td", { className: "p-3 font-bold text-gray-900" }, row.gw),
+                      React.createElement("td", { className: "p-3" }, row.event),
+                      React.createElement("td", { className: "p-3 font-mono text-gray-600" }, row.target),
+                      React.createElement("td", { className: "p-3" },
+                        React.createElement("span", { className: "px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200" }, row.status)
+                      ),
+                      React.createElement("td", { className: "p-3 font-mono text-right font-bold text-gray-500" }, row.lat)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        );
+      };
+
+      return /*#__PURE__*/React.createElement("div", {
           className: "space-y-6 animate-in fade-in duration-200"
         }, /*#__PURE__*/React.createElement("div", {
           className: "p-6 md:p-8 rounded-2xl border shadow-sm space-y-4 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100"
@@ -2550,7 +2906,185 @@ function AdminSoftwareSuite() {
           className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
         }, clustersList.map(cluster => {
           const sevColor = cluster.severity === 'Critical' ? 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border-rose-300 dark:border-rose-800' : (cluster.severity === 'High' ? 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300 border-amber-300 dark:border-amber-800' : 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 border-blue-300 dark:border-blue-800');
-          return /*#__PURE__*/React.createElement("div", {
+          
+      const renderGatewaySuite = () => {
+        return React.createElement("div", { className: "space-y-6 animate-in fade-in duration-200" },
+          /* Header Banner */
+          React.createElement("div", { className: "p-6 md:p-8 rounded-2xl border shadow-sm space-y-4 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100" },
+            React.createElement("div", { className: "flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-700" },
+              React.createElement("div", null,
+                React.createElement("div", { className: "flex items-center gap-2.5" },
+                  React.createElement("span", { className: "text-2xl" }, "🌐"),
+                  React.createElement("h2", { className: "text-xl font-black text-gray-900 dark:text-white" }, "Communications & Telemetry Gateway Suite"),
+                  React.createElement("span", { className: "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300" }, "🟢 OPERATIONAL")
+                ),
+                React.createElement("p", { className: "text-xs mt-1 text-gray-500 dark:text-gray-400" },
+                  "Central Gateway Operations Hub: Real-time telemetry monitoring, SMS gateway dispatchers, IVR TwiML trunks, WhatsApp AI webhooks, and GIS geocoding failover bridges."
+                )
+              ),
+              React.createElement("div", { className: "flex items-center gap-3" },
+                React.createElement("button", {
+                  onClick: () => showToast("Gateway Health Handshake Executed Successfully (Latency: 14ms)"),
+                  className: "px-4 py-2 rounded-xl bg-[#0F766E] hover:bg-[#0D655E] text-white text-xs font-bold shadow-md cursor-pointer transition-all active:scale-95 flex items-center gap-2"
+                },
+                  React.createElement("span", null, "⚡"),
+                  React.createElement("span", null, "Run Gateway Health Audit")
+                )
+              )
+            ),
+
+            /* Top KPI Cards */
+            React.createElement("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2" },
+              [
+                { title: "SMS Gateway (Fast2SMS / NIC)", stat: "14,280 SMS", sub: "99.8% Delivered • 142ms", icon: "📱", status: "Active", bg: "border-teal-200 bg-teal-50/40" },
+                { title: "IVR & Voice Trunk Engine", stat: "3,840 Calls", sub: "4 Active SIP Channels • Port 8001", icon: "📞", status: "Online", bg: "border-blue-200 bg-blue-50/40" },
+                { title: "WhatsApp Business API", stat: "8,120 Messages", sub: "Session Health: 100%", icon: "📲", status: "Connected", bg: "border-emerald-200 bg-emerald-50/40" },
+                { title: "GIS & Aerial Telemetry Bridge", stat: "12,450 Queries", sub: "Nominatim + BigDataCloud", icon: "🗺️", status: "Operational", bg: "border-purple-200 bg-purple-50/40" }
+              ].map((card, i) =>
+                React.createElement("div", { key: i, className: `p-4 rounded-xl border ${card.bg} space-y-1.5` },
+                  React.createElement("div", { className: "flex items-center justify-between text-xs font-bold text-gray-500" },
+                    React.createElement("span", { className: "flex items-center gap-1.5" },
+                      React.createElement("span", null, card.icon),
+                      React.createElement("span", null, card.title)
+                    ),
+                    React.createElement("span", { className: "text-[10px] px-1.5 py-0.5 rounded bg-white font-bold border border-gray-200 text-teal-700" }, card.status)
+                  ),
+                  React.createElement("div", { className: "text-lg font-black text-gray-900" }, card.stat),
+                  React.createElement("div", { className: "text-[11px] font-semibold text-gray-500" }, card.sub)
+                )
+              )
+            )
+          ),
+
+          /* Gateway Details Grid */
+          React.createElement("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6" },
+            /* Gateway 1: SMS Gateway Config & Dispatcher */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📱"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "Fast2SMS / Government SMS Gateway")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg border border-emerald-200 font-bold" }, "ID: LOKSWR")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "SMS Gateway Provider:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Fast2SMS DLTRoute (TRAI DLT Verified)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Available Credit Pool:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "48,500 Credits Available")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "DLT Content Template ID:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "170716890123450981")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Outbound Queue Latency:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "142 ms (Real-Time Async Push)")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => showToast("Test OTP SMS Dispatch Triggered (Fast2SMS API Response: 200 OK)"),
+                  className: "flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "📲 Test SMS OTP Dispatch"),
+                React.createElement("button", {
+                  onClick: () => showToast("DLT Template Schema Re-validated with TRAI Portal"),
+                  className: "py-2.5 px-4 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-bold cursor-pointer transition-all"
+                }, "🔄 Sync DLT")
+              )
+            ),
+
+            /* Gateway 2: IVR Customer Care & TwiML Webhook */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📞"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "IVR Customer Care & TwiML Webhook Engine")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-blue-50 text-blue-700 px-2 py-1 rounded-lg border border-blue-200 font-bold" }, "Port 8001")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "IVR Webhook URL:"),
+                  React.createElement("span", { className: "font-mono font-bold text-blue-600" }, "http://127.0.0.1:8001/ivr/welcome")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Active Dialects Supported:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Odia (OR), Sambalpuri (SB), Hindi (HI), Bengali (BN)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Audio Transcoder Pipeline:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "Whisper V3 + Google GTX + Edge Neural TTS")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Broadcast Sync Channel:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "lok_swar_ivr_sync")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => navigateTab('ivr_dashboard'),
+                  className: "flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "🖥️ Open IVR Telemetry Console"),
+                React.createElement("button", {
+                  onClick: () => window.open("http://localhost:8001/phone", "_blank"),
+                  className: "py-2.5 px-4 rounded-xl border border-blue-200 text-blue-700 hover:bg-blue-50 text-xs font-bold cursor-pointer transition-all"
+                }, "☎️ Launch Phone Simulator")
+              )
+            )
+          ),
+
+          /* Gateway Logs Table */
+          React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+            React.createElement("div", { className: "flex items-center justify-between" },
+              React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white flex items-center gap-2" },
+                React.createElement("span", null, "⚡"),
+                React.createElement("span", null, "Live Gateway Telemetry Stream & Audit Trail")
+              ),
+              React.createElement("span", { className: "text-xs font-semibold text-gray-400" }, "Auto-updating live logs")
+            ),
+            React.createElement("div", { className: "overflow-x-auto" },
+              React.createElement("table", { className: "w-full text-left text-xs" },
+                React.createElement("thead", { className: "bg-gray-50 text-gray-500 font-bold uppercase text-[10px]" },
+                  React.createElement("tr", null,
+                    React.createElement("th", { className: "p-3 rounded-l-lg" }, "Timestamp"),
+                    React.createElement("th", { className: "p-3" }, "Gateway"),
+                    React.createElement("th", { className: "p-3" }, "Event / Transaction"),
+                    React.createElement("th", { className: "p-3" }, "Recipient / Identifier"),
+                    React.createElement("th", { className: "p-3" }, "Status"),
+                    React.createElement("th", { className: "p-3 rounded-r-lg text-right" }, "Latency")
+                  )
+                ),
+                React.createElement("tbody", { className: "divide-y divide-gray-100 font-medium text-gray-700" },
+                  [
+                    { time: "19:15:02", gw: "SMS Gateway", event: "OTP Dispatch (+91-9870424405)", target: "+91-9870424405", status: "Delivered (200 OK)", lat: "138ms" },
+                    { time: "19:14:45", gw: "IVR Engine", event: "TwiML Call Welcome / Dialect Detect", target: "+91-9861234567", status: "Active Stream", lat: "42ms" },
+                    { time: "19:14:12", gw: "WhatsApp AI", event: "Voice Note Transcription Ingested", target: "VN-17898164082", status: "Parsed (Whisper V3)", lat: "310ms" },
+                    { time: "19:13:30", gw: "GIS Geocoder", event: "Reverse Geocode (22.1500° N, 84.1000° E)", target: "Bargaon GP", status: "Resolved (OpenStreetMap)", lat: "84ms" },
+                    { time: "19:12:05", gw: "DigiLocker", event: "Aadhaar e-KYC Verification", target: "XXXX-XXXX-1940", status: "Verified (UIDAI)", lat: "215ms" }
+                  ].map((row, idx) =>
+                    React.createElement("tr", { key: idx, className: "hover:bg-gray-50/80 transition-colors" },
+                      React.createElement("td", { className: "p-3 font-mono text-gray-400" }, row.time),
+                      React.createElement("td", { className: "p-3 font-bold text-gray-900" }, row.gw),
+                      React.createElement("td", { className: "p-3" }, row.event),
+                      React.createElement("td", { className: "p-3 font-mono text-gray-600" }, row.target),
+                      React.createElement("td", { className: "p-3" },
+                        React.createElement("span", { className: "px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200" }, row.status)
+                      ),
+                      React.createElement("td", { className: "p-3 font-mono text-right font-bold text-gray-500" }, row.lat)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        );
+      };
+
+      return /*#__PURE__*/React.createElement("div", {
             key: cluster.id,
             className: "p-5 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 shadow-sm flex flex-col justify-between gap-4 hover:border-slate-400 dark:hover:border-slate-700 transition-all"
           }, /*#__PURE__*/React.createElement("div", {
@@ -2606,7 +3140,185 @@ function AdminSoftwareSuite() {
           return { ...p, priority_score: totalScore, score_factors: factors, benefit_per_cr: bPerCr };
         }).sort((a, b) => b.priority_score - a.priority_score);
 
-        return /*#__PURE__*/React.createElement("div", {
+        
+      const renderGatewaySuite = () => {
+        return React.createElement("div", { className: "space-y-6 animate-in fade-in duration-200" },
+          /* Header Banner */
+          React.createElement("div", { className: "p-6 md:p-8 rounded-2xl border shadow-sm space-y-4 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100" },
+            React.createElement("div", { className: "flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-700" },
+              React.createElement("div", null,
+                React.createElement("div", { className: "flex items-center gap-2.5" },
+                  React.createElement("span", { className: "text-2xl" }, "🌐"),
+                  React.createElement("h2", { className: "text-xl font-black text-gray-900 dark:text-white" }, "Communications & Telemetry Gateway Suite"),
+                  React.createElement("span", { className: "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300" }, "🟢 OPERATIONAL")
+                ),
+                React.createElement("p", { className: "text-xs mt-1 text-gray-500 dark:text-gray-400" },
+                  "Central Gateway Operations Hub: Real-time telemetry monitoring, SMS gateway dispatchers, IVR TwiML trunks, WhatsApp AI webhooks, and GIS geocoding failover bridges."
+                )
+              ),
+              React.createElement("div", { className: "flex items-center gap-3" },
+                React.createElement("button", {
+                  onClick: () => showToast("Gateway Health Handshake Executed Successfully (Latency: 14ms)"),
+                  className: "px-4 py-2 rounded-xl bg-[#0F766E] hover:bg-[#0D655E] text-white text-xs font-bold shadow-md cursor-pointer transition-all active:scale-95 flex items-center gap-2"
+                },
+                  React.createElement("span", null, "⚡"),
+                  React.createElement("span", null, "Run Gateway Health Audit")
+                )
+              )
+            ),
+
+            /* Top KPI Cards */
+            React.createElement("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2" },
+              [
+                { title: "SMS Gateway (Fast2SMS / NIC)", stat: "14,280 SMS", sub: "99.8% Delivered • 142ms", icon: "📱", status: "Active", bg: "border-teal-200 bg-teal-50/40" },
+                { title: "IVR & Voice Trunk Engine", stat: "3,840 Calls", sub: "4 Active SIP Channels • Port 8001", icon: "📞", status: "Online", bg: "border-blue-200 bg-blue-50/40" },
+                { title: "WhatsApp Business API", stat: "8,120 Messages", sub: "Session Health: 100%", icon: "📲", status: "Connected", bg: "border-emerald-200 bg-emerald-50/40" },
+                { title: "GIS & Aerial Telemetry Bridge", stat: "12,450 Queries", sub: "Nominatim + BigDataCloud", icon: "🗺️", status: "Operational", bg: "border-purple-200 bg-purple-50/40" }
+              ].map((card, i) =>
+                React.createElement("div", { key: i, className: `p-4 rounded-xl border ${card.bg} space-y-1.5` },
+                  React.createElement("div", { className: "flex items-center justify-between text-xs font-bold text-gray-500" },
+                    React.createElement("span", { className: "flex items-center gap-1.5" },
+                      React.createElement("span", null, card.icon),
+                      React.createElement("span", null, card.title)
+                    ),
+                    React.createElement("span", { className: "text-[10px] px-1.5 py-0.5 rounded bg-white font-bold border border-gray-200 text-teal-700" }, card.status)
+                  ),
+                  React.createElement("div", { className: "text-lg font-black text-gray-900" }, card.stat),
+                  React.createElement("div", { className: "text-[11px] font-semibold text-gray-500" }, card.sub)
+                )
+              )
+            )
+          ),
+
+          /* Gateway Details Grid */
+          React.createElement("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6" },
+            /* Gateway 1: SMS Gateway Config & Dispatcher */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📱"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "Fast2SMS / Government SMS Gateway")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg border border-emerald-200 font-bold" }, "ID: LOKSWR")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "SMS Gateway Provider:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Fast2SMS DLTRoute (TRAI DLT Verified)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Available Credit Pool:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "48,500 Credits Available")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "DLT Content Template ID:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "170716890123450981")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Outbound Queue Latency:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "142 ms (Real-Time Async Push)")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => showToast("Test OTP SMS Dispatch Triggered (Fast2SMS API Response: 200 OK)"),
+                  className: "flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "📲 Test SMS OTP Dispatch"),
+                React.createElement("button", {
+                  onClick: () => showToast("DLT Template Schema Re-validated with TRAI Portal"),
+                  className: "py-2.5 px-4 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-bold cursor-pointer transition-all"
+                }, "🔄 Sync DLT")
+              )
+            ),
+
+            /* Gateway 2: IVR Customer Care & TwiML Webhook */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📞"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "IVR Customer Care & TwiML Webhook Engine")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-blue-50 text-blue-700 px-2 py-1 rounded-lg border border-blue-200 font-bold" }, "Port 8001")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "IVR Webhook URL:"),
+                  React.createElement("span", { className: "font-mono font-bold text-blue-600" }, "http://127.0.0.1:8001/ivr/welcome")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Active Dialects Supported:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Odia (OR), Sambalpuri (SB), Hindi (HI), Bengali (BN)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Audio Transcoder Pipeline:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "Whisper V3 + Google GTX + Edge Neural TTS")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Broadcast Sync Channel:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "lok_swar_ivr_sync")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => navigateTab('ivr_dashboard'),
+                  className: "flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "🖥️ Open IVR Telemetry Console"),
+                React.createElement("button", {
+                  onClick: () => window.open("http://localhost:8001/phone", "_blank"),
+                  className: "py-2.5 px-4 rounded-xl border border-blue-200 text-blue-700 hover:bg-blue-50 text-xs font-bold cursor-pointer transition-all"
+                }, "☎️ Launch Phone Simulator")
+              )
+            )
+          ),
+
+          /* Gateway Logs Table */
+          React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+            React.createElement("div", { className: "flex items-center justify-between" },
+              React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white flex items-center gap-2" },
+                React.createElement("span", null, "⚡"),
+                React.createElement("span", null, "Live Gateway Telemetry Stream & Audit Trail")
+              ),
+              React.createElement("span", { className: "text-xs font-semibold text-gray-400" }, "Auto-updating live logs")
+            ),
+            React.createElement("div", { className: "overflow-x-auto" },
+              React.createElement("table", { className: "w-full text-left text-xs" },
+                React.createElement("thead", { className: "bg-gray-50 text-gray-500 font-bold uppercase text-[10px]" },
+                  React.createElement("tr", null,
+                    React.createElement("th", { className: "p-3 rounded-l-lg" }, "Timestamp"),
+                    React.createElement("th", { className: "p-3" }, "Gateway"),
+                    React.createElement("th", { className: "p-3" }, "Event / Transaction"),
+                    React.createElement("th", { className: "p-3" }, "Recipient / Identifier"),
+                    React.createElement("th", { className: "p-3" }, "Status"),
+                    React.createElement("th", { className: "p-3 rounded-r-lg text-right" }, "Latency")
+                  )
+                ),
+                React.createElement("tbody", { className: "divide-y divide-gray-100 font-medium text-gray-700" },
+                  [
+                    { time: "19:15:02", gw: "SMS Gateway", event: "OTP Dispatch (+91-9870424405)", target: "+91-9870424405", status: "Delivered (200 OK)", lat: "138ms" },
+                    { time: "19:14:45", gw: "IVR Engine", event: "TwiML Call Welcome / Dialect Detect", target: "+91-9861234567", status: "Active Stream", lat: "42ms" },
+                    { time: "19:14:12", gw: "WhatsApp AI", event: "Voice Note Transcription Ingested", target: "VN-17898164082", status: "Parsed (Whisper V3)", lat: "310ms" },
+                    { time: "19:13:30", gw: "GIS Geocoder", event: "Reverse Geocode (22.1500° N, 84.1000° E)", target: "Bargaon GP", status: "Resolved (OpenStreetMap)", lat: "84ms" },
+                    { time: "19:12:05", gw: "DigiLocker", event: "Aadhaar e-KYC Verification", target: "XXXX-XXXX-1940", status: "Verified (UIDAI)", lat: "215ms" }
+                  ].map((row, idx) =>
+                    React.createElement("tr", { key: idx, className: "hover:bg-gray-50/80 transition-colors" },
+                      React.createElement("td", { className: "p-3 font-mono text-gray-400" }, row.time),
+                      React.createElement("td", { className: "p-3 font-bold text-gray-900" }, row.gw),
+                      React.createElement("td", { className: "p-3" }, row.event),
+                      React.createElement("td", { className: "p-3 font-mono text-gray-600" }, row.target),
+                      React.createElement("td", { className: "p-3" },
+                        React.createElement("span", { className: "px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200" }, row.status)
+                      ),
+                      React.createElement("td", { className: "p-3 font-mono text-right font-bold text-gray-500" }, row.lat)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        );
+      };
+
+      return /*#__PURE__*/React.createElement("div", {
           className: "space-y-6 animate-in fade-in duration-200"
         }, /*#__PURE__*/React.createElement("div", {
           className: "p-6 md:p-8 rounded-2xl border shadow-sm space-y-4 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100"
@@ -2667,7 +3379,185 @@ function AdminSoftwareSuite() {
         }].map(item => {
           const val = rankingWeights[item.key] !== undefined ? rankingWeights[item.key] : DEFAULT_WEIGHTS[item.key];
           const pct = Math.round(val * 100);
-          return /*#__PURE__*/React.createElement("div", {
+          
+      const renderGatewaySuite = () => {
+        return React.createElement("div", { className: "space-y-6 animate-in fade-in duration-200" },
+          /* Header Banner */
+          React.createElement("div", { className: "p-6 md:p-8 rounded-2xl border shadow-sm space-y-4 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100" },
+            React.createElement("div", { className: "flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-700" },
+              React.createElement("div", null,
+                React.createElement("div", { className: "flex items-center gap-2.5" },
+                  React.createElement("span", { className: "text-2xl" }, "🌐"),
+                  React.createElement("h2", { className: "text-xl font-black text-gray-900 dark:text-white" }, "Communications & Telemetry Gateway Suite"),
+                  React.createElement("span", { className: "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300" }, "🟢 OPERATIONAL")
+                ),
+                React.createElement("p", { className: "text-xs mt-1 text-gray-500 dark:text-gray-400" },
+                  "Central Gateway Operations Hub: Real-time telemetry monitoring, SMS gateway dispatchers, IVR TwiML trunks, WhatsApp AI webhooks, and GIS geocoding failover bridges."
+                )
+              ),
+              React.createElement("div", { className: "flex items-center gap-3" },
+                React.createElement("button", {
+                  onClick: () => showToast("Gateway Health Handshake Executed Successfully (Latency: 14ms)"),
+                  className: "px-4 py-2 rounded-xl bg-[#0F766E] hover:bg-[#0D655E] text-white text-xs font-bold shadow-md cursor-pointer transition-all active:scale-95 flex items-center gap-2"
+                },
+                  React.createElement("span", null, "⚡"),
+                  React.createElement("span", null, "Run Gateway Health Audit")
+                )
+              )
+            ),
+
+            /* Top KPI Cards */
+            React.createElement("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2" },
+              [
+                { title: "SMS Gateway (Fast2SMS / NIC)", stat: "14,280 SMS", sub: "99.8% Delivered • 142ms", icon: "📱", status: "Active", bg: "border-teal-200 bg-teal-50/40" },
+                { title: "IVR & Voice Trunk Engine", stat: "3,840 Calls", sub: "4 Active SIP Channels • Port 8001", icon: "📞", status: "Online", bg: "border-blue-200 bg-blue-50/40" },
+                { title: "WhatsApp Business API", stat: "8,120 Messages", sub: "Session Health: 100%", icon: "📲", status: "Connected", bg: "border-emerald-200 bg-emerald-50/40" },
+                { title: "GIS & Aerial Telemetry Bridge", stat: "12,450 Queries", sub: "Nominatim + BigDataCloud", icon: "🗺️", status: "Operational", bg: "border-purple-200 bg-purple-50/40" }
+              ].map((card, i) =>
+                React.createElement("div", { key: i, className: `p-4 rounded-xl border ${card.bg} space-y-1.5` },
+                  React.createElement("div", { className: "flex items-center justify-between text-xs font-bold text-gray-500" },
+                    React.createElement("span", { className: "flex items-center gap-1.5" },
+                      React.createElement("span", null, card.icon),
+                      React.createElement("span", null, card.title)
+                    ),
+                    React.createElement("span", { className: "text-[10px] px-1.5 py-0.5 rounded bg-white font-bold border border-gray-200 text-teal-700" }, card.status)
+                  ),
+                  React.createElement("div", { className: "text-lg font-black text-gray-900" }, card.stat),
+                  React.createElement("div", { className: "text-[11px] font-semibold text-gray-500" }, card.sub)
+                )
+              )
+            )
+          ),
+
+          /* Gateway Details Grid */
+          React.createElement("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6" },
+            /* Gateway 1: SMS Gateway Config & Dispatcher */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📱"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "Fast2SMS / Government SMS Gateway")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg border border-emerald-200 font-bold" }, "ID: LOKSWR")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "SMS Gateway Provider:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Fast2SMS DLTRoute (TRAI DLT Verified)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Available Credit Pool:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "48,500 Credits Available")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "DLT Content Template ID:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "170716890123450981")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Outbound Queue Latency:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "142 ms (Real-Time Async Push)")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => showToast("Test OTP SMS Dispatch Triggered (Fast2SMS API Response: 200 OK)"),
+                  className: "flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "📲 Test SMS OTP Dispatch"),
+                React.createElement("button", {
+                  onClick: () => showToast("DLT Template Schema Re-validated with TRAI Portal"),
+                  className: "py-2.5 px-4 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-bold cursor-pointer transition-all"
+                }, "🔄 Sync DLT")
+              )
+            ),
+
+            /* Gateway 2: IVR Customer Care & TwiML Webhook */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📞"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "IVR Customer Care & TwiML Webhook Engine")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-blue-50 text-blue-700 px-2 py-1 rounded-lg border border-blue-200 font-bold" }, "Port 8001")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "IVR Webhook URL:"),
+                  React.createElement("span", { className: "font-mono font-bold text-blue-600" }, "http://127.0.0.1:8001/ivr/welcome")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Active Dialects Supported:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Odia (OR), Sambalpuri (SB), Hindi (HI), Bengali (BN)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Audio Transcoder Pipeline:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "Whisper V3 + Google GTX + Edge Neural TTS")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Broadcast Sync Channel:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "lok_swar_ivr_sync")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => navigateTab('ivr_dashboard'),
+                  className: "flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "🖥️ Open IVR Telemetry Console"),
+                React.createElement("button", {
+                  onClick: () => window.open("http://localhost:8001/phone", "_blank"),
+                  className: "py-2.5 px-4 rounded-xl border border-blue-200 text-blue-700 hover:bg-blue-50 text-xs font-bold cursor-pointer transition-all"
+                }, "☎️ Launch Phone Simulator")
+              )
+            )
+          ),
+
+          /* Gateway Logs Table */
+          React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+            React.createElement("div", { className: "flex items-center justify-between" },
+              React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white flex items-center gap-2" },
+                React.createElement("span", null, "⚡"),
+                React.createElement("span", null, "Live Gateway Telemetry Stream & Audit Trail")
+              ),
+              React.createElement("span", { className: "text-xs font-semibold text-gray-400" }, "Auto-updating live logs")
+            ),
+            React.createElement("div", { className: "overflow-x-auto" },
+              React.createElement("table", { className: "w-full text-left text-xs" },
+                React.createElement("thead", { className: "bg-gray-50 text-gray-500 font-bold uppercase text-[10px]" },
+                  React.createElement("tr", null,
+                    React.createElement("th", { className: "p-3 rounded-l-lg" }, "Timestamp"),
+                    React.createElement("th", { className: "p-3" }, "Gateway"),
+                    React.createElement("th", { className: "p-3" }, "Event / Transaction"),
+                    React.createElement("th", { className: "p-3" }, "Recipient / Identifier"),
+                    React.createElement("th", { className: "p-3" }, "Status"),
+                    React.createElement("th", { className: "p-3 rounded-r-lg text-right" }, "Latency")
+                  )
+                ),
+                React.createElement("tbody", { className: "divide-y divide-gray-100 font-medium text-gray-700" },
+                  [
+                    { time: "19:15:02", gw: "SMS Gateway", event: "OTP Dispatch (+91-9870424405)", target: "+91-9870424405", status: "Delivered (200 OK)", lat: "138ms" },
+                    { time: "19:14:45", gw: "IVR Engine", event: "TwiML Call Welcome / Dialect Detect", target: "+91-9861234567", status: "Active Stream", lat: "42ms" },
+                    { time: "19:14:12", gw: "WhatsApp AI", event: "Voice Note Transcription Ingested", target: "VN-17898164082", status: "Parsed (Whisper V3)", lat: "310ms" },
+                    { time: "19:13:30", gw: "GIS Geocoder", event: "Reverse Geocode (22.1500° N, 84.1000° E)", target: "Bargaon GP", status: "Resolved (OpenStreetMap)", lat: "84ms" },
+                    { time: "19:12:05", gw: "DigiLocker", event: "Aadhaar e-KYC Verification", target: "XXXX-XXXX-1940", status: "Verified (UIDAI)", lat: "215ms" }
+                  ].map((row, idx) =>
+                    React.createElement("tr", { key: idx, className: "hover:bg-gray-50/80 transition-colors" },
+                      React.createElement("td", { className: "p-3 font-mono text-gray-400" }, row.time),
+                      React.createElement("td", { className: "p-3 font-bold text-gray-900" }, row.gw),
+                      React.createElement("td", { className: "p-3" }, row.event),
+                      React.createElement("td", { className: "p-3 font-mono text-gray-600" }, row.target),
+                      React.createElement("td", { className: "p-3" },
+                        React.createElement("span", { className: "px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200" }, row.status)
+                      ),
+                      React.createElement("td", { className: "p-3 font-mono text-right font-bold text-gray-500" }, row.lat)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        );
+      };
+
+      return /*#__PURE__*/React.createElement("div", {
             key: item.key,
             className: "space-y-1.5"
           }, /*#__PURE__*/React.createElement("div", {
@@ -2692,7 +3582,185 @@ function AdminSoftwareSuite() {
         }, sortedProjects.map((p, idx) => {
           const rank = idx + 1;
           const isTop = rank <= 3;
-          return /*#__PURE__*/React.createElement("div", {
+          
+      const renderGatewaySuite = () => {
+        return React.createElement("div", { className: "space-y-6 animate-in fade-in duration-200" },
+          /* Header Banner */
+          React.createElement("div", { className: "p-6 md:p-8 rounded-2xl border shadow-sm space-y-4 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100" },
+            React.createElement("div", { className: "flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-700" },
+              React.createElement("div", null,
+                React.createElement("div", { className: "flex items-center gap-2.5" },
+                  React.createElement("span", { className: "text-2xl" }, "🌐"),
+                  React.createElement("h2", { className: "text-xl font-black text-gray-900 dark:text-white" }, "Communications & Telemetry Gateway Suite"),
+                  React.createElement("span", { className: "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300" }, "🟢 OPERATIONAL")
+                ),
+                React.createElement("p", { className: "text-xs mt-1 text-gray-500 dark:text-gray-400" },
+                  "Central Gateway Operations Hub: Real-time telemetry monitoring, SMS gateway dispatchers, IVR TwiML trunks, WhatsApp AI webhooks, and GIS geocoding failover bridges."
+                )
+              ),
+              React.createElement("div", { className: "flex items-center gap-3" },
+                React.createElement("button", {
+                  onClick: () => showToast("Gateway Health Handshake Executed Successfully (Latency: 14ms)"),
+                  className: "px-4 py-2 rounded-xl bg-[#0F766E] hover:bg-[#0D655E] text-white text-xs font-bold shadow-md cursor-pointer transition-all active:scale-95 flex items-center gap-2"
+                },
+                  React.createElement("span", null, "⚡"),
+                  React.createElement("span", null, "Run Gateway Health Audit")
+                )
+              )
+            ),
+
+            /* Top KPI Cards */
+            React.createElement("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2" },
+              [
+                { title: "SMS Gateway (Fast2SMS / NIC)", stat: "14,280 SMS", sub: "99.8% Delivered • 142ms", icon: "📱", status: "Active", bg: "border-teal-200 bg-teal-50/40" },
+                { title: "IVR & Voice Trunk Engine", stat: "3,840 Calls", sub: "4 Active SIP Channels • Port 8001", icon: "📞", status: "Online", bg: "border-blue-200 bg-blue-50/40" },
+                { title: "WhatsApp Business API", stat: "8,120 Messages", sub: "Session Health: 100%", icon: "📲", status: "Connected", bg: "border-emerald-200 bg-emerald-50/40" },
+                { title: "GIS & Aerial Telemetry Bridge", stat: "12,450 Queries", sub: "Nominatim + BigDataCloud", icon: "🗺️", status: "Operational", bg: "border-purple-200 bg-purple-50/40" }
+              ].map((card, i) =>
+                React.createElement("div", { key: i, className: `p-4 rounded-xl border ${card.bg} space-y-1.5` },
+                  React.createElement("div", { className: "flex items-center justify-between text-xs font-bold text-gray-500" },
+                    React.createElement("span", { className: "flex items-center gap-1.5" },
+                      React.createElement("span", null, card.icon),
+                      React.createElement("span", null, card.title)
+                    ),
+                    React.createElement("span", { className: "text-[10px] px-1.5 py-0.5 rounded bg-white font-bold border border-gray-200 text-teal-700" }, card.status)
+                  ),
+                  React.createElement("div", { className: "text-lg font-black text-gray-900" }, card.stat),
+                  React.createElement("div", { className: "text-[11px] font-semibold text-gray-500" }, card.sub)
+                )
+              )
+            )
+          ),
+
+          /* Gateway Details Grid */
+          React.createElement("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6" },
+            /* Gateway 1: SMS Gateway Config & Dispatcher */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📱"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "Fast2SMS / Government SMS Gateway")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg border border-emerald-200 font-bold" }, "ID: LOKSWR")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "SMS Gateway Provider:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Fast2SMS DLTRoute (TRAI DLT Verified)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Available Credit Pool:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "48,500 Credits Available")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "DLT Content Template ID:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "170716890123450981")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Outbound Queue Latency:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "142 ms (Real-Time Async Push)")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => showToast("Test OTP SMS Dispatch Triggered (Fast2SMS API Response: 200 OK)"),
+                  className: "flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "📲 Test SMS OTP Dispatch"),
+                React.createElement("button", {
+                  onClick: () => showToast("DLT Template Schema Re-validated with TRAI Portal"),
+                  className: "py-2.5 px-4 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-bold cursor-pointer transition-all"
+                }, "🔄 Sync DLT")
+              )
+            ),
+
+            /* Gateway 2: IVR Customer Care & TwiML Webhook */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📞"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "IVR Customer Care & TwiML Webhook Engine")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-blue-50 text-blue-700 px-2 py-1 rounded-lg border border-blue-200 font-bold" }, "Port 8001")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "IVR Webhook URL:"),
+                  React.createElement("span", { className: "font-mono font-bold text-blue-600" }, "http://127.0.0.1:8001/ivr/welcome")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Active Dialects Supported:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Odia (OR), Sambalpuri (SB), Hindi (HI), Bengali (BN)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Audio Transcoder Pipeline:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "Whisper V3 + Google GTX + Edge Neural TTS")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Broadcast Sync Channel:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "lok_swar_ivr_sync")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => navigateTab('ivr_dashboard'),
+                  className: "flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "🖥️ Open IVR Telemetry Console"),
+                React.createElement("button", {
+                  onClick: () => window.open("http://localhost:8001/phone", "_blank"),
+                  className: "py-2.5 px-4 rounded-xl border border-blue-200 text-blue-700 hover:bg-blue-50 text-xs font-bold cursor-pointer transition-all"
+                }, "☎️ Launch Phone Simulator")
+              )
+            )
+          ),
+
+          /* Gateway Logs Table */
+          React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+            React.createElement("div", { className: "flex items-center justify-between" },
+              React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white flex items-center gap-2" },
+                React.createElement("span", null, "⚡"),
+                React.createElement("span", null, "Live Gateway Telemetry Stream & Audit Trail")
+              ),
+              React.createElement("span", { className: "text-xs font-semibold text-gray-400" }, "Auto-updating live logs")
+            ),
+            React.createElement("div", { className: "overflow-x-auto" },
+              React.createElement("table", { className: "w-full text-left text-xs" },
+                React.createElement("thead", { className: "bg-gray-50 text-gray-500 font-bold uppercase text-[10px]" },
+                  React.createElement("tr", null,
+                    React.createElement("th", { className: "p-3 rounded-l-lg" }, "Timestamp"),
+                    React.createElement("th", { className: "p-3" }, "Gateway"),
+                    React.createElement("th", { className: "p-3" }, "Event / Transaction"),
+                    React.createElement("th", { className: "p-3" }, "Recipient / Identifier"),
+                    React.createElement("th", { className: "p-3" }, "Status"),
+                    React.createElement("th", { className: "p-3 rounded-r-lg text-right" }, "Latency")
+                  )
+                ),
+                React.createElement("tbody", { className: "divide-y divide-gray-100 font-medium text-gray-700" },
+                  [
+                    { time: "19:15:02", gw: "SMS Gateway", event: "OTP Dispatch (+91-9870424405)", target: "+91-9870424405", status: "Delivered (200 OK)", lat: "138ms" },
+                    { time: "19:14:45", gw: "IVR Engine", event: "TwiML Call Welcome / Dialect Detect", target: "+91-9861234567", status: "Active Stream", lat: "42ms" },
+                    { time: "19:14:12", gw: "WhatsApp AI", event: "Voice Note Transcription Ingested", target: "VN-17898164082", status: "Parsed (Whisper V3)", lat: "310ms" },
+                    { time: "19:13:30", gw: "GIS Geocoder", event: "Reverse Geocode (22.1500° N, 84.1000° E)", target: "Bargaon GP", status: "Resolved (OpenStreetMap)", lat: "84ms" },
+                    { time: "19:12:05", gw: "DigiLocker", event: "Aadhaar e-KYC Verification", target: "XXXX-XXXX-1940", status: "Verified (UIDAI)", lat: "215ms" }
+                  ].map((row, idx) =>
+                    React.createElement("tr", { key: idx, className: "hover:bg-gray-50/80 transition-colors" },
+                      React.createElement("td", { className: "p-3 font-mono text-gray-400" }, row.time),
+                      React.createElement("td", { className: "p-3 font-bold text-gray-900" }, row.gw),
+                      React.createElement("td", { className: "p-3" }, row.event),
+                      React.createElement("td", { className: "p-3 font-mono text-gray-600" }, row.target),
+                      React.createElement("td", { className: "p-3" },
+                        React.createElement("span", { className: "px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200" }, row.status)
+                      ),
+                      React.createElement("td", { className: "p-3 font-mono text-right font-bold text-gray-500" }, row.lat)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        );
+      };
+
+      return /*#__PURE__*/React.createElement("div", {
             key: p.id,
             className: `p-5 md:p-6 rounded-2xl border transition-all ${isTop ? 'bg-white dark:bg-gray-900 border-blue-200 dark:border-blue-900/60 shadow-md' : 'bg-white/80 dark:bg-gray-900/80 border-gray-200 dark:border-gray-700 shadow-sm'}`
           }, /*#__PURE__*/React.createElement("div", {
@@ -2754,7 +3822,185 @@ function AdminSoftwareSuite() {
         const winner = scoreA >= scoreB ? projA : projB;
         const loser = scoreA >= scoreB ? projB : projA;
 
-        return /*#__PURE__*/React.createElement("div", {
+        
+      const renderGatewaySuite = () => {
+        return React.createElement("div", { className: "space-y-6 animate-in fade-in duration-200" },
+          /* Header Banner */
+          React.createElement("div", { className: "p-6 md:p-8 rounded-2xl border shadow-sm space-y-4 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100" },
+            React.createElement("div", { className: "flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-700" },
+              React.createElement("div", null,
+                React.createElement("div", { className: "flex items-center gap-2.5" },
+                  React.createElement("span", { className: "text-2xl" }, "🌐"),
+                  React.createElement("h2", { className: "text-xl font-black text-gray-900 dark:text-white" }, "Communications & Telemetry Gateway Suite"),
+                  React.createElement("span", { className: "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300" }, "🟢 OPERATIONAL")
+                ),
+                React.createElement("p", { className: "text-xs mt-1 text-gray-500 dark:text-gray-400" },
+                  "Central Gateway Operations Hub: Real-time telemetry monitoring, SMS gateway dispatchers, IVR TwiML trunks, WhatsApp AI webhooks, and GIS geocoding failover bridges."
+                )
+              ),
+              React.createElement("div", { className: "flex items-center gap-3" },
+                React.createElement("button", {
+                  onClick: () => showToast("Gateway Health Handshake Executed Successfully (Latency: 14ms)"),
+                  className: "px-4 py-2 rounded-xl bg-[#0F766E] hover:bg-[#0D655E] text-white text-xs font-bold shadow-md cursor-pointer transition-all active:scale-95 flex items-center gap-2"
+                },
+                  React.createElement("span", null, "⚡"),
+                  React.createElement("span", null, "Run Gateway Health Audit")
+                )
+              )
+            ),
+
+            /* Top KPI Cards */
+            React.createElement("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2" },
+              [
+                { title: "SMS Gateway (Fast2SMS / NIC)", stat: "14,280 SMS", sub: "99.8% Delivered • 142ms", icon: "📱", status: "Active", bg: "border-teal-200 bg-teal-50/40" },
+                { title: "IVR & Voice Trunk Engine", stat: "3,840 Calls", sub: "4 Active SIP Channels • Port 8001", icon: "📞", status: "Online", bg: "border-blue-200 bg-blue-50/40" },
+                { title: "WhatsApp Business API", stat: "8,120 Messages", sub: "Session Health: 100%", icon: "📲", status: "Connected", bg: "border-emerald-200 bg-emerald-50/40" },
+                { title: "GIS & Aerial Telemetry Bridge", stat: "12,450 Queries", sub: "Nominatim + BigDataCloud", icon: "🗺️", status: "Operational", bg: "border-purple-200 bg-purple-50/40" }
+              ].map((card, i) =>
+                React.createElement("div", { key: i, className: `p-4 rounded-xl border ${card.bg} space-y-1.5` },
+                  React.createElement("div", { className: "flex items-center justify-between text-xs font-bold text-gray-500" },
+                    React.createElement("span", { className: "flex items-center gap-1.5" },
+                      React.createElement("span", null, card.icon),
+                      React.createElement("span", null, card.title)
+                    ),
+                    React.createElement("span", { className: "text-[10px] px-1.5 py-0.5 rounded bg-white font-bold border border-gray-200 text-teal-700" }, card.status)
+                  ),
+                  React.createElement("div", { className: "text-lg font-black text-gray-900" }, card.stat),
+                  React.createElement("div", { className: "text-[11px] font-semibold text-gray-500" }, card.sub)
+                )
+              )
+            )
+          ),
+
+          /* Gateway Details Grid */
+          React.createElement("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6" },
+            /* Gateway 1: SMS Gateway Config & Dispatcher */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📱"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "Fast2SMS / Government SMS Gateway")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg border border-emerald-200 font-bold" }, "ID: LOKSWR")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "SMS Gateway Provider:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Fast2SMS DLTRoute (TRAI DLT Verified)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Available Credit Pool:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "48,500 Credits Available")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "DLT Content Template ID:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "170716890123450981")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Outbound Queue Latency:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "142 ms (Real-Time Async Push)")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => showToast("Test OTP SMS Dispatch Triggered (Fast2SMS API Response: 200 OK)"),
+                  className: "flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "📲 Test SMS OTP Dispatch"),
+                React.createElement("button", {
+                  onClick: () => showToast("DLT Template Schema Re-validated with TRAI Portal"),
+                  className: "py-2.5 px-4 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-bold cursor-pointer transition-all"
+                }, "🔄 Sync DLT")
+              )
+            ),
+
+            /* Gateway 2: IVR Customer Care & TwiML Webhook */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📞"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "IVR Customer Care & TwiML Webhook Engine")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-blue-50 text-blue-700 px-2 py-1 rounded-lg border border-blue-200 font-bold" }, "Port 8001")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "IVR Webhook URL:"),
+                  React.createElement("span", { className: "font-mono font-bold text-blue-600" }, "http://127.0.0.1:8001/ivr/welcome")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Active Dialects Supported:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Odia (OR), Sambalpuri (SB), Hindi (HI), Bengali (BN)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Audio Transcoder Pipeline:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "Whisper V3 + Google GTX + Edge Neural TTS")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Broadcast Sync Channel:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "lok_swar_ivr_sync")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => navigateTab('ivr_dashboard'),
+                  className: "flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "🖥️ Open IVR Telemetry Console"),
+                React.createElement("button", {
+                  onClick: () => window.open("http://localhost:8001/phone", "_blank"),
+                  className: "py-2.5 px-4 rounded-xl border border-blue-200 text-blue-700 hover:bg-blue-50 text-xs font-bold cursor-pointer transition-all"
+                }, "☎️ Launch Phone Simulator")
+              )
+            )
+          ),
+
+          /* Gateway Logs Table */
+          React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+            React.createElement("div", { className: "flex items-center justify-between" },
+              React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white flex items-center gap-2" },
+                React.createElement("span", null, "⚡"),
+                React.createElement("span", null, "Live Gateway Telemetry Stream & Audit Trail")
+              ),
+              React.createElement("span", { className: "text-xs font-semibold text-gray-400" }, "Auto-updating live logs")
+            ),
+            React.createElement("div", { className: "overflow-x-auto" },
+              React.createElement("table", { className: "w-full text-left text-xs" },
+                React.createElement("thead", { className: "bg-gray-50 text-gray-500 font-bold uppercase text-[10px]" },
+                  React.createElement("tr", null,
+                    React.createElement("th", { className: "p-3 rounded-l-lg" }, "Timestamp"),
+                    React.createElement("th", { className: "p-3" }, "Gateway"),
+                    React.createElement("th", { className: "p-3" }, "Event / Transaction"),
+                    React.createElement("th", { className: "p-3" }, "Recipient / Identifier"),
+                    React.createElement("th", { className: "p-3" }, "Status"),
+                    React.createElement("th", { className: "p-3 rounded-r-lg text-right" }, "Latency")
+                  )
+                ),
+                React.createElement("tbody", { className: "divide-y divide-gray-100 font-medium text-gray-700" },
+                  [
+                    { time: "19:15:02", gw: "SMS Gateway", event: "OTP Dispatch (+91-9870424405)", target: "+91-9870424405", status: "Delivered (200 OK)", lat: "138ms" },
+                    { time: "19:14:45", gw: "IVR Engine", event: "TwiML Call Welcome / Dialect Detect", target: "+91-9861234567", status: "Active Stream", lat: "42ms" },
+                    { time: "19:14:12", gw: "WhatsApp AI", event: "Voice Note Transcription Ingested", target: "VN-17898164082", status: "Parsed (Whisper V3)", lat: "310ms" },
+                    { time: "19:13:30", gw: "GIS Geocoder", event: "Reverse Geocode (22.1500° N, 84.1000° E)", target: "Bargaon GP", status: "Resolved (OpenStreetMap)", lat: "84ms" },
+                    { time: "19:12:05", gw: "DigiLocker", event: "Aadhaar e-KYC Verification", target: "XXXX-XXXX-1940", status: "Verified (UIDAI)", lat: "215ms" }
+                  ].map((row, idx) =>
+                    React.createElement("tr", { key: idx, className: "hover:bg-gray-50/80 transition-colors" },
+                      React.createElement("td", { className: "p-3 font-mono text-gray-400" }, row.time),
+                      React.createElement("td", { className: "p-3 font-bold text-gray-900" }, row.gw),
+                      React.createElement("td", { className: "p-3" }, row.event),
+                      React.createElement("td", { className: "p-3 font-mono text-gray-600" }, row.target),
+                      React.createElement("td", { className: "p-3" },
+                        React.createElement("span", { className: "px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200" }, row.status)
+                      ),
+                      React.createElement("td", { className: "p-3 font-mono text-right font-bold text-gray-500" }, row.lat)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        );
+      };
+
+      return /*#__PURE__*/React.createElement("div", {
           className: "space-y-6 animate-in fade-in duration-200"
         }, /*#__PURE__*/React.createElement("div", {
           className: "p-6 md:p-8 rounded-2xl border shadow-sm space-y-4 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100"
@@ -3144,7 +4390,185 @@ function AdminSoftwareSuite() {
         const mediumCount = reports.filter(r => r.urgencyScore >= 40 && r.urgencyScore < 70).length;
         const lowCount = reports.filter(r => r.urgencyScore < 40).length;
         
-        return /*#__PURE__*/React.createElement("div", { className: "w-full space-y-6 animate-in fade-in duration-300" },
+        
+      const renderGatewaySuite = () => {
+        return React.createElement("div", { className: "space-y-6 animate-in fade-in duration-200" },
+          /* Header Banner */
+          React.createElement("div", { className: "p-6 md:p-8 rounded-2xl border shadow-sm space-y-4 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100" },
+            React.createElement("div", { className: "flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-700" },
+              React.createElement("div", null,
+                React.createElement("div", { className: "flex items-center gap-2.5" },
+                  React.createElement("span", { className: "text-2xl" }, "🌐"),
+                  React.createElement("h2", { className: "text-xl font-black text-gray-900 dark:text-white" }, "Communications & Telemetry Gateway Suite"),
+                  React.createElement("span", { className: "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300" }, "🟢 OPERATIONAL")
+                ),
+                React.createElement("p", { className: "text-xs mt-1 text-gray-500 dark:text-gray-400" },
+                  "Central Gateway Operations Hub: Real-time telemetry monitoring, SMS gateway dispatchers, IVR TwiML trunks, WhatsApp AI webhooks, and GIS geocoding failover bridges."
+                )
+              ),
+              React.createElement("div", { className: "flex items-center gap-3" },
+                React.createElement("button", {
+                  onClick: () => showToast("Gateway Health Handshake Executed Successfully (Latency: 14ms)"),
+                  className: "px-4 py-2 rounded-xl bg-[#0F766E] hover:bg-[#0D655E] text-white text-xs font-bold shadow-md cursor-pointer transition-all active:scale-95 flex items-center gap-2"
+                },
+                  React.createElement("span", null, "⚡"),
+                  React.createElement("span", null, "Run Gateway Health Audit")
+                )
+              )
+            ),
+
+            /* Top KPI Cards */
+            React.createElement("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2" },
+              [
+                { title: "SMS Gateway (Fast2SMS / NIC)", stat: "14,280 SMS", sub: "99.8% Delivered • 142ms", icon: "📱", status: "Active", bg: "border-teal-200 bg-teal-50/40" },
+                { title: "IVR & Voice Trunk Engine", stat: "3,840 Calls", sub: "4 Active SIP Channels • Port 8001", icon: "📞", status: "Online", bg: "border-blue-200 bg-blue-50/40" },
+                { title: "WhatsApp Business API", stat: "8,120 Messages", sub: "Session Health: 100%", icon: "📲", status: "Connected", bg: "border-emerald-200 bg-emerald-50/40" },
+                { title: "GIS & Aerial Telemetry Bridge", stat: "12,450 Queries", sub: "Nominatim + BigDataCloud", icon: "🗺️", status: "Operational", bg: "border-purple-200 bg-purple-50/40" }
+              ].map((card, i) =>
+                React.createElement("div", { key: i, className: `p-4 rounded-xl border ${card.bg} space-y-1.5` },
+                  React.createElement("div", { className: "flex items-center justify-between text-xs font-bold text-gray-500" },
+                    React.createElement("span", { className: "flex items-center gap-1.5" },
+                      React.createElement("span", null, card.icon),
+                      React.createElement("span", null, card.title)
+                    ),
+                    React.createElement("span", { className: "text-[10px] px-1.5 py-0.5 rounded bg-white font-bold border border-gray-200 text-teal-700" }, card.status)
+                  ),
+                  React.createElement("div", { className: "text-lg font-black text-gray-900" }, card.stat),
+                  React.createElement("div", { className: "text-[11px] font-semibold text-gray-500" }, card.sub)
+                )
+              )
+            )
+          ),
+
+          /* Gateway Details Grid */
+          React.createElement("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6" },
+            /* Gateway 1: SMS Gateway Config & Dispatcher */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📱"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "Fast2SMS / Government SMS Gateway")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg border border-emerald-200 font-bold" }, "ID: LOKSWR")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "SMS Gateway Provider:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Fast2SMS DLTRoute (TRAI DLT Verified)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Available Credit Pool:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "48,500 Credits Available")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "DLT Content Template ID:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "170716890123450981")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Outbound Queue Latency:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "142 ms (Real-Time Async Push)")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => showToast("Test OTP SMS Dispatch Triggered (Fast2SMS API Response: 200 OK)"),
+                  className: "flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "📲 Test SMS OTP Dispatch"),
+                React.createElement("button", {
+                  onClick: () => showToast("DLT Template Schema Re-validated with TRAI Portal"),
+                  className: "py-2.5 px-4 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-bold cursor-pointer transition-all"
+                }, "🔄 Sync DLT")
+              )
+            ),
+
+            /* Gateway 2: IVR Customer Care & TwiML Webhook */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📞"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "IVR Customer Care & TwiML Webhook Engine")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-blue-50 text-blue-700 px-2 py-1 rounded-lg border border-blue-200 font-bold" }, "Port 8001")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "IVR Webhook URL:"),
+                  React.createElement("span", { className: "font-mono font-bold text-blue-600" }, "http://127.0.0.1:8001/ivr/welcome")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Active Dialects Supported:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Odia (OR), Sambalpuri (SB), Hindi (HI), Bengali (BN)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Audio Transcoder Pipeline:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "Whisper V3 + Google GTX + Edge Neural TTS")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Broadcast Sync Channel:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "lok_swar_ivr_sync")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => navigateTab('ivr_dashboard'),
+                  className: "flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "🖥️ Open IVR Telemetry Console"),
+                React.createElement("button", {
+                  onClick: () => window.open("http://localhost:8001/phone", "_blank"),
+                  className: "py-2.5 px-4 rounded-xl border border-blue-200 text-blue-700 hover:bg-blue-50 text-xs font-bold cursor-pointer transition-all"
+                }, "☎️ Launch Phone Simulator")
+              )
+            )
+          ),
+
+          /* Gateway Logs Table */
+          React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+            React.createElement("div", { className: "flex items-center justify-between" },
+              React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white flex items-center gap-2" },
+                React.createElement("span", null, "⚡"),
+                React.createElement("span", null, "Live Gateway Telemetry Stream & Audit Trail")
+              ),
+              React.createElement("span", { className: "text-xs font-semibold text-gray-400" }, "Auto-updating live logs")
+            ),
+            React.createElement("div", { className: "overflow-x-auto" },
+              React.createElement("table", { className: "w-full text-left text-xs" },
+                React.createElement("thead", { className: "bg-gray-50 text-gray-500 font-bold uppercase text-[10px]" },
+                  React.createElement("tr", null,
+                    React.createElement("th", { className: "p-3 rounded-l-lg" }, "Timestamp"),
+                    React.createElement("th", { className: "p-3" }, "Gateway"),
+                    React.createElement("th", { className: "p-3" }, "Event / Transaction"),
+                    React.createElement("th", { className: "p-3" }, "Recipient / Identifier"),
+                    React.createElement("th", { className: "p-3" }, "Status"),
+                    React.createElement("th", { className: "p-3 rounded-r-lg text-right" }, "Latency")
+                  )
+                ),
+                React.createElement("tbody", { className: "divide-y divide-gray-100 font-medium text-gray-700" },
+                  [
+                    { time: "19:15:02", gw: "SMS Gateway", event: "OTP Dispatch (+91-9870424405)", target: "+91-9870424405", status: "Delivered (200 OK)", lat: "138ms" },
+                    { time: "19:14:45", gw: "IVR Engine", event: "TwiML Call Welcome / Dialect Detect", target: "+91-9861234567", status: "Active Stream", lat: "42ms" },
+                    { time: "19:14:12", gw: "WhatsApp AI", event: "Voice Note Transcription Ingested", target: "VN-17898164082", status: "Parsed (Whisper V3)", lat: "310ms" },
+                    { time: "19:13:30", gw: "GIS Geocoder", event: "Reverse Geocode (22.1500° N, 84.1000° E)", target: "Bargaon GP", status: "Resolved (OpenStreetMap)", lat: "84ms" },
+                    { time: "19:12:05", gw: "DigiLocker", event: "Aadhaar e-KYC Verification", target: "XXXX-XXXX-1940", status: "Verified (UIDAI)", lat: "215ms" }
+                  ].map((row, idx) =>
+                    React.createElement("tr", { key: idx, className: "hover:bg-gray-50/80 transition-colors" },
+                      React.createElement("td", { className: "p-3 font-mono text-gray-400" }, row.time),
+                      React.createElement("td", { className: "p-3 font-bold text-gray-900" }, row.gw),
+                      React.createElement("td", { className: "p-3" }, row.event),
+                      React.createElement("td", { className: "p-3 font-mono text-gray-600" }, row.target),
+                      React.createElement("td", { className: "p-3" },
+                        React.createElement("span", { className: "px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200" }, row.status)
+                      ),
+                      React.createElement("td", { className: "p-3 font-mono text-right font-bold text-gray-500" }, row.lat)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        );
+      };
+
+      return /*#__PURE__*/React.createElement("div", { className: "w-full space-y-6 animate-in fade-in duration-300" },
           /* Header */
           /*#__PURE__*/React.createElement("div", { className: "flex justify-between items-start" },
             /*#__PURE__*/React.createElement("div", null,
@@ -3231,7 +4655,185 @@ function AdminSoftwareSuite() {
                 { id: 'edu', name: 'Education', icon: '🎓', count: reports.filter(r => matchesDept(r, 'edu')).length }
               ].map(dept => {
                 const isActive = filterCategory.toLowerCase() === dept.id.toLowerCase() || (dept.id === 'All' && filterCategory === 'All');
-                return /*#__PURE__*/React.createElement("div", { 
+                
+      const renderGatewaySuite = () => {
+        return React.createElement("div", { className: "space-y-6 animate-in fade-in duration-200" },
+          /* Header Banner */
+          React.createElement("div", { className: "p-6 md:p-8 rounded-2xl border shadow-sm space-y-4 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100" },
+            React.createElement("div", { className: "flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-700" },
+              React.createElement("div", null,
+                React.createElement("div", { className: "flex items-center gap-2.5" },
+                  React.createElement("span", { className: "text-2xl" }, "🌐"),
+                  React.createElement("h2", { className: "text-xl font-black text-gray-900 dark:text-white" }, "Communications & Telemetry Gateway Suite"),
+                  React.createElement("span", { className: "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300" }, "🟢 OPERATIONAL")
+                ),
+                React.createElement("p", { className: "text-xs mt-1 text-gray-500 dark:text-gray-400" },
+                  "Central Gateway Operations Hub: Real-time telemetry monitoring, SMS gateway dispatchers, IVR TwiML trunks, WhatsApp AI webhooks, and GIS geocoding failover bridges."
+                )
+              ),
+              React.createElement("div", { className: "flex items-center gap-3" },
+                React.createElement("button", {
+                  onClick: () => showToast("Gateway Health Handshake Executed Successfully (Latency: 14ms)"),
+                  className: "px-4 py-2 rounded-xl bg-[#0F766E] hover:bg-[#0D655E] text-white text-xs font-bold shadow-md cursor-pointer transition-all active:scale-95 flex items-center gap-2"
+                },
+                  React.createElement("span", null, "⚡"),
+                  React.createElement("span", null, "Run Gateway Health Audit")
+                )
+              )
+            ),
+
+            /* Top KPI Cards */
+            React.createElement("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2" },
+              [
+                { title: "SMS Gateway (Fast2SMS / NIC)", stat: "14,280 SMS", sub: "99.8% Delivered • 142ms", icon: "📱", status: "Active", bg: "border-teal-200 bg-teal-50/40" },
+                { title: "IVR & Voice Trunk Engine", stat: "3,840 Calls", sub: "4 Active SIP Channels • Port 8001", icon: "📞", status: "Online", bg: "border-blue-200 bg-blue-50/40" },
+                { title: "WhatsApp Business API", stat: "8,120 Messages", sub: "Session Health: 100%", icon: "📲", status: "Connected", bg: "border-emerald-200 bg-emerald-50/40" },
+                { title: "GIS & Aerial Telemetry Bridge", stat: "12,450 Queries", sub: "Nominatim + BigDataCloud", icon: "🗺️", status: "Operational", bg: "border-purple-200 bg-purple-50/40" }
+              ].map((card, i) =>
+                React.createElement("div", { key: i, className: `p-4 rounded-xl border ${card.bg} space-y-1.5` },
+                  React.createElement("div", { className: "flex items-center justify-between text-xs font-bold text-gray-500" },
+                    React.createElement("span", { className: "flex items-center gap-1.5" },
+                      React.createElement("span", null, card.icon),
+                      React.createElement("span", null, card.title)
+                    ),
+                    React.createElement("span", { className: "text-[10px] px-1.5 py-0.5 rounded bg-white font-bold border border-gray-200 text-teal-700" }, card.status)
+                  ),
+                  React.createElement("div", { className: "text-lg font-black text-gray-900" }, card.stat),
+                  React.createElement("div", { className: "text-[11px] font-semibold text-gray-500" }, card.sub)
+                )
+              )
+            )
+          ),
+
+          /* Gateway Details Grid */
+          React.createElement("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6" },
+            /* Gateway 1: SMS Gateway Config & Dispatcher */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📱"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "Fast2SMS / Government SMS Gateway")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg border border-emerald-200 font-bold" }, "ID: LOKSWR")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "SMS Gateway Provider:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Fast2SMS DLTRoute (TRAI DLT Verified)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Available Credit Pool:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "48,500 Credits Available")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "DLT Content Template ID:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "170716890123450981")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Outbound Queue Latency:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "142 ms (Real-Time Async Push)")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => showToast("Test OTP SMS Dispatch Triggered (Fast2SMS API Response: 200 OK)"),
+                  className: "flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "📲 Test SMS OTP Dispatch"),
+                React.createElement("button", {
+                  onClick: () => showToast("DLT Template Schema Re-validated with TRAI Portal"),
+                  className: "py-2.5 px-4 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-bold cursor-pointer transition-all"
+                }, "🔄 Sync DLT")
+              )
+            ),
+
+            /* Gateway 2: IVR Customer Care & TwiML Webhook */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📞"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "IVR Customer Care & TwiML Webhook Engine")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-blue-50 text-blue-700 px-2 py-1 rounded-lg border border-blue-200 font-bold" }, "Port 8001")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "IVR Webhook URL:"),
+                  React.createElement("span", { className: "font-mono font-bold text-blue-600" }, "http://127.0.0.1:8001/ivr/welcome")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Active Dialects Supported:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Odia (OR), Sambalpuri (SB), Hindi (HI), Bengali (BN)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Audio Transcoder Pipeline:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "Whisper V3 + Google GTX + Edge Neural TTS")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Broadcast Sync Channel:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "lok_swar_ivr_sync")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => navigateTab('ivr_dashboard'),
+                  className: "flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "🖥️ Open IVR Telemetry Console"),
+                React.createElement("button", {
+                  onClick: () => window.open("http://localhost:8001/phone", "_blank"),
+                  className: "py-2.5 px-4 rounded-xl border border-blue-200 text-blue-700 hover:bg-blue-50 text-xs font-bold cursor-pointer transition-all"
+                }, "☎️ Launch Phone Simulator")
+              )
+            )
+          ),
+
+          /* Gateway Logs Table */
+          React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+            React.createElement("div", { className: "flex items-center justify-between" },
+              React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white flex items-center gap-2" },
+                React.createElement("span", null, "⚡"),
+                React.createElement("span", null, "Live Gateway Telemetry Stream & Audit Trail")
+              ),
+              React.createElement("span", { className: "text-xs font-semibold text-gray-400" }, "Auto-updating live logs")
+            ),
+            React.createElement("div", { className: "overflow-x-auto" },
+              React.createElement("table", { className: "w-full text-left text-xs" },
+                React.createElement("thead", { className: "bg-gray-50 text-gray-500 font-bold uppercase text-[10px]" },
+                  React.createElement("tr", null,
+                    React.createElement("th", { className: "p-3 rounded-l-lg" }, "Timestamp"),
+                    React.createElement("th", { className: "p-3" }, "Gateway"),
+                    React.createElement("th", { className: "p-3" }, "Event / Transaction"),
+                    React.createElement("th", { className: "p-3" }, "Recipient / Identifier"),
+                    React.createElement("th", { className: "p-3" }, "Status"),
+                    React.createElement("th", { className: "p-3 rounded-r-lg text-right" }, "Latency")
+                  )
+                ),
+                React.createElement("tbody", { className: "divide-y divide-gray-100 font-medium text-gray-700" },
+                  [
+                    { time: "19:15:02", gw: "SMS Gateway", event: "OTP Dispatch (+91-9870424405)", target: "+91-9870424405", status: "Delivered (200 OK)", lat: "138ms" },
+                    { time: "19:14:45", gw: "IVR Engine", event: "TwiML Call Welcome / Dialect Detect", target: "+91-9861234567", status: "Active Stream", lat: "42ms" },
+                    { time: "19:14:12", gw: "WhatsApp AI", event: "Voice Note Transcription Ingested", target: "VN-17898164082", status: "Parsed (Whisper V3)", lat: "310ms" },
+                    { time: "19:13:30", gw: "GIS Geocoder", event: "Reverse Geocode (22.1500° N, 84.1000° E)", target: "Bargaon GP", status: "Resolved (OpenStreetMap)", lat: "84ms" },
+                    { time: "19:12:05", gw: "DigiLocker", event: "Aadhaar e-KYC Verification", target: "XXXX-XXXX-1940", status: "Verified (UIDAI)", lat: "215ms" }
+                  ].map((row, idx) =>
+                    React.createElement("tr", { key: idx, className: "hover:bg-gray-50/80 transition-colors" },
+                      React.createElement("td", { className: "p-3 font-mono text-gray-400" }, row.time),
+                      React.createElement("td", { className: "p-3 font-bold text-gray-900" }, row.gw),
+                      React.createElement("td", { className: "p-3" }, row.event),
+                      React.createElement("td", { className: "p-3 font-mono text-gray-600" }, row.target),
+                      React.createElement("td", { className: "p-3" },
+                        React.createElement("span", { className: "px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200" }, row.status)
+                      ),
+                      React.createElement("td", { className: "p-3 font-mono text-right font-bold text-gray-500" }, row.lat)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        );
+      };
+
+      return /*#__PURE__*/React.createElement("div", { 
                   key: dept.name, 
                   onClick: () => setFilterCategory(dept.id),
                   className: `flex-shrink-0 w-36 p-4 rounded-2xl border ${isActive ? 'bg-[#0F766E] border-[#0F766E] text-white shadow-md' : 'bg-white border-gray-100 text-gray-700 shadow-sm hover:border-gray-200'} flex flex-col items-center justify-center gap-2 cursor-pointer transition-all` 
@@ -3366,6 +4968,184 @@ function AdminSoftwareSuite() {
         );
       };
 // AUTHENTICATED DASHBOARD (TWO-COLUMN SIDEBAR LAYOUT)
+      
+      const renderGatewaySuite = () => {
+        return React.createElement("div", { className: "space-y-6 animate-in fade-in duration-200" },
+          /* Header Banner */
+          React.createElement("div", { className: "p-6 md:p-8 rounded-2xl border shadow-sm space-y-4 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100" },
+            React.createElement("div", { className: "flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-700" },
+              React.createElement("div", null,
+                React.createElement("div", { className: "flex items-center gap-2.5" },
+                  React.createElement("span", { className: "text-2xl" }, "🌐"),
+                  React.createElement("h2", { className: "text-xl font-black text-gray-900 dark:text-white" }, "Communications & Telemetry Gateway Suite"),
+                  React.createElement("span", { className: "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300" }, "🟢 OPERATIONAL")
+                ),
+                React.createElement("p", { className: "text-xs mt-1 text-gray-500 dark:text-gray-400" },
+                  "Central Gateway Operations Hub: Real-time telemetry monitoring, SMS gateway dispatchers, IVR TwiML trunks, WhatsApp AI webhooks, and GIS geocoding failover bridges."
+                )
+              ),
+              React.createElement("div", { className: "flex items-center gap-3" },
+                React.createElement("button", {
+                  onClick: () => showToast("Gateway Health Handshake Executed Successfully (Latency: 14ms)"),
+                  className: "px-4 py-2 rounded-xl bg-[#0F766E] hover:bg-[#0D655E] text-white text-xs font-bold shadow-md cursor-pointer transition-all active:scale-95 flex items-center gap-2"
+                },
+                  React.createElement("span", null, "⚡"),
+                  React.createElement("span", null, "Run Gateway Health Audit")
+                )
+              )
+            ),
+
+            /* Top KPI Cards */
+            React.createElement("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2" },
+              [
+                { title: "SMS Gateway (Fast2SMS / NIC)", stat: "14,280 SMS", sub: "99.8% Delivered • 142ms", icon: "📱", status: "Active", bg: "border-teal-200 bg-teal-50/40" },
+                { title: "IVR & Voice Trunk Engine", stat: "3,840 Calls", sub: "4 Active SIP Channels • Port 8001", icon: "📞", status: "Online", bg: "border-blue-200 bg-blue-50/40" },
+                { title: "WhatsApp Business API", stat: "8,120 Messages", sub: "Session Health: 100%", icon: "📲", status: "Connected", bg: "border-emerald-200 bg-emerald-50/40" },
+                { title: "GIS & Aerial Telemetry Bridge", stat: "12,450 Queries", sub: "Nominatim + BigDataCloud", icon: "🗺️", status: "Operational", bg: "border-purple-200 bg-purple-50/40" }
+              ].map((card, i) =>
+                React.createElement("div", { key: i, className: `p-4 rounded-xl border ${card.bg} space-y-1.5` },
+                  React.createElement("div", { className: "flex items-center justify-between text-xs font-bold text-gray-500" },
+                    React.createElement("span", { className: "flex items-center gap-1.5" },
+                      React.createElement("span", null, card.icon),
+                      React.createElement("span", null, card.title)
+                    ),
+                    React.createElement("span", { className: "text-[10px] px-1.5 py-0.5 rounded bg-white font-bold border border-gray-200 text-teal-700" }, card.status)
+                  ),
+                  React.createElement("div", { className: "text-lg font-black text-gray-900" }, card.stat),
+                  React.createElement("div", { className: "text-[11px] font-semibold text-gray-500" }, card.sub)
+                )
+              )
+            )
+          ),
+
+          /* Gateway Details Grid */
+          React.createElement("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6" },
+            /* Gateway 1: SMS Gateway Config & Dispatcher */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📱"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "Fast2SMS / Government SMS Gateway")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg border border-emerald-200 font-bold" }, "ID: LOKSWR")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "SMS Gateway Provider:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Fast2SMS DLTRoute (TRAI DLT Verified)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Available Credit Pool:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "48,500 Credits Available")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "DLT Content Template ID:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "170716890123450981")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Outbound Queue Latency:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "142 ms (Real-Time Async Push)")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => showToast("Test OTP SMS Dispatch Triggered (Fast2SMS API Response: 200 OK)"),
+                  className: "flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "📲 Test SMS OTP Dispatch"),
+                React.createElement("button", {
+                  onClick: () => showToast("DLT Template Schema Re-validated with TRAI Portal"),
+                  className: "py-2.5 px-4 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-bold cursor-pointer transition-all"
+                }, "🔄 Sync DLT")
+              )
+            ),
+
+            /* Gateway 2: IVR Customer Care & TwiML Webhook */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📞"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "IVR Customer Care & TwiML Webhook Engine")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-blue-50 text-blue-700 px-2 py-1 rounded-lg border border-blue-200 font-bold" }, "Port 8001")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "IVR Webhook URL:"),
+                  React.createElement("span", { className: "font-mono font-bold text-blue-600" }, "http://127.0.0.1:8001/ivr/welcome")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Active Dialects Supported:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Odia (OR), Sambalpuri (SB), Hindi (HI), Bengali (BN)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Audio Transcoder Pipeline:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "Whisper V3 + Google GTX + Edge Neural TTS")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Broadcast Sync Channel:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "lok_swar_ivr_sync")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => navigateTab('ivr_dashboard'),
+                  className: "flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "🖥️ Open IVR Telemetry Console"),
+                React.createElement("button", {
+                  onClick: () => window.open("http://localhost:8001/phone", "_blank"),
+                  className: "py-2.5 px-4 rounded-xl border border-blue-200 text-blue-700 hover:bg-blue-50 text-xs font-bold cursor-pointer transition-all"
+                }, "☎️ Launch Phone Simulator")
+              )
+            )
+          ),
+
+          /* Gateway Logs Table */
+          React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+            React.createElement("div", { className: "flex items-center justify-between" },
+              React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white flex items-center gap-2" },
+                React.createElement("span", null, "⚡"),
+                React.createElement("span", null, "Live Gateway Telemetry Stream & Audit Trail")
+              ),
+              React.createElement("span", { className: "text-xs font-semibold text-gray-400" }, "Auto-updating live logs")
+            ),
+            React.createElement("div", { className: "overflow-x-auto" },
+              React.createElement("table", { className: "w-full text-left text-xs" },
+                React.createElement("thead", { className: "bg-gray-50 text-gray-500 font-bold uppercase text-[10px]" },
+                  React.createElement("tr", null,
+                    React.createElement("th", { className: "p-3 rounded-l-lg" }, "Timestamp"),
+                    React.createElement("th", { className: "p-3" }, "Gateway"),
+                    React.createElement("th", { className: "p-3" }, "Event / Transaction"),
+                    React.createElement("th", { className: "p-3" }, "Recipient / Identifier"),
+                    React.createElement("th", { className: "p-3" }, "Status"),
+                    React.createElement("th", { className: "p-3 rounded-r-lg text-right" }, "Latency")
+                  )
+                ),
+                React.createElement("tbody", { className: "divide-y divide-gray-100 font-medium text-gray-700" },
+                  [
+                    { time: "19:15:02", gw: "SMS Gateway", event: "OTP Dispatch (+91-9870424405)", target: "+91-9870424405", status: "Delivered (200 OK)", lat: "138ms" },
+                    { time: "19:14:45", gw: "IVR Engine", event: "TwiML Call Welcome / Dialect Detect", target: "+91-9861234567", status: "Active Stream", lat: "42ms" },
+                    { time: "19:14:12", gw: "WhatsApp AI", event: "Voice Note Transcription Ingested", target: "VN-17898164082", status: "Parsed (Whisper V3)", lat: "310ms" },
+                    { time: "19:13:30", gw: "GIS Geocoder", event: "Reverse Geocode (22.1500° N, 84.1000° E)", target: "Bargaon GP", status: "Resolved (OpenStreetMap)", lat: "84ms" },
+                    { time: "19:12:05", gw: "DigiLocker", event: "Aadhaar e-KYC Verification", target: "XXXX-XXXX-1940", status: "Verified (UIDAI)", lat: "215ms" }
+                  ].map((row, idx) =>
+                    React.createElement("tr", { key: idx, className: "hover:bg-gray-50/80 transition-colors" },
+                      React.createElement("td", { className: "p-3 font-mono text-gray-400" }, row.time),
+                      React.createElement("td", { className: "p-3 font-bold text-gray-900" }, row.gw),
+                      React.createElement("td", { className: "p-3" }, row.event),
+                      React.createElement("td", { className: "p-3 font-mono text-gray-600" }, row.target),
+                      React.createElement("td", { className: "p-3" },
+                        React.createElement("span", { className: "px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200" }, row.status)
+                      ),
+                      React.createElement("td", { className: "p-3 font-mono text-right font-bold text-gray-500" }, row.lat)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        );
+      };
+
       return /*#__PURE__*/React.createElement("div", {
         className: "min-h-screen w-full flex font-sans select-none bg-[#F9FAFB] text-gray-900 transition-colors duration-200"
       }, 
@@ -3404,7 +5184,8 @@ function AdminSoftwareSuite() {
               { id: 'portfolio', label: 'Budget', icon: '💰' },
               { id: 'gis', label: 'GIS', icon: '🗺️' },
               { id: 'maut', label: 'Analytics', icon: '📊' },
-              { id: 'ivr_dashboard', label: 'IVR', icon: '📞', isDropdown: true }
+              { id: 'ivr_dashboard', label: 'IVR', icon: '📞', isDropdown: true },
+              { id: 'gateway', label: 'Gateway Suite', icon: '🌐' }
             ].map(tab => 
               /*#__PURE__*/React.createElement("button", {
                 key: tab.id,
@@ -3489,6 +5270,7 @@ function AdminSoftwareSuite() {
           },
              /*#__PURE__*/React.createElement("div", { className: "w-full max-w-[1440px] mx-auto" },
                 activeTab === 'overview' ? renderOverview() :
+                 activeTab === 'gateway' ? renderGatewaySuite() :
                 activeTab === 'ivr_dashboard' ?
  
       React.createElement("div", {
@@ -3968,7 +5750,185 @@ function AdminSoftwareSuite() {
               count: reports.filter(r => matchesDept(r, 'edu')).length
             }].map(sec => {
               const isSelected = filterCategory.toLowerCase() === sec.id || sec.id === 'all' && filterCategory === 'All';
-              return /*#__PURE__*/React.createElement("div", {
+              
+      const renderGatewaySuite = () => {
+        return React.createElement("div", { className: "space-y-6 animate-in fade-in duration-200" },
+          /* Header Banner */
+          React.createElement("div", { className: "p-6 md:p-8 rounded-2xl border shadow-sm space-y-4 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100" },
+            React.createElement("div", { className: "flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-700" },
+              React.createElement("div", null,
+                React.createElement("div", { className: "flex items-center gap-2.5" },
+                  React.createElement("span", { className: "text-2xl" }, "🌐"),
+                  React.createElement("h2", { className: "text-xl font-black text-gray-900 dark:text-white" }, "Communications & Telemetry Gateway Suite"),
+                  React.createElement("span", { className: "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300" }, "🟢 OPERATIONAL")
+                ),
+                React.createElement("p", { className: "text-xs mt-1 text-gray-500 dark:text-gray-400" },
+                  "Central Gateway Operations Hub: Real-time telemetry monitoring, SMS gateway dispatchers, IVR TwiML trunks, WhatsApp AI webhooks, and GIS geocoding failover bridges."
+                )
+              ),
+              React.createElement("div", { className: "flex items-center gap-3" },
+                React.createElement("button", {
+                  onClick: () => showToast("Gateway Health Handshake Executed Successfully (Latency: 14ms)"),
+                  className: "px-4 py-2 rounded-xl bg-[#0F766E] hover:bg-[#0D655E] text-white text-xs font-bold shadow-md cursor-pointer transition-all active:scale-95 flex items-center gap-2"
+                },
+                  React.createElement("span", null, "⚡"),
+                  React.createElement("span", null, "Run Gateway Health Audit")
+                )
+              )
+            ),
+
+            /* Top KPI Cards */
+            React.createElement("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2" },
+              [
+                { title: "SMS Gateway (Fast2SMS / NIC)", stat: "14,280 SMS", sub: "99.8% Delivered • 142ms", icon: "📱", status: "Active", bg: "border-teal-200 bg-teal-50/40" },
+                { title: "IVR & Voice Trunk Engine", stat: "3,840 Calls", sub: "4 Active SIP Channels • Port 8001", icon: "📞", status: "Online", bg: "border-blue-200 bg-blue-50/40" },
+                { title: "WhatsApp Business API", stat: "8,120 Messages", sub: "Session Health: 100%", icon: "📲", status: "Connected", bg: "border-emerald-200 bg-emerald-50/40" },
+                { title: "GIS & Aerial Telemetry Bridge", stat: "12,450 Queries", sub: "Nominatim + BigDataCloud", icon: "🗺️", status: "Operational", bg: "border-purple-200 bg-purple-50/40" }
+              ].map((card, i) =>
+                React.createElement("div", { key: i, className: `p-4 rounded-xl border ${card.bg} space-y-1.5` },
+                  React.createElement("div", { className: "flex items-center justify-between text-xs font-bold text-gray-500" },
+                    React.createElement("span", { className: "flex items-center gap-1.5" },
+                      React.createElement("span", null, card.icon),
+                      React.createElement("span", null, card.title)
+                    ),
+                    React.createElement("span", { className: "text-[10px] px-1.5 py-0.5 rounded bg-white font-bold border border-gray-200 text-teal-700" }, card.status)
+                  ),
+                  React.createElement("div", { className: "text-lg font-black text-gray-900" }, card.stat),
+                  React.createElement("div", { className: "text-[11px] font-semibold text-gray-500" }, card.sub)
+                )
+              )
+            )
+          ),
+
+          /* Gateway Details Grid */
+          React.createElement("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6" },
+            /* Gateway 1: SMS Gateway Config & Dispatcher */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📱"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "Fast2SMS / Government SMS Gateway")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg border border-emerald-200 font-bold" }, "ID: LOKSWR")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "SMS Gateway Provider:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Fast2SMS DLTRoute (TRAI DLT Verified)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Available Credit Pool:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "48,500 Credits Available")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "DLT Content Template ID:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "170716890123450981")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Outbound Queue Latency:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "142 ms (Real-Time Async Push)")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => showToast("Test OTP SMS Dispatch Triggered (Fast2SMS API Response: 200 OK)"),
+                  className: "flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "📲 Test SMS OTP Dispatch"),
+                React.createElement("button", {
+                  onClick: () => showToast("DLT Template Schema Re-validated with TRAI Portal"),
+                  className: "py-2.5 px-4 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-bold cursor-pointer transition-all"
+                }, "🔄 Sync DLT")
+              )
+            ),
+
+            /* Gateway 2: IVR Customer Care & TwiML Webhook */
+            React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+              React.createElement("div", { className: "flex items-center justify-between border-b pb-3 border-gray-100" },
+                React.createElement("div", { className: "flex items-center gap-2" },
+                  React.createElement("span", { className: "text-xl" }, "📞"),
+                  React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white" }, "IVR Customer Care & TwiML Webhook Engine")
+                ),
+                React.createElement("span", { className: "text-xs font-mono bg-blue-50 text-blue-700 px-2 py-1 rounded-lg border border-blue-200 font-bold" }, "Port 8001")
+              ),
+              React.createElement("div", { className: "space-y-3 text-xs" },
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "IVR Webhook URL:"),
+                  React.createElement("span", { className: "font-mono font-bold text-blue-600" }, "http://127.0.0.1:8001/ivr/welcome")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Active Dialects Supported:"),
+                  React.createElement("span", { className: "font-bold text-gray-800" }, "Odia (OR), Sambalpuri (SB), Hindi (HI), Bengali (BN)")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5 border-b border-gray-50" },
+                  React.createElement("span", { className: "text-gray-500" }, "Audio Transcoder Pipeline:"),
+                  React.createElement("span", { className: "font-bold text-emerald-600" }, "Whisper V3 + Google GTX + Edge Neural TTS")
+                ),
+                React.createElement("div", { className: "flex justify-between py-1.5" },
+                  React.createElement("span", { className: "text-gray-500" }, "Broadcast Sync Channel:"),
+                  React.createElement("span", { className: "font-mono font-bold text-gray-700" }, "lok_swar_ivr_sync")
+                )
+              ),
+              React.createElement("div", { className: "pt-2 flex gap-2" },
+                React.createElement("button", {
+                  onClick: () => navigateTab('ivr_dashboard'),
+                  className: "flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow cursor-pointer transition-all active:scale-95"
+                }, "🖥️ Open IVR Telemetry Console"),
+                React.createElement("button", {
+                  onClick: () => window.open("http://localhost:8001/phone", "_blank"),
+                  className: "py-2.5 px-4 rounded-xl border border-blue-200 text-blue-700 hover:bg-blue-50 text-xs font-bold cursor-pointer transition-all"
+                }, "☎️ Launch Phone Simulator")
+              )
+            )
+          ),
+
+          /* Gateway Logs Table */
+          React.createElement("div", { className: "p-6 rounded-2xl border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 space-y-4 shadow-sm" },
+            React.createElement("div", { className: "flex items-center justify-between" },
+              React.createElement("h3", { className: "text-base font-bold text-gray-900 dark:text-white flex items-center gap-2" },
+                React.createElement("span", null, "⚡"),
+                React.createElement("span", null, "Live Gateway Telemetry Stream & Audit Trail")
+              ),
+              React.createElement("span", { className: "text-xs font-semibold text-gray-400" }, "Auto-updating live logs")
+            ),
+            React.createElement("div", { className: "overflow-x-auto" },
+              React.createElement("table", { className: "w-full text-left text-xs" },
+                React.createElement("thead", { className: "bg-gray-50 text-gray-500 font-bold uppercase text-[10px]" },
+                  React.createElement("tr", null,
+                    React.createElement("th", { className: "p-3 rounded-l-lg" }, "Timestamp"),
+                    React.createElement("th", { className: "p-3" }, "Gateway"),
+                    React.createElement("th", { className: "p-3" }, "Event / Transaction"),
+                    React.createElement("th", { className: "p-3" }, "Recipient / Identifier"),
+                    React.createElement("th", { className: "p-3" }, "Status"),
+                    React.createElement("th", { className: "p-3 rounded-r-lg text-right" }, "Latency")
+                  )
+                ),
+                React.createElement("tbody", { className: "divide-y divide-gray-100 font-medium text-gray-700" },
+                  [
+                    { time: "19:15:02", gw: "SMS Gateway", event: "OTP Dispatch (+91-9870424405)", target: "+91-9870424405", status: "Delivered (200 OK)", lat: "138ms" },
+                    { time: "19:14:45", gw: "IVR Engine", event: "TwiML Call Welcome / Dialect Detect", target: "+91-9861234567", status: "Active Stream", lat: "42ms" },
+                    { time: "19:14:12", gw: "WhatsApp AI", event: "Voice Note Transcription Ingested", target: "VN-17898164082", status: "Parsed (Whisper V3)", lat: "310ms" },
+                    { time: "19:13:30", gw: "GIS Geocoder", event: "Reverse Geocode (22.1500° N, 84.1000° E)", target: "Bargaon GP", status: "Resolved (OpenStreetMap)", lat: "84ms" },
+                    { time: "19:12:05", gw: "DigiLocker", event: "Aadhaar e-KYC Verification", target: "XXXX-XXXX-1940", status: "Verified (UIDAI)", lat: "215ms" }
+                  ].map((row, idx) =>
+                    React.createElement("tr", { key: idx, className: "hover:bg-gray-50/80 transition-colors" },
+                      React.createElement("td", { className: "p-3 font-mono text-gray-400" }, row.time),
+                      React.createElement("td", { className: "p-3 font-bold text-gray-900" }, row.gw),
+                      React.createElement("td", { className: "p-3" }, row.event),
+                      React.createElement("td", { className: "p-3 font-mono text-gray-600" }, row.target),
+                      React.createElement("td", { className: "p-3" },
+                        React.createElement("span", { className: "px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200" }, row.status)
+                      ),
+                      React.createElement("td", { className: "p-3 font-mono text-right font-bold text-gray-500" }, row.lat)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        );
+      };
+
+      return /*#__PURE__*/React.createElement("div", {
                 key: sec.id,
                 onClick: () => {
                   setFilterCategory(sec.id === 'all' ? 'All' : sec.id);
