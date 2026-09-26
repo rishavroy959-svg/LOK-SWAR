@@ -59,6 +59,11 @@ export function renderHeader(state) {
       <!-- Right: Top-Right Utilities (🔔 Notifications, 🌐 Language, ☀️/🌙 Day/Night) -->
       <div style="display: flex; align-items: center; gap: 0.5rem; position: relative;">
         
+        <!-- 0. Universal Gateway Switcher Button -->
+        <a href="admin.html" class="btn" style="height: 46px; padding: 0 0.85rem; border-radius: 14px; font-weight: 800; font-size: 0.8rem; background: var(--gov-green-dark); color: white; border: 1px solid var(--gov-green-medium); display: flex; align-items: center; gap: 0.45rem; cursor: pointer; text-decoration: none; box-shadow: var(--shadow-sm);" title="Open Admin Command Suite & Gateway Hub">
+          🌐 <span>Gateway / Admin</span>
+        </a>
+
         <!-- 1. Notification Button -->
         <div style="position: relative;">
           <button id="btn-toggle-notifications" class="btn btn-secondary" style="width: 46px; height: 46px; border-radius: 14px; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; position: relative; box-shadow: var(--shadow-sm);" title="Notifications">

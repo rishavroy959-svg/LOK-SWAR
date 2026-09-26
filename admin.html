@@ -1511,6 +1511,7 @@ function AdminSoftwareSuite() {
       const [showDronePath, setShowDronePath] = useState(true);
       const [showGovFacilities, setShowGovFacilities] = useState(true);
       const [isLocatingAdminGps, setIsLocatingAdminGps] = useState(false);
+    const [isGatewayModalOpen, setIsGatewayModalOpen] = useState(false);
       const [adminOfficerLocation, setAdminOfficerLocation] = useState(() => {
         try {
           const saved = localStorage.getItem('lok_swar_user_gps');
@@ -5243,6 +5244,15 @@ function AdminSoftwareSuite() {
                       /*#__PURE__*/React.createElement("p", { className: "text-[9px] text-gray-500 font-medium" }, "District Magistrate & Collector")
                    )
                 ),
+                /* Portal Gateway Redirector Button */
+                React.createElement("button", {
+                   onClick: () => setIsGatewayModalOpen(true),
+                   className: "px-3.5 py-1.5 rounded-full border border-teal-300 bg-teal-50 hover:bg-teal-100 text-teal-800 text-xs font-bold shadow-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+                }, 
+                   React.createElement("span", null, "🌐"),
+                   React.createElement("span", null, "Portal Gateway"),
+                   React.createElement("span", { className: "text-[10px] bg-teal-700 text-white px-1.5 py-0.2 rounded-full font-mono" }, "v2.1")
+                ),
                 /* Language Dropdown */
                 /*#__PURE__*/React.createElement("select", {
                    value: selectedLang,
@@ -5256,6 +5266,93 @@ function AdminSoftwareSuite() {
              )
           ),
           
+          
+        /* UNIVERSAL PORTAL GATEWAY MODAL */
+        isGatewayModalOpen && React.createElement("div", {
+          className: "fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
+        },
+          React.createElement("div", {
+            className: "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-3xl p-6 md:p-8 max-w-2xl w-full shadow-2xl space-y-6"
+          },
+            React.createElement("div", { className: "flex items-center justify-between border-b pb-4 border-gray-100 dark:border-gray-800" },
+              React.createElement("div", { className: "flex items-center gap-3" },
+                React.createElement("div", { className: "w-10 h-10 rounded-2xl bg-[#0F766E] text-white flex items-center justify-center text-xl font-bold shadow-md" }, "🌐"),
+                React.createElement("div", null,
+                  React.createElement("h3", { className: "text-lg font-black text-gray-900 dark:text-white" }, "Universal Portal Gateway"),
+                  React.createElement("p", { className: "text-xs text-gray-500" }, "1-Click Switcher between Lok Swar Portals & Telemetry Systems")
+                )
+              ),
+              React.createElement("button", {
+                onClick: () => setIsGatewayModalOpen(false),
+                className: "w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:text-gray-700 cursor-pointer"
+              }, "✕")
+            ),
+
+            React.createElement("div", { className: "grid grid-cols-1 sm:grid-cols-2 gap-4" },
+              [
+                {
+                  title: "🏛️ Citizen Voice Portal",
+                  desc: "Multi-lingual Voice Grievance & Community Feedback System",
+                  url: "citizen.html",
+                  badge: "Public Intake",
+                  color: "border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100 text-emerald-800",
+                  btnText: "Open Citizen Portal ➔"
+                },
+                {
+                  title: "🛡️ Officer Command Suite",
+                  desc: "Administrative Triage, Budget Knapsack Solver & GIS Maps",
+                  url: "admin.html",
+                  badge: "Officer Suite",
+                  color: "border-teal-200 bg-teal-50/50 hover:bg-teal-100 text-teal-800",
+                  btnText: "Active Officer View ✓"
+                },
+                {
+                  title: "📞 IVR Telemetry Admin Console",
+                  desc: "Real-Time IVR Call Triage, Transcripts & Audio Stream",
+                  url: "http://localhost:8001/admin",
+                  badge: "Port 8001",
+                  color: "border-blue-200 bg-blue-50/50 hover:bg-blue-100 text-blue-800",
+                  btnText: "Open IVR Console ➔"
+                },
+                {
+                  title: "☎️ IVR Phone Webhook Simulator",
+                  desc: "Simulate Live Phone Calls & Keypad DTMF Webhooks",
+                  url: "http://localhost:8001/phone",
+                  badge: "Simulator",
+                  color: "border-purple-200 bg-purple-50/50 hover:bg-purple-100 text-purple-800",
+                  btnText: "Launch Phone Simulator ➔"
+                }
+              ].map((portal, idx) =>
+                React.createElement("div", {
+                  key: idx,
+                  onClick: () => { window.location.href = portal.url; },
+                  className: `p-4 rounded-2xl border ${portal.color} space-y-2 cursor-pointer transition-all hover:scale-[1.02] shadow-sm`
+                },
+                  React.createElement("div", { className: "flex items-center justify-between" },
+                    React.createElement("h4", { className: "font-bold text-sm text-gray-900" }, portal.title),
+                    React.createElement("span", { className: "text-[10px] font-mono px-2 py-0.5 rounded-full bg-white font-bold border border-gray-200 text-gray-700" }, portal.badge)
+                  ),
+                  React.createElement("p", { className: "text-xs text-gray-600 leading-relaxed" }, portal.desc),
+                  React.createElement("div", { className: "text-xs font-bold pt-1 text-right flex items-center justify-end gap-1 text-teal-700" },
+                    React.createElement("span", null, portal.btnText)
+                  )
+                )
+              )
+            ),
+
+            React.createElement("div", { className: "pt-2 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500" },
+              React.createElement("div", { className: "flex items-center gap-2" },
+                React.createElement("span", null, "📄"),
+                React.createElement("a", { href: "ARCHITECTURE_AND_VIVA_GUIDE.html", target: "_blank", className: "underline font-bold text-teal-700 hover:text-teal-900" }, "Master Architecture Guide")
+              ),
+              React.createElement("button", {
+                onClick: () => setIsGatewayModalOpen(false),
+                className: "px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold cursor-pointer"
+              }, "Close")
+            )
+          )
+        ),
+
           /* Toast Notification Injection */
           toastMsg && /*#__PURE__*/React.createElement("div", {
              className: "absolute top-20 left-1/2 -translate-x-1/2 z-50 px-4 py-3 rounded-xl bg-gray-900 text-white font-bold text-sm shadow-xl flex items-center gap-2 animate-in slide-in-from-top-4"
