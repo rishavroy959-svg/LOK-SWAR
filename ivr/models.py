@@ -2,7 +2,8 @@
 IVR System — Pydantic v2 Schemas
 """
 from __future__ import annotations
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+IST = timezone(timedelta(hours=5, minutes=30))
 from typing import Literal, Optional
 from pydantic import BaseModel, Field
 
@@ -21,8 +22,8 @@ class IVRTicket(BaseModel):
     status: Literal["new", "in_progress", "resolved"] = "new"
     admin_notes: str = ""
     transcription: str = ""
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(IST))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(IST))
 
 
 # ---------------------------------------------------------------------------

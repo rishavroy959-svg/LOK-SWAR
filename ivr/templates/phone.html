@@ -267,37 +267,15 @@
     const micIndicator = document.getElementById('mic-indicator');
     const screenWaveform = document.getElementById('screen-waveform');
 
-    // Speech Synthesis (Exclusively Female Voice)
-    const isMaleVoice = v => {
-      const n = ((v.name || '') + ' ' + (v.voiceURI || '')).toLowerCase();
-      return n.includes('male') || n.includes('david') || n.includes('ravi') ||
-             n.includes('hemant') || n.includes('mark') || n.includes('george') ||
-             n.includes('guy') || n.includes('rishi') || n.includes('stefan') ||
-             n.includes('pavel') || n.includes('पुरुष') || n.includes('purush');
-    };
-    const isFemaleVoice = v => {
-      const n = ((v.name || '') + ' ' + (v.voiceURI || '')).toLowerCase();
-      return n.includes('female') || n.includes('swara') || n.includes('neerja') ||
-             n.includes('heera') || n.includes('kalpana') || n.includes('zira') ||
-             n.includes('aria') || n.includes('jenny') || n.includes('sonia') ||
-             n.includes('ananya') || n.includes('shruti') || n.includes('priya') ||
-             n.includes('sangeeta') || n.includes('kavya') || n.includes('radha') ||
-             n.includes('pallavi') || n.includes('tanishaa') || n.includes('aarohi') ||
-             n.includes('dhwani') || n.includes('sapna') || n.includes('sobhana') ||
-             n.includes('gul') || n.includes('महिला') || n.includes('स्त्री');
-    };
-
+    // Speech Synthesis
     function speakHindi(text, onEnd) {
       window.speechSynthesis.cancel();
       const utter = new SpeechSynthesisUtterance(text);
       utter.lang = 'hi-IN';
       utter.rate = 0.95;
       utter.pitch = 1.05;
-      const voices = (window.speechSynthesis.getVoices() || []).filter(v => !isMaleVoice(v));
-      const hiVoice = voices.find(v => (v.lang.includes('hi') || v.name.includes('Hindi') || v.name.includes('Aditi') || v.name.includes('Swara')) && isFemaleVoice(v))
-        || voices.find(v => v.lang.includes('hi') || v.name.includes('Hindi'))
-        || voices.find(isFemaleVoice)
-        || voices[0];
+      const voices = window.speechSynthesis.getVoices();
+      const hiVoice = voices.find(v => v.lang.includes('hi') || v.name.includes('Hindi') || v.name.includes('Aditi'));
       if (hiVoice) utter.voice = hiVoice;
       if (onEnd) utter.onend = onEnd;
       window.speechSynthesis.speak(utter);

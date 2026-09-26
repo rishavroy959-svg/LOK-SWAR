@@ -16,7 +16,8 @@ import json
 import asyncio
 import base64
 import httpx
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+IST = timezone(timedelta(hours=5, minutes=30))
 from typing import Annotated, Optional
 from pathlib import Path
 
@@ -113,8 +114,8 @@ def twiml_gather(action: str, num_digits: int = 1, timeout: int = 5, body: str =
 def ticket_to_dict(doc: dict) -> dict:
     """Serialize MongoDB document for JSON API responses."""
     doc["id"] = str(doc.pop("_id", ""))
-    doc["created_at"] = doc.get("created_at", datetime.utcnow()).isoformat()
-    doc["updated_at"] = doc.get("updated_at", datetime.utcnow()).isoformat()
+    doc["created_at"] = doc.get("created_at", datetime.now(IST)).isoformat()
+    doc["updated_at"] = doc.get("updated_at", datetime.now(IST)).isoformat()
     return doc
 
 
@@ -284,7 +285,7 @@ async def ivr_save_recording(
     def _get(key: str, default: str = "") -> str:
         return str(form_data.get(key) or params.get(key) or default)
 
-    call_sid = _get("CallSid") or f"CA_{int(datetime.now(timezone.utc).timestamp())}"
+    call_sid = _get("CallSid") or f"CA_{int(datetime.now(IST).timestamp())}"
     raw_phone = _get("From", _get("Caller", _get("from_num", "+91 8926160600")))
     
     # Clean and format Indian phone numbers
@@ -307,7 +308,7 @@ async def ivr_save_recording(
 
     # Handle local uploaded audio file (from web phone simulator)
     if uploaded_file:
-        rec_id = f"REC_{int(datetime.now(timezone.utc).timestamp())}"
+        rec_id = f"REC_{int(datetime.now(IST).timestamp())}"
         ext = Path(uploaded_file.filename).suffix or ".webm"
         local_path = RECORDINGS_DIR / f"{rec_id}{ext}"
         try:
@@ -350,7 +351,7 @@ async def ivr_save_recording(
     }
     transcription = transcripts.get(lang, transcripts["hi"]).get(cat, transcripts["hi"]["electricity"])
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(IST)
     
     # Idempotent upsert to avoid duplicate tickets if both action & recordingStatusCallback fire
     ticket_id = "UNKNOWN"
@@ -509,7 +510,7 @@ async def create_mock_ticket(
     Inserts a dummy IVR ticket so the admin dashboard is populated
     even when no real phone calls have been made yet.
     """
-    now = datetime.now(timezone.utc)
+    now = datetime.now(IST)
     mock = {
         "call_sid": f"CA_MOCK_{int(now.timestamp())}",
         "caller_phone": "+91 8926160600",
@@ -613,7 +614,7 @@ async def update_status(
 
     result = await collection.update_one(
         {"_id": oid},
-        {"$set": {"status": body.status, "updated_at": datetime.now(timezone.utc)}},
+        {"$set": {"status": body.status, "updated_at": datetime.now(IST)}},
     )
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Ticket not found")
@@ -634,7 +635,7 @@ async def update_notes(
 
     result = await collection.update_one(
         {"_id": oid},
-        {"$set": {"admin_notes": body.admin_notes, "updated_at": datetime.now(timezone.utc)}},
+        {"$set": {"admin_notes": body.admin_notes, "updated_at": datetime.now(IST)}},
     )
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Ticket not found")
